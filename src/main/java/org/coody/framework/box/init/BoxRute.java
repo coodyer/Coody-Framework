@@ -133,7 +133,7 @@ public class BoxRute {
 					beanName = field.getType().getName();
 				}
 				if (!BeanContainer.containsBean(beanName)) {
-					throw new BeanNotFoundException("未找到Bean:"+field.getName()+"("+field.getType()+")");
+					throw new BeanNotFoundException("注入失败:"+bean.getClass()+",未找到Bean:"+field.getName()+"("+field.getType()+")");
 				}
 				Object writeValue = null;
 				field.setAccessible(true);
