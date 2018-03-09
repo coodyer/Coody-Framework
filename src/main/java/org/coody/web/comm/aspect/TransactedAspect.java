@@ -7,7 +7,7 @@ import org.coody.framework.box.annotation.Around;
 import org.coody.framework.box.annotation.InitBean;
 import org.coody.framework.box.annotation.Transacted;
 import org.coody.framework.box.container.TransactedThreadContainer;
-import org.coody.framework.box.wrapper.AspectWrapper;
+import org.coody.framework.box.point.AspectPoint;
 import org.coody.framework.util.StringUtil;
 
 @InitBean
@@ -20,7 +20,7 @@ public class TransactedAspect {
 	 * @throws Throwable
 	 */
 	@Around(Transacted.class)
-	public Object transacted(AspectWrapper wrapper) throws Throwable{
+	public Object transacted(AspectPoint wrapper) throws Throwable{
 		if(TransactedThreadContainer.hasTransacted()){
 			return wrapper.invoke();
 		}

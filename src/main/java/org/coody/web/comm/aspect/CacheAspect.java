@@ -6,7 +6,7 @@ import org.apache.log4j.Logger;
 import org.coody.framework.box.annotation.Around;
 import org.coody.framework.box.annotation.InitBean;
 import org.coody.framework.box.cache.LocalCache;
-import org.coody.framework.box.wrapper.AspectWrapper;
+import org.coody.framework.box.point.AspectPoint;
 import org.coody.framework.util.AspectUtil;
 import org.coody.framework.util.StringUtil;
 import org.coody.web.comm.annotation.CacheWipe;
@@ -26,7 +26,7 @@ public class CacheAspect {
 	 * @throws Throwable
 	 */
 	@Around(CacheWrite.class)
-	public Object cCacheWrite(AspectWrapper aspect) throws Throwable {
+	public Object cCacheWrite(AspectPoint aspect) throws Throwable {
 		Class<?> clazz = aspect.getClazz();
 		Method method = aspect.getMethod();
 		if (method == null) {
@@ -87,7 +87,7 @@ public class CacheAspect {
 	 * @throws Throwable
 	 */
 	@Around({ CacheWipe.class, CacheWipes.class })
-	public Object zCacheWipe(AspectWrapper aspect) throws Throwable {
+	public Object zCacheWipe(AspectPoint aspect) throws Throwable {
 		Class<?> clazz = aspect.getClazz();
 		Method method = aspect.getMethod();
 		if (method == null) {
