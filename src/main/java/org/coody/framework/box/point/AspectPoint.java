@@ -1,4 +1,4 @@
-package org.coody.framework.box.wrapper;
+package org.coody.framework.box.point;
 
 import java.lang.reflect.Method;
 
@@ -7,7 +7,7 @@ import org.coody.framework.entity.BaseModel;
 import net.sf.cglib.proxy.MethodProxy;
 
 @SuppressWarnings("serial")
-public class AspectWrapper extends BaseModel{
+public class AspectPoint extends BaseModel{
 	
 	private Object bean;
 	private Method method;
@@ -15,7 +15,7 @@ public class AspectWrapper extends BaseModel{
 	private Class<?> clazz;
 	private Object[] params;
 	private Method currentAspectMethod;
-	private AspectWrapper childAspect;
+	private AspectPoint childAspect;
 	
 	
 	
@@ -32,10 +32,10 @@ public class AspectWrapper extends BaseModel{
 	public void setCurrentAspectMethod(Method currentAspectMethod) {
 		this.currentAspectMethod = currentAspectMethod;
 	}
-	public AspectWrapper getChildAspect() {
+	public AspectPoint getChildAspect() {
 		return childAspect;
 	}
-	public void setChildAspect(AspectWrapper childAspect) {
+	public void setChildAspect(AspectPoint childAspect) {
 		this.childAspect = childAspect;
 	}
 	public Object getBean() {

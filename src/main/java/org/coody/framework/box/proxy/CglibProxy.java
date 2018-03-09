@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.coody.framework.box.constant.BoxConstant;
 import org.coody.framework.box.container.BeanContainer;
-import org.coody.framework.box.wrapper.AspectWrapper;
+import org.coody.framework.box.point.AspectPoint;
 import org.coody.framework.util.PropertUtil;
 import org.coody.framework.util.StringUtil;
 
@@ -71,13 +71,13 @@ public class CglibProxy implements MethodInterceptor {
 		invokeMethods.remove(0);
 		Class<?> clazz = PropertUtil.getClass(invokeMethod);
 		Object invokeBean = BeanContainer.getBean(clazz);
-		AspectWrapper wrapper = new AspectWrapper();
+		AspectPoint wrapper = new AspectPoint();
 		wrapper.setBean(bean);
 		wrapper.setMethod(method);
 		wrapper.setParams(params);
 		wrapper.setProxy(proxy);
 		wrapper.setClazz(bean.getClass());
-		AspectWrapper childWrapper = parseAspect(bean,wrapper, invokeMethods);
+		AspectPoint childWrapper = parseAspect(bean,wrapper, invokeMethods);
 		if (childWrapper != null) {
 			wrapper.setBean(invokeBean);
 			wrapper.setChildAspect(childWrapper);
@@ -85,20 +85,20 @@ public class CglibProxy implements MethodInterceptor {
 		return invokeMethod.invoke(invokeBean, wrapper);
 	}
 
-	private AspectWrapper parseAspect(Object lastBean,AspectWrapper baseWrapper, List<Method> invokeMethods) {
+	private AspectPoint parseAspect(Object lastBean,AspectPoint baseWrapper, List<Method> invokeMethods) {
 		if (StringUtil.isNullOrEmpty(invokeMethods)) {
 			return null;
 		}
 		Method currentAspectMethod = invokeMethods.get(0);
 		invokeMethods.remove(0);
-		AspectWrapper wrapper = new AspectWrapper();
+		AspectPoint wrapper = new AspectPoint();
 		wrapper.setBean(baseWrapper.getBean());
 		wrapper.setMethod(baseWrapper.getMethod());
 		wrapper.setParams(baseWrapper.getParams());
 		wrapper.setProxy(baseWrapper.getProxy());
 		wrapper.setClazz(baseWrapper.getClazz());
 		wrapper.setCurrentAspectMethod(currentAspectMethod);
-		AspectWrapper childWrapper = parseAspect(lastBean,baseWrapper, invokeMethods);
+		AspectPoint childWrapper = parseAspect(lastBean,baseWrapper, invokeMethods);
 		if (childWrapper != null) {
 			wrapper.setChildAspect(childWrapper);
 			return wrapper;
