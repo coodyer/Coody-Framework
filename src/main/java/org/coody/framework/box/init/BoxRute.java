@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.coody.framework.box.annotation.Around;
+import org.coody.framework.box.annotation.CronTask;
 import org.coody.framework.box.annotation.InitBean;
 import org.coody.framework.box.annotation.OutBean;
 import org.coody.framework.box.annotation.PathBinding;
@@ -16,12 +17,15 @@ import org.coody.framework.box.constant.BoxConstant;
 import org.coody.framework.box.container.BeanContainer;
 import org.coody.framework.box.container.MappingContainer;
 import org.coody.framework.box.exception.BeanNotFoundException;
+import org.coody.framework.box.exception.ErrorCronException;
 import org.coody.framework.box.iface.InitFace;
 import org.coody.framework.box.proxy.CglibProxy;
+import org.coody.framework.box.task.TaskTrigger;
 import org.coody.framework.util.ClassUtil;
 import org.coody.framework.util.PrintException;
 import org.coody.framework.util.PropertUtil;
 import org.coody.framework.util.StringUtil;
+import org.coody.web.task.TestTask;
 
 public class BoxRute {
 
@@ -40,10 +44,35 @@ public class BoxRute {
 			return;
 		}
 		initAspect(clazzs);
+		initTask(clazzs);
 		initClass(clazzs);
 		initField();
 		initMvc();
 		initRun(clazzs);
+		
+	}
+
+	public static void initTask(Set<Class<?>> clas) {
+		if (StringUtil.isNullOrEmpty(clas)) {
+			return;
+		}
+		for (Class<?> cla : clas) {
+			InitBean initBean = cla.getAnnotation(InitBean.class);
+			if (StringUtil.isNullOrEmpty(initBean)) {
+				continue;
+			}
+			Method[] methods = cla.getDeclaredMethods();
+			if (StringUtil.isNullOrEmpty(methods)) {
+				continue;
+			}
+			for (Method method : methods) {
+				CronTask cronTask = method.getAnnotation(CronTask.class);
+				if (StringUtil.isNullOrEmpty(cronTask) || StringUtil.isNullOrEmpty(cronTask.value())) {
+					continue;
+				}
+				BoxConstant.aspectMap.put(CronTask.class, TaskTrigger.getTriggerMethod());
+			}
+		}
 	}
 
 	public static void initAspect(Set<Class<?>> clas) {
@@ -51,6 +80,7 @@ public class BoxRute {
 			return;
 		}
 		for (Class<?> cla : clas) {
+			
 			InitBean initBean = cla.getAnnotation(InitBean.class);
 			if (StringUtil.isNullOrEmpty(initBean)) {
 				continue;
@@ -80,7 +110,7 @@ public class BoxRute {
 		}
 		for (Class<?> cla : clas) {
 			List<String> beanNames = BeanContainer.getBeanNames(cla);
-			if(StringUtil.isNullOrEmpty(beanNames)){
+			if (StringUtil.isNullOrEmpty(beanNames)) {
 				continue;
 			}
 			Object bean = proxy.getProxy(cla);
@@ -98,24 +128,51 @@ public class BoxRute {
 	}
 
 	public static void initRun(Set<Class<?>> clas) {
-		if (StringUtil.isNullOrEmpty(clas)) {
-			return;
-		}
-		for (Class<?> cla : clas) {
-			if (!InitFace.class.isAssignableFrom(cla)) {
+		for (Class<?> clazz:clas) {
+			InitBean initBean=clazz.getAnnotation(InitBean.class);
+			if(initBean==null){
 				continue;
 			}
-			try {
-				InitFace face = BeanContainer.getBean(cla);
-				if (StringUtil.isNullOrEmpty(face)) {
+			Object bean=BeanContainer.getBean(clazz);
+			if (InitFace.class.isAssignableFrom(bean.getClass())) {
+				//初始化运行
+				try {
+					InitFace face = (InitFace) bean;
+					if (StringUtil.isNullOrEmpty(face)) {
+						continue;
+					}
+					face.init();
+				} catch (Exception e) {
+					PrintException.printException(logger, e);
+				}
+			}
+			if(clazz.isAssignableFrom(TestTask.class)){
+				System.out.println(clazz.getName());
+			}
+			//执行定时任务
+			Method[] methods=clazz.getDeclaredMethods();
+			if(StringUtil.isNullOrEmpty(methods)){
+				continue;
+			}
+			for(Method method:methods){
+				CronTask task=method.getAnnotation(CronTask.class);
+				if(task==null){
 					continue;
 				}
-				face.init();
-			} catch (Exception e) {
-				PrintException.printException(logger, e);
+				try{
+					if(StringUtil.isNullOrEmpty(task.value())){
+						PrintException.printException(logger, new ErrorCronException("CRON有误:"+bean.getClass()+":"+method.getName()+",Cron:"+task.value()));
+						continue;
+					}
+					TaskTrigger.nextRun(bean, method, task.value(),null);
+				}catch (Exception e) {
+					PrintException.printException(logger, new ErrorCronException("CRON有误:"+bean.getClass()+":"+method.getName()+",Cron:"+task.value()));
+					continue;
+				}
 			}
 		}
 	}
+	
 
 	public static void initField() throws Exception {
 		for (Object bean : BeanContainer.getBeans()) {
@@ -133,7 +190,8 @@ public class BoxRute {
 					beanName = field.getType().getName();
 				}
 				if (!BeanContainer.containsBean(beanName)) {
-					throw new BeanNotFoundException("注入失败:"+bean.getClass()+",未找到Bean:"+field.getName()+"("+field.getType()+")");
+					throw new BeanNotFoundException(
+							"注入失败:" + bean.getClass() + ",未找到Bean:" + field.getName() + "(" + field.getType() + ")");
 				}
 				Object writeValue = null;
 				field.setAccessible(true);

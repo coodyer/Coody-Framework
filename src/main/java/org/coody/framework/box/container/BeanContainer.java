@@ -19,12 +19,20 @@ public class BeanContainer {
 	private static Map<String, Object> beanMap=new ConcurrentHashMap<String, Object>();
 	
 	public static <T> T getBean(Class<?> cla){
-		String beanName=getBeanName(cla);
-		return (T) beanMap.get(beanName);
+		try {
+			String beanName=getBeanName(cla);
+			return (T) beanMap.get(beanName);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 	
 	public static <T> T getBean(String beanName){
-		return (T) beanMap.get(beanName);
+		try {
+			return (T) beanMap.get(beanName);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 	public static void writeBean(String beanName,Object bean){
 		beanMap.put(beanName, bean);

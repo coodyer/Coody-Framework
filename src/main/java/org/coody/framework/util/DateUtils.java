@@ -33,9 +33,16 @@ public class DateUtils {
 	 * @return
 	 */
 	public static String getDateString() {
-		return toString(new Date(), "yyyy-MM-dd");
+		return toString(new Date(), DATE_PATTERN);
 	}
-
+	/**
+	 * 获取当前日期
+	 * 
+	 * @return
+	 */
+	public static String getDateTimeString() {
+		return toString(new Date(),DATETIME_PATTERN);
+	}
 	/**
 	 * 时间增减
 	 * 
