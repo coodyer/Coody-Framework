@@ -17,7 +17,6 @@ import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import junit.framework.Assert;
 
 /**
  * @author Alef Arendsen
@@ -70,7 +69,6 @@ public class AntUtil{
 	 * @since 4.1
 	 */
 	public AntUtil(String pathSeparator) {
-		Assert.assertNotNull(pathSeparator, "'pathSeparator' is required");
 		this.pathSeparator = pathSeparator;
 		this.pathSeparatorPatternCache = new PathSeparatorPatternCache(pathSeparator);
 	}
