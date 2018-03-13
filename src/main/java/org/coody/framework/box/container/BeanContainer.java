@@ -16,23 +16,16 @@ import org.coody.framework.util.StringUtil;
 @SuppressWarnings({"unchecked","rawtypes"})
 public class BeanContainer {
 	
+	
 	private static Map<String, Object> beanMap=new ConcurrentHashMap<String, Object>();
 	
 	public static <T> T getBean(Class<?> cla){
-		try {
-			String beanName=getBeanName(cla);
-			return (T) beanMap.get(beanName);
-		} catch (Exception e) {
-			return null;
-		}
+		String beanName=getBeanName(cla);
+		return (T) beanMap.get(beanName);
 	}
 	
 	public static <T> T getBean(String beanName){
-		try {
-			return (T) beanMap.get(beanName);
-		} catch (Exception e) {
-			return null;
-		}
+		return (T) beanMap.get(beanName);
 	}
 	public static void writeBean(String beanName,Object bean){
 		beanMap.put(beanName, bean);
@@ -69,11 +62,13 @@ public class BeanContainer {
 		if(!StringUtil.isNullOrEmpty(clazzs)){
 			for(Class<?> clazTemp:clazzs){
 				beanName=getBeanName(clazTemp);
-				if(!StringUtil.isNullOrEmpty(beanName)){
-					beanNames.add(beanName);
+				if(StringUtil.isNullOrEmpty(beanName)){
+					beanName=clazTemp.getName();
+				}
+				if(BeanContainer.containsBean(beanName)){
 					continue;
 				}
-				beanNames.add(clazTemp.getName());
+				beanNames.add(beanName);
 			}
 		}
 		if(StringUtil.isNullOrEmpty(beanNames)){

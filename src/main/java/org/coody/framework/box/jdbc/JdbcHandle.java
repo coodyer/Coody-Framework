@@ -19,6 +19,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 
+import javax.sql.DataSource;
+
+import org.apache.commons.dbcp.BasicDataSource;
 import org.coody.framework.box.cache.LocalCache;
 import org.coody.framework.box.constant.BoxConstant;
 import org.coody.framework.box.container.TransactedThreadContainer;
@@ -34,21 +37,27 @@ import org.coody.framework.util.PropertUtil;
 import org.coody.framework.util.StringUtil;
 
 import com.alibaba.fastjson.JSON;
-import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class JdbcHandle {
 
-	private ComboPooledDataSource dataSource;
+	private DataSource dataSource;
 
 	public void initConfig(String configPath) throws IOException, PropertyVetoException {
-		dataSource = new ComboPooledDataSource();
-		Properties prop = new Properties();
+		 //1.获取DBCP数据源实现类对象
+        Properties prop = new Properties();
+        BasicDataSource bds = new BasicDataSource();
 		InputStream in = this.getClass().getClassLoader().getResourceAsStream(configPath);
 		prop.load(in);
-		dataSource.setDriverClass(prop.getProperty("jdbc.driverClass"));
-		dataSource.setJdbcUrl(prop.getProperty("jdbc.url"));
-		dataSource.setUser(prop.getProperty("jdbc.user"));
-		dataSource.setPassword(prop.getProperty("jdbc.password"));
+		bds.setDriverClassName(prop.getProperty("jdbc.driverClass"));
+		bds.setUrl(prop.getProperty("jdbc.url"));
+		bds.setUsername(prop.getProperty("jdbc.user"));
+		bds.setPassword(prop.getProperty("jdbc.password"));
+		bds.setTestOnBorrow(false);
+		bds.setTimeBetweenEvictionRunsMillis(30000);
+		bds.setMinEvictableIdleTimeMillis(1800000);
+        //3.设置连接池的参数
+        bds.setMaxActive(5);
+        dataSource = bds;
 	}
 
 	/**
