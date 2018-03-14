@@ -21,10 +21,16 @@ public class BeanContainer {
 	
 	public static <T> T getBean(Class<?> cla){
 		String beanName=getBeanName(cla);
+		if(StringUtil.isNullOrEmpty(beanName)){
+			return null;
+		}
 		return (T) beanMap.get(beanName);
 	}
 	
 	public static <T> T getBean(String beanName){
+		if(StringUtil.isNullOrEmpty(beanName)){
+			return null;
+		}
 		return (T) beanMap.get(beanName);
 	}
 	public static void writeBean(String beanName,Object bean){
