@@ -219,23 +219,23 @@ no.3、示例
 ### 8. 示例：
 
     
-### 依赖注入 :heart: 
+ **依赖注入**  :heart: 
 
 ![输入图片说明](https://gitee.com/uploads/images/2018/0314/235137_6318dce2_1200611.png "[}5%ZQRL_T8R62TP5BXDUGF.png")
 
-### 切面编程  :blue_heart: 
+ **切面编程**   :blue_heart: 
 
 ![输入图片说明](https://gitee.com/uploads/images/2018/0314/235227_3d683631_1200611.png "EOC5SKADKLN}P`F`1@]EATS.png")
 
-### 定时任务 :purple_heart: 
+ **定时任务**  :purple_heart: 
 
 ![输入图片说明](https://gitee.com/uploads/images/2018/0314/235300_1427cd5d_1200611.png "ALP63PY8`6MU2B]0AYL}Z16.png")
 
-### MVC :green_heart: 
+ **MVC**  :green_heart: 
 
 ![输入图片说明](https://gitee.com/uploads/images/2018/0314/235433_0318b322_1200611.png "1GAQ1OY1895$[W2}RF%XCVT.png")
 
-### 事物管理 :heartpulse: 
+ **事物管理 ** :heartpulse: 
 
 ![输入图片说明](https://gitee.com/uploads/images/2018/0314/235504_5666dcbb_1200611.png "$9`DAN2(F25R%_[P@)H$9SS.png")
 
