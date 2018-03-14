@@ -219,7 +219,7 @@ no.3、示例
 ### 8. 示例：
 
     
-     **依赖注入** 
+ **     依赖注入** 
 ![输入图片说明](https://gitee.com/uploads/images/2018/0314/235137_6318dce2_1200611.png "[}5%ZQRL_T8R62TP5BXDUGF.png")
 
      **切面编程** 
