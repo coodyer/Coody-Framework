@@ -2,9 +2,11 @@ package org.coody.framework.util;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.Proxy;
 import java.security.InvalidParameterException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -311,6 +313,28 @@ public class PropertUtil {
 			return null;
 		}
 		return (T) map.get(fieldValue);
+	}
+	/**
+	 * 获取注解字段值
+	 * 
+	 * @param bean
+	 * @param paraName
+	 * @return
+	 */
+	public static Object getAnnotationValue(Annotation annotation, String paraName) {
+		if (StringUtil.hasNull(annotation,paraName)) {
+			return null;
+		}
+		try {
+			InvocationHandler invocationHandler = Proxy.getInvocationHandler(annotation);
+			 Field hField = invocationHandler.getClass().getDeclaredField("memberValues");
+			 hField.setAccessible(true);
+			 Map<?,?> paraMap= (Map<?,?>) hField.get(invocationHandler);
+			 return paraMap.get(paraName);
+		} catch (Exception e) {
+			return null;
+		}
+		 
 	}
 
 	/**

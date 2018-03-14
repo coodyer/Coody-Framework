@@ -42,7 +42,7 @@ public class BeanContainer {
 			if (StringUtil.isNullOrEmpty(initBean)) {
 				continue;
 			}
-			String beanName = (String) PropertUtil.getFieldValue(initBean, "value");
+			String beanName = (String) PropertUtil.getAnnotationValue(initBean, "value");
 			if (StringUtil.isNullOrEmpty(beanName)) {
 				beanName = clazz.getName();
 			}
