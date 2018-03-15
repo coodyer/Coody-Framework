@@ -4,8 +4,8 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
+import org.coody.framework.box.constant.GeneralFinal;
 import org.coody.framework.entity.BeanEntity;
-import org.coody.web.comm.constant.CacheFinal;
 
 public class AspectUtil {
 
@@ -52,7 +52,7 @@ public class AspectUtil {
 			}
 		}
 		sb.append(")");
-		return CacheFinal.AUTO_CACHE_KEY + "-" + sb.toString();
+		return GeneralFinal.AUTO_CACHE_KEY + "-" + sb.toString();
 	}
 
 	public static Object getMethodPara(Method method, String fieldName, Object[] args) {

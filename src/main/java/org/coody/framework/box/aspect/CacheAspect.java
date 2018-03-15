@@ -1,17 +1,17 @@
-package org.coody.web.comm.aspect;
+package org.coody.framework.box.aspect;
 
 import java.lang.reflect.Method;
 
 import org.apache.log4j.Logger;
 import org.coody.framework.box.annotation.Around;
+import org.coody.framework.box.annotation.CacheWipe;
+import org.coody.framework.box.annotation.CacheWipes;
+import org.coody.framework.box.annotation.CacheWrite;
 import org.coody.framework.box.annotation.InitBean;
 import org.coody.framework.box.cache.LocalCache;
 import org.coody.framework.box.point.AspectPoint;
 import org.coody.framework.util.AspectUtil;
 import org.coody.framework.util.StringUtil;
-import org.coody.web.comm.annotation.CacheWipe;
-import org.coody.web.comm.annotation.CacheWipes;
-import org.coody.web.comm.annotation.CacheWrite;
 
 @InitBean
 public class CacheAspect {

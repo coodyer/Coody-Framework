@@ -1,4 +1,4 @@
-package org.coody.web.comm.annotation;
+package org.coody.framework.box.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

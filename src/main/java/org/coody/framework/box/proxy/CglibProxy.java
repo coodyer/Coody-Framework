@@ -14,7 +14,6 @@ import org.coody.framework.box.container.BeanContainer;
 import org.coody.framework.box.point.AspectPoint;
 import org.coody.framework.util.PropertUtil;
 import org.coody.framework.util.StringUtil;
-import org.coody.web.task.TestTask;
 
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
@@ -66,9 +65,6 @@ public class CglibProxy implements MethodInterceptor {
 	public Object intercept(Object bean, Method method, Object[] params, MethodProxy proxy) throws Throwable {
 		if (!interceptMap.containsKey(method)) {
 			return proxy.invokeSuper(bean, params);
-		}
-		if(method.getName().equals("test")){
-			System.out.println(TestTask.class.getName());
 		}
 		List<Method> invokeMethods = new ArrayList<Method>(interceptMap.get(method));
 		Method invokeMethod = invokeMethods.get(0);

@@ -15,6 +15,7 @@ import org.coody.framework.box.annotation.OutBean;
 import org.coody.framework.box.annotation.PathBinding;
 import org.coody.framework.box.constant.BoxConstant;
 import org.coody.framework.box.container.BeanContainer;
+import org.coody.framework.box.container.BuiltContainer;
 import org.coody.framework.box.container.MappingContainer;
 import org.coody.framework.box.exception.BeanNotFoundException;
 import org.coody.framework.box.exception.ErrorCronException;
@@ -25,7 +26,6 @@ import org.coody.framework.util.ClassUtil;
 import org.coody.framework.util.PrintException;
 import org.coody.framework.util.PropertUtil;
 import org.coody.framework.util.StringUtil;
-import org.coody.web.task.TestTask;
 
 public class BoxRute {
 
@@ -43,13 +43,16 @@ public class BoxRute {
 		if (StringUtil.isNullOrEmpty(clazzs)) {
 			return;
 		}
+		for (Class<?> clazz : BuiltContainer.initAspect) {
+			clazzs.add(clazz);
+		}
 		initAspect(clazzs);
 		initTask(clazzs);
 		initClass(clazzs);
 		initField();
 		initMvc();
 		initRun(clazzs);
-		
+
 	}
 
 	public static void initTask(Set<Class<?>> clas) {
@@ -80,7 +83,7 @@ public class BoxRute {
 			return;
 		}
 		for (Class<?> cla : clas) {
-			
+
 			InitBean initBean = cla.getAnnotation(InitBean.class);
 			if (StringUtil.isNullOrEmpty(initBean)) {
 				continue;
@@ -128,14 +131,14 @@ public class BoxRute {
 	}
 
 	public static void initRun(Set<Class<?>> clas) {
-		for (Class<?> clazz:clas) {
-			InitBean initBean=clazz.getAnnotation(InitBean.class);
-			if(initBean==null){
+		for (Class<?> clazz : clas) {
+			InitBean initBean = clazz.getAnnotation(InitBean.class);
+			if (initBean == null) {
 				continue;
 			}
-			Object bean=BeanContainer.getBean(clazz);
+			Object bean = BeanContainer.getBean(clazz);
 			if (InitFace.class.isAssignableFrom(bean.getClass())) {
-				//初始化运行
+				// 初始化运行
 				try {
 					InitFace face = (InitFace) bean;
 					if (StringUtil.isNullOrEmpty(face)) {
@@ -146,33 +149,31 @@ public class BoxRute {
 					PrintException.printException(logger, e);
 				}
 			}
-			if(clazz.isAssignableFrom(TestTask.class)){
-				System.out.println(clazz.getName());
-			}
-			//执行定时任务
-			Method[] methods=clazz.getDeclaredMethods();
-			if(StringUtil.isNullOrEmpty(methods)){
+			// 执行定时任务
+			Method[] methods = clazz.getDeclaredMethods();
+			if (StringUtil.isNullOrEmpty(methods)) {
 				continue;
 			}
-			for(Method method:methods){
-				CronTask task=method.getAnnotation(CronTask.class);
-				if(task==null){
+			for (Method method : methods) {
+				CronTask task = method.getAnnotation(CronTask.class);
+				if (task == null) {
 					continue;
 				}
-				try{
-					if(StringUtil.isNullOrEmpty(task.value())){
-						PrintException.printException(logger, new ErrorCronException("CRON有误:"+bean.getClass()+":"+method.getName()+",Cron:"+task.value()));
+				try {
+					if (StringUtil.isNullOrEmpty(task.value())) {
+						PrintException.printException(logger, new ErrorCronException(
+								"CRON有误:" + bean.getClass() + ":" + method.getName() + ",Cron:" + task.value()));
 						continue;
 					}
-					TaskTrigger.nextRun(bean, method, task.value(),null);
-				}catch (Exception e) {
-					PrintException.printException(logger, new ErrorCronException("CRON有误:"+bean.getClass()+":"+method.getName()+",Cron:"+task.value()));
+					TaskTrigger.nextRun(bean, method, task.value(), null);
+				} catch (Exception e) {
+					PrintException.printException(logger, new ErrorCronException(
+							"CRON有误:" + bean.getClass() + ":" + method.getName() + ",Cron:" + task.value()));
 					continue;
 				}
 			}
 		}
 	}
-	
 
 	public static void initField() throws Exception {
 		for (Object bean : BeanContainer.getBeans()) {
@@ -206,27 +207,31 @@ public class BoxRute {
 			if (StringUtil.isNullOrEmpty(bean)) {
 				continue;
 			}
-			PathBinding classBinding = bean.getClass().getAnnotation(PathBinding.class);
-			if (StringUtil.isNullOrEmpty(classBinding)) {
+			PathBinding classBindings = bean.getClass().getAnnotation(PathBinding.class);
+			if (StringUtil.isNullOrEmpty(classBindings)) {
 				continue;
 			}
 			Method[] methods = bean.getClass().getDeclaredMethods();
-			for (Method method : methods) {
-				PathBinding methodBinding = method.getAnnotation(PathBinding.class);
-				if (StringUtil.isNullOrEmpty(methodBinding)) {
-					continue;
+			for (String clazzBinding : classBindings.value()) {
+				for (Method method : methods) {
+					PathBinding methodBinding = method.getAnnotation(PathBinding.class);
+					if (StringUtil.isNullOrEmpty(methodBinding)) {
+						continue;
+					}
+					for (String bindingPath : methodBinding.value()) {
+						String path = formatPath(clazzBinding + "/" + bindingPath);
+						if (MappingContainer.containsPath(path)) {
+							logger.error("该地址已注册:" + path);
+							continue;
+						}
+						MappingContainer.MvcMapping mapping = new MappingContainer.MvcMapping();
+						mapping.setBean(bean);
+						mapping.setPath(path);
+						mapping.setMethod(method);
+						mapping.setParamTypes(PropertUtil.getMethodParas(method));
+						MappingContainer.writeMapping(mapping);
+					}
 				}
-				String path = formatPath(classBinding.value() + "/" + methodBinding.value());
-				if (MappingContainer.containsPath(path)) {
-					logger.error("该地址已注册:" + path);
-					continue;
-				}
-				MappingContainer.MvcMapping mapping = new MappingContainer.MvcMapping();
-				mapping.setBean(bean);
-				mapping.setPath(path);
-				mapping.setMethod(method);
-				mapping.setParamTypes(PropertUtil.getMethodParas(method));
-				MappingContainer.writeMapping(mapping);
 			}
 		}
 	}

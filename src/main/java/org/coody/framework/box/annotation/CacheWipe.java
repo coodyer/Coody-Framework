@@ -1,14 +1,18 @@
-package org.coody.web.comm.annotation;
+package org.coody.framework.box.annotation;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface CacheWrite {
-	String key() default "";
-	int validTime() default 10;
+@Repeatable(CacheWipes.class)
+public @interface CacheWipe {
+	
+	String key() ;
+	
 	String [] fields() default "";
+
 }

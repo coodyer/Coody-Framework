@@ -1,4 +1,4 @@
-package org.coody.web.comm.aspect;
+package org.coody.framework.box.aspect;
 
 import java.sql.Connection;
 import java.util.List;
