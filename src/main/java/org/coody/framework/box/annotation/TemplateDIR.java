@@ -5,10 +5,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface CacheWrite {
-	String key() default "";
-	int time() default 10;
-	String [] fields() default "";
+/**
+ * 响应模板目录
+ */
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME) 
+public @interface TemplateDIR {
+
+	String value() default "";
 }

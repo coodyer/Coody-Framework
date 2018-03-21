@@ -13,7 +13,11 @@ public class GeneralFinal {
 	public static final String REQUEST_WRAPPER="REQUEST_WRAPPER";
 	
 	/**
-	 * 默认缓存
+	 * 响应容器
 	 */
-	public static final String AUTO_CACHE_KEY="AUTO_CACHE_KEY";
+	public static final String RESPONSE_WRAPPER="RESPONSE_WRAPPER";
+	/**
+	 * 当前用户模板
+	 */
+	public static final String CURRENT_TEMPLATE_INFO="CURRENT_TEMPLATE_INFO";
 }

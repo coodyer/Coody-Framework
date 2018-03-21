@@ -13,6 +13,7 @@ import org.coody.framework.box.annotation.CronTask;
 import org.coody.framework.box.annotation.InitBean;
 import org.coody.framework.box.annotation.OutBean;
 import org.coody.framework.box.annotation.PathBinding;
+import org.coody.framework.box.aspect.entity.AspectEntity;
 import org.coody.framework.box.constant.BoxConstant;
 import org.coody.framework.box.container.BeanContainer;
 import org.coody.framework.box.container.BuiltContainer;
@@ -22,6 +23,7 @@ import org.coody.framework.box.exception.ErrorCronException;
 import org.coody.framework.box.iface.InitFace;
 import org.coody.framework.box.proxy.CglibProxy;
 import org.coody.framework.box.task.TaskTrigger;
+import org.coody.framework.util.AspectUtil;
 import org.coody.framework.util.ClassUtil;
 import org.coody.framework.util.PrintException;
 import org.coody.framework.util.PropertUtil;
@@ -50,7 +52,7 @@ public class BoxRute {
 		initTask(clazzs);
 		initClass(clazzs);
 		initField();
-		initMvc();
+		initMvc(clazzs);
 		initRun(clazzs);
 
 	}
@@ -73,7 +75,11 @@ public class BoxRute {
 				if (StringUtil.isNullOrEmpty(cronTask) || StringUtil.isNullOrEmpty(cronTask.value())) {
 					continue;
 				}
-				BoxConstant.aspectMap.put(CronTask.class, TaskTrigger.getTriggerMethod());
+				AspectEntity aspectEntity=new AspectEntity();
+				//装载切面控制方法
+				aspectEntity.setAnnotationClass(new Class<?>[]{CronTask.class});
+				aspectEntity.setAspectInvokeMethod(TaskTrigger.getTriggerMethod());
+				BoxConstant.aspectMap.put(AspectUtil.getBeanKey(TaskTrigger.getTriggerMethod()), aspectEntity);
 			}
 		}
 	}
@@ -93,15 +99,25 @@ public class BoxRute {
 				continue;
 			}
 			for (Method method : methods) {
-				Around around = method.getAnnotation(Around.class);
-				if (around == null) {
+				Around[] arounds = method.getAnnotationsByType(Around.class);
+				if(StringUtil.isNullOrEmpty(arounds)){
 					continue;
 				}
-				if (StringUtil.isNullOrEmpty(around.value())) {
-					continue;
-				}
-				for (Class<?> clazz : around.value()) {
-					BoxConstant.aspectMap.put(clazz, method);
+				for (Around around : arounds) {
+					if (around == null) {
+						continue;
+					}
+					if (StringUtil.isAllNull(around.annotationClass(), around.classMappath(), around.annotationClass(),
+							around.methodMappath())) {
+						continue;
+					}
+					AspectEntity aspectEntity=new AspectEntity();
+					//装载切面控制方法
+					aspectEntity.setAnnotationClass(around.annotationClass());
+					aspectEntity.setMethodMappath(around.methodMappath());
+					aspectEntity.setClassMappath(around.classMappath());
+					aspectEntity.setAspectInvokeMethod(method);
+					BoxConstant.aspectMap.put(AspectUtil.getBeanKey(method), aspectEntity);
 				}
 			}
 		}
@@ -202,16 +218,17 @@ public class BoxRute {
 		}
 	}
 
-	public static void initMvc() throws Exception {
-		for (Object bean : BeanContainer.getBeans()) {
+	public static void initMvc(Set<Class<?>> clazzs) throws Exception {
+		for (Class<?> clazz : clazzs) {
+			Object bean = BeanContainer.getBean(clazz);
 			if (StringUtil.isNullOrEmpty(bean)) {
 				continue;
 			}
-			PathBinding classBindings = bean.getClass().getAnnotation(PathBinding.class);
+			PathBinding classBindings = clazz.getAnnotation(PathBinding.class);
 			if (StringUtil.isNullOrEmpty(classBindings)) {
 				continue;
 			}
-			Method[] methods = bean.getClass().getDeclaredMethods();
+			Method[] methods = clazz.getDeclaredMethods();
 			for (String clazzBinding : classBindings.value()) {
 				for (Method method : methods) {
 					PathBinding methodBinding = method.getAnnotation(PathBinding.class);
@@ -219,7 +236,7 @@ public class BoxRute {
 						continue;
 					}
 					for (String bindingPath : methodBinding.value()) {
-						String path = formatPath(clazzBinding + "/" + bindingPath);
+						String path = StringUtil.formatPath(clazzBinding + "/" + bindingPath);
 						if (MappingContainer.containsPath(path)) {
 							logger.error("该地址已注册:" + path);
 							continue;
@@ -234,20 +251,6 @@ public class BoxRute {
 				}
 			}
 		}
-	}
-
-	private static String formatPath(String path) {
-		if (StringUtil.isNullOrEmpty(path)) {
-			return null;
-		}
-		path = path.replace("\\", "/");
-		while (path.contains("//")) {
-			path = path.replace("//", "/");
-		}
-		if (!path.startsWith("/")) {
-			path = "/" + path;
-		}
-		return path;
 	}
 
 	public static List<Field> loadFields(Class<?> clazz) {

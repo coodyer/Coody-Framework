@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.coody.framework.box.annotation.PathBinding;
 import org.coody.framework.box.constant.BoxConstant;
 import org.coody.framework.util.PropertUtil;
 import org.coody.framework.util.StringUtil;
@@ -48,11 +49,14 @@ public class BeanContainer {
 			if (StringUtil.isNullOrEmpty(initBean)) {
 				continue;
 			}
-			String beanName = (String) PropertUtil.getAnnotationValue(initBean, "value");
-			if (StringUtil.isNullOrEmpty(beanName)) {
-				beanName = clazz.getName();
+			String beanName = clazz.getName();
+			if(PathBinding.class.isAssignableFrom(initBean.annotationType())){
+				return beanName;
 			}
-			return beanName;
+			beanName = (String) PropertUtil.getAnnotationValue(initBean, "value");
+			if (StringUtil.isNullOrEmpty(beanName)) {
+				return clazz.getName();
+			}
 		}
 		return null;
 	}

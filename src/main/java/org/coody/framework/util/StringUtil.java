@@ -841,6 +841,19 @@ public class StringUtil {
 		return "";
 	}
 
+	public static String formatPath(String path) {
+		if (StringUtil.isNullOrEmpty(path)) {
+			return null;
+		}
+		path = path.replace("\\", "/");
+		while (path.contains("//")) {
+			path = path.replace("//", "/");
+		}
+		if (!path.startsWith("/")) {
+			path = "/" + path;
+		}
+		return path;
+	}
 	/**
 	 * 判断是否为android模拟器
 	 * 

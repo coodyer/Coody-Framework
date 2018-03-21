@@ -25,7 +25,7 @@ public class CacheAspect {
 	 * @return
 	 * @throws Throwable
 	 */
-	@Around(CacheWrite.class)
+	@Around(annotationClass=CacheWrite.class)
 	public Object cCacheWrite(AspectPoint aspect) throws Throwable {
 		Class<?> clazz = aspect.getClazz();
 		Method method = aspect.getMethod();
@@ -57,7 +57,7 @@ public class CacheAspect {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		Integer cacheTimer = ((handle.validTime() == 0) ? 24 * 3600 : handle.validTime());
+		Integer cacheTimer = ((handle.time() == 0) ? 24 * 3600 : handle.time());
 		// 获取缓存
 		try {
 			Object result = LocalCache.getCache(key);
@@ -86,7 +86,8 @@ public class CacheAspect {
 	 * @return
 	 * @throws Throwable
 	 */
-	@Around({ CacheWipe.class, CacheWipes.class })
+	@Around(annotationClass=CacheWipes.class)
+	@Around(annotationClass=CacheWipe.class)
 	public Object zCacheWipe(AspectPoint aspect) throws Throwable {
 		Class<?> clazz = aspect.getClazz();
 		Method method = aspect.getMethod();

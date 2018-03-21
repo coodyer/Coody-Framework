@@ -49,7 +49,6 @@ public class TaskTrigger {
 		Date nextRunDate=DateUtils.toDate(zonedDateTime.toLocalDateTime().format(formatter));
 		logger.debug(bean.getClass().getName()+":"+method.getName()+" will run on "+DateUtils.toString(nextRunDate));
 		long timeRage=nextRunDate.getTime()-new Date().getTime();
-		System.out.println(timeRage);
 		TaskThreadPool.taskPool.schedule(new Runnable() {
 			@Override
 			public void run() {

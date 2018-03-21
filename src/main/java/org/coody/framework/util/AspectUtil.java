@@ -1,15 +1,20 @@
 package org.coody.framework.util;
 
 import java.lang.reflect.Method;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
+import org.coody.framework.box.annotation.LogHead;
+import org.coody.framework.box.constant.BoxConstant;
 import org.coody.framework.box.constant.GeneralFinal;
+import org.coody.framework.box.container.ThreadContainer;
 import org.coody.framework.entity.BeanEntity;
+
+import com.alibaba.fastjson.JSON;
 
 public class AspectUtil {
 
-	public static ThreadLocal<Map<String, Object>> moduleThread = new ThreadLocal<Map<String, Object>>();
 
 	public static String getFieldKey(Class<?> clazz, Method method, Object[] paras, String key, String[] fields) {
 		if (StringUtil.isNullOrEmpty(key)) {
@@ -34,10 +39,24 @@ public class AspectUtil {
 		if (StringUtil.isNullOrEmpty(obj)) {
 			return "";
 		}
-		String str = JSONWriter.write(obj);
+		String str = JSON.toJSONString(obj);
 		return EncryptUtil.md5Code(str);
 	}
-
+	public static String getMethodUnionKey(Method method){
+		String paraKey = "";
+		List<BeanEntity> beanEntitys = PropertUtil.getMethodParas(method);
+		if (!StringUtil.isNullOrEmpty(beanEntitys)) {
+			Set<String> methodParas = new HashSet<String>();
+			for (BeanEntity entity : beanEntitys) {
+				String methodParaLine = entity.getFieldType().getName() + " " + entity.getFieldName();
+				methodParas.add(methodParaLine);
+			}
+			paraKey = StringUtil.collectionMosaic(methodParas, ",");
+		}
+		Class<?> clazz=PropertUtil.getClass(method);
+		String methodKey = clazz.getName() + "." + method.getName() + "(" + paraKey + ")";
+		return methodKey;
+	}
 	public static String getMethodKey(Class<?> clazz, Method method) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(clazz.getName()).append(".").append(method.getName());
@@ -52,9 +71,46 @@ public class AspectUtil {
 			}
 		}
 		sb.append(")");
-		return GeneralFinal.AUTO_CACHE_KEY + "-" + sb.toString();
+		return BoxConstant.AUTO_CACHE_KEY + "-" + sb.toString();
 	}
-
+	public static String getClassLog(Class<?> clazz) {
+		LogHead handle = clazz.getAnnotation(LogHead.class);
+		if (handle == null) {
+			return clazz.getSimpleName();
+		}
+		return handle.value();
+	}
+	public static String getMethodLog(Method method) {
+		LogHead handle = method.getAnnotation(LogHead.class);
+		if (handle == null) {
+			return null;
+		}
+		return handle.value();
+	}
+	public static void writeLog(String module) {
+		ThreadContainer.set(GeneralFinal.LOGGER_WRAPPER, module);
+	}
+	
+	public static String minusLog() {
+		String logHead = ThreadContainer.get(GeneralFinal.LOGGER_WRAPPER);
+		if (logHead == null) {
+			return "";
+		}
+		String tabs[] = logHead.split("_");
+		if (tabs.length == 1) {
+			ThreadContainer.set(GeneralFinal.LOGGER_WRAPPER, "");
+			return "";
+		}
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < tabs.length - 1; i++) {
+			if (!StringUtil.isNullOrEmpty(sb)) {
+				sb.append("_");
+			}
+			sb.append(tabs[i]);
+		}
+		ThreadContainer.set(GeneralFinal.LOGGER_WRAPPER, sb.toString());
+		return sb.toString();
+	}
 	public static Object getMethodPara(Method method, String fieldName, Object[] args) {
 		List<BeanEntity> beanEntitys = PropertUtil.getMethodParas(method);
 		if (StringUtil.isNullOrEmpty(beanEntitys)) {
@@ -74,5 +130,15 @@ public class AspectUtil {
 		return para;
 	}
 
+	@SuppressWarnings("unchecked")
+	public static <T> T getBean(String field){
+		return (T) ThreadContainer.get(field);
+	}
+	public static void writeBean(String field,Object bean){
+		ThreadContainer.set(field, bean);
+	}
+	public static String getCurrLog() {
+		return ThreadContainer.get(GeneralFinal.LOGGER_WRAPPER);
+	}
 
 }

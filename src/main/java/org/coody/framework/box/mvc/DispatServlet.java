@@ -1,6 +1,7 @@
 package org.coody.framework.box.mvc;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.coody.framework.box.adapt.ParamsAdapt;
 import org.coody.framework.box.annotation.JsonSerialize;
 import org.coody.framework.box.container.MappingContainer;
+import org.coody.framework.box.container.RequestContainer;
 import org.coody.framework.util.StringUtil;
 
 import com.alibaba.fastjson.JSON;
@@ -19,6 +21,7 @@ import com.alibaba.fastjson.JSON;
 public class DispatServlet extends HttpServlet{
 	
 	Logger logger=Logger.getLogger(DispatServlet.class);
+	
 	
 	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
@@ -31,9 +34,12 @@ public class DispatServlet extends HttpServlet{
 			return;
 		}
 		MappingContainer.MvcMapping mapping=MappingContainer.getMapping(path);
+		//装载Request
+		RequestContainer.setRequest(request);
+		RequestContainer.setResponse(response);
 		try {
 			Object[] params=ParamsAdapt.adaptParams(mapping.getMethod().getParameterTypes(), null, request, response, request.getSession());
-			Object result=mapping.getMethod().invoke(mapping.getBean(), params);
+			Object	result=mapping.getMethod().invoke(mapping.getBean(), params);
 			if(result==null){
 				return;
 			}
@@ -51,12 +57,13 @@ public class DispatServlet extends HttpServlet{
 				return;
 			}
 			String viewPath=getServletConfig().getInitParameter("viewPath");
-			String respFile=viewPath+"/"+viewFileName;
+			String respFile=MessageFormat.format("{0}/{1}", viewPath,viewFileName);
 			request.getRequestDispatcher(respFile).forward(request, response);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	
 	
 	public void init(){}
 }

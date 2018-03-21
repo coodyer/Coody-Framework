@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService{
 	/**
 	 * 查询用户列表
 	 */
-	@CacheWrite(key=CacheFinal.USER_LIST,validTime=3600)
+	@CacheWrite(key=CacheFinal.USER_LIST,time=3600)
 	public List<UserInfo> getUsers(){
 		return userDao.getUsers();
 	}

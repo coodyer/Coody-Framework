@@ -19,7 +19,7 @@ public class TransactedAspect {
 	 * @return
 	 * @throws Throwable
 	 */
-	@Around(Transacted.class)
+	@Around(annotationClass=Transacted.class)
 	public Object transacted(AspectPoint wrapper) throws Throwable{
 		if(TransactedThreadContainer.hasTransacted()){
 			return wrapper.invoke();

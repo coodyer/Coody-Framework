@@ -75,6 +75,9 @@ public class RequestUtil {
 	}
 	
 	private static boolean isInvialIp(String ip){
+		if(StringUtil.isNullOrEmpty(ip)){
+			return true;
+		}
 		if(ip.equals("127.0.0.1")||ip.equalsIgnoreCase("localhost")){
 			return true;
 		}
@@ -213,7 +216,7 @@ public class RequestUtil {
 						continue;
 					}
 					paraValue = request.getParameter(paraName);
-					if (paraValue==null) {
+					if (StringUtil.isNullOrEmpty(paraValue)) {
 						continue;
 					}
 					PropertUtil.setProperties(obj, entity.getFieldName(),

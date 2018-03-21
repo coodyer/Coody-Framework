@@ -1,11 +1,11 @@
 package org.coody.framework.box.constant;
 
-import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.coody.framework.box.annotation.InitBean;
 import org.coody.framework.box.annotation.PathBinding;
+import org.coody.framework.box.aspect.entity.AspectEntity;
 
 public class BoxConstant {
 
@@ -15,12 +15,20 @@ public class BoxConstant {
 	public static final Class<?>[] beanAnnotations = new Class[] { InitBean.class, PathBinding.class };
 	
 	/**
-	 * 切面存储。key注解类 value拦截器方法
+	 * 切面存储。key为切面ID，Value为切面实例
 	 */
-	public static final Map<Class<?>, Method> aspectMap = new ConcurrentHashMap<Class<?>, Method>();
+	public static final Map<String, AspectEntity> aspectMap = new ConcurrentHashMap<String, AspectEntity>();
 	
 	/**
 	 * 表主键列表
 	 */
 	public static final String table_primary_keys="table_primary_keys";
+	
+	/**
+	 * 自动化缓存KEY
+	 */
+	public static final String AUTO_CACHE_KEY="AUTO_CACHE_KEY";
+	
+	
+	
 }

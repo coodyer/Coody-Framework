@@ -1,7 +1,6 @@
 package org.coody.framework.box.annotation;
 
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -16,13 +15,6 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME) 
-@Repeatable(Arounds.class)
-public @interface Around {
-
-    Class<?>[] annotationClass() default {};
-    
-    String methodMappath() default "";
-    
-    String classMappath() default "";
-    
+public @interface Arounds {
+	Around[] value();
 }

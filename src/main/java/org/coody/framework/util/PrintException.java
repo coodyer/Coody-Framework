@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import org.apache.log4j.Logger;
+import org.coody.framework.box.base.BaseLogger;
 
 public class PrintException {
 
@@ -30,6 +31,12 @@ public class PrintException {
             }
         }
         return error;
+    }
+    
+    public static void printException(BaseLogger logger,Throwable e){
+    	String error=getErrorStack(e);
+    	logger.info(error);
+    	logger.error(error);
     }
     
     public static void printException(Logger logger,Throwable e){
