@@ -1,6 +1,8 @@
 
 ### Icop
 
+前言：希望所有阅读过本项目源代码的朋友，不要认为IOC和AOP多么高深。希望能帮助大家理解Spring体系。
+
 
 更新记录：
 
@@ -18,7 +20,11 @@
 
 已有拓展功能支持： **事物管理、切面缓存** 
 
-2018-03-21：icop即将用于一套博文平台研发。研发阶段暂时停止维护本项目，研发完成将整顿本项目至相对稳定。
+2018-03-21：icop即将用于一套博文平台研发。在实际研发需求中不断拓展本框架，本框架主体功能暂时停止更新，研发完成将整顿本项目至相对稳定。
+
+2018-03-21：在博文系统研发中有通配形AOP需求，经过规划并提供类通配、方法通配等支持。
+
+拓展分布式后，将发布Releases
 
 =======================================================
 
@@ -62,7 +68,7 @@ JDK1.8+
 ### 6. 程序架构：
 
 
-由于在撰写本文背景下无作图环境，故此略去架构图。以下提供一些结构说明
+由于在撰写本文背景下无作图环境，故此略去架构图。以下提供一些结构说明(在后期的迭代中，可能略有变动)
 
  **(1)、包说明** 
 
@@ -100,7 +106,7 @@ org.coody.framework.box.annotation.JsonSerialize序列化JSON输出，用于cont
 
 org.coody.framework.box.annotation.OutBean 输出Bean。类似于Resource/AutoWired注解
 
-org.coody.framework.box.annotation.PathBinding 输出Bean。类似于Resource/AutoWired注
+org.coody.framework.box.annotation.PathBinding 初始化Bean。类似于spring的Controller等注解，内置参数为请求路径
 
  **(3)、类说明-适配器** 
 
@@ -132,7 +138,7 @@ org.coody.framework.box.proyx.CglibProxy 基于cglib字节码创建子类的实�
 
  **(9)、类说明-包装类** 
 
-org.coody.framework.box.wrapper.AspectWrapper 本处命名可能不尽规范。本类用于多切面的调度和适配  
+org.coody.framework.box.point.AspectPoint 本类用于多切面的调度和适配  
 
  
 

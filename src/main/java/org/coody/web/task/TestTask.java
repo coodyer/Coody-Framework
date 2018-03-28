@@ -1,7 +1,7 @@
 package org.coody.web.task;
 
-import org.coody.framework.box.annotation.CronTask;
-import org.coody.framework.box.annotation.InitBean;
+import org.coody.framework.annotation.CronTask;
+import org.coody.framework.annotation.InitBean;
 import org.coody.framework.util.DateUtils;
 
 @InitBean

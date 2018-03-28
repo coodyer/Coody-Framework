@@ -5,10 +5,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.coody.framework.box.annotation.LogHead;
-import org.coody.framework.box.constant.BoxConstant;
-import org.coody.framework.box.constant.GeneralFinal;
-import org.coody.framework.box.container.ThreadContainer;
+import org.coody.framework.annotation.LogHead;
+import org.coody.framework.constant.FrameworkConstant;
+import org.coody.framework.constant.GeneralFinal;
+import org.coody.framework.container.ThreadContainer;
 import org.coody.framework.entity.BeanEntity;
 
 import com.alibaba.fastjson.JSON;
@@ -71,7 +71,7 @@ public class AspectUtil {
 			}
 		}
 		sb.append(")");
-		return BoxConstant.AUTO_CACHE_KEY + "-" + sb.toString();
+		return FrameworkConstant.AUTO_CACHE_KEY + "-" + sb.toString();
 	}
 	public static String getClassLog(Class<?> clazz) {
 		LogHead handle = clazz.getAnnotation(LogHead.class);

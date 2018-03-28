@@ -2,8 +2,8 @@ package org.coody.web.dao.impl;
 
 import java.util.List;
 
-import org.coody.framework.box.annotation.InitBean;
-import org.coody.framework.box.annotation.OutBean;
+import org.coody.framework.annotation.InitBean;
+import org.coody.framework.annotation.OutBean;
 import org.coody.web.comm.base.JdbcTemplate;
 import org.coody.web.dao.IcopDao;
 import org.coody.web.domain.IcopTest;

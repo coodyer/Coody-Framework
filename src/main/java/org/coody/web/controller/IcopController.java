@@ -4,9 +4,9 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.coody.framework.box.annotation.JsonSerialize;
-import org.coody.framework.box.annotation.OutBean;
-import org.coody.framework.box.annotation.PathBinding;
+import org.coody.framework.annotation.JsonSerialize;
+import org.coody.framework.annotation.OutBean;
+import org.coody.framework.annotation.PathBinding;
 import org.coody.framework.util.StringUtil;
 import org.coody.web.comm.entity.MsgEntity;
 import org.coody.web.domain.IcopTest;

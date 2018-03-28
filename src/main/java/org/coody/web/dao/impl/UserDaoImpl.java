@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.coody.framework.box.annotation.InitBean;
-import org.coody.framework.box.iface.InitFace;
+import org.coody.framework.annotation.InitBean;
+import org.coody.framework.iface.InitFace;
 import org.coody.framework.util.JUUIDUtil;
 import org.coody.framework.util.StringUtil;
 import org.coody.web.dao.UserDao;

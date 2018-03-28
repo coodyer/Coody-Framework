@@ -2,10 +2,10 @@ package org.coody.web.service.impl;
 
 import java.util.List;
 
-import org.coody.framework.box.annotation.CacheWipe;
-import org.coody.framework.box.annotation.CacheWrite;
-import org.coody.framework.box.annotation.InitBean;
-import org.coody.framework.box.annotation.OutBean;
+import org.coody.framework.annotation.CacheWipe;
+import org.coody.framework.annotation.CacheWrite;
+import org.coody.framework.annotation.InitBean;
+import org.coody.framework.annotation.OutBean;
 import org.coody.web.comm.constant.CacheFinal;
 import org.coody.web.dao.UserDao;
 import org.coody.web.domain.UserInfo;

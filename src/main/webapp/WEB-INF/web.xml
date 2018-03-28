@@ -16,12 +16,12 @@
 	</context-param>
 	<!-- 配置监听器 -->
 	<listener>
-		<listener-class>org.coody.framework.box.init.BoxServletListen</listener-class>
+		<listener-class>org.coody.framework.init.GeneralServletListen</listener-class>
 	</listener>
 	<!-- 初始化分发器 -->
 	<servlet>
 		<servlet-name>DispatServlet</servlet-name>
-		<servlet-class>org.coody.framework.box.mvc.DispatServlet</servlet-class>
+		<servlet-class>org.coody.framework.mvc.DispatServlet</servlet-class>
 		<init-param>
 			<param-name>viewPath</param-name>
 			<param-value>/WEB-INF/jsp</param-value>

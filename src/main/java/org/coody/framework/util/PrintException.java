@@ -4,7 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import org.apache.log4j.Logger;
-import org.coody.framework.box.base.BaseLogger;
+import org.coody.framework.base.BaseLogger;
 
 public class PrintException {
 
