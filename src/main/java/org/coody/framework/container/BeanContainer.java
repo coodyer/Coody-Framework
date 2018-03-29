@@ -54,9 +54,10 @@ public class BeanContainer {
 				return beanName;
 			}
 			beanName = (String) PropertUtil.getAnnotationValue(initBean, "value");
-			if (StringUtil.isNullOrEmpty(beanName)) {
-				return clazz.getName();
+			if (!StringUtil.isNullOrEmpty(beanName)) {
+				return beanName;
 			}
+			return clazz.getName();
 		}
 		return null;
 	}
