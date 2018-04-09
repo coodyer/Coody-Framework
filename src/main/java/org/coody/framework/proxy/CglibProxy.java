@@ -29,6 +29,8 @@ public class CglibProxy implements MethodInterceptor {
 	 * key拦截方法，value拦截器的方法
 	 */
 	public static final Map<Method, Set<Method>> interceptMap = new ConcurrentHashMap<Method, Set<Method>>();
+	
+	public static final Map<Method, AspectPoint> methodInterceptMap = new ConcurrentHashMap<Method, AspectPoint>();
 
 	public Object getProxy(Class<?> clazz) throws InstantiationException, IllegalAccessException {
 		Integer modifier = clazz.getModifiers();
@@ -62,6 +64,7 @@ public class CglibProxy implements MethodInterceptor {
 				if (interceptMap.containsKey(method)) {
 					interceptMap.get(method).add(aspectEntity.getAspectInvokeMethod());
 					needProxy= true;
+					continue;
 				}
 				Set<Method> aspectMethods = new HashSet<Method>();
 				aspectMethods.add(aspectEntity.getAspectInvokeMethod());
@@ -115,44 +118,60 @@ public class CglibProxy implements MethodInterceptor {
 		if (!interceptMap.containsKey(method)) {
 			return proxy.invokeSuper(bean, params);
 		}
-		List<Method> invokeMethods = new ArrayList<Method>(interceptMap.get(method));
-		Method invokeMethod = invokeMethods.get(0);
-		invokeMethods.remove(0);
-		Class<?> clazz = PropertUtil.getClass(invokeMethod);
-		Object invokeBean = BeanContainer.getBean(clazz);
-		AspectPoint wrapper = new AspectPoint();
-		wrapper.setBean(bean);
-		wrapper.setMethod(method);
-		wrapper.setParams(params);
-		wrapper.setProxy(proxy);
-		wrapper.setClazz(bean.getClass());
-		AspectPoint childWrapper = parseAspect(bean, wrapper, invokeMethods);
-		if (childWrapper != null) {
-			wrapper.setBean(invokeBean);
-			wrapper.setChildAspect(childWrapper);
+		AspectPoint point =getMethodPoint(bean, method, proxy);
+		if(point==null){
+			return proxy.invokeSuper(bean, params);
 		}
-		return invokeMethod.invoke(invokeBean, wrapper);
+		point.setParams(params);
+		return point.getAspectMethod().invoke(point.getAspectBean(), point);
 	}
 
-	private AspectPoint parseAspect(Object lastBean, AspectPoint baseWrapper, List<Method> invokeMethods) {
+	private AspectPoint getMethodPoint(Object bean, Method method,  MethodProxy proxy){
+		if(methodInterceptMap.containsKey(method)){
+			return methodInterceptMap.get(method);
+		}
+		List<Method> invokeMethods = new ArrayList<Method>(interceptMap.get(method));
+		Method aspectMethod = invokeMethods.get(0);
+		invokeMethods.remove(0);
+		Class<?> clazz = PropertUtil.getClass(aspectMethod);
+		Object aspectBean = BeanContainer.getBean(clazz);
+		AspectPoint point = new AspectPoint();
+		point.setAspectBean(aspectBean);
+		point.setAspectMethod(aspectMethod);
+		point.setBean(bean);
+		point.setClazz(bean.getClass());
+		point.setMethod(method);
+		point.setProxy(proxy);
+		AspectPoint childPoint = parseAspect(point, invokeMethods);
+		if (childPoint != null) {
+			point.setChildPoint(childPoint);
+		}
+		methodInterceptMap.put(method, point);
+		return point;
+	}
+	
+	
+	private AspectPoint parseAspect(AspectPoint basePoint, List<Method> invokeMethods) {
 		if (StringUtil.isNullOrEmpty(invokeMethods)) {
 			return null;
 		}
-		Method currentAspectMethod = invokeMethods.get(0);
+		Method aspectMethod = invokeMethods.get(0);
 		invokeMethods.remove(0);
-		AspectPoint wrapper = new AspectPoint();
-		wrapper.setBean(baseWrapper.getBean());
-		wrapper.setMethod(baseWrapper.getMethod());
-		wrapper.setParams(baseWrapper.getParams());
-		wrapper.setProxy(baseWrapper.getProxy());
-		wrapper.setClazz(baseWrapper.getClazz());
-		wrapper.setCurrentAspectMethod(currentAspectMethod);
-		AspectPoint childWrapper = parseAspect(lastBean, baseWrapper, invokeMethods);
-		if (childWrapper != null) {
-			wrapper.setChildAspect(childWrapper);
-			return wrapper;
+		Class<?> clazz = PropertUtil.getClass(aspectMethod);
+		Object aspectBean = BeanContainer.getBean(clazz);
+		
+		AspectPoint point = new AspectPoint();
+		point.setAspectBean(aspectBean);
+		point.setAspectMethod(aspectMethod);
+		point.setBean(basePoint.getBean());
+		point.setClazz(basePoint.getBean().getClass());
+		point.setMethod(basePoint.getMethod());
+		point.setProxy(basePoint.getProxy());
+		AspectPoint childPoint = parseAspect(basePoint, invokeMethods);
+		if (childPoint != null) {
+			point.setChildPoint(childPoint);
+			return point;
 		}
-		wrapper.setBean(lastBean);
-		return wrapper;
+		return point;
 	}
 }

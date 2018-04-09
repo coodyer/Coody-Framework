@@ -21,7 +21,7 @@ public class LoggerAspect {
 	 * @throws Throwable
 	 */
 	@Around(annotationClass=LogHead.class)
-	public Object transacted(AspectPoint wrapper) throws Throwable{
+	public Object logMonitor(AspectPoint wrapper) throws Throwable{
 		try {
 			// AOP获取方法执行信息
 			Method method = wrapper.getMethod();

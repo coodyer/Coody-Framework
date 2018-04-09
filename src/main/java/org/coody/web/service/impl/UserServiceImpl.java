@@ -5,6 +5,7 @@ import java.util.List;
 import org.coody.framework.annotation.CacheWipe;
 import org.coody.framework.annotation.CacheWrite;
 import org.coody.framework.annotation.InitBean;
+import org.coody.framework.annotation.LogHead;
 import org.coody.framework.annotation.OutBean;
 import org.coody.web.comm.constant.CacheFinal;
 import org.coody.web.dao.UserDao;
@@ -32,6 +33,7 @@ public class UserServiceImpl implements UserService{
 	 * 查询用户列表
 	 */
 	@CacheWrite(key=CacheFinal.USER_LIST,time=3600)
+	@LogHead("获取用户信息")
 	public List<UserInfo> getUsers(){
 		return userDao.getUsers();
 	}

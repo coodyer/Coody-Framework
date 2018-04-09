@@ -90,8 +90,7 @@ public class FrameworkRute {
 		}
 		for (Class<?> cla : clas) {
 
-			InitBean initBean = cla.getAnnotation(InitBean.class);
-			if (StringUtil.isNullOrEmpty(initBean)) {
+			if (cla.getAnnotation(InitBean.class)==null&&cla.getAnnotation(PathBinding.class)==null) {
 				continue;
 			}
 			Method[] methods = cla.getDeclaredMethods();

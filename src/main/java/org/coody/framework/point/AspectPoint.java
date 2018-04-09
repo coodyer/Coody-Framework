@@ -9,35 +9,21 @@ import net.sf.cglib.proxy.MethodProxy;
 @SuppressWarnings("serial")
 public class AspectPoint extends BaseModel{
 	
+	//业务bean
 	private Object bean;
+	//业务方法
 	private Method method;
+	//代理
 	private MethodProxy proxy;
+	//业务所在class
 	private Class<?> clazz;
+	//业务方法所需参数
 	private Object[] params;
-	private Method currentAspectMethod;
-	private AspectPoint childAspect;
-	
-	
-	
-	
-	public Class<?> getClazz() {
-		return clazz;
-	}
-	public void setClazz(Class<?> clazz) {
-		this.clazz = clazz;
-	}
-	public Method getCurrentAspectMethod() {
-		return currentAspectMethod;
-	}
-	public void setCurrentAspectMethod(Method currentAspectMethod) {
-		this.currentAspectMethod = currentAspectMethod;
-	}
-	public AspectPoint getChildAspect() {
-		return childAspect;
-	}
-	public void setChildAspect(AspectPoint childAspect) {
-		this.childAspect = childAspect;
-	}
+	private AspectPoint childPoint;
+	//切面方法
+	private Method aspectMethod;
+	//切面bean
+	private Object aspectBean;
 	public Object getBean() {
 		return bean;
 	}
@@ -56,17 +42,44 @@ public class AspectPoint extends BaseModel{
 	public void setProxy(MethodProxy proxy) {
 		this.proxy = proxy;
 	}
+	public Class<?> getClazz() {
+		return clazz;
+	}
+	public void setClazz(Class<?> clazz) {
+		this.clazz = clazz;
+	}
 	public Object[] getParams() {
 		return params;
 	}
 	public void setParams(Object[] params) {
 		this.params = params;
 	}
+	public Method getAspectMethod() {
+		return aspectMethod;
+	}
+	public void setAspectMethod(Method aspectMethod) {
+		this.aspectMethod = aspectMethod;
+	}
+	public AspectPoint getChildPoint() {
+		return childPoint;
+	}
+	public void setChildPoint(AspectPoint childPoint) {
+		this.childPoint = childPoint;
+	}
+	public Object getAspectBean() {
+		return aspectBean;
+	}
+	public void setAspectBean(Object aspectBean) {
+		this.aspectBean = aspectBean;
+	}
 	
 	public Object invoke() throws Throwable{
-		if(childAspect!=null){
-			return childAspect.getCurrentAspectMethod().invoke(bean, childAspect);
+		if(childPoint==null){
+			return proxy.invokeSuper(bean, params);
 		}
-		return proxy.invokeSuper(bean, params);
+		childPoint.setParams(params);
+		return childPoint.getAspectMethod().invoke(childPoint.getAspectBean(), childPoint);
 	}
+	
+	
 }
