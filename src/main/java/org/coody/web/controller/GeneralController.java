@@ -28,6 +28,7 @@ public class GeneralController {
 	@JsonSerialize
 	public Object index(HttpServletRequest request){
 		List<UserInfo> users=userService.getUsers();
+		userService.saveOrUpdateUser(users.get(0));
 		return users;
 	}
 	

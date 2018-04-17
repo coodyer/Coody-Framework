@@ -79,7 +79,7 @@ public class FrameworkRute {
 				//装载切面控制方法
 				aspectEntity.setAnnotationClass(new Class<?>[]{CronTask.class});
 				aspectEntity.setAspectInvokeMethod(TaskTrigger.getTriggerMethod());
-				FrameworkConstant.aspectMap.put(AspectUtil.getBeanKey(TaskTrigger.getTriggerMethod()), aspectEntity);
+				FrameworkConstant.writeToAspectMap(AspectUtil.getBeanKey(TaskTrigger.getTriggerMethod()), aspectEntity);
 			}
 		}
 	}
@@ -116,7 +116,8 @@ public class FrameworkRute {
 					aspectEntity.setMethodMappath(around.methodMappath());
 					aspectEntity.setClassMappath(around.classMappath());
 					aspectEntity.setAspectInvokeMethod(method);
-					FrameworkConstant.aspectMap.put(AspectUtil.getBeanKey(method), aspectEntity);
+					String methodKey=AspectUtil.getBeanKey(method);
+					FrameworkConstant.writeToAspectMap(methodKey, aspectEntity);
 				}
 			}
 		}

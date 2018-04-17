@@ -29,7 +29,7 @@ public class CglibProxy implements MethodInterceptor {
 	 * key拦截方法，value拦截器的方法
 	 */
 	public static final Map<Method, Set<Method>> interceptMap = new ConcurrentHashMap<Method, Set<Method>>();
-	
+
 	public static final Map<Method, AspectPoint> methodInterceptMap = new ConcurrentHashMap<Method, AspectPoint>();
 
 	public Object getProxy(Class<?> clazz) throws InstantiationException, IllegalAccessException {
@@ -52,82 +52,84 @@ public class CglibProxy implements MethodInterceptor {
 	}
 
 	private boolean isNeedProxyMethods(Class<?> clazz) {
-		if(StringUtil.isNullOrEmpty(clazz.getDeclaredMethods())){
+		if (StringUtil.isNullOrEmpty(clazz.getDeclaredMethods())) {
 			return false;
 		}
-		boolean needProxy=false;
-		for(Method method:clazz.getDeclaredMethods()){
-			for(AspectEntity aspectEntity:FrameworkConstant.aspectMap.values()){
-				if(!needProxy(clazz, aspectEntity, method)){
-					continue;
+		boolean needProxy = false;
+		for (Method method : clazz.getDeclaredMethods()) {
+			for (List<AspectEntity> aspectEntitys : FrameworkConstant.aspectMap.values()) {
+				for (AspectEntity aspectEntity : aspectEntitys) {
+					if (!needProxy(clazz, aspectEntity, method)) {
+						continue;
+					}
+					if (interceptMap.containsKey(method)) {
+						interceptMap.get(method).add(aspectEntity.getAspectInvokeMethod());
+						needProxy = true;
+						continue;
+					}
+					Set<Method> aspectMethods = new HashSet<Method>();
+					aspectMethods.add(aspectEntity.getAspectInvokeMethod());
+					interceptMap.put(method, aspectMethods);
 				}
-				if (interceptMap.containsKey(method)) {
-					interceptMap.get(method).add(aspectEntity.getAspectInvokeMethod());
-					needProxy= true;
-					continue;
-				}
-				Set<Method> aspectMethods = new HashSet<Method>();
-				aspectMethods.add(aspectEntity.getAspectInvokeMethod());
-				interceptMap.put(method, aspectMethods);
-				needProxy= true;
+				needProxy = true;
 			}
 		}
 		return needProxy;
 	}
 
-	private boolean needProxy(Class<?> clazz,AspectEntity aspectEntity,Method method){
+	private boolean needProxy(Class<?> clazz, AspectEntity aspectEntity, Method method) {
 		/**
 		 * 判断类名是否满足条件
 		 */
-		if(!StringUtil.isNullOrEmpty(aspectEntity.getClassMappath())){
-			if(!AntUtil.isAntMatch(clazz.getName(), aspectEntity.getClassMappath())){
+		if (!StringUtil.isNullOrEmpty(aspectEntity.getClassMappath())) {
+			if (!AntUtil.isAntMatch(clazz.getName(), aspectEntity.getClassMappath())) {
 				return false;
 			}
 		}
 		/**
 		 * 判断方法名是否满足条件
 		 */
-		if(!StringUtil.isNullOrEmpty(aspectEntity.getMethodMappath())){
-			if(!AntUtil.isAntMatch(AspectUtil.getMethodUnionKey(method), aspectEntity.getMethodMappath())){
+		if (!StringUtil.isNullOrEmpty(aspectEntity.getMethodMappath())) {
+			if (!AntUtil.isAntMatch(AspectUtil.getMethodUnionKey(method), aspectEntity.getMethodMappath())) {
 				return false;
 			}
 		}
 		/**
 		 * 判断注解是否满足条件
 		 */
-		if(!StringUtil.isNullOrEmpty(aspectEntity.getAnnotationClass())){
-			Annotation[] annotations=method.getAnnotations();
-			if(StringUtil.isNullOrEmpty(annotations)){
+		if (!StringUtil.isNullOrEmpty(aspectEntity.getAnnotationClass())) {
+			Annotation[] annotations = method.getAnnotations();
+			if (StringUtil.isNullOrEmpty(annotations)) {
 				return false;
 			}
-			List<Class<?>> annotationClazzs=new ArrayList<Class<?>>();
-			for(Annotation annotation:annotations){
+			List<Class<?>> annotationClazzs = new ArrayList<Class<?>>();
+			for (Annotation annotation : annotations) {
 				annotationClazzs.add(annotation.annotationType());
 			}
-			for(Class<?> aspectAnnotationClazz:aspectEntity.getAnnotationClass()){
-				if(!annotationClazzs.contains(aspectAnnotationClazz)){
+			for (Class<?> aspectAnnotationClazz : aspectEntity.getAnnotationClass()) {
+				if (!annotationClazzs.contains(aspectAnnotationClazz)) {
 					return false;
 				}
 			}
 		}
 		return true;
 	}
-	
+
 	// 拦截父类所有方法的调用
 	public Object intercept(Object bean, Method method, Object[] params, MethodProxy proxy) throws Throwable {
 		if (!interceptMap.containsKey(method)) {
 			return proxy.invokeSuper(bean, params);
 		}
-		AspectPoint point =getMethodPoint(bean, method, proxy);
-		if(point==null){
+		AspectPoint point = getMethodPoint(bean, method, proxy);
+		if (point == null) {
 			return proxy.invokeSuper(bean, params);
 		}
 		point.setParams(params);
 		return point.getAspectMethod().invoke(point.getAspectBean(), point);
 	}
 
-	private AspectPoint getMethodPoint(Object bean, Method method,  MethodProxy proxy){
-		if(methodInterceptMap.containsKey(method)){
+	private AspectPoint getMethodPoint(Object bean, Method method, MethodProxy proxy) {
+		if (methodInterceptMap.containsKey(method)) {
 			return methodInterceptMap.get(method);
 		}
 		List<Method> invokeMethods = new ArrayList<Method>(interceptMap.get(method));
@@ -149,8 +151,7 @@ public class CglibProxy implements MethodInterceptor {
 		methodInterceptMap.put(method, point);
 		return point;
 	}
-	
-	
+
 	private AspectPoint parseAspect(AspectPoint basePoint, List<Method> invokeMethods) {
 		if (StringUtil.isNullOrEmpty(invokeMethods)) {
 			return null;
@@ -159,7 +160,7 @@ public class CglibProxy implements MethodInterceptor {
 		invokeMethods.remove(0);
 		Class<?> clazz = PropertUtil.getClass(aspectMethod);
 		Object aspectBean = BeanContainer.getBean(clazz);
-		
+
 		AspectPoint point = new AspectPoint();
 		point.setAspectBean(aspectBean);
 		point.setAspectMethod(aspectMethod);

@@ -1,5 +1,7 @@
 package org.coody.framework.constant;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -17,7 +19,7 @@ public class FrameworkConstant {
 	/**
 	 * 切面存储。key为切面ID，Value为切面实例
 	 */
-	public static final Map<String, AspectEntity> aspectMap = new ConcurrentHashMap<String, AspectEntity>();
+	public static final Map<String, List<AspectEntity>> aspectMap = new ConcurrentHashMap<String, List<AspectEntity>>();
 	
 	/**
 	 * 表主键列表
@@ -30,5 +32,13 @@ public class FrameworkConstant {
 	public static final String AUTO_CACHE_KEY="AUTO_CACHE_KEY";
 	
 	
-	
+	public static void writeToAspectMap(String methodKey,AspectEntity aspectEntity){
+		if(FrameworkConstant.aspectMap.containsKey(methodKey)){
+			FrameworkConstant.aspectMap.get(methodKey).add(aspectEntity);
+			return;
+		}
+		List<AspectEntity> aspectEntitys=new ArrayList<AspectEntity>();
+		aspectEntitys.add(aspectEntity);
+		FrameworkConstant.aspectMap.put(methodKey, aspectEntitys);
+	}
 }
