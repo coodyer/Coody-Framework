@@ -30,35 +30,19 @@ public class IcopRequestWrapper implements ServletRequest,HttpServletRequest {
 		return HttpContainer.getRequest().getHeader(name);
 	}
 
-	/**
-	 * 覆盖getHeaderNames方法，避免穷举head参数名引发的xss
-	 */
 
 	public Enumeration<String> getHeaderNames() {
 		return HttpContainer.getRequest().getHeaderNames();
 	}
 
-	/**
-	 * 覆盖getParameterNames方法，避免穷举参数名引发的xss
-	 */
-	
 	public Enumeration<String> getParameterNames() {
 		return HttpContainer.getRequest().getParameterNames();
 	}
 
-	/**
-	 * 覆盖getParameterMap方法，避免穷举参数名或值引发的xss
-	 */
 	
 	public Map<String, String[]> getParameterMap() {
 		return HttpContainer.getRequest().getParameterMap();
 	}
-
-	/**
-	 * 获取最原始的request的静态方法
-	 * 
-	 * @return
-	 */
 	public static HttpServletRequest getOrgRequest() {
 		return HttpContainer.getRequest();
 	}
