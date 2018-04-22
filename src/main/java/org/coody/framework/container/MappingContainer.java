@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.coody.framework.adapt.iface.IcopParamsAdapt;
 import org.coody.framework.entity.BaseModel;
 import org.coody.framework.entity.BeanEntity;
 
@@ -41,6 +42,18 @@ public class MappingContainer {
 
 		private List<BeanEntity> paramTypes;
 		
+		private IcopParamsAdapt paramsAdapt;
+		
+		
+		
+
+		public IcopParamsAdapt getParamsAdapt() {
+			return paramsAdapt;
+		}
+
+		public void setParamsAdapt(IcopParamsAdapt paramsAdapt) {
+			this.paramsAdapt = paramsAdapt;
+		}
 
 		public String getPath() {
 			return path;

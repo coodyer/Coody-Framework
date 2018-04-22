@@ -8,10 +8,13 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.coody.framework.adapt.GeneralAdapt;
+import org.coody.framework.adapt.iface.IcopParamsAdapt;
 import org.coody.framework.annotation.Around;
 import org.coody.framework.annotation.CronTask;
 import org.coody.framework.annotation.InitBean;
 import org.coody.framework.annotation.OutBean;
+import org.coody.framework.annotation.ParamsAdapt;
 import org.coody.framework.annotation.PathBinding;
 import org.coody.framework.aspect.entity.AspectEntity;
 import org.coody.framework.constant.FrameworkConstant;
@@ -229,6 +232,7 @@ public class FrameworkRute {
 				continue;
 			}
 			Method[] methods = clazz.getDeclaredMethods();
+			ParamsAdapt clazzParamsAdapt=clazz.getAnnotation(ParamsAdapt.class);
 			for (String clazzBinding : classBindings.value()) {
 				for (Method method : methods) {
 					PathBinding methodBinding = method.getAnnotation(PathBinding.class);
@@ -241,9 +245,19 @@ public class FrameworkRute {
 							logger.error("该地址已注册:" + path);
 							continue;
 						}
+						Class<?> adaptClass=GeneralAdapt.class;
+						ParamsAdapt methodParamsAdapt=method.getAnnotation(ParamsAdapt.class);
+						if(methodParamsAdapt==null){
+							if(clazzParamsAdapt!=null){
+								adaptClass=clazzParamsAdapt.value();
+							}
+						}else{
+							adaptClass=methodParamsAdapt.value();
+						}
 						MappingContainer.MvcMapping mapping = new MappingContainer.MvcMapping();
 						mapping.setBean(bean);
 						mapping.setPath(path);
+						mapping.setParamsAdapt(((IcopParamsAdapt)adaptClass.newInstance()));
 						mapping.setMethod(method);
 						mapping.setParamTypes(PropertUtil.getMethodParas(method));
 						MappingContainer.writeMapping(mapping);
