@@ -45,7 +45,7 @@ public class FrameworkRute {
 		if (StringUtil.isNullOrEmpty(clazzs)) {
 			return;
 		}
-		for (Class<?> clazz : BuiltContainer.initAspect) {
+		for (Class<?> clazz : BuiltContainer.initBean) {
 			clazzs.add(clazz);
 		}
 		initAspect(clazzs);

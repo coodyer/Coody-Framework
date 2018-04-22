@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 import org.coody.framework.adapt.ParamsAdapt;
 import org.coody.framework.annotation.JsonSerialize;
 import org.coody.framework.container.MappingContainer;
-import org.coody.framework.container.RequestContainer;
+import org.coody.framework.container.HttpContainer;
 import org.coody.framework.util.StringUtil;
 
 import com.alibaba.fastjson.JSON;
@@ -35,8 +35,8 @@ public class DispatServlet extends HttpServlet{
 		}
 		MappingContainer.MvcMapping mapping=MappingContainer.getMapping(path);
 		//装载Request
-		RequestContainer.setRequest(request);
-		RequestContainer.setResponse(response);
+		HttpContainer.setRequest(request);
+		HttpContainer.setResponse(response);
 		try {
 			Object[] params=ParamsAdapt.adaptParams(mapping.getMethod().getParameterTypes(), null, request, response, request.getSession());
 			Object	result=mapping.getMethod().invoke(mapping.getBean(), params);

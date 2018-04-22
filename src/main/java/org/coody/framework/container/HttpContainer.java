@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.coody.framework.constant.GeneralFinal;
 
-public class RequestContainer {
+public class HttpContainer {
 	
 
 	public static void setRequest(HttpServletRequest request){
