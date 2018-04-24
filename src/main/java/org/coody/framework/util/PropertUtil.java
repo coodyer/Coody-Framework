@@ -25,13 +25,13 @@ import org.coody.framework.entity.Record;
 @SuppressWarnings("unchecked")
 public class PropertUtil {
 
-	private static Map<Class<?>, List<Field>> fieldMap = new ConcurrentHashMap<Class<?>, List<Field>>();
-	private static Map<Class<?>, List<Method>> methodMap = new ConcurrentHashMap<Class<?>, List<Method>>();
-	private static Map<Method, List<BeanEntity>> paramMap = new ConcurrentHashMap<Method, List<BeanEntity>>();
+	private static final Map<Class<?>, List<Field>> FIELD_MAP = new ConcurrentHashMap<Class<?>, List<Field>>();
+	private static final Map<Class<?>, List<Method>> METHOD_MAP = new ConcurrentHashMap<Class<?>, List<Method>>();
+	private static final Map<Method, List<BeanEntity>> PARAM_MAP = new ConcurrentHashMap<Method, List<BeanEntity>>();
 
 	public static void reload() {
-		fieldMap.clear();
-		methodMap.clear();
+		FIELD_MAP.clear();
+		METHOD_MAP.clear();
 	}
 
 	/**
@@ -719,7 +719,7 @@ public class PropertUtil {
 	}
 
 	public static List<Method> loadMethods(Class<?> clazz) {
-		List<Method> methods = methodMap.get(clazz);
+		List<Method> methods = METHOD_MAP.get(clazz);
 		if (!StringUtil.isNullOrEmpty(methods)) {
 			return methods;
 		}
@@ -727,7 +727,7 @@ public class PropertUtil {
 		if (!StringUtil.isNullOrEmpty(clazz.getSuperclass())) {
 			methods.addAll(loadMethods(clazz.getSuperclass()));
 		}
-		methodMap.put(clazz, methods);
+		METHOD_MAP.put(clazz, methods);
 		return methods;
 	}
 
@@ -892,7 +892,7 @@ public class PropertUtil {
 	 * @return
 	 */
 	public static List<Field> loadFields(Class<?> clazz) {
-		List<Field> fields = fieldMap.get(clazz);
+		List<Field> fields = FIELD_MAP.get(clazz);
 		if (!StringUtil.isNullOrEmpty(fields)) {
 			return fields;
 		}
@@ -905,7 +905,7 @@ public class PropertUtil {
 		if (superClass != null) {
 			fields.addAll(loadFields(superClass));
 		}
-		fieldMap.put(clazz, fields);
+		FIELD_MAP.put(clazz, fields);
 		return fields;
 	}
 
@@ -1049,8 +1049,8 @@ public class PropertUtil {
 	 */
 	public static List<BeanEntity> getMethodParas(Method method) {
 		try {
-			if (paramMap.containsKey(method)) {
-				return paramMap.get(method);
+			if (PARAM_MAP.containsKey(method)) {
+				return PARAM_MAP.get(method);
 			}
 			Class<?>[] types = method.getParameterTypes();
 			if (StringUtil.isNullOrEmpty(types)) {
@@ -1069,7 +1069,7 @@ public class PropertUtil {
 				entity.setFieldType(types[i]);
 				entitys.add(entity);
 			}
-			paramMap.put(method, entitys);
+			PARAM_MAP.put(method, entitys);
 			return entitys;
 		} catch (Exception e) {
 			e.printStackTrace();
