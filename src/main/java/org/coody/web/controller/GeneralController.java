@@ -1,14 +1,18 @@
 package org.coody.web.controller;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.coody.framework.adapt.FormToBeanNomalAdapt;
 import org.coody.framework.annotation.JsonSerialize;
 import org.coody.framework.annotation.OutBean;
+import org.coody.framework.annotation.ParamsAdapt;
 import org.coody.framework.annotation.PathBinding;
+import org.coody.framework.util.PropertUtil;
 import org.coody.web.comm.entity.MsgEntity;
 import org.coody.web.domain.UserInfo;
 import org.coody.web.service.UserService;
@@ -31,7 +35,10 @@ public class GeneralController {
 	
 	@PathBinding("/index.do")
 	@JsonSerialize
-	public Object index(){
+	@ParamsAdapt(FormToBeanNomalAdapt.class)
+	public Object index(String userName,String password){
+		System.out.println(userName);
+		System.out.println(password);
 		List<UserInfo> users=userService.getUsers();
 		userService.saveOrUpdateUser(users.get(0));
 		return users;
@@ -54,4 +61,11 @@ public class GeneralController {
 		System.out.println(JSON.toJSONString(request.getParameterMap()));
 		return new MsgEntity(0,"操作成功","这是test的内容");
 	}
+	public static void main(String[] args) {
+		Method[] methods=GeneralController.class.getDeclaredMethods();
+		for(Method method:methods){
+			System.out.println(JSON.toJSONString(PropertUtil.getMethodParaNames(method)));
+		}
+	}
+	
 }

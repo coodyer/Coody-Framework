@@ -1,91 +1,31 @@
 package org.coody.framework.container;
 
-import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.coody.framework.adapt.iface.IcopParamsAdapt;
-import org.coody.framework.entity.BaseModel;
-import org.coody.framework.entity.BeanEntity;
+import org.coody.framework.entity.MvcMapping;
 
 @SuppressWarnings("unchecked")
 public class MappingContainer {
 
-	private static Map<String, Object> mvcMap = new ConcurrentHashMap<String, Object>();
+	private static Map<String, Object> MVC_MAP = new ConcurrentHashMap<String, Object>();
 
 	public static <T> T getMapping(String path) {
-		return (T) mvcMap.get(path);
+		return (T) MVC_MAP.get(path);
 	}
 
 	public static void writeMapping(MvcMapping mvcMapping) {
-		mvcMap.put(mvcMapping.getPath(), mvcMapping);
+		MVC_MAP.put(mvcMapping.getPath(), mvcMapping);
 	}
 
 	public static boolean containsPath(String path) {
-		return mvcMap.containsKey(path);
+		return MVC_MAP.containsKey(path);
 	}
 
 	public static Collection<?> getBeans() {
-		return mvcMap.values();
+		return MVC_MAP.values();
 	}
 
-	@SuppressWarnings("serial")
-	public static class MvcMapping extends BaseModel {
-
-		private String path;
-
-		private Method method;
-
-		private Object bean;
-
-		private List<BeanEntity> paramTypes;
-		
-		private IcopParamsAdapt paramsAdapt;
-		
-		
-		
-
-		public IcopParamsAdapt getParamsAdapt() {
-			return paramsAdapt;
-		}
-
-		public void setParamsAdapt(IcopParamsAdapt paramsAdapt) {
-			this.paramsAdapt = paramsAdapt;
-		}
-
-		public String getPath() {
-			return path;
-		}
-
-		public void setPath(String path) {
-			this.path = path;
-		}
-
-		public Method getMethod() {
-			return method;
-		}
-
-		public void setMethod(Method method) {
-			this.method = method;
-		}
-
-		public Object getBean() {
-			return bean;
-		}
-
-		public void setBean(Object bean) {
-			this.bean = bean;
-		}
-
-		public List<BeanEntity> getParamTypes() {
-			return paramTypes;
-		}
-
-		public void setParamTypes(List<BeanEntity> paramTypes) {
-			this.paramTypes = paramTypes;
-		}
-
-	}
+	
 }

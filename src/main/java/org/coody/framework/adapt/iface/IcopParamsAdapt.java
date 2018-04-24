@@ -4,6 +4,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.coody.framework.entity.MvcMapping;
+
 /**
  * 参数适配器
  * @author admin
@@ -20,5 +22,5 @@ public interface IcopParamsAdapt {
 	 * @param session
 	 * @return
 	 */
-	public Object[] doAdapt(Class<?> []paramTypes,HttpServletRequest request,HttpServletResponse response,HttpSession session);
+	public Object[] doAdapt(MvcMapping mapping,HttpServletRequest request,HttpServletResponse response,HttpSession session);
 }

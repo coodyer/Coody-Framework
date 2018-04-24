@@ -5,16 +5,17 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.coody.framework.adapt.iface.IcopParamsAdapt;
+import org.coody.framework.entity.MvcMapping;
 
 /**
  * form表单装载到多个bean
  * @author admin
  *
  */
-public class FormToMultipleBeanAdapt implements IcopParamsAdapt{
+public class JsonToBeanNomalAdapt implements IcopParamsAdapt{
 
 	@Override
-	public Object[] doAdapt(Class<?>[] paramTypes, HttpServletRequest request, HttpServletResponse response,
+	public Object[] doAdapt(MvcMapping mapping, HttpServletRequest request, HttpServletResponse response,
 			HttpSession session) {
 		// TODO Auto-generated method stub
 		return null;

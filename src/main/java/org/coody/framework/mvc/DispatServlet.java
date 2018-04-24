@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.coody.framework.annotation.JsonSerialize;
 import org.coody.framework.container.HttpContainer;
 import org.coody.framework.container.MappingContainer;
+import org.coody.framework.entity.MvcMapping;
 import org.coody.framework.util.StringUtil;
 
 import com.alibaba.fastjson.JSON;
@@ -32,12 +33,12 @@ public class DispatServlet extends HttpServlet{
 			response.setStatus(404);
 			return;
 		}
-		MappingContainer.MvcMapping mapping=MappingContainer.getMapping(path);
+		MvcMapping mapping=MappingContainer.getMapping(path);
 		//装载Request
 		HttpContainer.setRequest(request);
 		HttpContainer.setResponse(response);
 		try {
-			Object[] params=mapping.getParamsAdapt().doAdapt(mapping.getMethod().getParameterTypes(), request, response, request.getSession());
+			Object[] params=mapping.getParamsAdapt().doAdapt(mapping, request, response, request.getSession());
 			Object	result=mapping.getMethod().invoke(mapping.getBean(), params);
 			if(result==null){
 				return;

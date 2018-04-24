@@ -21,6 +21,7 @@ import org.coody.framework.constant.FrameworkConstant;
 import org.coody.framework.container.BeanContainer;
 import org.coody.framework.container.BuiltContainer;
 import org.coody.framework.container.MappingContainer;
+import org.coody.framework.entity.MvcMapping;
 import org.coody.framework.exception.BeanNotFoundException;
 import org.coody.framework.exception.ErrorCronException;
 import org.coody.framework.iface.InitFace;
@@ -254,7 +255,7 @@ public class FrameworkRute {
 						}else{
 							adaptClass=methodParamsAdapt.value();
 						}
-						MappingContainer.MvcMapping mapping = new MappingContainer.MvcMapping();
+						MvcMapping mapping = new MvcMapping();
 						mapping.setBean(bean);
 						mapping.setPath(path);
 						mapping.setParamsAdapt(((IcopParamsAdapt)adaptClass.newInstance()));
