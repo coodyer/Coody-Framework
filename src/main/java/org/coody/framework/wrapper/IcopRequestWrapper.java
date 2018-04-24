@@ -119,9 +119,8 @@ public class IcopRequestWrapper implements ServletRequest,HttpServletRequest {
 	}
 
 	@Override
-	@Deprecated
 	public String getRealPath(String arg0) {
-		return HttpContainer.getRequest().getRealPath(arg0);
+		return HttpContainer.getRequest().getSession().getServletContext().getRealPath(arg0);
 	}
 
 	@Override
@@ -273,7 +272,7 @@ public class IcopRequestWrapper implements ServletRequest,HttpServletRequest {
 
 	@Override
 	public boolean isRequestedSessionIdFromUrl() {
-		return HttpContainer.getRequest().isRequestedSessionIdFromUrl();
+		return HttpContainer.getRequest().isRequestedSessionIdFromURL();
 	}
 
 	@Override

@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.coody.framework.annotation.InitBean;
 import org.coody.framework.container.HttpContainer;
 
-@SuppressWarnings("deprecation")
 @InitBean
 public class IcopResponseWrapper implements ServletResponse, HttpServletResponse {
 
