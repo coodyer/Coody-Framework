@@ -18,7 +18,7 @@ import javax.servlet.http.HttpSession;
 import org.coody.framework.annotation.InitBean;
 import org.coody.framework.container.HttpContainer;
 
-@SuppressWarnings({ "unchecked", "rawtypes","deprecation" })
+@SuppressWarnings({ "unchecked", "rawtypes" })
 @InitBean
 public class IcopRequestWrapper implements ServletRequest,HttpServletRequest {
 
