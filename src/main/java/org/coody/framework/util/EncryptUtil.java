@@ -3,19 +3,14 @@ package org.coody.framework.util;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 
-
-
 public final class EncryptUtil {
-	
-	
 
 	public final static String CHARSET = "UTF-8";
 
 	private EncryptUtil() {
 		throw new Error("Utility classes should not instantiated!");
 	}
-	
-	
+
 	public static String md5Code(String pwd) {
 		try {
 			MessageDigest md = MessageDigest.getInstance("MD5");
@@ -27,10 +22,12 @@ public final class EncryptUtil {
 			StringBuffer buf = new StringBuffer("");
 			for (int offset = 0; offset < b.length; offset++) {
 				i = b[offset];
-				if (i < 0)
+				if (i < 0) {
 					i += 256;
-				if (i < 16)
+				}
+				if (i < 16) {
 					buf.append("0");
+				}
 				buf.append(Integer.toHexString(i));
 			}
 			return buf.toString();
@@ -88,8 +85,7 @@ public final class EncryptUtil {
 			str = md5Code(str);
 			str = textCode(str, str);
 			str = str.substring(1, str.length() - 1);
-			str = URLEncoder.encode(str, "UTF-8").replace("%", "")
-					.toLowerCase();
+			str = URLEncoder.encode(str, "UTF-8").replace("%", "").toLowerCase();
 			str = md5Code(str);
 			return str;
 		} catch (Exception e) {
@@ -97,6 +93,5 @@ public final class EncryptUtil {
 		}
 
 	}
-	
 
 }

@@ -14,15 +14,16 @@ public class IcopDaoImpl implements IcopDao{
 	@OutBean
 	JdbcTemplate jdbcTemplate;
 	
+	@Override
 	public IcopTest getIcop(Integer id){
 		return jdbcTemplate.findBeanFirst(IcopTest.class,"id",id);
 	}
 	
-	
+	@Override
 	public List<IcopTest> getIcops(){
 		return jdbcTemplate.findBean(IcopTest.class);
 	}
-	
+	@Override
 	public Long delIcop(Integer id){
 		
 		String sql="delete from icop_test where id=? limit 1";

@@ -152,6 +152,7 @@ import org.coody.framework.util.DateUtils;
 public class CronExpression {
 
 	enum CronFieldType {
+		//SECOND
 		SECOND(0, 59, null), MINUTE(0, 59, null), HOUR(0, 23, null), DAY_OF_MONTH(1, 31, null), MONTH(1, 12,
 				Arrays.asList("JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV",
 						"DEC")), DAY_OF_WEEK(1, 7, Arrays.asList("MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"));
@@ -287,7 +288,8 @@ public class CronExpression {
 		private String modifier, incrementModifier;
 	}
 
-	abstract static class BasicField {
+	private static class BasicField {
+		
 		private static final Pattern CRON_FIELD_REGEXP = Pattern.compile(
 				"(?:                                             # start of group 1\n"
 						+ "   (?:(?<all>\\*)|(?<ignore>\\?)|(?<last>L))  # global flag (L, ?, *)\n"

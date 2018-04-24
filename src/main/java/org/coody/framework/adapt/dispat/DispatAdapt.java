@@ -8,16 +8,16 @@ import org.coody.framework.adapt.iface.IcopParamsAdapt;
 
 public class DispatAdapt {
 
-	private static final Map<Class<?>, IcopParamsAdapt> adaptMap=new ConcurrentHashMap<Class<?>, IcopParamsAdapt>();
+	private static final Map<Class<?>, IcopParamsAdapt> ADAPT_MAP=new ConcurrentHashMap<Class<?>, IcopParamsAdapt>();
 	
 	
 	
 	public static IcopParamsAdapt getAdapt(Class<?> clazz) throws InstantiationException, IllegalAccessException{
-		if(adaptMap.containsKey(clazz)){
-			return adaptMap.get(clazz);
+		if(ADAPT_MAP.containsKey(clazz)){
+			return ADAPT_MAP.get(clazz);
 		}
 		IcopParamsAdapt adapt=(IcopParamsAdapt) clazz.newInstance();
-		adaptMap.put(clazz, adapt);
+		ADAPT_MAP.put(clazz, adapt);
 		return adapt;
 	}
 }

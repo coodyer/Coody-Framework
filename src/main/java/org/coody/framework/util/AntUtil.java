@@ -182,11 +182,11 @@ public class AntUtil{
 			if (!fullMatch) {
 				return true;
 			}
-			if (pattIdxStart == pattIdxEnd && pattDirs[pattIdxStart].equals("*") && path.endsWith(this.pathSeparator)) {
+			if (pattIdxStart == pattIdxEnd && "*".equals(pattDirs[pattIdxStart]) && path.endsWith(this.pathSeparator)) {
 				return true;
 			}
 			for (int i = pattIdxStart; i <= pattIdxEnd; i++) {
-				if (!pattDirs[i].equals("**")) {
+				if (!"**".equals(pattDirs[i])) {
 					return false;
 				}
 			}
@@ -698,7 +698,7 @@ public class AntUtil{
 		 * @return a negative integer, zero, or a positive integer as pattern1 is
 		 * more specific, equally specific, or less specific than pattern2.
 		 */
-		
+		@Override
 		public int compare(String pattern1, String pattern2) {
 			PatternInfo info1 = new PatternInfo(pattern1);
 			PatternInfo info2 = new PatternInfo(pattern2);

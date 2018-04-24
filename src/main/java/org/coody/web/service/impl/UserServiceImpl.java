@@ -23,6 +23,7 @@ public class UserServiceImpl implements UserService{
 	 * 保存或更新用户信息
 	 * @param user
 	 */
+	@Override
 	@CacheWipe(key=CacheFinal.USER_INFO,fields="user.userId")
 	@CacheWipe(key=CacheFinal.USER_LIST)
 	public void saveOrUpdateUser(UserInfo user){
@@ -32,6 +33,7 @@ public class UserServiceImpl implements UserService{
 	/**
 	 * 查询用户列表
 	 */
+	@Override
 	@CacheWrite(key=CacheFinal.USER_LIST,time=3600)
 	@LogHead("获取用户信息")
 	public List<UserInfo> getUsers(){
@@ -42,6 +44,7 @@ public class UserServiceImpl implements UserService{
 	 * 删除用户
 	 * @param userId
 	 */
+	@Override
 	@CacheWipe(key=CacheFinal.USER_INFO,fields="user.userId")
 	@CacheWipe(key=CacheFinal.USER_LIST)
 	public void deleteUser(String userId){
@@ -51,6 +54,7 @@ public class UserServiceImpl implements UserService{
 	/**
 	 * 查询用户信息
 	 */
+	@Override
 	@CacheWrite(key=CacheFinal.USER_INFO,fields="userId")
 	public UserInfo getUserInfo(String userId){
 		return userDao.getUserInfo(userId);

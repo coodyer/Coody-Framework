@@ -70,7 +70,7 @@ public class JdbcHandle {
 		if (StringUtil.isNullOrEmpty(tableName)) {
 			return null;
 		}
-		String key = FrameworkConstant.table_primary_keys + tableName;
+		String key = FrameworkConstant.TABLE_PRIMARY_KEYS + tableName;
 		List<String> primaryKeys = LocalCache.getCache(key);
 		if (!StringUtil.isNullOrEmpty(primaryKeys)) {
 			return primaryKeys;
@@ -212,7 +212,7 @@ public class JdbcHandle {
 				}
 			}
 		}
-		return 0l;
+		return 0L;
 	}
 
 	/**
@@ -805,14 +805,14 @@ public class JdbcHandle {
 	public Long update(Object obj, String... priKeyNames) {
 		try {
 			if (obj == null) {
-				return -1l;
+				return -1L;
 			}
 			// 获取表名
 			String tableName = JdbcUtil.getTableName(obj);
 			// 获取属性列表
 			List<BeanEntity> prpres = PropertUtil.getBeanFields(obj);
 			if (prpres == null || prpres.isEmpty()) {
-				return -1l;
+				return -1L;
 			}
 			List<String> priKeys = Arrays.<String>asList(priKeyNames);
 			// 拼接SQL语句
@@ -861,7 +861,7 @@ public class JdbcHandle {
 		} catch (Exception e) {
 
 		}
-		return -1l;
+		return -1L;
 	}
 
 	/**
@@ -884,14 +884,14 @@ public class JdbcHandle {
 	public Long insert(Object obj) {
 		try {
 			if (obj == null) {
-				return -1l;
+				return -1L;
 			}
 			// 获取表名
 			String tableName = JdbcUtil.getTableName(obj);
 			// 获取属性列表
 			List<BeanEntity> prpres = PropertUtil.getBeanFields(obj);
 			if (prpres == null || prpres.isEmpty()) {
-				return -1l;
+				return -1L;
 			}
 			// 拼接SQL语句
 			StringBuilder sql = new StringBuilder(MessageFormat.format("insert into {0} set ", tableName));
@@ -923,7 +923,7 @@ public class JdbcHandle {
 		} catch (Exception e) {
 
 		}
-		return -1l;
+		return -1L;
 	}
 
 	/**
@@ -948,7 +948,7 @@ public class JdbcHandle {
 	 */
 	public Long saveOrUpdateAuto(Object obj, String... addFields) {
 		if (obj == null) {
-			return -1l;
+			return -1L;
 		}
 		// 获取表名
 		String tableName = JdbcUtil.getTableName(obj);
@@ -957,7 +957,7 @@ public class JdbcHandle {
 		List<Object> paras = new ArrayList<Object>();
 		String diySql = parseFieldSql(obj, paras);
 		if (StringUtil.isNullOrEmpty(diySql)) {
-			return -1l;
+			return -1L;
 		}
 		sql.append(diySql);
 		sql.append(" ON DUPLICATE KEY UPDATE ");

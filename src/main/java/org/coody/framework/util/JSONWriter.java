@@ -84,7 +84,7 @@ public class JSONWriter {
 		if (object instanceof BaseModel) {
 			return bean(object);
 		}
-		System.err.println(object.getClass().getName()+" Is Not BaseModel");
+		System.err.println(object.getClass().getName() + " Is Not BaseModel");
 		return "";
 	}
 
@@ -102,8 +102,8 @@ public class JSONWriter {
 				for (int i = 0; i < list.size(); i++) {
 					try {
 						entity = list.get(i);
-	 					if (StringUtil.isNullOrEmpty(entity)
-								|| StringUtil.isNullOrEmpty(entity.getFieldName())|| StringUtil.isNullOrEmpty(entity.getFieldValue())) {
+						if (StringUtil.isNullOrEmpty(entity) || StringUtil.isNullOrEmpty(entity.getFieldName())
+								|| StringUtil.isNullOrEmpty(entity.getFieldValue())) {
 							continue;
 						}
 						tmp = add(entity.getFieldName(), entity.getFieldValue());
@@ -126,7 +126,7 @@ public class JSONWriter {
 		} catch (Exception e) {
 			return "";
 		}
-		
+
 	}
 
 	private static StringBuilder removeLastStr(StringBuilder buf, char value) {
@@ -256,8 +256,7 @@ public class JSONWriter {
 	private static String date(Object obj) {
 		StringBuilder buf = new StringBuilder();
 		try {
-			String value = add(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-					.format((Date) obj));
+			String value = add(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format((Date) obj));
 			if (StringUtil.isNullOrEmpty(value)) {
 				return "";
 			}
@@ -274,8 +273,7 @@ public class JSONWriter {
 	private static String sqldate(Object obj) {
 		StringBuilder buf = new StringBuilder();
 		try {
-			String value = add(new SimpleDateFormat("yyyy-MM-dd")
-					.format((Date) obj));
+			String value = add(new SimpleDateFormat("yyyy-MM-dd").format((Date) obj));
 			if (StringUtil.isNullOrEmpty(value)) {
 				return "";
 			}
@@ -292,8 +290,7 @@ public class JSONWriter {
 	private static String sqltime(Object obj) {
 		StringBuilder buf = new StringBuilder();
 		try {
-			String value = add(new SimpleDateFormat("HH:mm:ss.SSS")
-					.format((Date) obj));
+			String value = add(new SimpleDateFormat("HH:mm:ss.SSS").format((Date) obj));
 			if (StringUtil.isNullOrEmpty(value)) {
 				return "";
 			}
@@ -312,8 +309,7 @@ public class JSONWriter {
 			buf.append(add('"'));
 			CharacterIterator it = new StringCharacterIterator(obj.toString());
 
-			for (char c = it.first(); c != CharacterIterator.DONE; c = it
-					.next()) {
+			for (char c = it.first(); c != CharacterIterator.DONE; c = it.next()) {
 				try {
 					if (c == '"') {
 						buf.append(add("\\\""));
@@ -372,64 +368,68 @@ public class JSONWriter {
 		}
 		return "";
 	}
-   
+
 	/**
 	 * 格式化
+	 * 
 	 * @param jsonStr
 	 * @return
-	 * @author   lizhgb
-	 * @Date   2015-10-14 下午1:17:35
+	 * @author lizhgb
+	 * @Date 2015-10-14 下午1:17:35
 	 */
-    public static String formatJson(String jsonStr) {
-        if (null == jsonStr || "".equals(jsonStr)) return "";
-        StringBuilder sb = new StringBuilder();
-        char last = '\0';
-        char current = '\0';
-        int indent = 0;
-        for (int i = 0; i < jsonStr.length(); i++) {
-            last = current;
-            current = jsonStr.charAt(i);
-            switch (current) {
-                case '{':
-                case '[':
-                    sb.append(current);
-                    sb.append('\n');
-                    indent++;
-                    addIndentBlank(sb, indent);
-                    break;
-                case '}':
-                case ']':
-                    sb.append('\n');
-                    indent--;
-                    addIndentBlank(sb, indent);
-                    sb.append(current);
-                    break;
-                case ',':
-                    sb.append(current);
-                    if (last != '\\') {
-                        sb.append('\n');
-                        addIndentBlank(sb, indent);
-                    }
-                    break;
-                default:
-                    sb.append(current);
-            }
-        }
+	public static String formatJson(String jsonStr) {
+		if (null == jsonStr || "".equals(jsonStr)) {
+			return "";
+		}
+		StringBuilder sb = new StringBuilder();
+		char last = '\0';
+		char current = '\0';
+		int indent = 0;
+		for (int i = 0; i < jsonStr.length(); i++) {
+			last = current;
+			current = jsonStr.charAt(i);
+			switch (current) {
+			case '{':
+			case '[':
+				sb.append(current);
+				sb.append('\n');
+				indent++;
+				addIndentBlank(sb, indent);
+				break;
+			case '}':
+			case ']':
+				sb.append('\n');
+				indent--;
+				addIndentBlank(sb, indent);
+				sb.append(current);
+				break;
+			case ',':
+				sb.append(current);
+				if (last != '\\') {
+					sb.append('\n');
+					addIndentBlank(sb, indent);
+				}
+				break;
+			default:
+				sb.append(current);
+			}
+		}
 
-        return sb.toString();
-    }
+		return sb.toString();
+	}
 
-    /**
-     * 添加space
-     * @param sb
-     * @param indent
-     * @author   lizhgb
-     * @Date   2015-10-14 上午10:38:04
-     */
-    private static void addIndentBlank(StringBuilder sb, int indent) {
-        for (int i = 0; i < indent; i++) {
-            sb.append('\t');
-        }
-    }
+	/**
+	 * 添加space
+	 * 
+	 * @param sb
+	 * @param indent
+	 * @author lizhgb
+	 * @Date 2015-10-14 上午10:38:04
+	 */
+	private static void addIndentBlank(StringBuilder sb, int indent) {
+		for (int i = 0; i < indent; i++) {
+			sb.append('\t');
+		}
+	}
 
 }

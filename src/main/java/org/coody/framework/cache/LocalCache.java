@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.coody.framework.container.SysTimerContainer;
 import org.coody.framework.util.StringUtil;
 
 
@@ -22,12 +22,12 @@ import org.coody.framework.util.StringUtil;
  */
 @SuppressWarnings("unchecked")
 public class LocalCache {
-	private static final Timer timer;
-	private static final ConcurrentHashMap<String, Object> map;
+	
+	private static final ConcurrentHashMap<String, Object> CACHE_MAP;
+	
 	static Object mutex = new Object();
 	static {
-		timer = new Timer();
-		map = new ConcurrentHashMap<String, Object>();
+		CACHE_MAP = new ConcurrentHashMap<String, Object>();
 	}
 
 	/**
@@ -40,17 +40,17 @@ public class LocalCache {
 	 */
 	public static  void setCache(String key, Object ce,
 			int validityTime) {
-		map.put(key, new CacheWrapper(validityTime,ce));
-		timer.schedule(new TimeoutTimerTask(key), validityTime * 1000);
+		CACHE_MAP.put(key, new CacheWrapper(validityTime,ce));
+		SysTimerContainer.execute(new TimeoutTimerTask(key), validityTime * 1000);
 	}
 	//获取缓存KEY列表
 	public static Set<String> getCacheKeys() {
-		return map.keySet();
+		return CACHE_MAP.keySet();
 	}
 	
 	public static List<String> getKeysFuzz(String patton){
 		List<String> list=new ArrayList<String>();
-		for (String tmpKey : map.keySet()) {
+		for (String tmpKey : CACHE_MAP.keySet()) {
 			if (tmpKey.contains(patton)) {
 				list.add(tmpKey);
 			}
@@ -62,7 +62,7 @@ public class LocalCache {
 	}
 	public static Integer getKeySizeFuzz(String patton){
 		Integer num=0;
-		for (String tmpKey : map.keySet()) {
+		for (String tmpKey : CACHE_MAP.keySet()) {
 			if (tmpKey.startsWith(patton)) {
 				num++;
 			}
@@ -78,7 +78,7 @@ public class LocalCache {
 	 *            有效时间
 	 */
 	public static  void setCache(String key, Object ce) {
-			map.put(key, new CacheWrapper(ce));
+		CACHE_MAP.put(key, new CacheWrapper(ce));
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class LocalCache {
 	 * @return
 	 */
 	public static <T> T getCache(String key) {
-		CacheWrapper wrapper=(CacheWrapper) map.get(key);
+		CacheWrapper wrapper=(CacheWrapper) CACHE_MAP.get(key);
 		if(wrapper==null){
 			return null;
 		}
@@ -102,7 +102,7 @@ public class LocalCache {
 	 * @return
 	 */
 	public static boolean contains(String key) {
-		return map.containsKey(key);
+		return CACHE_MAP.containsKey(key);
 	}
 
 	/**
@@ -111,7 +111,7 @@ public class LocalCache {
 	 * @param key
 	 */
 	public static void delCache(String key) {
-		map.remove(key);
+		CACHE_MAP.remove(key);
 	}
 
 	/**
@@ -120,9 +120,9 @@ public class LocalCache {
 	 * @param key
 	 */
 	public static void delCacheFuzz(String key) {
-		for (String tmpKey : map.keySet()) {
+		for (String tmpKey : CACHE_MAP.keySet()) {
 			if (tmpKey.contains(key)) {
-				map.remove(tmpKey);
+				CACHE_MAP.remove(tmpKey);
 			}
 		}
 	}
@@ -133,14 +133,14 @@ public class LocalCache {
 	 * @param key
 	 */
 	public static int getCacheSize() {
-		return map.size();
+		return CACHE_MAP.size();
 	}
 
 	/**
 	 * 清除全部缓存
 	 */
 	public static void clearCache() {
-		map.clear();
+		CACHE_MAP.clear();
 	}
 
 	/**
@@ -162,11 +162,11 @@ public class LocalCache {
 		}
 		@Override
 		public void run() {
-			CacheWrapper cacheWrapper=(CacheWrapper) map.get(ceKey);
+			CacheWrapper cacheWrapper=(CacheWrapper) CACHE_MAP.get(ceKey);
 			if(cacheWrapper==null||cacheWrapper.getDate()==null){
 				return;
 			}
-			if(new Date().getTime()<cacheWrapper.getDate().getTime()){
+			if(System.currentTimeMillis()<cacheWrapper.getDate().getTime()){
 				return;
 			}
 			LocalCache.delCache(ceKey);

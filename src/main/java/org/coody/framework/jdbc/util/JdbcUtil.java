@@ -30,11 +30,11 @@ public class JdbcUtil {
 	/**
 	 * 是否反驼峰表名
 	 */
-	private static final boolean isUnParseTable=true;
+	private static final boolean IS_UNPARSE_TABLE=true;
 	/**
 	 * 是否反驼峰字段名
 	 */
-	private static final boolean isUnParseField=false;
+	private static final boolean IS_UNPARSE_FIELD=false;
 	
 	
 	/**
@@ -50,7 +50,7 @@ public class JdbcUtil {
 				clazz=(Class<?>) obj;
 			}
 			String modelName=clazz.getSimpleName();
-			if(isUnParseTable){
+			if(IS_UNPARSE_TABLE){
 				return unParsParaName(modelName);
 			}
 			return modelName;
@@ -65,7 +65,7 @@ public class JdbcUtil {
 	 * @return
 	 */
 	private static String getColumnName(String fieldName){
-		if(!isUnParseField){
+		if(!IS_UNPARSE_FIELD){
 			return fieldName;
 		}
 		return unParsParaName(fieldName);
@@ -116,7 +116,7 @@ public class JdbcUtil {
 	 * 根据数据库列名获取对象字段名
 	 */
 	public static String getFieldName(String columnName){
-		if(isUnParseField){
+		if(IS_UNPARSE_FIELD){
 			return parsParaName(columnName);
 		}
 		return columnName;

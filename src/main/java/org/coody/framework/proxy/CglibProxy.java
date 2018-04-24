@@ -28,9 +28,9 @@ public class CglibProxy implements MethodInterceptor {
 	/**
 	 * key拦截方法，value拦截器的方法
 	 */
-	public static final Map<Method, Set<Method>> interceptMap = new ConcurrentHashMap<Method, Set<Method>>();
+	public static final Map<Method, Set<Method>> INTERCEPT_MAP = new ConcurrentHashMap<Method, Set<Method>>();
 
-	public static final Map<Method, AspectPoint> methodInterceptMap = new ConcurrentHashMap<Method, AspectPoint>();
+	public static final Map<Method, AspectPoint> METHOD_INTERCEPT_MAP = new ConcurrentHashMap<Method, AspectPoint>();
 
 	public Object getProxy(Class<?> clazz) throws InstantiationException, IllegalAccessException {
 		Integer modifier = clazz.getModifiers();
@@ -57,19 +57,19 @@ public class CglibProxy implements MethodInterceptor {
 		}
 		boolean needProxy = false;
 		for (Method method : clazz.getDeclaredMethods()) {
-			for (List<AspectEntity> aspectEntitys : FrameworkConstant.aspectMap.values()) {
+			for (List<AspectEntity> aspectEntitys : FrameworkConstant.ASPECT_MAP.values()) {
 				for (AspectEntity aspectEntity : aspectEntitys) {
 					if (!needProxy(clazz, aspectEntity, method)) {
 						continue;
 					}
-					if (interceptMap.containsKey(method)) {
-						interceptMap.get(method).add(aspectEntity.getAspectInvokeMethod());
+					if (INTERCEPT_MAP.containsKey(method)) {
+						INTERCEPT_MAP.get(method).add(aspectEntity.getAspectInvokeMethod());
 						needProxy = true;
 						continue;
 					}
 					Set<Method> aspectMethods = new HashSet<Method>();
 					aspectMethods.add(aspectEntity.getAspectInvokeMethod());
-					interceptMap.put(method, aspectMethods);
+					INTERCEPT_MAP.put(method, aspectMethods);
 				}
 				needProxy = true;
 			}
@@ -116,8 +116,9 @@ public class CglibProxy implements MethodInterceptor {
 	}
 
 	// 拦截父类所有方法的调用
+	@Override
 	public Object intercept(Object bean, Method method, Object[] params, MethodProxy proxy) throws Throwable {
-		if (!interceptMap.containsKey(method)) {
+		if (!INTERCEPT_MAP.containsKey(method)) {
 			return proxy.invokeSuper(bean, params);
 		}
 		AspectPoint point = getMethodPoint(bean, method, proxy);
@@ -129,10 +130,10 @@ public class CglibProxy implements MethodInterceptor {
 	}
 
 	private AspectPoint getMethodPoint(Object bean, Method method, MethodProxy proxy) {
-		if (methodInterceptMap.containsKey(method)) {
-			return methodInterceptMap.get(method);
+		if (METHOD_INTERCEPT_MAP.containsKey(method)) {
+			return METHOD_INTERCEPT_MAP.get(method);
 		}
-		List<Method> invokeMethods = new ArrayList<Method>(interceptMap.get(method));
+		List<Method> invokeMethods = new ArrayList<Method>(INTERCEPT_MAP.get(method));
 		Method aspectMethod = invokeMethods.get(0);
 		invokeMethods.remove(0);
 		Class<?> clazz = PropertUtil.getClass(aspectMethod);
@@ -148,7 +149,7 @@ public class CglibProxy implements MethodInterceptor {
 		if (childPoint != null) {
 			point.setChildPoint(childPoint);
 		}
-		methodInterceptMap.put(method, point);
+		METHOD_INTERCEPT_MAP.put(method, point);
 		return point;
 	}
 

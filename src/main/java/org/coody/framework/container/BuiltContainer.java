@@ -9,5 +9,5 @@ import org.coody.framework.wrapper.IcopResponseWrapper;
 public class BuiltContainer {
 
 	
-	public static final Class<?> [] initBean={CacheAspect.class,TransactedAspect.class,LoggerAspect.class,IcopRequestWrapper.class,IcopResponseWrapper.class};
+	public static final Class<?> [] INIT_BEAN={CacheAspect.class,TransactedAspect.class,LoggerAspect.class,IcopRequestWrapper.class,IcopResponseWrapper.class};
 }

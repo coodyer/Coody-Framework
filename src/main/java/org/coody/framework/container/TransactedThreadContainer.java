@@ -16,29 +16,34 @@ public class TransactedThreadContainer {
 
 	
 	
-	public static ThreadLocal<Map<String, Object>> threadTransactedContainer = new ThreadLocal<Map<String, Object>>();
+	public static ThreadLocal<Map<String, Object>> THREAD_TRANSACTED_CONTAINER = new ThreadLocal<Map<String, Object>>();
 	
 	/**
 	 * 是否需要事物
 	 */
-	private static final String needTransacted="needTransacted";
+	private static final String NEED_TRANSACTED="NEED_TRANSACTED";
 	
 	/**
 	 * connection容器
 	 */
-	private static final String connectionContainer="connectionContainer";
+	private static final String CONNECTION_CONTAINER="CONNECTION_CONTAINER";
 	
+	
+	
+	public static void clear(){
+		THREAD_TRANSACTED_CONTAINER.remove();
+	}
 	/**
 	 * 判断是否存在事物控制
 	 * @return
 	 */
 	public static boolean hasTransacted(){
 		
-		Map<String, Object> threadContainer=threadTransactedContainer.get();
+		Map<String, Object> threadContainer=THREAD_TRANSACTED_CONTAINER.get();
 		if(StringUtil.isNullOrEmpty(threadContainer)){
 			return false;
 		}
-		Boolean needTransacteder=(Boolean) threadContainer.get(needTransacted);
+		Boolean needTransacteder=(Boolean) threadContainer.get(NEED_TRANSACTED);
 		if(needTransacteder==null){
 			return false;
 		}
@@ -46,26 +51,26 @@ public class TransactedThreadContainer {
 	}
 	
 	public static void writeHasTransacted(){
-		Map<String, Object> threadContainer=threadTransactedContainer.get();
+		Map<String, Object> threadContainer=THREAD_TRANSACTED_CONTAINER.get();
 		if(StringUtil.isNullOrEmpty(threadContainer)){
 			threadContainer=new HashMap<String, Object>();
 		}
-		threadContainer.put(needTransacted, true);
-		threadTransactedContainer.set(threadContainer);
+		threadContainer.put(NEED_TRANSACTED, true);
+		THREAD_TRANSACTED_CONTAINER.set(threadContainer);
 	}
 	
 	public static void writeDataSource(DataSource source,Connection connection){
-		Map<String, Object> threadContainer=threadTransactedContainer.get();
+		Map<String, Object> threadContainer=THREAD_TRANSACTED_CONTAINER.get();
 		if(StringUtil.isNullOrEmpty(threadContainer)){
 			threadContainer=new HashMap<String, Object>();
 		}
-		Map<DataSource, Connection> connectionMap=(Map<DataSource, Connection>) threadContainer.get(connectionContainer);
+		Map<DataSource, Connection> connectionMap=(Map<DataSource, Connection>) threadContainer.get(CONNECTION_CONTAINER);
 		if(StringUtil.isNullOrEmpty(connectionMap)){
 			connectionMap=new HashMap<DataSource, Connection>();
 		}
 		connectionMap.put(source, connection);
-		threadContainer.put(connectionContainer, connectionMap);
-		threadTransactedContainer.set(threadContainer);
+		threadContainer.put(CONNECTION_CONTAINER, connectionMap);
+		THREAD_TRANSACTED_CONTAINER.set(threadContainer);
 	}
 	
 	/**
@@ -74,11 +79,11 @@ public class TransactedThreadContainer {
 	 * @return
 	 */
 	public static Connection getConnection(DataSource source){
-		Map<String, Object> threadContainer=threadTransactedContainer.get();
+		Map<String, Object> threadContainer=THREAD_TRANSACTED_CONTAINER.get();
 		if(StringUtil.isNullOrEmpty(threadContainer)){
 			return null;
 		}
-		Map<DataSource, Connection> connectionMap=(Map<DataSource, Connection>) threadContainer.get(connectionContainer);
+		Map<DataSource, Connection> connectionMap=(Map<DataSource, Connection>) threadContainer.get(CONNECTION_CONTAINER);
 		if(StringUtil.isNullOrEmpty(connectionMap)){
 			connectionMap=new HashMap<DataSource, Connection>();
 		}
@@ -91,11 +96,11 @@ public class TransactedThreadContainer {
 	 * @return
 	 */
 	public static List<Connection> getConnections(){
-		Map<String, Object> threadContainer=threadTransactedContainer.get();
+		Map<String, Object> threadContainer=THREAD_TRANSACTED_CONTAINER.get();
 		if(StringUtil.isNullOrEmpty(threadContainer)){
 			return null;
 		}
-		Map<DataSource, Connection> connectionMap=(Map<DataSource, Connection>) threadContainer.get(connectionContainer);
+		Map<DataSource, Connection> connectionMap=(Map<DataSource, Connection>) threadContainer.get(CONNECTION_CONTAINER);
 		if(StringUtil.isNullOrEmpty(connectionMap)){
 			connectionMap=new HashMap<DataSource, Connection>();
 		}

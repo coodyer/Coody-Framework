@@ -41,6 +41,7 @@ public class TransactedAspect {
 		}finally {
 			//关闭连接
 			List<Connection> connections=TransactedThreadContainer.getConnections();
+			TransactedThreadContainer.clear();
 			if(!StringUtil.isNullOrEmpty(connections)){
 				for(Connection conn:connections){
 					try{

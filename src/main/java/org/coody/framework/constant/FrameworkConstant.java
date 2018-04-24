@@ -14,17 +14,17 @@ public class FrameworkConstant {
 	/**
 	 * 初始化Bean拦截的注解
 	 */
-	public static final Class<?>[] beanAnnotations = new Class[] { InitBean.class, PathBinding.class };
+	public static final Class<?>[] BEAN_ANNOTATIONS = new Class[] { InitBean.class, PathBinding.class };
 	
 	/**
 	 * 切面存储。key为切面ID，Value为切面实例
 	 */
-	public static final Map<String, List<AspectEntity>> aspectMap = new ConcurrentHashMap<String, List<AspectEntity>>();
+	public static final Map<String, List<AspectEntity>> ASPECT_MAP = new ConcurrentHashMap<String, List<AspectEntity>>();
 	
 	/**
 	 * 表主键列表
 	 */
-	public static final String table_primary_keys="table_primary_keys";
+	public static final String TABLE_PRIMARY_KEYS="table_primary_keys";
 	
 	/**
 	 * 自动化缓存KEY
@@ -33,12 +33,12 @@ public class FrameworkConstant {
 	
 	
 	public static void writeToAspectMap(String methodKey,AspectEntity aspectEntity){
-		if(FrameworkConstant.aspectMap.containsKey(methodKey)){
-			FrameworkConstant.aspectMap.get(methodKey).add(aspectEntity);
+		if(FrameworkConstant.ASPECT_MAP.containsKey(methodKey)){
+			FrameworkConstant.ASPECT_MAP.get(methodKey).add(aspectEntity);
 			return;
 		}
 		List<AspectEntity> aspectEntitys=new ArrayList<AspectEntity>();
 		aspectEntitys.add(aspectEntity);
-		FrameworkConstant.aspectMap.put(methodKey, aspectEntitys);
+		FrameworkConstant.ASPECT_MAP.put(methodKey, aspectEntitys);
 	}
 }

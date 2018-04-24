@@ -44,7 +44,7 @@ public class BeanContainer {
 		return beanMap.values();
 	}
 	public static String getBeanName(Class<?> clazz){
-		for (Class annotationClass : FrameworkConstant.beanAnnotations) {
+		for (Class annotationClass : FrameworkConstant.BEAN_ANNOTATIONS) {
 			Annotation initBean = clazz.getAnnotation(annotationClass);
 			if (StringUtil.isNullOrEmpty(initBean)) {
 				continue;

@@ -28,7 +28,7 @@ public class TaskTrigger {
 			return null;
 		}
 		for(Method method:methods){
-			if(method.getName().equals("taskTrigger")){
+			if("taskTrigger".equals(method.getName())){
 				return method;
 			}
 		}
@@ -48,8 +48,8 @@ public class TaskTrigger {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateUtils.DATETIME_PATTERN, Locale.CHINA);
 		Date nextRunDate=DateUtils.toDate(zonedDateTime.toLocalDateTime().format(formatter));
 		logger.debug(bean.getClass().getName()+":"+method.getName()+" will run on "+DateUtils.toString(nextRunDate));
-		long timeRage=nextRunDate.getTime()-new Date().getTime();
-		TaskThreadPool.taskPool.schedule(new Runnable() {
+		long timeRage=nextRunDate.getTime()-System.currentTimeMillis();
+		TaskThreadPool.TASK_POOL.schedule(new Runnable() {
 			@Override
 			public void run() {
 				Object[] params={};

@@ -9,7 +9,6 @@ import java.util.Date;
  */
 public class DateUtils {
 
-
 	/**
 	 * yyyy-MM-dd hh:mm:ss
 	 */
@@ -22,8 +21,9 @@ public class DateUtils {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-		if (dayOfWeek < 0)
+		if (dayOfWeek < 0) {
 			dayOfWeek = 0;
+		}
 		return dayNames[dayOfWeek];
 	}
 
@@ -35,14 +35,16 @@ public class DateUtils {
 	public static String getDateString() {
 		return toString(new Date(), DATE_PATTERN);
 	}
+
 	/**
 	 * 获取当前日期
 	 * 
 	 * @return
 	 */
 	public static String getDateTimeString() {
-		return toString(new Date(),DATETIME_PATTERN);
+		return toString(new Date(), DATETIME_PATTERN);
 	}
+
 	/**
 	 * 时间增减
 	 * 
@@ -196,6 +198,5 @@ public class DateUtils {
 		currentDate.set(Calendar.SECOND, 0);
 		return currentDate.getTime();
 	}
-
 
 }

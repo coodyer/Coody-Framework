@@ -990,7 +990,7 @@ public class PropertUtil {
 						return 0f;
 					}
 					if (long.class.isAssignableFrom(clazz)) {
-						return 0l;
+						return 0L;
 					}
 					if (double.class.isAssignableFrom(clazz)) {
 						return 0d;

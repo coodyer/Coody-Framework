@@ -17,6 +17,15 @@ import javax.servlet.http.HttpServletRequest;
 
 public class StringUtil {
 
+	private static final String BLANK_STR_PATTEN = "\\s*|\t|\r|\n";
+
+	private static final String MOBILE_PATTEN = "^((13[0-9])|(15[^4,\\D])|(17[^4,\\D])|(18[0,5-9]))\\d{8}$";
+
+	private static final String LEGAL_PATTEN = "[A-Za-z0-9_]{3,16}";
+
+	private static final String EMAIL_PATTEN = "^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$";
+
+	private static final String MD5_PATTEN = "[A-Za-z0-9_]{16,40}";
 
 	public static Integer[] getIntegerParas(Object[] objs) {
 		if (isNullOrEmpty(objs)) {
@@ -113,8 +122,6 @@ public class StringUtil {
 		}
 		return intArr;
 	}
-
-	
 
 	public static String getInPara(Integer size) {
 		return getByMosaicChr("?", ",", size);
@@ -252,7 +259,7 @@ public class StringUtil {
 	public static String replaceBlank(String str) {
 		String dest = "";
 		if (str != null) {
-			Pattern p = Pattern.compile("\\s*|\t|\r|\n");
+			Pattern p = Pattern.compile(BLANK_STR_PATTEN);
 			Matcher m = p.matcher(str);
 			dest = m.replaceAll("");
 		}
@@ -284,7 +291,7 @@ public class StringUtil {
 			return null;
 		}
 	}
-	
+
 	public static String matchExportFirst(String context, String patten) {
 		try {
 			Integer index = 0;
@@ -303,11 +310,12 @@ public class StringUtil {
 			return null;
 		}
 	}
+
 	public static boolean isMobile(String mobile) {
 		if (isNullOrEmpty(mobile)) {
 			return false;
 		}
-		Pattern p = Pattern.compile("^((13[0-9])|(15[^4,\\D])|(17[^4,\\D])|(18[0,5-9]))\\d{8}$");
+		Pattern p = Pattern.compile(MOBILE_PATTEN);
 		Matcher m = p.matcher(mobile);
 		return m.matches();
 	}
@@ -316,7 +324,7 @@ public class StringUtil {
 		if (isNullOrEmpty(str)) {
 			return false;
 		}
-		Pattern p = Pattern.compile("[A-Za-z0-9_]{3,16}");
+		Pattern p = Pattern.compile(LEGAL_PATTEN);
 		Matcher m = p.matcher(str);
 		return m.matches();
 	}
@@ -325,8 +333,7 @@ public class StringUtil {
 		if (isNullOrEmpty(email)) {
 			return false;
 		}
-		Pattern p = Pattern.compile(
-				"^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$");
+		Pattern p = Pattern.compile(EMAIL_PATTEN);
 		Matcher m = p.matcher(email);
 		return m.matches();
 	}
@@ -335,7 +342,7 @@ public class StringUtil {
 		if (isNullOrEmpty(md5)) {
 			return false;
 		}
-		Pattern p = Pattern.compile("[A-Za-z0-9_]{16,40}");
+		Pattern p = Pattern.compile(MD5_PATTEN);
 		Matcher m = p.matcher(md5);
 		return m.matches();
 	}
@@ -397,10 +404,12 @@ public class StringUtil {
 		List<Object> objList = Arrays.asList(objs);
 		return collectionMosaic(objList, mosaicChr);
 	}
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static String collectionMosaic(Set<?> objs, String mosaicChr) {
 		return collectionMosaic(new ArrayList(objs), mosaicChr);
 	}
+
 	/**
 	 * 把一个集合按照分隔符拼接成字符串
 	 * 
@@ -557,8 +566,9 @@ public class StringUtil {
 
 	public static boolean isNullOrEmpty(Object obj) {
 		try {
-			if (obj == null)
+			if (obj == null) {
 				return true;
+			}
 			if (obj instanceof CharSequence) {
 				return ((CharSequence) obj).length() == 0;
 			}
@@ -740,7 +750,7 @@ public class StringUtil {
 		return 0;
 	}
 
-	public static Integer SumInteger(Integer... sums) {
+	public static Integer sumInteger(Integer... sums) {
 		if (isNullOrEmpty(sums)) {
 			return -1;
 		}
@@ -762,7 +772,7 @@ public class StringUtil {
 		if (isNullOrEmpty(chances)) {
 			return -1;
 		}
-		Integer total = SumInteger(chances);
+		Integer total = sumInteger(chances);
 		Integer random = getRanDom(1, total);
 		total = new Integer(0);
 		for (int i = 0; i < chances.length; i++) {
@@ -854,24 +864,30 @@ public class StringUtil {
 		}
 		return path;
 	}
+
 	/**
 	 * 判断是否为android模拟器
 	 * 
 	 * @param request
 	 * @return 模拟器返回true
 	 */
+
+	private static final String EMULATOR_PATTEN = ".*Lan.*Build.*";
+
 	public static boolean isAndroidEmulator(HttpServletRequest request) {
 		try {
 			String userAgent = request.getHeader("user-agent");
 			if (!StringUtil.isNullOrEmpty(userAgent)) {
 				if (userAgent.contains("Droid4X") || userAgent.contains("kaopu") || userAgent.contains("Windroye")
 						|| userAgent.contains("BlueStacks") || userAgent.contains("sdk Build")
-						|| userAgent.contains("TianTian"))
+						|| userAgent.contains("TianTian")) {
 					return true;
-				Pattern pattern = Pattern.compile(".*Lan.*Build.*");
+				}
+				Pattern pattern = Pattern.compile(EMULATOR_PATTEN);
 				Matcher matcher = pattern.matcher(userAgent);
-				if (matcher.matches())
+				if (matcher.matches()) {
 					return true;
+				}
 				return false;
 			}
 		} catch (Exception e) {
@@ -898,7 +914,5 @@ public class StringUtil {
 		}
 		return false;
 	}
-	
-	
 
 }

@@ -21,7 +21,7 @@ public class DispatServlet extends HttpServlet{
 	
 	Logger logger=Logger.getLogger(DispatServlet.class);
 	
-	
+	@Override
 	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
@@ -62,6 +62,6 @@ public class DispatServlet extends HttpServlet{
 			e.printStackTrace();
 		}
 	}
-	
+	@Override
 	public void init(){}
 }

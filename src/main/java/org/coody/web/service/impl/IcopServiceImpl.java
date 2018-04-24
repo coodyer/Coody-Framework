@@ -14,16 +14,17 @@ public class IcopServiceImpl implements IcopService{
 
 	@OutBean
 	IcopDao icopDao;
-	
+	@Override
 	public IcopTest getIcop(Integer id){
 		return icopDao.getIcop(id);
 	}
 	
-	
+	@Override
 	public List<IcopTest> getIcops(){
 		return icopDao.getIcops()
 				;
 	}
+	@Override
 	@Transacted
 	public Long delIcop(Integer id){
 		Long code= icopDao.delIcop(id);

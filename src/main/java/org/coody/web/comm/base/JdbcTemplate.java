@@ -11,6 +11,7 @@ import org.coody.framework.jdbc.JdbcHandle;
 public class JdbcTemplate extends JdbcHandle implements InitFace{
 
 
+	@Override
 	public void init() {
 		try {
 			initConfig("config/c3p0.properties");

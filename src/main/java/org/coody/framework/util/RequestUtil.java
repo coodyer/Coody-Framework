@@ -24,15 +24,15 @@ import org.coody.framework.entity.BeanEntity;
 public class RequestUtil {
 
 	
-	public static final String user_session = "curr_login_user";
+	public static final String USER_SESSION = "CURR_LOGIN_USER";
 
 	public static void setUser(HttpServletRequest request, Object user) {
-		request.getSession().setAttribute(user_session, user);
+		request.getSession().setAttribute(USER_SESSION, user);
 	}
 
 	@SuppressWarnings("unchecked")
 	public static <T> T getUser(HttpServletRequest request) {
-		return (T) request.getSession().getAttribute(user_session);
+		return (T) request.getSession().getAttribute(USER_SESSION);
 	}
 
 
@@ -78,7 +78,7 @@ public class RequestUtil {
 		if(StringUtil.isNullOrEmpty(ip)){
 			return true;
 		}
-		if(ip.equals("127.0.0.1")||ip.equalsIgnoreCase("localhost")){
+		if("127.0.0.1".equals(ip)||ip.equalsIgnoreCase("localhost")){
 			return true;
 		}
 		if (StringUtil.isNullOrEmpty(ip) || "unknown".equalsIgnoreCase(ip)) {
