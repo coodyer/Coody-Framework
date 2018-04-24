@@ -15,12 +15,11 @@ import org.coody.framework.util.RequestUtil;
 import org.coody.framework.util.StringUtil;
 
 /**
- * form表单装载到多个bean
- * 
+ * form装载到多个bean,以beanname为准
  * @author admin
  *
  */
-public class FormToBeanMealAdapt implements IcopParamsAdapt {
+public class FormNomalAdapt implements IcopParamsAdapt{
 
 	@Override
 	public Object[] doAdapt(MvcMapping mapping, HttpServletRequest request, HttpServletResponse response,
@@ -44,16 +43,22 @@ public class FormToBeanMealAdapt implements IcopParamsAdapt {
 				continue;
 			}
 			if (BaseModel.class.isAssignableFrom(beanEntity.getFieldType())) {
-				params[i] = RequestUtil.getBeanAll(request, beanEntity.getFieldName(), beanEntity.getFieldType());
+				ParamName paramNameAnnotion=beanEntity.getFieldType().getAnnotation(ParamName.class);
+				String paraName=beanEntity.getFieldName();
+				if(paramNameAnnotion!=null){
+					paraName=paramNameAnnotion.value();
+				}
+				params[i] = RequestUtil.getBeanAll(request, paraName, beanEntity.getFieldType());
 				continue;
 			}
 			if (beanEntity.getFieldType().isPrimitive()||InsideTypeConstant.INSIDE_TYPES.contains(beanEntity.getFieldType())) {
-				ParamName paramName=beanEntity.getFieldType().getAnnotation(ParamName.class);
+				ParamName paramNameAnnotion=beanEntity.getFieldType().getAnnotation(ParamName.class);
 				String paraName=beanEntity.getFieldName();
-				if(paramName!=null){
-					paraName=paramName.value();
+				if(paramNameAnnotion!=null){
+					paraName=paramNameAnnotion.value();
 				}
-				params[i]=PropertUtil.parseValue(request.getParameter(paraName), beanEntity.getFieldType());
+				String value=request.getParameter(paraName);
+				params[i]=PropertUtil.parseValue(value, beanEntity.getFieldType());
 				continue;
 			}
 		}

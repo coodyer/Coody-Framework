@@ -1,5 +1,7 @@
 package org.coody.framework.adapt;
 
+import java.util.HashMap;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -14,12 +16,16 @@ import org.coody.framework.util.PropertUtil;
 import org.coody.framework.util.RequestUtil;
 import org.coody.framework.util.StringUtil;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
+
 /**
- * form表单混合装载
+ * json表单混合装载到bean。谁有谁得
+ * 
  * @author admin
  *
  */
-public class FormToBeanNomalAdapt implements IcopParamsAdapt{
+public class JsonMealAdapt implements IcopParamsAdapt {
 
 	@Override
 	public Object[] doAdapt(MvcMapping mapping, HttpServletRequest request, HttpServletResponse response,
@@ -28,6 +34,8 @@ public class FormToBeanNomalAdapt implements IcopParamsAdapt{
 			return null;
 		}
 		Object[] params = new Object[mapping.getParamTypes().size()];
+		HashMap<String, Object> paraMap=null;
+		String context = RequestUtil.getPostContent(request);
 		for (int i = 0; i < mapping.getParamTypes().size(); i++) {
 			BeanEntity beanEntity = mapping.getParamTypes().get(i);
 			if (beanEntity.getFieldType().isAssignableFrom(request.getClass())) {
@@ -43,26 +51,27 @@ public class FormToBeanNomalAdapt implements IcopParamsAdapt{
 				continue;
 			}
 			if (BaseModel.class.isAssignableFrom(beanEntity.getFieldType())) {
-				ParamName paramName=beanEntity.getFieldType().getAnnotation(ParamName.class);
-				String paraName=null;
-				if(paramName!=null){
-					paraName=paramName.value();
-				}
-				params[i] = RequestUtil.getBeanAll(request, paraName, beanEntity.getFieldType());
+				params[i] = JSON.parseObject(context, beanEntity.getFieldType());
 				continue;
 			}
-			if (beanEntity.getFieldType().isPrimitive()||InsideTypeConstant.INSIDE_TYPES.contains(beanEntity.getFieldType())) {
-				ParamName paramNameAnnotion=beanEntity.getFieldType().getAnnotation(ParamName.class);
-				String paraName=beanEntity.getFieldName();
-				if(paramNameAnnotion!=null){
-					paraName=paramNameAnnotion.value();
+			if (beanEntity.getFieldType().isPrimitive()
+					|| InsideTypeConstant.INSIDE_TYPES.contains(beanEntity.getFieldType())) {
+				if(paraMap==null){
+					paraMap=JSON.parseObject(
+							context,new TypeReference<HashMap<String, Object>>(){} );
+					if(paraMap==null){
+						paraMap=new HashMap<String,Object>();
+					}
 				}
-				String value=request.getParameter(paraName);
-				params[i]=PropertUtil.parseValue(value, beanEntity.getFieldType());
+				ParamName paramNameAnnotion = beanEntity.getFieldType().getAnnotation(ParamName.class);
+				String paraName = beanEntity.getFieldName();
+				if (paramNameAnnotion != null) {
+					paraName = paramNameAnnotion.value();
+				}
+				params[i] = PropertUtil.parseValue(paraMap.get(paraName), beanEntity.getFieldType());
 				continue;
 			}
 		}
 		return params;
 	}
-
 }

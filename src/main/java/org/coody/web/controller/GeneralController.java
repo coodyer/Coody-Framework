@@ -7,13 +7,14 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.coody.framework.adapt.FormToBeanNomalAdapt;
+import org.coody.framework.adapt.JsonNomalAdapt;
 import org.coody.framework.annotation.JsonSerialize;
 import org.coody.framework.annotation.OutBean;
 import org.coody.framework.annotation.ParamsAdapt;
 import org.coody.framework.annotation.PathBinding;
 import org.coody.framework.util.PropertUtil;
 import org.coody.web.comm.entity.MsgEntity;
+import org.coody.web.domain.IcopTest;
 import org.coody.web.domain.UserInfo;
 import org.coody.web.service.UserService;
 
@@ -35,10 +36,10 @@ public class GeneralController {
 	
 	@PathBinding("/index.do")
 	@JsonSerialize
-	@ParamsAdapt(FormToBeanNomalAdapt.class)
-	public Object index(String userName,String password){
-		System.out.println(userName);
-		System.out.println(password);
+	@ParamsAdapt(JsonNomalAdapt.class)
+	public Object index(UserInfo user,IcopTest icop){
+		System.out.println(JSON.toJSONString(user));
+		System.out.println(JSON.toJSONString(icop));
 		List<UserInfo> users=userService.getUsers();
 		userService.saveOrUpdateUser(users.get(0));
 		return users;
