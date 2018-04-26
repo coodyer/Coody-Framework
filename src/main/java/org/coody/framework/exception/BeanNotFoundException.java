@@ -1,14 +1,18 @@
 package org.coody.framework.exception;
 
 @SuppressWarnings("serial")
-public class BeanNotFoundException extends Exception{
+public class BeanNotFoundException extends IcopException{
 
 	
-	public BeanNotFoundException(String msg){
-		super(msg);
+	public BeanNotFoundException(String bean){
+		super("未找到Bean:"+bean);
 	}
 	
-	public BeanNotFoundException(String msg,Exception e){
-		super(msg, e);
+	public BeanNotFoundException(String bean,Class<?> clazz){
+		super("未找到Bean:"+bean+" by "+clazz.getName());
+	}
+	
+	public BeanNotFoundException(String bean,Exception e){
+		super("未找到Bean:"+bean, e);
 	}
 }

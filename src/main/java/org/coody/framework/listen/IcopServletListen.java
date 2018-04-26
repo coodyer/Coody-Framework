@@ -1,14 +1,15 @@
-package org.coody.framework.init;
+package org.coody.framework.listen;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.apache.log4j.Logger;
+import org.coody.framework.init.FrameworkRute;
 import org.coody.framework.util.StringUtil;
 
-public class GeneralServletListen implements ServletContextListener {
+public class IcopServletListen implements ServletContextListener {
 
-	Logger logger = Logger.getLogger(GeneralServletListen.class);
+	Logger logger = Logger.getLogger(IcopServletListen.class);
 
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
