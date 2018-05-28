@@ -1,8 +1,14 @@
 package org.coody.web.service;
 
 import java.util.List;
+import java.util.Map;
 
+import org.coody.framework.annotation.CacheWrite;
+import org.coody.framework.annotation.RccService;
+import org.coody.web.comm.constant.CacheFinal;
 import org.coody.web.domain.UserInfo;
+
+import com.alibaba.fastjson.TypeReference;
 
 public interface UserService {
 
@@ -10,7 +16,8 @@ public interface UserService {
 	 * 保存或更新用户信息
 	 * @param user
 	 */
-	public void saveOrUpdateUser(UserInfo user);
+
+	public void saveOrUpdateUser(UserInfo user) throws RuntimeException,ClassNotFoundException;
 	
 	/**
 	 * 查询用户列表

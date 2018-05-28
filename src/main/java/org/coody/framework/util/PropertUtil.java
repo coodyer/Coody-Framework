@@ -14,8 +14,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,6 +30,8 @@ public class PropertUtil {
 	private static final Map<Class<?>, List<Field>> FIELD_MAP = new ConcurrentHashMap<Class<?>, List<Field>>();
 	private static final Map<Class<?>, List<Method>> METHOD_MAP = new ConcurrentHashMap<Class<?>, List<Method>>();
 	private static final Map<Method, List<BeanEntity>> PARAM_MAP = new ConcurrentHashMap<Method, List<BeanEntity>>();
+	private static final Map<Method, Set<Method>> IFACE_METHODS = new ConcurrentHashMap<Method, Set<Method>>();
+	private static final Map<Method, Set<Class<?>>> IFACE_CLAZZS = new ConcurrentHashMap<Method, Set<Class<?>>>();
 
 	public static void reload() {
 		FIELD_MAP.clear();
@@ -66,9 +70,9 @@ public class PropertUtil {
 	 *            参数列表
 	 * @return
 	 */
-	public static Method getTargeMethod(Method[] methods, String methodName, Object... paras) {
+	public static Method getTargeMethod(Method[] methods, String methodName, Class<?>... paraTypes) {
 		for (Method m : methods) {
-			if (isTargeMethod(m, methodName, paras)) {
+			if (isTargeMethod(m, methodName, paraTypes)) {
 				return m;
 			}
 		}
@@ -86,25 +90,25 @@ public class PropertUtil {
 	 *            目标方法参数列表
 	 * @return
 	 */
-	private static boolean isTargeMethod(Method method, String methodName, Object... paras) {
+	private static boolean isTargeMethod(Method method, String methodName, Class<?>... paraTypes) {
 		if (!method.getName().equals(methodName)) {
 			return false;
 		}
 		Class<?>[] clas = method.getParameterTypes();
-		if (StringUtil.isNullOrEmpty(clas) && StringUtil.isNullOrEmpty(paras)) {
+		if (StringUtil.isNullOrEmpty(clas) && StringUtil.isNullOrEmpty(paraTypes)) {
 			return true;
 		}
-		if (StringUtil.isNullOrEmpty(clas) || StringUtil.isNullOrEmpty(paras)) {
+		if (StringUtil.isNullOrEmpty(clas) || StringUtil.isNullOrEmpty(paraTypes)) {
 			return false;
 		}
-		if (clas.length != paras.length) {
+		if (clas.length != paraTypes.length) {
 			return false;
 		}
 		for (int i = 0; i < clas.length; i++) {
-			if (paras[i] == null) {
+			if (paraTypes[i] == null) {
 				continue;
 			}
-			if (!clas[i].isAssignableFrom(paras[i].getClass())) {
+			if (!clas[i].isAssignableFrom(paraTypes[i])) {
 				return false;
 			}
 		}
@@ -338,6 +342,7 @@ public class PropertUtil {
 			return null;
 		}
 	}
+
 	/**
 	 * 获取注解字段值
 	 * 
@@ -346,20 +351,21 @@ public class PropertUtil {
 	 * @return
 	 */
 	public static Object getAnnotationValue(Annotation annotation, String paraName) {
-		if (StringUtil.hasNull(annotation,paraName)) {
+		if (StringUtil.hasNull(annotation, paraName)) {
 			return null;
 		}
 		try {
 			InvocationHandler invocationHandler = Proxy.getInvocationHandler(annotation);
-			 Field hField = invocationHandler.getClass().getDeclaredField("memberValues");
-			 hField.setAccessible(true);
-			 Map<?,?> paraMap= (Map<?,?>) hField.get(invocationHandler);
-			 return paraMap.get(paraName);
+			Field hField = invocationHandler.getClass().getDeclaredField("memberValues");
+			hField.setAccessible(true);
+			Map<?, ?> paraMap = (Map<?, ?>) hField.get(invocationHandler);
+			return paraMap.get(paraName);
 		} catch (Exception e) {
 			return null;
 		}
-		 
+
 	}
+
 	/**
 	 * 获取字段值，支持点属性
 	 * 
@@ -1097,4 +1103,117 @@ public class PropertUtil {
 		return paramNames;
 	}
 
+	public static Set<Method> getIfaceMethods(Method method) {
+		if (IFACE_METHODS.containsKey(method)) {
+			return IFACE_METHODS.get(method);
+		}
+		Class<?> clazz = getClass(method);
+		Set<Class<?>> infaceClazzs = getIfaceClass(clazz);
+		if (StringUtil.isNullOrEmpty(infaceClazzs)) {
+			return null;
+		}
+		Set<Method> methods = new HashSet<Method>();
+		for (Class<?> clazzTemp : infaceClazzs) {
+			Method parentMethod = getTargeMethod(clazzTemp.getDeclaredMethods(), method.getName(),
+					method.getParameterTypes());
+			if (parentMethod == null) {
+				continue;
+			}
+			methods.add(parentMethod);
+		}
+		return methods;
+	}
+
+	public static Set<Annotation> getDeclaredAnnotations(Method method) {
+		Set<Method> methods = getIfaceMethods(method);
+		if (methods == null) {
+			methods = new HashSet<Method>();
+		}
+		methods.add(method);
+		Set<Annotation> annotations = new HashSet<Annotation>();
+		for (Method methodTemp : methods) {
+			Annotation[] methodAnnotations = methodTemp.getAnnotations();
+			if (StringUtil.isNullOrEmpty(methodAnnotations)) {
+				continue;
+			}
+			annotations.addAll(Arrays.asList(methodAnnotations));
+		}
+		return annotations;
+	}
+
+	public static Set<Class<?>> getIfaceClass(Class<?> clazz) {
+		if (IFACE_CLAZZS.containsKey(clazz)) {
+			return IFACE_CLAZZS.get(clazz);
+		}
+		Class<?>[] infaceClazzs = clazz.getInterfaces();
+		if (StringUtil.isNullOrEmpty(infaceClazzs)) {
+			return null;
+		}
+		Set<Class<?>> infaceClazzList = new HashSet<Class<?>>(Arrays.asList(infaceClazzs));
+		for (Class<?> clazzTemp : infaceClazzList) {
+			Set<Class<?>> parentClazzs = getIfaceClass(clazzTemp);
+			if (StringUtil.isNullOrEmpty(parentClazzs)) {
+				continue;
+			}
+			infaceClazzList.addAll(parentClazzs);
+		}
+		return infaceClazzList;
+	}
+
+	/**
+	 * 设置注解字段值
+	 * 
+	 * @throws SecurityException
+	 * @throws NoSuchFieldException
+	 */
+	public static void setAnnotationValue(Annotation annotation, String propertyName, Object value)
+			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+		InvocationHandler invocationHandler = Proxy.getInvocationHandler(annotation);
+		Field declaredField = invocationHandler.getClass().getDeclaredField("memberValues");
+		declaredField.setAccessible(true);
+		Map<String, Object> memberValues = (Map<String, Object>) declaredField.get(invocationHandler);
+		Object oldValue = memberValues.get(propertyName);
+		if (oldValue != null) {
+			value = PropertUtil.parseValue(value, oldValue.getClass());
+		}
+		memberValues.put(propertyName, value);
+	}
+	
+	/**
+	 * 设置注解字段值
+	 * 
+	 * @throws SecurityException
+	 * @throws NoSuchFieldException
+	 * @throws IllegalAccessException 
+	 * @throws IllegalArgumentException 
+	 */
+	public static void setAnnotationValue(Annotation annotation, Map<String, Object> datas) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
+			 {
+		InvocationHandler invocationHandler = Proxy.getInvocationHandler(annotation);
+		Field declaredField = invocationHandler.getClass().getDeclaredField("memberValues");
+		declaredField.setAccessible(true);
+		Map<String, Object> memberValues = (Map<String, Object>) declaredField.get(invocationHandler);
+		if(StringUtil.isNullOrEmpty(datas)){
+			memberValues.clear();
+		}
+		for(String key:datas.keySet()){
+			memberValues.put(key, datas.get(key));
+		}
+
+	}
+	/**
+	 * 获取注解字段map
+	 * @throws SecurityException 
+	 * @throws NoSuchFieldException 
+	 * @throws IllegalAccessException 
+	 * @throws IllegalArgumentException 
+	 */
+	public static Map<String, Object> getAnnotationValue(Annotation annotation) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
+			{
+		InvocationHandler invocationHandler = Proxy.getInvocationHandler(annotation);
+		Field declaredField = invocationHandler.getClass().getDeclaredField("memberValues");
+		declaredField.setAccessible(true);
+		Map<String, Object> memberValues = (Map<String, Object>) declaredField.get(invocationHandler);
+		return memberValues;
+	}
 }

@@ -34,7 +34,6 @@ public class UserServiceImpl implements UserService{
 	 * 查询用户列表
 	 */
 	@Override
-	@CacheWrite(key=CacheFinal.USER_LIST,time=3600)
 	@LogHead("获取用户信息")
 	public List<UserInfo> getUsers(){
 		return userDao.getUsers();
@@ -59,4 +58,5 @@ public class UserServiceImpl implements UserService{
 	public UserInfo getUserInfo(String userId){
 		return userDao.getUserInfo(userId);
 	}
+	
 }

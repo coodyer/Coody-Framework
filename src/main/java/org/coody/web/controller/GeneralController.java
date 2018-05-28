@@ -38,7 +38,6 @@ public class GeneralController {
 	@ParamsAdapt(FormNomalAdapt.class)
 	public Object index(){
 		List<UserInfo> users=userService.getUsers();
-		userService.saveOrUpdateUser(users.get(0));
 		return users;
 	}
 	

@@ -1,7 +1,7 @@
 package org.coody.framework.exception;
 
 @SuppressWarnings("serial")
-public class IcopException extends Exception{
+public class IcopException extends RuntimeException{
 
 	public IcopException(){
 		super();
