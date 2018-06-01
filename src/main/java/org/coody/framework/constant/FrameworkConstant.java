@@ -10,11 +10,6 @@ import org.coody.framework.annotation.PathBinding;
 import org.coody.framework.aspect.entity.AspectEntity;
 
 public class FrameworkConstant {
-
-	/**
-	 * 初始化Bean拦截的注解
-	 */
-	public static final Class<?>[] BEAN_ANNOTATIONS = new Class[] { InitBean.class, PathBinding.class };
 	
 	/**
 	 * 切面存储。key为切面ID，Value为切面实例

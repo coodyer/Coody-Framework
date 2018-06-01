@@ -2,11 +2,12 @@ package org.coody.web.service.impl;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.coody.framework.annotation.CacheWipe;
 import org.coody.framework.annotation.CacheWrite;
 import org.coody.framework.annotation.InitBean;
 import org.coody.framework.annotation.LogHead;
-import org.coody.framework.annotation.OutBean;
 import org.coody.web.comm.constant.CacheFinal;
 import org.coody.web.dao.UserDao;
 import org.coody.web.domain.UserInfo;
@@ -15,7 +16,7 @@ import org.coody.web.service.UserService;
 @InitBean
 public class UserServiceImpl implements UserService{
 
-	@OutBean
+	@Resource
 	UserDao userDao;
 	
 	

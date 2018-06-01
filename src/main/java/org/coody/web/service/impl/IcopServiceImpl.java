@@ -2,8 +2,9 @@ package org.coody.web.service.impl;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.coody.framework.annotation.InitBean;
-import org.coody.framework.annotation.OutBean;
 import org.coody.framework.annotation.Transacted;
 import org.coody.web.dao.IcopDao;
 import org.coody.web.domain.IcopTest;
@@ -12,7 +13,7 @@ import org.coody.web.service.IcopService;
 @InitBean
 public class IcopServiceImpl implements IcopService{
 
-	@OutBean
+	@Resource
 	IcopDao icopDao;
 	@Override
 	public IcopTest getIcop(Integer id){

@@ -13,8 +13,8 @@ import java.lang.annotation.Target;
  * @blog http://54sb.org
  * @email 644556636@qq.com
  */
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD,ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME) 
 public @interface Arounds {
-	Around[] value();
+	Around[] value() default {};
 }

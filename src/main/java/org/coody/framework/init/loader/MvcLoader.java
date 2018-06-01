@@ -1,4 +1,4 @@
-package org.coody.framework.loader;
+package org.coody.framework.init.loader;
 
 import java.lang.reflect.Method;
 import java.util.Set;
@@ -11,7 +11,8 @@ import org.coody.framework.container.BeanContainer;
 import org.coody.framework.container.MappingContainer;
 import org.coody.framework.entity.MvcMapping;
 import org.coody.framework.exception.MappingConflicException;
-import org.coody.framework.loader.base.IcopLoader;
+import org.coody.framework.init.loader.face.IcopLoader;
+import org.coody.framework.util.ClassUtil;
 import org.coody.framework.util.PropertUtil;
 import org.coody.framework.util.StringUtil;
 
@@ -25,20 +26,23 @@ public class MvcLoader implements IcopLoader {
 
 	@Override
 	public void doLoader(Set<Class<?>> clazzs) throws Exception {
-		for (Class<?> clazz : clazzs) {
-			Object bean = BeanContainer.getBean(clazz);
+		for (Object bean:BeanContainer.getBeans()) {
 			if (StringUtil.isNullOrEmpty(bean)) {
 				continue;
 			}
-			PathBinding classBindings = clazz.getAnnotation(PathBinding.class);
+			Class<?> clazz=bean.getClass();
+			if(ClassUtil.isCglibProxyClassName(bean.getClass().getName())){
+				clazz=clazz.getSuperclass();
+			}
+			PathBinding classBindings = PropertUtil.getAnnotation(clazz, PathBinding.class);
 			if (StringUtil.isNullOrEmpty(classBindings)) {
 				continue;
 			}
 			Method[] methods = clazz.getDeclaredMethods();
-			ParamsAdapt clazzParamsAdapt = clazz.getAnnotation(ParamsAdapt.class);
+			ParamsAdapt clazzParamsAdapt = PropertUtil.getAnnotation(clazz, ParamsAdapt.class);
 			for (String clazzBinding : classBindings.value()) {
 				for (Method method : methods) {
-					PathBinding methodBinding = method.getAnnotation(PathBinding.class);
+					PathBinding methodBinding = PropertUtil.getAnnotation(method, PathBinding.class);
 					if (StringUtil.isNullOrEmpty(methodBinding)) {
 						continue;
 					}
@@ -48,7 +52,7 @@ public class MvcLoader implements IcopLoader {
 							throw new MappingConflicException(path);
 						}
 						Class<?> adaptClass = IcopConfig.DEFAULT_PARAM_ADAPT;
-						ParamsAdapt methodParamsAdapt = method.getAnnotation(ParamsAdapt.class);
+						ParamsAdapt methodParamsAdapt = PropertUtil.getAnnotation(method, ParamsAdapt.class);
 						if (methodParamsAdapt == null) {
 							if (clazzParamsAdapt != null) {
 								adaptClass = clazzParamsAdapt.value();

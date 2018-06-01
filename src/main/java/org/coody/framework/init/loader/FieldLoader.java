@@ -1,14 +1,16 @@
-package org.coody.framework.loader;
+package org.coody.framework.init.loader;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.coody.framework.annotation.OutBean;
+import javax.annotation.Resource;
+
 import org.coody.framework.container.BeanContainer;
 import org.coody.framework.exception.BeanNotFoundException;
-import org.coody.framework.loader.base.IcopLoader;
+import org.coody.framework.init.loader.face.IcopLoader;
+import org.coody.framework.util.PropertUtil;
 import org.coody.framework.util.StringUtil;
 
 /**
@@ -26,11 +28,11 @@ public class FieldLoader implements IcopLoader{
 				continue;
 			}
 			for (Field field : fields) {
-				OutBean writeBean = field.getAnnotation(OutBean.class);
+				Resource writeBean =PropertUtil.getAnnotation(field, Resource.class);
 				if (StringUtil.isNullOrEmpty(writeBean)) {
 					continue;
 				}
-				String beanName = writeBean.beanName();
+				String beanName = writeBean.name();
 				if (StringUtil.isNullOrEmpty(beanName)) {
 					beanName = field.getType().getName();
 				}

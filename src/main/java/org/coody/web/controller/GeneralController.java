@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.coody.framework.adapt.FormNomalAdapt;
 import org.coody.framework.annotation.JsonSerialize;
-import org.coody.framework.annotation.OutBean;
 import org.coody.framework.annotation.ParamsAdapt;
 import org.coody.framework.annotation.PathBinding;
 import org.coody.framework.util.PropertUtil;
@@ -26,11 +26,11 @@ import com.alibaba.fastjson.JSON;
 @PathBinding("/")
 public class GeneralController {
 
-	@OutBean
+	@Resource
 	UserService userService;
-	@OutBean
+	@Resource
 	HttpServletRequest request;
-	@OutBean
+	@Resource
 	HttpServletResponse response;
 	
 	@PathBinding("/index.do")

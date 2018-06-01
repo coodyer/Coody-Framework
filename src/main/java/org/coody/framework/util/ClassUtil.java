@@ -13,8 +13,21 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class ClassUtil {
+	
+	
+	public static final String CGLIB_CLASS_SEPARATOR = "$$";
+	
+	
+	/**
+	 * Check whether the specified class name is a CGLIB-generated class.
+	 * @param className the class name to check
+	 */
+	public static boolean isCglibProxyClassName(String className) {
+		return (className != null && className.contains(CGLIB_CLASS_SEPARATOR));
+	}
 
-	/** 
+	
+		/** 
      * 从包package中获取所有的Class 
      *  
      * @param pack 

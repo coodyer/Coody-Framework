@@ -1,4 +1,4 @@
-package org.coody.framework.loader.base;
+package org.coody.framework.init.loader.face;
 
 import java.util.Set;
 

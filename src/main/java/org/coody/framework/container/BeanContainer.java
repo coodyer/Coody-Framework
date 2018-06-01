@@ -9,12 +9,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.coody.framework.annotation.InitBean;
 import org.coody.framework.annotation.PathBinding;
-import org.coody.framework.constant.FrameworkConstant;
 import org.coody.framework.util.PropertUtil;
 import org.coody.framework.util.StringUtil;
 
-@SuppressWarnings({"unchecked","rawtypes"})
+@SuppressWarnings({"unchecked"})
 public class BeanContainer {
 	
 	
@@ -44,16 +44,19 @@ public class BeanContainer {
 		return beanMap.values();
 	}
 	public static String getBeanName(Class<?> clazz){
-		for (Class annotationClass : FrameworkConstant.BEAN_ANNOTATIONS) {
-			Annotation initBean = clazz.getAnnotation(annotationClass);
-			if (StringUtil.isNullOrEmpty(initBean)) {
+		List<Annotation> initBeans=PropertUtil.getAnnotations(clazz, InitBean.class);
+		if(StringUtil.isNullOrEmpty(initBeans)){
+			return null;
+		}
+		for (Annotation annotation : initBeans) {
+			if (StringUtil.isNullOrEmpty(annotation)) {
 				continue;
 			}
 			String beanName = clazz.getName();
-			if(PathBinding.class.isAssignableFrom(initBean.annotationType())){
+			if(PathBinding.class.isAssignableFrom(annotation.annotationType())){
 				return beanName;
 			}
-			beanName = (String) PropertUtil.getAnnotationValue(initBean, "value");
+			beanName = (String) PropertUtil.getAnnotationValue(annotation, "value");
 			if (!StringUtil.isNullOrEmpty(beanName)) {
 				return beanName;
 			}

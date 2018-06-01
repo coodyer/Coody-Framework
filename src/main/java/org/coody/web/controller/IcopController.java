@@ -2,10 +2,10 @@ package org.coody.web.controller;
 
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.coody.framework.annotation.JsonSerialize;
-import org.coody.framework.annotation.OutBean;
 import org.coody.framework.annotation.PathBinding;
 import org.coody.framework.util.StringUtil;
 import org.coody.web.comm.entity.MsgEntity;
@@ -16,7 +16,7 @@ import org.coody.web.service.IcopService;
 public class IcopController {
 
 	
-	@OutBean
+	@Resource
 	IcopService icopService;
 	
 	@PathBinding("loadIcops.do")

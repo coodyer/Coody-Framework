@@ -1,5 +1,6 @@
-package org.coody.framework.loader;
+package org.coody.framework.init.loader;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Set;
 
@@ -9,9 +10,10 @@ import org.coody.framework.annotation.InitBean;
 import org.coody.framework.container.BeanContainer;
 import org.coody.framework.exception.ErrorCronException;
 import org.coody.framework.iface.InitFace;
-import org.coody.framework.loader.base.IcopLoader;
+import org.coody.framework.init.loader.face.IcopLoader;
 import org.coody.framework.task.TaskTrigger;
 import org.coody.framework.util.PrintException;
+import org.coody.framework.util.PropertUtil;
 import org.coody.framework.util.StringUtil;
 
 /**
@@ -28,12 +30,12 @@ public class InitRunLoader implements IcopLoader {
 	@Override
 	public void doLoader(Set<Class<?>> clazzs) throws Exception {
 		for (Class<?> clazz : clazzs) {
-			InitBean initBean = clazz.getAnnotation(InitBean.class);
+			Annotation initBean = PropertUtil.getAnnotation(clazz, InitBean.class);
 			if (initBean == null) {
 				continue;
 			}
 			Object bean = BeanContainer.getBean(clazz);
-			if (InitFace.class.isAssignableFrom(bean.getClass())) {
+			if (InitFace.class.isAssignableFrom(clazz)) {
 				// 初始化运行
 				try {
 					InitFace face = (InitFace) bean;
@@ -51,7 +53,7 @@ public class InitRunLoader implements IcopLoader {
 				continue;
 			}
 			for (Method method : methods) {
-				CronTask task = method.getAnnotation(CronTask.class);
+				CronTask task =PropertUtil.getAnnotation(method, CronTask.class);
 				if (task == null) {
 					continue;
 				}

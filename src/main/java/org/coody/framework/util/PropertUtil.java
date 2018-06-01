@@ -1,6 +1,7 @@
 package org.coody.framework.util;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -326,7 +327,7 @@ public class PropertUtil {
 	 * @param fieldName
 	 * @return
 	 */
-	private static Object getFieldValueCurr(Object obj, String fieldName) {
+	private static <T> T getFieldValueCurr(Object obj, String fieldName) {
 		if (StringUtil.isNullOrEmpty(obj)) {
 			return null;
 		}
@@ -336,7 +337,7 @@ public class PropertUtil {
 		}
 		f.setAccessible(true);
 		try {
-			return f.get(obj);
+			return (T) f.get(obj);
 		} catch (Exception e) {
 
 			return null;
@@ -373,7 +374,7 @@ public class PropertUtil {
 	 * @param paraName
 	 * @return
 	 */
-	public static Object getFieldValue(Object bean, String paraName) {
+	public static <T> T getFieldValue(Object bean, String paraName) {
 		if (StringUtil.isNullOrEmpty(bean)) {
 			return null;
 		}
@@ -1178,42 +1179,126 @@ public class PropertUtil {
 		}
 		memberValues.put(propertyName, value);
 	}
-	
+
 	/**
 	 * 设置注解字段值
 	 * 
 	 * @throws SecurityException
 	 * @throws NoSuchFieldException
-	 * @throws IllegalAccessException 
-	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
 	 */
-	public static void setAnnotationValue(Annotation annotation, Map<String, Object> datas) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
-			 {
+	public static void setAnnotationValue(Annotation annotation, Map<String, Object> datas)
+			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		InvocationHandler invocationHandler = Proxy.getInvocationHandler(annotation);
 		Field declaredField = invocationHandler.getClass().getDeclaredField("memberValues");
 		declaredField.setAccessible(true);
 		Map<String, Object> memberValues = (Map<String, Object>) declaredField.get(invocationHandler);
-		if(StringUtil.isNullOrEmpty(datas)){
+		if (StringUtil.isNullOrEmpty(datas)) {
 			memberValues.clear();
 		}
-		for(String key:datas.keySet()){
+		for (String key : datas.keySet()) {
 			memberValues.put(key, datas.get(key));
 		}
 
 	}
+
 	/**
 	 * 获取注解字段map
-	 * @throws SecurityException 
-	 * @throws NoSuchFieldException 
-	 * @throws IllegalAccessException 
-	 * @throws IllegalArgumentException 
+	 * 
+	 * @throws SecurityException
+	 * @throws NoSuchFieldException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
 	 */
-	public static Map<String, Object> getAnnotationValue(Annotation annotation) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
-			{
+	public static Map<String, Object> getAnnotationValue(Annotation annotation)
+			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		InvocationHandler invocationHandler = Proxy.getInvocationHandler(annotation);
 		Field declaredField = invocationHandler.getClass().getDeclaredField("memberValues");
 		declaredField.setAccessible(true);
 		Map<String, Object> memberValues = (Map<String, Object>) declaredField.get(invocationHandler);
 		return memberValues;
+	}
+
+	public static  <T extends Annotation> T getAnnotation(AccessibleObject accessible,Class<T> annotationClass) {
+		if (!annotationClass.isAnnotation()) {
+			return null;
+		}
+		Annotation annotation=accessible.getAnnotation(annotationClass);
+		if(annotation!=null){
+			return (T) annotation;
+		}
+		Annotation[] annotations = accessible.getAnnotations();
+		if (StringUtil.isNullOrEmpty(annotations)) {
+			return null;
+		}
+		for (Annotation annotationTemp : annotations) {
+			if(annotationTemp.annotationType().isAnnotationPresent(annotationClass)){
+				return (T) annotationTemp;
+			}
+		}
+		return null;
+	}
+
+	public static  <T extends Annotation> List<Annotation> getAnnotations(AccessibleObject accessible,Class<T> annotationClass) {
+		if (!annotationClass.isAnnotation()) {
+			return null;
+		}
+		Annotation[] annotations = accessible.getAnnotations();
+		if (StringUtil.isNullOrEmpty(annotations)) {
+			return null;
+		}
+		List<Annotation> list=new ArrayList<Annotation>();
+		for (Annotation annotationTemp : annotations) {
+			if(annotationTemp.annotationType()!=annotationClass&&!annotationTemp.annotationType().isAnnotationPresent(annotationClass)){
+				continue;
+			}
+			list.add((T) annotationTemp);
+		}
+		if(StringUtil.isNullOrEmpty(list)){
+			return null;
+		}
+		return list;
+	}
+	
+	public static  <T extends Annotation> T getAnnotation(Class<?> clazz,Class<T> annotationClass) {
+		if (!annotationClass.isAnnotation()) {
+			return null;
+		}
+		Annotation annotation=clazz.getAnnotation(annotationClass);
+		if(annotation!=null){
+			return (T) annotation;
+		}
+		Annotation[] annotations = clazz.getAnnotations();
+		if (StringUtil.isNullOrEmpty(annotations)) {
+			return null;
+		}
+		for (Annotation annotationTemp : annotations) {
+			if(annotationTemp.annotationType().isAnnotationPresent(annotationClass)){
+				return (T) annotationTemp;
+			}
+		}
+		return null;
+	}
+
+	public static  <T extends Annotation> List<Annotation> getAnnotations(Class<?> clazz,Class<T> annotationClass) {
+		if (!annotationClass.isAnnotation()) {
+			return null;
+		}
+		Annotation[] annotations = clazz.getAnnotations();
+		if (StringUtil.isNullOrEmpty(annotations)) {
+			return null;
+		}
+		List<Annotation> list=new ArrayList<Annotation>();
+		for (Annotation annotationTemp : annotations) {
+			if(annotationTemp.annotationType()!=annotationClass&&!annotationTemp.annotationType().isAnnotationPresent(annotationClass)){
+				continue;
+			}
+			list.add((T) annotationTemp);
+		}
+		if(StringUtil.isNullOrEmpty(list)){
+			return null;
+		}
+		return list;
 	}
 }

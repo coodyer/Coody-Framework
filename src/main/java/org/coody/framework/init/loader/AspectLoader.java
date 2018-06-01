@@ -1,23 +1,26 @@
-package org.coody.framework.loader;
+package org.coody.framework.init.loader;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Set;
 
 import org.coody.framework.annotation.Around;
+import org.coody.framework.annotation.Arounds;
 import org.coody.framework.annotation.InitBean;
-import org.coody.framework.annotation.PathBinding;
 import org.coody.framework.aspect.entity.AspectEntity;
 import org.coody.framework.constant.FrameworkConstant;
-import org.coody.framework.loader.base.IcopLoader;
+import org.coody.framework.init.loader.face.IcopLoader;
 import org.coody.framework.util.AspectUtil;
+import org.coody.framework.util.PropertUtil;
 import org.coody.framework.util.StringUtil;
 
 /**
  * 切面加载器
+ * 
  * @author Administrator
  *
  */
-public class AspectLoader implements IcopLoader{
+public class AspectLoader implements IcopLoader {
 
 	@Override
 	public void doLoader(Set<Class<?>> clazzs) throws Exception {
@@ -26,7 +29,8 @@ public class AspectLoader implements IcopLoader{
 		}
 		for (Class<?> cla : clazzs) {
 
-			if (cla.getAnnotation(InitBean.class) == null && cla.getAnnotation(PathBinding.class) == null) {
+			Annotation initBean = PropertUtil.getAnnotation(cla, InitBean.class);
+			if (initBean == null) {
 				continue;
 			}
 			Method[] methods = cla.getDeclaredMethods();
@@ -34,11 +38,15 @@ public class AspectLoader implements IcopLoader{
 				continue;
 			}
 			for (Method method : methods) {
-				Around[] arounds = method.getAnnotationsByType(Around.class);
+				Arounds arounds=PropertUtil.getAnnotation(method, Arounds.class);
 				if (StringUtil.isNullOrEmpty(arounds)) {
 					continue;
 				}
-				for (Around around : arounds) {
+				Around [] aroundArgs=arounds.value();
+				if (StringUtil.isNullOrEmpty(aroundArgs)) {
+					continue;
+				}
+				for (Around around : aroundArgs) {
 					if (around == null) {
 						continue;
 					}

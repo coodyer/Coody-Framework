@@ -12,6 +12,7 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.METHOD,ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME) 
+@InitBean
 public @interface PathBinding {
 
 	String [] value() default {""};

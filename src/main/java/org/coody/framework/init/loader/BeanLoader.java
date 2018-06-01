@@ -1,21 +1,27 @@
-package org.coody.framework.loader;
+package org.coody.framework.init.loader;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Set;
 
+import org.coody.framework.annotation.InitBean;
 import org.coody.framework.container.BeanContainer;
 import org.coody.framework.exception.BeanConflictException;
-import org.coody.framework.loader.base.IcopLoader;
+import org.coody.framework.exception.BeanInitException;
+import org.coody.framework.exception.BeanNameCreateException;
+import org.coody.framework.init.loader.face.IcopLoader;
 import org.coody.framework.proxy.CglibProxy;
+import org.coody.framework.util.PropertUtil;
 import org.coody.framework.util.StringUtil;
 
 /**
  * Bean加载器
+ * 
  * @author Administrator
  *
  */
-public class BeanLoader implements IcopLoader{
-	
+public class BeanLoader implements IcopLoader {
 
 	static CglibProxy proxy = new CglibProxy();
 
@@ -25,11 +31,27 @@ public class BeanLoader implements IcopLoader{
 			return;
 		}
 		for (Class<?> cla : clazzs) {
-			List<String> beanNames = BeanContainer.getBeanNames(cla);
-			if (StringUtil.isNullOrEmpty(beanNames)) {
+			if (cla.isAnnotation()) {
 				continue;
 			}
+			if (cla.isInterface()) {
+				continue;
+			}
+			if(Modifier.isAbstract(cla.getModifiers())){
+				continue;
+			}
+			Annotation initBean = PropertUtil.getAnnotation(cla, InitBean.class);
+			if (StringUtil.isNullOrEmpty(initBean)) {
+				continue;
+			}
+			List<String> beanNames = BeanContainer.getBeanNames(cla);
+			if (StringUtil.isNullOrEmpty(beanNames)) {
+				throw new BeanNameCreateException(cla);
+			}
 			Object bean = proxy.getProxy(cla);
+			if (bean == null) {
+				throw new BeanInitException(cla);
+			}
 			for (String beanName : beanNames) {
 				if (StringUtil.isNullOrEmpty(beanName)) {
 					continue;

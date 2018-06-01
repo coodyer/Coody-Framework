@@ -10,4 +10,7 @@ import java.lang.annotation.Target;
 @InitBean
 public @interface RccService {
 
+	String value() default "";
+	
+	boolean annoExtends() default true;
 }
