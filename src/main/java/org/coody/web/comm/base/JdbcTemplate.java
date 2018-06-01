@@ -3,12 +3,12 @@ package org.coody.web.comm.base;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 
-import org.coody.framework.annotation.InitBean;
-import org.coody.framework.iface.InitFace;
-import org.coody.framework.jdbc.JdbcHandle;
+import org.coody.framework.core.annotation.InitBean;
+import org.coody.framework.core.bean.InitBeanFace;
+import org.coody.framework.orm.JdbcHandle;
 
 @InitBean
-public class JdbcTemplate extends JdbcHandle implements InitFace{
+public class JdbcTemplate extends JdbcHandle implements InitBeanFace{
 
 
 	@Override

@@ -4,10 +4,10 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.coody.framework.annotation.CacheWipe;
-import org.coody.framework.annotation.CacheWrite;
-import org.coody.framework.annotation.InitBean;
-import org.coody.framework.annotation.LogHead;
+import org.coody.framework.cache.annotation.CacheWipe;
+import org.coody.framework.cache.annotation.CacheWrite;
+import org.coody.framework.core.annotation.InitBean;
+import org.coody.framework.core.annotation.LogHead;
 import org.coody.web.comm.constant.CacheFinal;
 import org.coody.web.dao.UserDao;
 import org.coody.web.domain.UserInfo;

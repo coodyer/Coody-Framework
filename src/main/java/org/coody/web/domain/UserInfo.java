@@ -1,6 +1,6 @@
 package org.coody.web.domain;
 
-import org.coody.framework.entity.BaseModel;
+import org.coody.framework.core.entity.BaseModel;
 
 @SuppressWarnings("serial")
 public class UserInfo extends BaseModel{

@@ -6,15 +6,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.coody.framework.annotation.InitBean;
-import org.coody.framework.iface.InitFace;
-import org.coody.framework.util.JUUIDUtil;
-import org.coody.framework.util.StringUtil;
+import org.coody.framework.core.annotation.InitBean;
+import org.coody.framework.core.bean.InitBeanFace;
+import org.coody.framework.core.util.JUUIDUtil;
+import org.coody.framework.core.util.StringUtil;
 import org.coody.web.dao.UserDao;
 import org.coody.web.domain.UserInfo;
 
 @InitBean
-public class UserDaoImpl implements UserDao,InitFace{
+public class UserDaoImpl implements UserDao,InitBeanFace{
 
 	private static final Map<String, UserInfo> DATA_MAP=new ConcurrentHashMap<String, UserInfo>();
 	

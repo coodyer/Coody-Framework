@@ -3,7 +3,7 @@ package org.coody.web.comm.entity;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.coody.framework.entity.BaseModel;
+import org.coody.framework.core.entity.BaseModel;
 
 /**
  * @remark 消息机制容器。

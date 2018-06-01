@@ -8,11 +8,11 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.coody.framework.adapt.FormNomalAdapt;
-import org.coody.framework.annotation.JsonSerialize;
-import org.coody.framework.annotation.ParamsAdapt;
-import org.coody.framework.annotation.PathBinding;
-import org.coody.framework.util.PropertUtil;
+import org.coody.framework.core.util.PropertUtil;
+import org.coody.framework.mvc.adapt.FormNomalAdapt;
+import org.coody.framework.mvc.annotation.JsonSerialize;
+import org.coody.framework.mvc.annotation.ParamsAdapt;
+import org.coody.framework.mvc.annotation.PathBinding;
 import org.coody.web.comm.entity.MsgEntity;
 import org.coody.web.domain.UserInfo;
 import org.coody.web.service.UserService;

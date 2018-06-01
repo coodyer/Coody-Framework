@@ -4,8 +4,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.coody.framework.annotation.InitBean;
-import org.coody.framework.annotation.Transacted;
+import org.coody.framework.core.annotation.InitBean;
+import org.coody.framework.orm.annotation.Transacted;
 import org.coody.web.dao.IcopDao;
 import org.coody.web.domain.IcopTest;
 import org.coody.web.service.IcopService;

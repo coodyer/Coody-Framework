@@ -16,7 +16,7 @@
 	</context-param>
 	<!-- 配置监听器 -->
 	<listener>
-		<listener-class>org.coody.framework.listen.IcopServletListen</listener-class>
+		<listener-class>org.coody.framework.mvc.listen.IcopServletListen</listener-class>
 	</listener>
 	<!-- 初始化分发器 -->
 	<servlet>

@@ -2,7 +2,7 @@ package org.coody.web.domain;
 
 import java.util.Date;
 
-import org.coody.framework.entity.BaseModel;
+import org.coody.framework.core.entity.BaseModel;
 
 @SuppressWarnings("serial")
 public class IcopTest extends BaseModel{

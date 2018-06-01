@@ -3,8 +3,8 @@ package org.coody.web.service;
 import java.util.List;
 import java.util.Map;
 
-import org.coody.framework.annotation.CacheWrite;
-import org.coody.framework.annotation.RccService;
+import org.coody.framework.cache.annotation.CacheWrite;
+import org.coody.framework.rcc.annotation.RccService;
 import org.coody.web.comm.constant.CacheFinal;
 import org.coody.web.domain.UserInfo;
 

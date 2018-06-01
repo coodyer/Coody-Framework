@@ -1,6 +1,6 @@
 package org.coody.web.comm.enm;
 
-import org.coody.framework.util.PropertUtil;
+import org.coody.framework.core.util.PropertUtil;
 
 /**
  * 消息响应码枚举
