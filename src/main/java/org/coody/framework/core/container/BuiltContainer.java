@@ -7,7 +7,8 @@ import org.coody.framework.mvc.wrapper.IcopRequestWrapper;
 import org.coody.framework.mvc.wrapper.IcopResponseWrapper;
 import org.coody.framework.orm.aspect.TransactedAspect;
 import org.coody.framework.rcc.aspect.RccAspect;
-import org.coody.framework.rcc.caller.RccCaller;
+import org.coody.framework.rcc.caller.RccReceiveCaller;
+import org.coody.framework.rcc.caller.RccSendCaller;
 import org.coody.framework.rcc.serialer.KryoSerialer;
 
 public class BuiltContainer {
@@ -22,6 +23,7 @@ public class BuiltContainer {
 			IcopResponseWrapper.class,
 			KryoSerialer.class,
 			LocalCache.class,
-			RccCaller.class
+			RccSendCaller.class,
+			RccReceiveCaller.class
 	};
 }

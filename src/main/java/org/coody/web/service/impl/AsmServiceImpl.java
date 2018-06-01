@@ -5,7 +5,6 @@ import java.util.List;
 import org.coody.framework.core.annotation.InitBean;
 import org.coody.web.domain.UserInfo;
 import org.coody.web.service.UserService;
-import org.objectweb.asm.TypeReference;
 
 @InitBean
 public class AsmServiceImpl implements UserService{

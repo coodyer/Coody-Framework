@@ -19,7 +19,7 @@ import org.coody.framework.task.trigger.TaskTrigger;
 /**
  * 切面加载器
  * 
- * @author Administrator
+ * @author Coody
  *
  */
 public class InitRunLoader implements IcopLoader {

@@ -19,7 +19,7 @@ import org.coody.framework.mvc.exception.MappingConflicException;
 /**
  * MVC加载器
  * 
- * @author Administrator
+ * @author Coody
  *
  */
 public class MvcLoader implements IcopLoader {

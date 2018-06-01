@@ -18,7 +18,7 @@ import org.coody.framework.core.util.StringUtil;
 /**
  * Bean加载器
  * 
- * @author Administrator
+ * @author Coody
  *
  */
 public class BeanLoader implements IcopLoader {

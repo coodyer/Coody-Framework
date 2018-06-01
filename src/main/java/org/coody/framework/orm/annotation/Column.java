@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  * 用于标记domain类的字段。
- * @author Administrator
+ * @author Coody
  *
  */
 @Target(ElementType.FIELD)

@@ -1,14 +1,8 @@
 package org.coody.web.service;
 
 import java.util.List;
-import java.util.Map;
 
-import org.coody.framework.cache.annotation.CacheWrite;
-import org.coody.framework.rcc.annotation.RccService;
-import org.coody.web.comm.constant.CacheFinal;
 import org.coody.web.domain.UserInfo;
-
-import com.alibaba.fastjson.TypeReference;
 
 public interface UserService {
 

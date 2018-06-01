@@ -15,7 +15,7 @@ import org.coody.framework.core.util.StringUtil;
 
 /**
  * 字段加载器
- * @author Administrator
+ * @author Coody
  *
  */
 public class FieldLoader implements IcopLoader{

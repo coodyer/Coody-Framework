@@ -17,7 +17,7 @@ import org.coody.framework.core.util.StringUtil;
 /**
  * 切面加载器
  * 
- * @author Administrator
+ * @author Coody
  *
  */
 public class AspectLoader implements IcopLoader {

@@ -9,7 +9,7 @@ import org.coody.framework.core.annotation.InitBean;
 import org.coody.framework.core.point.AspectPoint;
 import org.coody.framework.core.util.MethodSignUtil;
 import org.coody.framework.rcc.annotation.RccService;
-import org.coody.framework.rcc.caller.RccCaller;
+import org.coody.framework.rcc.caller.RccSendCaller;
 import org.coody.framework.rcc.serialer.iface.RccSerialer;
 
 @InitBean
@@ -18,7 +18,7 @@ public class RccAspect {
 	@Resource
 	RccSerialer serialer;
 	@Resource
-	RccCaller caller;
+	RccSendCaller caller;
 
 	/**
 	 * RCC远程调用
@@ -37,7 +37,7 @@ public class RccAspect {
 		byte[] data = serialer.serialize(params);
 		// 远程调用
 		String methodKey = MethodSignUtil.getMethodKey(wrapper.getClazz(), method);
-		byte[] result = caller.doCall(methodKey, data);
+		byte[] result = caller.send(methodKey, data);
 		if (result == null) {
 			return null;
 		}

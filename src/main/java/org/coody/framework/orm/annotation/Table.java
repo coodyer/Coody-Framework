@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  * 用于domain实体类标记对应表名
- * @author Administrator
+ * @author Coody
  *
  */
 @Target(ElementType.TYPE)
