@@ -23,7 +23,7 @@ import org.objectweb.asm.Opcodes;
 public class ImplClassMaker {
 
 	@SuppressWarnings("serial")
-	private static final Map<Class<?>, String> returnTypeMapping = new HashMap<Class<?>, String>() {
+	private static final Map<Class<?>, String> RETURN_TYPE_MAPPING = new HashMap<Class<?>, String>() {
 		{
 			put(Integer.class, "I");
 			put(Float.class, "F");
@@ -98,7 +98,7 @@ public class ImplClassMaker {
 			Class<?>[] exceptionClazzs, Annotation[] annotations) {
 		String[] exceptions = formatClazzs(exceptionClazzs);
 		// 解析出参类型
-		String returnDesc = returnTypeMapping.get(returnType);
+		String returnDesc = RETURN_TYPE_MAPPING.get(returnType);
 		if (returnDesc == null) {
 			returnDesc = "L" + returnType.getName().replace('.', '/') + ";";
 		}

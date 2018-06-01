@@ -52,7 +52,7 @@ public class IcopResponseWrapper implements ServletResponse, HttpServletResponse
 	@Override
 	@Deprecated
 	public String encodeRedirectUrl(String arg0) {
-		return HttpContainer.getResponse().encodeRedirectUrl(arg0);
+		return HttpContainer.getResponse().encodeRedirectURL(arg0);
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class IcopResponseWrapper implements ServletResponse, HttpServletResponse
 	@Override
 	@Deprecated
 	public String encodeUrl(String arg0) {
-		return HttpContainer.getResponse().encodeUrl(arg0);
+		return HttpContainer.getResponse().encodeURL(arg0);
 	}
 
 	@Override

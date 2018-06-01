@@ -16,7 +16,7 @@ public class KryoUtil {
  
  
     //每个线程的 Kryo 实例
-    private static final ThreadLocal<Kryo> kryoLocal = new ThreadLocal<Kryo>() {
+    private static final ThreadLocal<Kryo> KRYO_LOCAL = new ThreadLocal<Kryo>() {
         @Override
         protected Kryo initialValue() {
             Kryo kryo = new Kryo();
@@ -46,7 +46,7 @@ public class KryoUtil {
      * @return 当前线程的 Kryo 实例
      */
     public static Kryo getInstance() {
-        return kryoLocal.get();
+        return KRYO_LOCAL.get();
     }
  
     //-----------------------------------------------
