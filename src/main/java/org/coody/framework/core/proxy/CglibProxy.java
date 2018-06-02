@@ -26,7 +26,7 @@ public class CglibProxy implements MethodInterceptor {
 
 
 
-	public Object getProxy(Class<?> clazz) throws InstantiationException, IllegalAccessException {
+	public Object getProxy(Class<?> clazz)  {
 		Integer modifier = clazz.getModifiers();
 		if (Modifier.isAbstract(modifier)) {
 			return null;
@@ -35,7 +35,11 @@ public class CglibProxy implements MethodInterceptor {
 			return null;
 		}
 		if (!isNeedProxyMethods(clazz)) {
-			return clazz.newInstance();
+			try {
+				return clazz.newInstance();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		Enhancer enhancer = new Enhancer();
 		// 设置需要创建子类的类

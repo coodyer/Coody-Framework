@@ -1,5 +1,6 @@
 package org.coody.framework.core.loader;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,11 +33,11 @@ public class FieldLoader implements IcopLoader {
 				if (StringUtil.isNullOrEmpty(field.getAnnotations())) {
 					continue;
 				}
-				Resource writeBean = PropertUtil.getAnnotation(field, Resource.class);
+				Annotation writeBean = PropertUtil.getAnnotation(field, Resource.class);
 				if (StringUtil.isNullOrEmpty(writeBean)) {
 					continue;
 				}
-				String beanName = writeBean.name();
+				String beanName = PropertUtil.getAnnotationValue(writeBean, "name");
 				if (StringUtil.isNullOrEmpty(beanName)) {
 					beanName = field.getType().getName();
 				}
