@@ -92,9 +92,6 @@ public class CglibProxy implements MethodInterceptor {
 		 * 判断注解是否满足条件
 		 */
 		if (!StringUtil.isNullOrEmpty(aspectEntity.getAnnotationClass())) {
-			if("getUsers".equals(method.getName())&&clazz.getSimpleName().equals("UserServiceImpl")){
-				System.out.println(method);
-			}
 			Annotation[] annotations = method.getAnnotations();
 			if (StringUtil.isNullOrEmpty(annotations)) {
 				return false;
