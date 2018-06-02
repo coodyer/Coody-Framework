@@ -40,6 +40,12 @@ public class BeanLoader implements IcopLoader {
 			if(Modifier.isAbstract(cla.getModifiers())){
 				continue;
 			}
+			if(cla.isEnum()){
+				continue;
+			}
+			if(StringUtil.isNullOrEmpty(cla.getAnnotations())){
+				continue;
+			}
 			Annotation initBean = PropertUtil.getAnnotation(cla, InitBean.class);
 			if (StringUtil.isNullOrEmpty(initBean)) {
 				continue;

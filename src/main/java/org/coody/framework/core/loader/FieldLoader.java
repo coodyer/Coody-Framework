@@ -15,10 +15,11 @@ import org.coody.framework.core.util.StringUtil;
 
 /**
  * 字段加载器
+ * 
  * @author Coody
  *
  */
-public class FieldLoader implements IcopLoader{
+public class FieldLoader implements IcopLoader {
 
 	@Override
 	public void doLoader(Set<Class<?>> clazzs) throws Exception {
@@ -28,7 +29,10 @@ public class FieldLoader implements IcopLoader{
 				continue;
 			}
 			for (Field field : fields) {
-				Resource writeBean =PropertUtil.getAnnotation(field, Resource.class);
+				if (StringUtil.isNullOrEmpty(field.getAnnotations())) {
+					continue;
+				}
+				Resource writeBean = PropertUtil.getAnnotation(field, Resource.class);
 				if (StringUtil.isNullOrEmpty(writeBean)) {
 					continue;
 				}
@@ -39,14 +43,13 @@ public class FieldLoader implements IcopLoader{
 				if (!BeanContainer.containsBean(beanName)) {
 					throw new BeanNotFoundException(beanName, bean.getClass());
 				}
-				Object writeValue = null;
 				field.setAccessible(true);
-				writeValue = BeanContainer.getBean(beanName);
+				Object writeValue = BeanContainer.getBean(beanName);
 				field.set(bean, writeValue);
 			}
 		}
 	}
-	
+
 	private static List<Field> loadFields(Class<?> clazz) {
 		List<Field> fields = new ArrayList<Field>();
 		Field[] fieldArgs = clazz.getDeclaredFields();

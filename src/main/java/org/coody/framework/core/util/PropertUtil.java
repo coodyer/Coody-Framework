@@ -351,7 +351,7 @@ public class PropertUtil {
 	 * @param paraName
 	 * @return
 	 */
-	public static Object getAnnotationValue(Annotation annotation, String paraName) {
+	public static <T> T getAnnotationValue(Annotation annotation, String paraName) {
 		if (StringUtil.hasNull(annotation, paraName)) {
 			return null;
 		}
@@ -360,7 +360,7 @@ public class PropertUtil {
 			Field hField = invocationHandler.getClass().getDeclaredField("memberValues");
 			hField.setAccessible(true);
 			Map<?, ?> paraMap = (Map<?, ?>) hField.get(invocationHandler);
-			return paraMap.get(paraName);
+			return (T) paraMap.get(paraName);
 		} catch (Exception e) {
 			return null;
 		}
@@ -1211,7 +1211,7 @@ public class PropertUtil {
 	 * @throws IllegalAccessException
 	 * @throws IllegalArgumentException
 	 */
-	public static Map<String, Object> getAnnotationValue(Annotation annotation)
+	public static Map<String, Object> getAnnotationValueMap(Annotation annotation)
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		InvocationHandler invocationHandler = Proxy.getInvocationHandler(annotation);
 		Field declaredField = invocationHandler.getClass().getDeclaredField("memberValues");

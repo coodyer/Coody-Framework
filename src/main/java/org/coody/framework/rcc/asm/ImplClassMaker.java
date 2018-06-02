@@ -125,7 +125,7 @@ public class ImplClassMaker {
 				for (Annotation annotation : annotations) {
 					String annotationName = "L" + annotation.annotationType().getName().replace('.', '/') + ";";
 					AnnotationVisitor avTemp = mv.visitAnnotation(annotationName, true);
-					Map<String, Object> annotationData = PropertUtil.getAnnotationValue(annotation);
+					Map<String, Object> annotationData = PropertUtil.getAnnotationValueMap(annotation);
 					if (!StringUtil.isNullOrEmpty(annotationData)) {
 						for (String key : annotationData.keySet()) {
 							avTemp.visit(key, annotationData.get(key));

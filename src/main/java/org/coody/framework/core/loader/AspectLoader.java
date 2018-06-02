@@ -2,6 +2,10 @@ package org.coody.framework.core.loader;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import org.coody.framework.core.annotation.Around;
@@ -28,7 +32,18 @@ public class AspectLoader implements IcopLoader {
 			return;
 		}
 		for (Class<?> cla : clazzs) {
-
+			if (cla.isAnnotation()) {
+				continue;
+			}
+			if (cla.isInterface()) {
+				continue;
+			}
+			if(Modifier.isAbstract(cla.getModifiers())){
+				continue;
+			}
+			if(cla.isEnum()){
+				continue;
+			}
 			Annotation initBean = PropertUtil.getAnnotation(cla, InitBean.class);
 			if (initBean == null) {
 				continue;
@@ -38,29 +53,41 @@ public class AspectLoader implements IcopLoader {
 				continue;
 			}
 			for (Method method : methods) {
-				Arounds arounds=PropertUtil.getAnnotation(method, Arounds.class);
+				if(Modifier.isStatic(method.getModifiers())||Modifier.isAbstract(method.getModifiers())){
+					continue;
+				}
+				if(StringUtil.isNullOrEmpty(method.getAnnotations())){
+					continue;
+				}
+				List<Annotation> arounds=PropertUtil.getAnnotations(method, Around.class);
 				if (StringUtil.isNullOrEmpty(arounds)) {
-					continue;
-				}
-				Around [] aroundArgs=arounds.value();
-				if (StringUtil.isNullOrEmpty(aroundArgs)) {
-					continue;
-				}
-				for (Around around : aroundArgs) {
-					if (around == null) {
+					List<Annotation> aroundParents=PropertUtil.getAnnotations(method, Arounds.class);
+					if(StringUtil.isNullOrEmpty(aroundParents)){
 						continue;
 					}
-					if (StringUtil.isAllNull(around.annotationClass(), around.classMappath(), around.annotationClass(),
-							around.methodMappath())) {
+					arounds=new ArrayList<Annotation>();
+					for(Annotation aroundParent:aroundParents){
+						Annotation[] aroundTemps=PropertUtil.getAnnotationValue(aroundParent,"value");
+						if(StringUtil.isNullOrEmpty(aroundTemps)){
+							continue;
+						}
+						arounds.addAll(Arrays.asList(aroundTemps));
+					}
+				}
+				for (Annotation around : arounds) {
+					Class<?>[] annotationClass=PropertUtil.getAnnotationValue(around, "annotationClass");
+					String classMappath=PropertUtil.getAnnotationValue(around, "classMappath");
+					String methodMappath=PropertUtil.getAnnotationValue(around, "methodMappath");
+					if (StringUtil.isAllNull(annotationClass, classMappath, methodMappath)) {
 						continue;
 					}
 					AspectEntity aspectEntity = new AspectEntity();
 					// 装载切面控制方法
-					aspectEntity.setAnnotationClass(around.annotationClass());
-					aspectEntity.setMethodMappath(around.methodMappath());
-					aspectEntity.setClassMappath(around.classMappath());
+					aspectEntity.setAnnotationClass(annotationClass);
+					aspectEntity.setMethodMappath(classMappath);
+					aspectEntity.setClassMappath(methodMappath);
 					aspectEntity.setAspectInvokeMethod(method);
-					String methodKey = MethodSignUtil.getBeanKey(method);
+					String methodKey = MethodSignUtil.getMethodUnionKey(method);
 					FrameworkConstant.writeToAspectMap(methodKey, aspectEntity);
 				}
 			}

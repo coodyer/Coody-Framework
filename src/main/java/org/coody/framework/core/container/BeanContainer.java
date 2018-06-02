@@ -41,9 +41,12 @@ public class BeanContainer {
 		return beanMap.containsKey(beanName);
 	}
 	public static Collection<?> getBeans(){
-		return beanMap.values();
+		return new HashSet<Object>(beanMap.values());
 	}
 	public static String getBeanName(Class<?> clazz){
+		if(StringUtil.isNullOrEmpty(clazz.getAnnotations())){
+			return null;
+		}
 		List<Annotation> initBeans=PropertUtil.getAnnotations(clazz, InitBean.class);
 		if(StringUtil.isNullOrEmpty(initBeans)){
 			return null;
@@ -75,6 +78,15 @@ public class BeanContainer {
 		Class<?>[] clazzs=clazz.getInterfaces();
 		if(!StringUtil.isNullOrEmpty(clazzs)){
 			for(Class<?> clazTemp:clazzs){
+				if(clazTemp.getName().startsWith("java.util")){
+					continue;
+				}
+				if(clazTemp.getName().startsWith("java.lang")){
+					continue;
+				}
+				if(clazTemp.getName().startsWith("java.net")){
+					continue;
+				}
 				beanName=getBeanName(clazTemp);
 				if(StringUtil.isNullOrEmpty(beanName)){
 					beanName=clazTemp.getName();

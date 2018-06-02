@@ -36,6 +36,7 @@ public class UserServiceImpl implements UserService{
 	 */
 	@Override
 	@LogHead("获取用户信息")
+	@CacheWrite(key=CacheFinal.USER_LIST)
 	public List<UserInfo> getUsers(){
 		return userDao.getUsers();
 	}

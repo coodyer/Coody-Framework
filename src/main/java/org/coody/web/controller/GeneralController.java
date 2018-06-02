@@ -38,6 +38,7 @@ public class GeneralController {
 	@ParamsAdapt(FormNomalAdapt.class)
 	public Object index(){
 		List<UserInfo> users=userService.getUsers();
+		userService.deleteUser("bee723d8cb034040b81887709b12b662");
 		return users;
 	}
 	
