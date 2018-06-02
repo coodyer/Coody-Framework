@@ -32,13 +32,13 @@ public class InitRunLoader implements IcopLoader {
 
 	@Override
 	public void doLoader(Set<Class<?>> clazzs) throws Exception {
+		List<Runnable> inits=new ArrayList<Runnable>();
 		for (Class<?> clazz : clazzs) {
 			Annotation initBean = PropertUtil.getAnnotation(clazz, InitBean.class);
 			if (initBean == null) {
 				continue;
 			}
 			Object bean = BeanContainer.getBean(clazz);
-			List<Runnable> inits=new ArrayList<Runnable>();
 			if (InitBeanFace.class.isAssignableFrom(clazz)) {
 				// 初始化运行
 				try {
@@ -55,9 +55,6 @@ public class InitRunLoader implements IcopLoader {
 				} catch (Exception e) {
 					PrintException.printException(logger, e);
 				}
-			}
-			if(!StringUtil.isNullOrEmpty(inits)){
-				new ThreadBlockPool().execute(inits);
 			}
 			// 执行定时任务
 			Method[] methods = clazz.getDeclaredMethods();
@@ -81,6 +78,9 @@ public class InitRunLoader implements IcopLoader {
 					continue;
 				}
 			}
+		}
+		if(!StringUtil.isNullOrEmpty(inits)){
+			new ThreadBlockPool().execute(inits);
 		}
 	}
 
