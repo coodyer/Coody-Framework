@@ -2,6 +2,8 @@ package org.coody.framework.core.loader;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -9,6 +11,7 @@ import org.coody.framework.core.annotation.InitBean;
 import org.coody.framework.core.bean.InitBeanFace;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.loader.iface.IcopLoader;
+import org.coody.framework.core.threadpool.ThreadBlockPool;
 import org.coody.framework.core.util.PrintException;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
@@ -35,6 +38,7 @@ public class InitRunLoader implements IcopLoader {
 				continue;
 			}
 			Object bean = BeanContainer.getBean(clazz);
+			List<Runnable> inits=new ArrayList<Runnable>();
 			if (InitBeanFace.class.isAssignableFrom(clazz)) {
 				// 初始化运行
 				try {
@@ -42,10 +46,18 @@ public class InitRunLoader implements IcopLoader {
 					if (StringUtil.isNullOrEmpty(face)) {
 						continue;
 					}
-					face.init();
+					inits.add(new Runnable() {
+						@Override
+						public void run() {
+							face.init();
+						}
+					});
 				} catch (Exception e) {
 					PrintException.printException(logger, e);
 				}
+			}
+			if(!StringUtil.isNullOrEmpty(inits)){
+				new ThreadBlockPool().execute(inits);
 			}
 			// 执行定时任务
 			Method[] methods = clazz.getDeclaredMethods();
