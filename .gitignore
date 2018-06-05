@@ -1,2 +1,9 @@
-/target/
-/.settings/
+target
+.settings
+.project
+*.jar
+*.war
+*.class
+*.log
+test
+.classpath
