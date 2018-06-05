@@ -1,142 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.coody.framework</groupId>
-	<artifactId>icop</artifactId>
-	<packaging>war</packaging>
-	<version>1.0</version>
-	<name>icop Maven Webapp</name>
-	<url>http://maven.apache.org</url>
-	<dependencies>
+	<artifactId>coody</artifactId>
+	<version>alpha-0.1</version>
+	<packaging>pom</packaging>
 
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-			<version>1.2.46</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.tomcat</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>6.0.53</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
+
+	<properties>
+
+		<java.version.source>1.8</java.version.source>
+		<java.version.target>1.8</java.version.target>
+		<cglib.version>3.2.6</cglib.version>
+		<log4j.version>1.2.9</log4j.version>
+		<noson.version>1.0.1</noson.version>
+		<java.compiler.argument />
+		<java.test.compiler.argument>${java.compiler.argument}</java.test.compiler.argument>
+		<gpg.skip>true</gpg.skip>
+		<coody.version>alpha-0.1</coody.version>
+		<commons-pool.version>20030825.183949</commons-pool.version>
+		<commons-dbcp.version>20030825.184428</commons-dbcp.version>
+		<commons-collections.version>20031027.000000</commons-collections.version>
+		<servlet-api.version>6.0.53</servlet-api.version>
+	</properties>
+
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.1</version>
+					<configuration>
+						<source>${java.version.source}</source>
+						<target>${java.version.target}</target>
+						<compilerArgument>${java.compiler.argument}</compilerArgument>
+						<testSource>${java.specification.version}</testSource>
+						<testTarget>${java.specification.version}</testTarget>
+						<testCompilerArgument>${java.test.compiler.argument}</testCompilerArgument>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.sonatype.plugins</groupId>
+					<artifactId>jarjar-maven-plugin</artifactId>
+					<version>1.9</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+	<modules>
+		<module>coody-core</module>
+		<module>coody-web</module>
+		<module>coody-cache</module>
+		<module>coody-jdbc</module>
+		<module>coody-task</module>
+	</modules>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>cglib</groupId>
+				<artifactId>cglib</artifactId>
+				<version>${cglib.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>${log4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.gitee.ainilili</groupId>
+				<artifactId>noson</artifactId>
+				<version>${noson.version}</version>
+			</dependency>
+			<dependency>
 			<groupId>commons-pool</groupId>
 			<artifactId>commons-pool</artifactId>
-			<version>20030825.183949</version>
+			<version>${commons-pool.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-dbcp</groupId>
 			<artifactId>commons-dbcp</artifactId>
-			<version>20030825.184428</version>
+			<version>${commons-dbcp.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
-			<version>20031027.000000</version>
+			<version>${commons-collections.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>Mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>5.0.8</version>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>${servlet-api.version}</version>
+			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>cglib</groupId>
-			<artifactId>cglib</artifactId>
-			<version>3.2.6</version>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.9</version>
-		</dependency>
-		<dependency>
-			<groupId>com.esotericsoftware.kryo</groupId>
-			<artifactId>kryo</artifactId>
-			<version>2.24.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.zookeeper</groupId>
-			<artifactId>zookeeper</artifactId>
-			<version>3.4.9</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
-	<build>
-		<finalName>icop</finalName>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.6</version>
-				<configuration>
-					<encoding>utf8</encoding>
-					<encoding>UTF-8</encoding>
-					<!-- 过滤后缀为pem、pfx、p12的证书文件 -->
-					<nonFilteredFileExtensions>
-						<nonFilteredFileExtension>pem</nonFilteredFileExtension>
-						<nonFilteredFileExtension>pfx</nonFilteredFileExtension>
-						<nonFilteredFileExtension>p12</nonFilteredFileExtension>
-					</nonFilteredFileExtensions>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>2.4</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-					<encoding>utf8</encoding>
-					<!-- 保留参数名 -->
-					<compilerArgs>
-						<arg>-parameters</arg>
-					</compilerArgs>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-			<!-- Eclipse 插件 -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.9</version>
-				<configuration>
-					<downloadSources>false</downloadSources>
-					<downloadJavadocs>false</downloadJavadocs>
-					<wtpversion>2.0</wtpversion>
-					<jeeversion>5.0</jeeversion>
-					<additionalConfig>
-						<file>
-							<name>.settings/org.eclipse.core.resources.prefs</name>
-							<content>
-								<![CDATA[eclipse.preferences.version=1${line.separator}encoding/<project>=${project.build.sourceEncoding}${line.separator}]]>
-							</content>
-						</file>
-						<file>
-							<name>.settings/org.eclipse.wst.common.project.facet.core.xml</name>
-							<content>
-								<![CDATA[<?xml version="1.0" encoding="UTF-8"?>${line.separator}<faceted-project>${line.separator}  <!-- <fixed facet="jst.java"/> -->${line.separator}  <fixed facet="jst.web"/>${line.separator}  <installed facet="jst.web" version="2.5"/>${line.separator}  <!-- <installed facet="jst.java" version="1.4"/> -->${line.separator}</faceted-project>${line.separator}]]>
-							</content>
-						</file>
-					</additionalConfig>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+		</dependencies>
+	</dependencyManagement>
+
 </project>
