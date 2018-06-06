@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.coody.framework</groupId>
 	<artifactId>coody</artifactId>
@@ -15,7 +14,7 @@
 		<cglib.version>3.2.6</cglib.version>
 		<log4j.version>1.2.9</log4j.version>
 		<noson.version>1.0.1</noson.version>
-		<java.compiler.argument />
+		<java.compiler.argument/>
 		<java.test.compiler.argument>${java.compiler.argument}</java.test.compiler.argument>
 		<gpg.skip>true</gpg.skip>
 		<coody.version>alpha-0.1</coody.version>
@@ -23,6 +22,7 @@
 		<commons-dbcp.version>20030825.184428</commons-dbcp.version>
 		<commons-collections.version>20031027.000000</commons-collections.version>
 		<servlet-api.version>6.0.53</servlet-api.version>
+		<kryo.version>2.24.0</kryo.version>
 	</properties>
 
 
@@ -57,7 +57,8 @@
 		<module>coody-cache</module>
 		<module>coody-jdbc</module>
 		<module>coody-task</module>
-	</modules>
+    <module>coody-rcc</module>
+  </modules>
 
 	<dependencyManagement>
 		<dependencies>
@@ -96,6 +97,11 @@
 			<artifactId>servlet-api</artifactId>
 			<version>${servlet-api.version}</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.esotericsoftware.kryo</groupId>
+			<artifactId>kryo</artifactId>
+			<version>${kryo.version}</version>
 		</dependency>
 		</dependencies>
 	</dependencyManagement>
