@@ -58,6 +58,7 @@
 		<module>coody-jdbc</module>
 		<module>coody-task</module>
     <module>coody-rcc</module>
+    <module>example</module>
   </modules>
 
 	<dependencyManagement>

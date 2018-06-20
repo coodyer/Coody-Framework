@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.coody.framework.core.annotation.Order;
+import org.coody.framework.core.exception.base.IcopException;
 import org.coody.framework.core.loader.AspectLoader;
 import org.coody.framework.core.loader.BeanLoader;
 import org.coody.framework.core.loader.FieldLoader;
@@ -23,14 +24,17 @@ public class CoreApp {
 	static BaseLogger logger=BaseLogger.getLogger(CoreApp.class);
 	
 	@SuppressWarnings("serial")
-	static Map<Integer,List<IcopLoader>> loadersMap=new TreeMap<Integer, List<IcopLoader>>(){{
-		put(1, Arrays.asList(new IcopLoader[]{new AspectLoader()}));
-		put(2, Arrays.asList(new IcopLoader[]{new BeanLoader()}));
-		put(3, Arrays.asList(new IcopLoader[]{new FieldLoader()}));
-		put(Integer.MAX_VALUE, Arrays.asList(new IcopLoader[]{new InitRunLoader()}));
+	static Map<Integer,List<Class<?>>> loadersMap=new TreeMap<Integer, List<Class<?>>>(){{
+		put(1, Arrays.asList(new Class<?>[]{AspectLoader.class}));
+		put(2, Arrays.asList(new Class<?>[]{BeanLoader.class}));
+		put(3, Arrays.asList(new Class<?>[]{FieldLoader.class}));
+		put(Integer.MAX_VALUE, Arrays.asList(new Class<?>[]{InitRunLoader.class}));
 	}};
 	
-	public static void pushLoader(IcopLoader loader){
+	public static void pushLoader(Class<?> loader){
+		if(!IcopLoader.class.isAssignableFrom(loader)){
+			throw new IcopException(loader.getName()+"不是加载器");
+		}
 		Integer seq=Integer.MAX_VALUE-1;
 		Order order=loader.getClass().getAnnotation(Order.class);
 		if(order!=null){
@@ -38,8 +42,9 @@ public class CoreApp {
 		}
 		if(loadersMap.containsKey(seq)){
 			loadersMap.get(seq).add(loader);
+			return;
 		}
-		List<IcopLoader> loaderList=new ArrayList<IcopLoader>();
+		List<Class<?>> loaderList=new ArrayList<Class<?>>();
 		loaderList.add(loader);
 		loadersMap.put(seq, loaderList);
 	}
@@ -56,13 +61,14 @@ public class CoreApp {
 		if (StringUtil.isNullOrEmpty(clazzs)) {
 			return;
 		}
-		List<IcopLoader> currentLoaders=new ArrayList<IcopLoader>();
+		Set<Class<?>> currentLoaders=new HashSet<Class<?>>();
 		for(Integer key:loadersMap.keySet()){
 			currentLoaders.addAll(loadersMap.get(key));
 		}
-		for(IcopLoader loader:currentLoaders){
+		for(Class<?> loader:currentLoaders){
 			long t0=System.currentTimeMillis();
-			loader.doLoader(clazzs);
+			IcopLoader icopLoader=(IcopLoader) loader.newInstance();
+			icopLoader.doLoader(clazzs);
 			long t1=System.currentTimeMillis();
 			logger.info(loader.getClass().getName()+":"+(t1-t0));
 		}

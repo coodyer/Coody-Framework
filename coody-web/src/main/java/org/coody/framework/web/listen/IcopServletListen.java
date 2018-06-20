@@ -28,7 +28,8 @@ public class IcopServletListen implements ServletContextListener {
 			String initLoader=event.getServletContext().getInitParameter("initLoader");
 			String []loaders=initLoader.split(",");
 			for(String loader:loaders){
-				CoreApp.pushLoader((IcopLoader)Class.forName(loader).newInstance());
+				loader=loader.trim();
+				CoreApp.pushLoader(Class.forName(loader));
 			}
 			String[] packets = packet.split(",");
 			CoreApp.init(packets);

@@ -42,10 +42,8 @@ public class CglibProxy implements MethodInterceptor {
 			}
 		}
 		Enhancer enhancer = new Enhancer();
-		// 设置需要创建子类的类
 		enhancer.setSuperclass(clazz);
 		enhancer.setCallback(this);
-		// 通过字节码技术动态创建子类实例
 		return enhancer.create();
 	}
 
