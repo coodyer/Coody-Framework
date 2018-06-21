@@ -5,7 +5,6 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.log4j.Logger;
 import org.coody.framework.core.CoreApp;
-import org.coody.framework.core.loader.iface.IcopLoader;
 import org.coody.framework.core.util.StringUtil;
 
 public class IcopServletListen implements ServletContextListener {
