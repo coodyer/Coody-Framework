@@ -95,7 +95,7 @@ org.coody.framework.box.init 初始化入口包
 
 org.coody.framework.box.mvc MVC实现包
 
-org.coody.framework.box.proyx 动态代理包
+org.coody.framework.box.proxy 动态代理包
 
 org.coody.framework.box.wrapper 包装类
 
@@ -137,7 +137,7 @@ org.coody.framework.box.mvc.DispatServlet 类似于spring的DispatServlet
 
  **(8)、类说明-代理工具** 
 
-org.coody.framework.box.proyx.CglibProxy 基于cglib字节码创建子类的实现
+org.coody.framework.box.proxy.CglibProxy 基于cglib字节码创建子类的实现
 
  **(9)、类说明-包装类** 
 
