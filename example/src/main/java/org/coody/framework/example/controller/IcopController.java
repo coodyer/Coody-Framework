@@ -9,7 +9,7 @@ import org.coody.framework.core.util.StringUtil;
 import org.coody.framework.example.comm.entity.MsgEntity;
 import org.coody.framework.example.domain.IcopTest;
 import org.coody.framework.example.service.IcopService;
-import org.coody.framework.web.annotation.JsonSerialize;
+import org.coody.framework.web.annotation.JsonOut;
 import org.coody.framework.web.annotation.PathBinding;
 
 @PathBinding("/icop")
@@ -20,7 +20,7 @@ public class IcopController {
 	IcopService icopService;
 	
 	@PathBinding("loadIcops.do")
-	@JsonSerialize
+	@JsonOut
 	public Object loadIcops(){
 		List<IcopTest> icops=icopService.getIcops();
 		return icops;
@@ -31,7 +31,7 @@ public class IcopController {
 	 * @return
 	 */
 	@PathBinding("delIcop.do")
-	@JsonSerialize
+	@JsonOut
 	public Object delIcop(HttpServletRequest request){
 		Integer id=StringUtil.toInteger(request.getParameter("id"));
 		Long code=icopService.delIcop(id);

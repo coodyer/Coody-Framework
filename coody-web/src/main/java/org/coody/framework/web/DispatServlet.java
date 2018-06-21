@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.coody.framework.core.util.StringUtil;
-import org.coody.framework.web.annotation.JsonSerialize;
+import org.coody.framework.web.annotation.JsonOut;
 import org.coody.framework.web.container.HttpContainer;
 import org.coody.framework.web.container.MappingContainer;
 import org.coody.framework.web.entity.MvcMapping;
@@ -42,7 +42,7 @@ public class DispatServlet extends HttpServlet{
 			if(result==null){
 				return;
 			}
-			JsonSerialize jsonSerialize=mapping.getMethod().getAnnotation(JsonSerialize.class);
+			JsonOut jsonSerialize=mapping.getMethod().getAnnotation(JsonOut.class);
 			if(jsonSerialize!=null){
 				response.setContentType("application/Json");
 				String json=Noson.reversal(result);

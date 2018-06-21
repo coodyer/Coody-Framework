@@ -13,7 +13,7 @@ import org.coody.framework.example.comm.entity.MsgEntity;
 import org.coody.framework.example.domain.UserInfo;
 import org.coody.framework.example.service.UserService;
 import org.coody.framework.web.adapt.FormNomalAdapt;
-import org.coody.framework.web.annotation.JsonSerialize;
+import org.coody.framework.web.annotation.JsonOut;
 import org.coody.framework.web.annotation.ParamsAdapt;
 import org.coody.framework.web.annotation.PathBinding;
 import org.nico.noson.Noson;
@@ -33,7 +33,7 @@ public class GeneralController {
 	HttpServletResponse response;
 	
 	@PathBinding("/index.do")	
-	@JsonSerialize
+	@JsonOut
 	@ParamsAdapt(FormNomalAdapt.class)
 	public Object index(){
 		List<UserInfo> users=userService.getUsers();
@@ -53,7 +53,7 @@ public class GeneralController {
 	}
 	
 	@PathBinding("/test.do")
-	@JsonSerialize
+	@JsonOut
 	public Object test(){
 		System.out.println(Noson.reversal(request.getParameterMap()));
 		return new MsgEntity(0,"操作成功","这是test的内容");
