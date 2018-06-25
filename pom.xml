@@ -13,7 +13,7 @@
 		<java.version.target>1.8</java.version.target>
 		<cglib.version>3.2.6</cglib.version>
 		<log4j.version>1.2.9</log4j.version>
-		<noson.version>1.0.1</noson.version>
+		<noson.version>1.0.7</noson.version>
 		<java.compiler.argument/>
 		<java.test.compiler.argument>${java.compiler.argument}</java.test.compiler.argument>
 		<gpg.skip>true</gpg.skip>
