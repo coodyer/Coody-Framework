@@ -27,8 +27,8 @@ import org.coody.framework.task.threadpool.TaskThreadPool;
 @InitBean
 public class TaskTrigger implements InitBeanFace{
 	
+	private static Map<Method, ZonedDateTime> cronExpressionMap=new ConcurrentHashMap<Method, ZonedDateTime>();
 	static Logger logger=Logger.getLogger(TaskTrigger.class);
-
 	
 	public static Method getTriggerMethod(){
 		Method[] methods=TaskTrigger.class.getDeclaredMethods();
@@ -42,11 +42,8 @@ public class TaskTrigger implements InitBeanFace{
 		}
 		return null;
 	}
-	private static Map<Method, ZonedDateTime> cronExpressionMap=new ConcurrentHashMap<Method, ZonedDateTime>();
 	
-	
-	public static void nextRun(Object bean,Method method,String cron,ZonedDateTime zonedDateTime){
-		//获取下次执行时间
+	public static void trigger(Object bean,Method method,String cron,ZonedDateTime zonedDateTime){
 		CronExpression express = new CronExpression(cron);
 		if(zonedDateTime==null){
 			zonedDateTime=ZonedDateTime.now(ZoneId.systemDefault());
@@ -86,14 +83,14 @@ public class TaskTrigger implements InitBeanFace{
 			return aspect.invoke();
 		}finally {
 			ZonedDateTime zonedDateTime=cronExpressionMap.get(method);
-			nextRun(bean, method, cron,zonedDateTime);
+			trigger(bean, method, cron,zonedDateTime);
 		}
 	}
 	
 	public void init(){
 		for (TaskEntity task : TaskContainer.getTaskEntitys()) {
 			Object bean = BeanContainer.getBean(task.getClazz());
-			TaskTrigger.nextRun(bean, task.getMethod(), task.getCron(), null);
+			TaskTrigger.trigger(bean, task.getMethod(), task.getCron(), null);
 		}
 	}
 }
