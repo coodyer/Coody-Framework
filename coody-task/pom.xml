@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.coody.framework</groupId>
 		<artifactId>coody</artifactId>
-		<version>alpha-0.1</version>
+		<version>alpha-1.0.1</version>
 	</parent>
 	<artifactId>coody-task</artifactId>
 	<name>coody-task</name>
@@ -14,12 +14,23 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	
-	
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
 			</plugin>
 		</plugins>
 

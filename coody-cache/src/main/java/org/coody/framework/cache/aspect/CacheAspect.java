@@ -28,8 +28,8 @@ public class CacheAspect {
 	/**
 	 * 写缓存操作
 	 * 
-	 * @param pjp
-	 * @return
+	 * @param aspect
+	 * @return 方法返回内容
 	 * @throws Throwable
 	 */
 	@Around(annotationClass=CacheWrite.class)
@@ -89,8 +89,8 @@ public class CacheAspect {
 	/**
 	 * 缓存清理
 	 * 
-	 * @param pjp
-	 * @return
+	 * @param aspect
+	 * @return 方法返回内容
 	 * @throws Throwable
 	 */
 	@Around(annotationClass=CacheWipes.class)

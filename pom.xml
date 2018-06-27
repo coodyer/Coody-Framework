@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.coody.framework</groupId>
 	<artifactId>coody</artifactId>
-	<version>alpha-0.1</version>
+	<version>alpha-1.0.1</version>
 	<packaging>pom</packaging>
 
 
@@ -37,11 +37,22 @@
 		<connection>https://gitee.com/coodyer/coody-icop.git</connection>
 		<developerConnection>https://gitee.com/coodyer/coody-icop</developerConnection>
 	</scm>
+	<distributionManagement>
+		<snapshotRepository>
+			<id>Coody</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		</snapshotRepository>
+		<repository>
+			<id>Coody</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
 	<developers>
 		<developer>
 			<name>Coody</name>
 			<email>644556636@qq.com</email>
-			<url>https://gitee.com/coodyer/coody-icop</url>
+			<organization>Coody</organization>
+			<organizationUrl>http://coody.org</organizationUrl>
 		</developer>
 	</developers>
 	<build>
@@ -62,9 +73,48 @@
 				</plugin>
 				<plugin>
 					<groupId>org.sonatype.plugins</groupId>
-					<artifactId>jarjar-maven-plugin</artifactId>
+					<artifactId>jar-maven-plugin</artifactId>
 					<version>1.9</version>
 				</plugin>
+				<plugin>
+					<groupId>org.sonatype.plugins</groupId>
+					<artifactId>nexus-staging-maven-plugin</artifactId>
+					<version>1.6.7</version>
+					<extensions>true</extensions>
+					<configuration>
+						<serverId>Coody</serverId>
+						<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+						<autoReleaseAfterClose>true</autoReleaseAfterClose>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>2.2.1</version>
+					<executions>
+						<execution>
+							<id>attach-sources</id>
+							<goals>
+								<goal>jar-no-fork</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-gpg-plugin</artifactId>
+					<version>1.5</version>
+					<executions>
+						<execution>
+							<id>sign-artifacts</id>
+							<phase>verify</phase>
+							<goals>
+								<goal>sign</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -76,7 +126,6 @@
 		<module>coody-jdbc</module>
 		<module>coody-task</module>
 		<module>coody-rcc</module>
-		<module>example</module>
 	</modules>
 
 	<dependencyManagement>

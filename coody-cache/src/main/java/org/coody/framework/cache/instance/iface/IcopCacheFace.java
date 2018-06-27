@@ -25,14 +25,14 @@ public interface IcopCacheFace {
 	/**
 	 * 获取缓存
 	 * @param key 缓存KEY
-	 * @return
+	 * @return 缓存内容
 	 */
 	public <T> T getCache(String key);
 	
 	/**
 	 * 判断缓存是否存在
 	 * @param key 缓存KEY
-	 * @return
+	 * @return 缓存内容
 	 */
 	public Boolean contains(String key);
 	

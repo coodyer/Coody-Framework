@@ -115,10 +115,13 @@ public class CglibProxy implements MethodInterceptor {
 	@Override
 	public Object intercept(Object bean, Method method, Object[] params, MethodProxy proxy) throws Throwable {
 		if (!InterceptContainer.INTERCEPT_MAP.containsKey(method)) {
+			//该方法不存在AOP拦截
 			return proxy.invokeSuper(bean, params);
 		}
+		//获取拦截该方法的切面
 		AspectPoint point = getMethodPoint(bean, method, proxy);
 		if (point == null) {
+			//该方法不存在AOP拦截
 			return proxy.invokeSuper(bean, params);
 		}
 		point.setParams(params);

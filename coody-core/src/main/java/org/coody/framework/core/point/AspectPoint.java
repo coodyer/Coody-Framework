@@ -24,6 +24,8 @@ public class AspectPoint extends BaseModel{
 	private Method aspectMethod;
 	//切面bean
 	private Object aspectBean;
+	
+	
 	public Object getBean() {
 		return bean;
 	}

@@ -10,9 +10,6 @@ import java.lang.annotation.Target;
  * 单个Around注解下连接符为"且"
  * 多个Around注解下连接符为"或"
  * @author Coody
- * @date 2018年3月21日
- * @blog http://54sb.org
- * @email 644556636@qq.com
  */
 @Target({ElementType.METHOD,ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME) 

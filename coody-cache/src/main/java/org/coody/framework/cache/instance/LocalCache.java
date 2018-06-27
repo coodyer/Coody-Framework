@@ -35,7 +35,7 @@ public class LocalCache implements IcopCacheFace {
 	 * 增加缓存对象
 	 * 
 	 * @param key
-	 * @param ce
+	 * @param value
 	 * @param time
 	 *            有效时间
 	 */
@@ -48,7 +48,7 @@ public class LocalCache implements IcopCacheFace {
 	/**
 	 * 获取缓存KEY列表
 	 * 
-	 * @return
+	 * @return 缓存key列表
 	 */
 	public Set<String> getCacheKeys() {
 		return CACHE_CONTAINER.keySet();
@@ -58,7 +58,7 @@ public class LocalCache implements IcopCacheFace {
 	 * 模糊获取缓存KEY
 	 * 
 	 * @param patton
-	 * @return
+	 * @return 缓存key列表
 	 */
 	public List<String> getKeysFuzz(String patton) {
 		List<String> list = new ArrayList<String>();
@@ -77,9 +77,7 @@ public class LocalCache implements IcopCacheFace {
 	 * 增加缓存对象
 	 * 
 	 * @param key
-	 * @param ce
-	 * @param time
-	 *            有效时间
+	 * @param value
 	 */
 	@Override
 	public void setCache(String key, Object value) {
@@ -90,7 +88,7 @@ public class LocalCache implements IcopCacheFace {
 	 * 获取缓存对象
 	 * 
 	 * @param key
-	 * @return
+	 * @return 缓存内容
 	 */
 	@Override
 	public <T> T getCache(String key) {
@@ -105,7 +103,7 @@ public class LocalCache implements IcopCacheFace {
 	 * 检查是否含有制定key的缓冲
 	 * 
 	 * @param key
-	 * @return
+	 * @return true存在 ;false 不存在
 	 */
 	@Override
 	public Boolean contains(String key) {
@@ -137,8 +135,6 @@ public class LocalCache implements IcopCacheFace {
 
 	/**
 	 * 获取缓存大小
-	 * 
-	 * @param key
 	 */
 	public int getCacheSize() {
 		return CACHE_CONTAINER.size();
