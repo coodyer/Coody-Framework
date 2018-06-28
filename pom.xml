@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.coody.framework</groupId>
 	<artifactId>coody</artifactId>
-	<version>alpha-1.0.1</version>
+	<version>alpha-1.0.2</version>
 	<packaging>pom</packaging>
 	<name>${project.artifactId}</name>
 	<description>By:Coody</description>
@@ -20,15 +20,15 @@
 		<noson.version>1.0.7</noson.version>
 		<java.compiler.argument />
 		<java.test.compiler.argument>${java.compiler.argument}</java.test.compiler.argument>
-		<coody.version>alpha-0.1</coody.version>
 		<commons-pool.version>20030825.183949</commons-pool.version>
 		<commons-dbcp.version>20030825.184428</commons-dbcp.version>
 		<commons-collections.version>20031027.000000</commons-collections.version>
 		<servlet-api.version>6.0.53</servlet-api.version>
 		<kryo.version>2.24.0</kryo.version>
+		<coody.version>${project.version}</coody.version>
 	</properties>
-	
-	
+
+
 	<licenses>
 		<license>
 			<name>The Apache License, Version 2.0</name>
@@ -48,7 +48,7 @@
 	<scm>
 		<url>https://gitee.com/coodyer/coody-icop</url>
 	</scm>
-	
+
 	<distributionManagement>
 		<snapshotRepository>
 			<id>nexus</id>
@@ -61,79 +61,101 @@
 	</distributionManagement>
 
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.1</version>
+					<configuration>
+						<source>${java.version.source}</source>
+						<target>${java.version.target}</target>
+						<compilerArgument>${java.compiler.argument}</compilerArgument>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.sonatype.plugins</groupId>
+					<artifactId>nexus-staging-maven-plugin</artifactId>
+					<version>1.6.7</version>
+					<extensions>true</extensions>
+					<configuration>
+						<serverId>nexus</serverId>
+						<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+						<autoReleaseAfterClose>true</autoReleaseAfterClose>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>2.2.1</version>
+					<executions>
+						<execution>
+							<id>attach-sources</id>
+							<goals>
+								<goal>jar-no-fork</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>2.9.1</version>
+					<executions>
+						<execution>
+							<id>attach-javadocs</id>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+							<configuration>
+								<additionalparam>-Xdoclint:none</additionalparam>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-gpg-plugin</artifactId>
+					<version>1.5</version>
+					<executions>
+						<execution>
+							<id>sign-artifacts</id>
+							<phase>verify</phase>
+							<goals>
+								<goal>sign</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
-				<configuration>
-					<source>${java.version.source}</source>
-					<target>${java.version.target}</target>
-					<compilerArgument>${java.compiler.argument}</compilerArgument>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.7</version>
-				<extensions>true</extensions>
-				<configuration>
-					<serverId>nexus</serverId>
-					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<username>Coody</username>
-					<password>QQ644556636qq!</password>
-					<autoReleaseAfterClose>true</autoReleaseAfterClose>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>2.2.1</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar-no-fork</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9.1</version>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-						<configuration>
-							<additionalparam>-Xdoclint:none</additionalparam>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
-				<version>1.5</version>
-				<executions>
-					<execution>
-						<id>sign-artifacts</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>sign</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
-	
-	
-	
-	
+
+
+
+
 	<modules>
 		<module>coody-core</module>
 		<module>coody-web</module>
