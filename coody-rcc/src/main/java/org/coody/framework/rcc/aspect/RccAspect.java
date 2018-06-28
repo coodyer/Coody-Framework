@@ -8,7 +8,7 @@ import org.coody.framework.core.annotation.Around;
 import org.coody.framework.core.annotation.InitBean;
 import org.coody.framework.core.point.AspectPoint;
 import org.coody.framework.core.util.MethodSignUtil;
-import org.coody.framework.rcc.annotation.RccService;
+import org.coody.framework.rcc.annotation.RccInterface;
 import org.coody.framework.rcc.caller.RccSendCaller;
 import org.coody.framework.rcc.serialer.iface.RccSerialer;
 
@@ -27,7 +27,7 @@ public class RccAspect {
 	 * @return
 	 * @throws Throwable
 	 */
-	@Around(annotationClass = RccService.class)
+	@Around(annotationClass = RccInterface.class)
 	public Object remoteCall(AspectPoint wrapper) throws Throwable {
 		// AOP获取方法执行信息
 		Method method = wrapper.getMethod();

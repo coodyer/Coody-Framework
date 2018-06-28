@@ -7,12 +7,30 @@ import java.lang.annotation.Target;
 
 import org.coody.framework.core.annotation.InitBean;
 
+/**
+ * 服务者
+ * @author Coody
+ *
+ */
 @Target({ElementType.METHOD,ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME) 
 @InitBean
-public @interface RccService {
+public @interface RccImplement {
 
+	/**
+	 * ip地址
+	 * @return
+	 */
+	String host() default "";
+	/**
+	 * 端口
+	 * @return
+	 */
+	String port() default "";
+	/**
+	 * 服务名
+	 * @return
+	 */
 	String value() default "";
 	
-	boolean annoExtends() default true;
 }

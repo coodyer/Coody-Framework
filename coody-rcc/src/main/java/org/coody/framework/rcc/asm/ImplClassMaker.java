@@ -12,6 +12,7 @@ import org.coody.framework.core.logger.BaseLogger;
 import org.coody.framework.core.util.PrintException;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.rcc.annotation.RccInterface;
 import org.coody.framework.rcc.asm.classloader.SimpleClassLoader;
 import org.coody.framework.rcc.exception.NoMethodException;
 import org.objectweb.asm.AnnotationVisitor;
@@ -79,7 +80,8 @@ public class ImplClassMaker {
 		String[] interfaces = formatClazzs(interfaceClazzs);
 		cw.visit(getOpcodes(), Opcodes.ACC_PUBLIC, className, null, "java/lang/Object", interfaces);
 		// 生成切面所拦截的注解
-		AnnotationVisitor aVisitor = cw.visitAnnotation("Lorg/coody/framework/annotation/RccService;", true);
+		String rccName="L"+RccInterface.class.getName().replace(".", "/")+";";
+		AnnotationVisitor aVisitor = cw.visitAnnotation(rccName, true);
 		aVisitor.visitEnd();
 		MethodVisitor constructor = cw.visitMethod(Opcodes.ACC_PUBLIC, "<init>", "()V", null, null);
 		// 这里请看截图
@@ -116,7 +118,8 @@ public class ImplClassMaker {
 		MethodVisitor mv = cw.visitMethod(Opcodes.ACC_PUBLIC, methodName, "(" + inputParaContext + ")" + returnDesc,
 				null, exceptions);
 		// 生成切面所拦截的注解
-		AnnotationVisitor av = mv.visitAnnotation("Lorg/coody/framework/annotation/RccService;", true);
+		String rccName="L"+RccInterface.class.getName().replace(".", "/")+";";
+		AnnotationVisitor av = mv.visitAnnotation(rccName, true);
 		av.visitEnd();
 		// copy抽象类方法持有注解
 		if (!StringUtil.isNullOrEmpty(annotations)) {
@@ -158,7 +161,6 @@ public class ImplClassMaker {
 	 * @throws Exception
 	 */
 	public static Class<?> createInterfaceImpl(Class<?> clazz) {
-
 		Method[] methods = clazz.getMethods();
 		if (StringUtil.isNullOrEmpty(methods)) {
 			throw new NoMethodException(clazz);
