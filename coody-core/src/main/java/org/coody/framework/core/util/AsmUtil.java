@@ -14,12 +14,9 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 /**
- * <p>
  * 基于asm的工具类
- * </p>
  * 
- * @author dixingxing
- * @date Apr 23, 2012
+ * @author Coody
  */
 public final class AsmUtil {
 
@@ -58,8 +55,8 @@ public final class AsmUtil {
      * 获取方法的参数名
      * </p>
      * 
-     * @param m
-     * @return
+     * @param m 方法
+     * @return 方法参数名列表
      */
     public static List<String> getMethodParamNames(final Method m) {
         final String[] paramNames = new String[m.getParameterTypes().length];

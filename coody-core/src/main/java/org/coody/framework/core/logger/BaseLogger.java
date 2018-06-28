@@ -20,31 +20,14 @@ public class BaseLogger {
 	}
 	
 
-	/**
-	 * 获取日志
-	 * @param clazz
-	 * @return
-	 */
 	public static BaseLogger getLogger(Class<?> clazz) {
 		Logger logger = Logger.getLogger(clazz);
 		return new BaseLogger(logger);
 	}
-	
-	/**
-	 * 获取日志-生产环境日志级别ERROR
-	 * @param clazz
-	 * @return
-	 */
 	public static BaseLogger getLoggerPro(Class<?> clazz) {
 		Logger logger = Logger.getLogger(clazz);
 		return new BaseLogger(logger);
 	}
-
-	/**
-	 * 获取日志
-	 * @param name
-	 * @return
-	 */
 	public static BaseLogger getLogger(String name) {
 		Logger logger = Logger.getLogger(name);
 		return new BaseLogger(logger);
@@ -103,11 +86,6 @@ public class BaseLogger {
 	public boolean isDebugEnabled() {
 		return logger.isDebugEnabled();
 	}
-	/**
-	 * 获取日志所属模块名
-	 * 
-	 * @return
-	 */
 	private String getCurrModule() {
 		String module = LoggerUtil.getCurrLog();
 		if (StringUtil.isNullOrEmpty(module)) {

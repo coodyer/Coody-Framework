@@ -30,7 +30,7 @@ public class DateUtils {
 	/**
 	 * 获取当前日期
 	 * 
-	 * @return
+	 * @return 当前日期
 	 */
 	public static String getDateString() {
 		return toString(new Date(), DATE_PATTERN);
@@ -39,7 +39,7 @@ public class DateUtils {
 	/**
 	 * 获取当前日期
 	 * 
-	 * @return
+	 * @return 当前日期
 	 */
 	public static String getDateTimeString() {
 		return toString(new Date(), DATETIME_PATTERN);
@@ -48,9 +48,9 @@ public class DateUtils {
 	/**
 	 * 时间增减
 	 * 
-	 * @param date
-	 * @param changeDay
-	 * @return
+	 * @param date 时间
+	 * @param changeDay 增减值
+	 * @return 结果
 	 */
 	public static Date changeDay(Date date, Integer changeDay) {
 		Calendar c = Calendar.getInstance();
@@ -62,7 +62,7 @@ public class DateUtils {
 	/**
 	 * 获取某日开始时间
 	 * 
-	 * @return
+	 * @return 结果
 	 */
 	public static Date getDayFirstTime(Date date) {
 		Calendar todayStart = Calendar.getInstance();
@@ -81,8 +81,8 @@ public class DateUtils {
 	/**
 	 * 获取某日结束时间
 	 * 
-	 * @param date
-	 * @return
+	 * @param date 时间
+	 * @return 结果
 	 */
 	public static Date getDayLastTime(Date date) {
 		Calendar todayEnd = Calendar.getInstance();
@@ -97,9 +97,9 @@ public class DateUtils {
 	/**
 	 * 时间转字符串
 	 * 
-	 * @param date
-	 * @param format
-	 * @return
+	 * @param date 时间
+	 * @param format 格式
+	 * @return 结果
 	 */
 	public static String toString(Date date, String format) {
 		if (date == null) {
@@ -113,9 +113,6 @@ public class DateUtils {
 		return toString(date, DATETIME_PATTERN);
 	}
 
-	/**
-	 * 转换为时间
-	 */
 	public static Date toDate(Object value) {
 		if (value == null) {
 			return null;

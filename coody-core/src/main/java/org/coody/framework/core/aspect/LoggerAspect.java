@@ -13,13 +13,6 @@ import org.coody.framework.core.util.StringUtil;
 @InitBean
 public class LoggerAspect {
 
-	
-	/**
-	 * 日志标头设置
-	 * @param wrapper
-	 * @return
-	 * @throws Throwable
-	 */
 	@Around(annotationClass=LogHead.class)
 	public Object logMonitor(AspectPoint wrapper) throws Throwable{
 		try {

@@ -1,20 +1,43 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.coody.framework</groupId>
 		<artifactId>coody</artifactId>
-		<version>alpha-1.0.1</version>
+		<version>alpha-1.0.0</version>
 	</parent>
 	<artifactId>coody-rcc</artifactId>
-	<name>coody-rcc</name>
-	<url>http://maven.apache.org</url>
+	<packaging>jar</packaging>
+	<name>${project.artifactId}</name>
+	<description>By:Coody</description>
+	<url>http://coody.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.coody.framework</groupId>
+			<artifactId>coody-core</artifactId>
+			<version>${coody.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.esotericsoftware.kryo</groupId>
+			<artifactId>kryo</artifactId>
+		</dependency>
+	</dependencies>
 	
-	
+
+	<licenses>
+		<license>
+			<name>The Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+
+	<scm>
+		<url>https://gitee.com/coodyer/coody-icop</url>
+	</scm>
 	<build>
 		<plugins>
 			<plugin>
@@ -31,41 +54,32 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-gpg-plugin</artifactId>
+				<artifactId>maven-javadoc-plugin</artifactId>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
+				<artifactId>maven-gpg-plugin</artifactId>
 			</plugin>
 		</plugins>
-
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-			<resource>
-				<directory>${basedir}/..</directory>
-				<targetPath>META-INF</targetPath>
-				<includes>
-					<include>LICENSE</include>
-					<include>NOTICE</include>
-					<include>README</include>
-				</includes>
-			</resource>
-		</resources>
 	</build>
-	
-	
-	
-	<dependencies>
-		<dependency>
-			<groupId>org.coody.framework</groupId>
-			<artifactId>coody-core</artifactId>
-			<version>${coody.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.esotericsoftware.kryo</groupId>
-			<artifactId>kryo</artifactId>
-		</dependency>
-	</dependencies>
+
+	<developers>
+		<developer>
+			<name>Coody</name>
+			<email>644556636@qq.com</email>
+			<organization>Coody</organization>
+			<organizationUrl>http://coody.org</organizationUrl>
+		</developer>
+	</developers>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>sso</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		</snapshotRepository>
+		<repository>
+			<id>sso</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
 </project>

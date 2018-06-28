@@ -25,9 +25,9 @@ public class FileUtils {
 	/**
 	 * 追加文件：使用FileWriter
 	 * 
-	 * @param folderName
-	 * @param fileName
-	 * @param content
+	 * @param folderName 目录名
+	 * @param fileName 文件名
+	 * @param content 内容
 	 */
 	public static void writeFile(final String folderName,
 			final String fileName, final String content) {
@@ -186,9 +186,8 @@ public class FileUtils {
 	 * 
 	 * 获取目录下所有文件
 	 * 
-	 * @param realpath
-	 * @param files
-	 * @return
+	 * @param realpath 目录路径
+	 * @return 文件列表
 	 */
 	public static List<File> getFiles(String realpath) {
 		List<File> files = new ArrayList<File>();
