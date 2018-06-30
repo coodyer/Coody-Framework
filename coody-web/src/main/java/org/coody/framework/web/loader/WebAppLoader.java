@@ -5,7 +5,9 @@ import java.util.Set;
 
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.loader.iface.IcopLoader;
+import org.coody.framework.core.logger.BaseLogger;
 import org.coody.framework.core.util.ClassUtil;
+import org.coody.framework.core.util.MethodSignUtil;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
 import org.coody.framework.web.adapt.iface.IcopParamsAdapt;
@@ -24,6 +26,7 @@ import org.coody.framework.web.exception.MappingConflicException;
  */
 public class WebAppLoader implements IcopLoader {
 
+	BaseLogger logger=BaseLogger.getLogger(BaseLogger.class);
 	@Override
 	public void doLoader(Set<Class<?>> clazzs) throws Exception {
 		for (Object bean:BeanContainer.getBeans()) {
@@ -60,6 +63,7 @@ public class WebAppLoader implements IcopLoader {
 						} else {
 							adaptClass = methodParamsAdapt.value();
 						}
+						logger.debug("初始化Mapping地址:"+path+">>"+MethodSignUtil.getMethodKey(clazz, method));
 						MvcMapping mapping = new MvcMapping();
 						mapping.setBean(bean);
 						mapping.setPath(path);

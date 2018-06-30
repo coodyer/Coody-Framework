@@ -5,6 +5,7 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.coody.framework.core.annotation.InitBean;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.exception.BeanConflictException;
@@ -22,6 +23,8 @@ import org.coody.framework.core.util.StringUtil;
  *
  */
 public class BeanLoader implements IcopLoader {
+	
+	private static final Logger logger = Logger.getLogger(BeanLoader.class);
 
 	static CglibProxy proxy = new CglibProxy();
 
@@ -65,6 +68,7 @@ public class BeanLoader implements IcopLoader {
 				if (BeanContainer.containsBean(beanName)) {
 					throw new BeanConflictException(beanName);
 				}
+				logger.debug("初始化Bean:"+beanName+">>"+cla.getName());
 				BeanContainer.writeBean(beanName, bean);
 			}
 		}

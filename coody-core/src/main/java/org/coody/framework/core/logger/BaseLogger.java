@@ -24,10 +24,6 @@ public class BaseLogger {
 		Logger logger = Logger.getLogger(clazz);
 		return new BaseLogger(logger);
 	}
-	public static BaseLogger getLoggerPro(Class<?> clazz) {
-		Logger logger = Logger.getLogger(clazz);
-		return new BaseLogger(logger);
-	}
 	public static BaseLogger getLogger(String name) {
 		Logger logger = Logger.getLogger(name);
 		return new BaseLogger(logger);

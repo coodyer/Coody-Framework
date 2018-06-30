@@ -8,6 +8,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.exception.BeanNotFoundException;
 import org.coody.framework.core.loader.iface.IcopLoader;
@@ -21,6 +22,8 @@ import org.coody.framework.core.util.StringUtil;
  *
  */
 public class FieldLoader implements IcopLoader {
+	
+	private static final Logger logger = Logger.getLogger(FieldLoader.class);
 
 	@Override
 	public void doLoader(Set<Class<?>> clazzs) throws Exception {
@@ -46,6 +49,7 @@ public class FieldLoader implements IcopLoader {
 				}
 				field.setAccessible(true);
 				Object writeValue = BeanContainer.getBean(beanName);
+				logger.debug("注入字段:"+field.getName()+">>"+bean.getClass().getName());
 				field.set(bean, writeValue);
 			}
 		}

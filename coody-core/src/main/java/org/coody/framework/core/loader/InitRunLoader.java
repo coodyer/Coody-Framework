@@ -29,6 +29,7 @@ public class InitRunLoader implements IcopLoader {
 			if (bean instanceof InitBeanFace) {
 				// 初始化运行
 				try {
+					logger.debug("初始化执行:>>"+bean.getClass().getName());
 					InitBeanFace face = (InitBeanFace) bean;
 					inits.add(new Runnable() {
 						@Override

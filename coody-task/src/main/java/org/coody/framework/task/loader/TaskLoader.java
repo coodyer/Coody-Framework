@@ -70,6 +70,7 @@ public class TaskLoader implements IcopLoader {
 					PrintException.printException(logger, new ErrorCronException(cron, method));
 					continue;
 				}
+				logger.debug("初始化定时任务:"+cron+">>"+MethodSignUtil.getMethodKey(clazz, method));
 				AspectEntity aspectEntity = new AspectEntity();
 				// 装载切面控制方法
 				aspectEntity.setAnnotationClass(new Class<?>[] { CronTask.class });
