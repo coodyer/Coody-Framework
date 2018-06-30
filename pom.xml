@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.coody.framework</groupId>
 	<artifactId>coody</artifactId>
-	<version>alpha-1.0.2</version>
+	<version>alpha-1.0.3</version>
 	<packaging>pom</packaging>
 	<name>${project.artifactId}</name>
 	<description>By:Coody</description>
@@ -81,7 +81,7 @@
 					<configuration>
 						<serverId>nexus</serverId>
 						<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-						<autoReleaseAfterClose>false</autoReleaseAfterClose>
+						<autoReleaseAfterClose>true</autoReleaseAfterClose>
 					</configuration>
 				</plugin>
 				<plugin>

@@ -17,6 +17,7 @@ import org.coody.framework.core.loader.InitRunLoader;
 import org.coody.framework.core.loader.iface.IcopLoader;
 import org.coody.framework.core.logger.BaseLogger;
 import org.coody.framework.core.util.ClassUtil;
+import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
 
 public class CoreApp {
@@ -61,16 +62,22 @@ public class CoreApp {
 		if (StringUtil.isNullOrEmpty(clazzs)) {
 			return;
 		}
-		Set<Class<?>> currentLoaders=new HashSet<Class<?>>();
+		List<Class<?>> currentLoaders=new ArrayList<Class<?>>();
 		for(Integer key:loadersMap.keySet()){
-			currentLoaders.addAll(loadersMap.get(key));
+			for(Class<?> clazz:loadersMap.get(key)){
+				if(currentLoaders.contains(clazz)){
+					continue;
+				}
+				currentLoaders.add(clazz);
+			}
 		}
 		for(Class<?> loader:currentLoaders){
+			logger.info(loader.getName()+":开始加载");
 			long t0=System.currentTimeMillis();
 			IcopLoader icopLoader=(IcopLoader) loader.newInstance();
 			icopLoader.doLoader(clazzs);
 			long t1=System.currentTimeMillis();
-			logger.info(loader.getClass().getName()+":"+(t1-t0));
+			logger.info(loader.getName()+":加载耗时>>"+(t1-t0));
 		}
 		
 		/*long t1=System.currentTimeMillis();
