@@ -17,7 +17,6 @@ import org.coody.framework.core.loader.InitRunLoader;
 import org.coody.framework.core.loader.iface.IcopLoader;
 import org.coody.framework.core.logger.BaseLogger;
 import org.coody.framework.core.util.ClassUtil;
-import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
 
 public class CoreApp {
@@ -71,15 +70,17 @@ public class CoreApp {
 				currentLoaders.add(clazz);
 			}
 		}
+		long tInit=System.currentTimeMillis();
 		for(Class<?> loader:currentLoaders){
 			logger.info(loader.getName()+":开始加载");
 			long t0=System.currentTimeMillis();
 			IcopLoader icopLoader=(IcopLoader) loader.newInstance();
 			icopLoader.doLoader(clazzs);
 			long t1=System.currentTimeMillis();
-			logger.info(loader.getName()+":加载耗时>>"+(t1-t0));
+			logger.info(loader.getName()+":加载耗时>>"+(t1-t0)+"ms");
 		}
-		
+		long tEnd=System.currentTimeMillis();
+		logger.info("Coody Framework:加载耗时>>"+(tEnd-tInit)+"ms");
 		/*long t1=System.currentTimeMillis();
 		new AspectLoader().doLoader(clazzs);
 		long t2=System.currentTimeMillis();
