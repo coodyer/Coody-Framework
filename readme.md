@@ -1,9 +1,6 @@
 
 ### Icop
 
-前言：希望所有阅读过本项目源代码的朋友，不要认为IOC和AOP多么高深。希望能帮助大家理解Spring体系。
-
-
 更新记录：
 
 2018-02-24： 初步研发，实现IOC+AOP。
@@ -259,7 +256,7 @@ no.3、示例
 pom.xml:
 
 ```
-                <dependency>
+        <dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-core</artifactId>
 			<version>alpha-1.0.3</version>
