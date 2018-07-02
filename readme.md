@@ -254,10 +254,82 @@ no.3、示例
 ![输入图片说明](https://gitee.com/uploads/images/2018/0314/235504_5666dcbb_1200611.png "$9`DAN2(F25R%_[P@)H$9SS.png")
 
 
+### 9. 使用说明：
+
+pom.xml:
+
+```
+                <dependency>
+			<groupId>org.coody.framework</groupId>
+			<artifactId>coody-core</artifactId>
+			<version>alpha-1.0.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.coody.framework</groupId>
+			<artifactId>coody-jdbc</artifactId>
+			<version>alpha-1.0.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.coody.framework</groupId>
+			<artifactId>coody-cache</artifactId>
+			<version>alpha-1.0.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.coody.framework</groupId>
+			<artifactId>coody-task</artifactId>
+			<version>alpha-1.0.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.coody.framework</groupId>
+			<artifactId>coody-web</artifactId>
+			<version>alpha-1.0.3</version>
+		</dependency>
+```
 
 
+web.xml:
 
-### 9. 版权说明：
+
+```
+
+	<!-- 配置扫描的包 -->
+	<context-param>
+		<param-name>scanPacket</param-name>
+		<!-- 逗号分割多个包名 -->
+		<param-value>org.coody.czone</param-value>
+	</context-param>
+	<!-- 配置初始化适配器 -->
+	<context-param>
+		<param-name>initLoader</param-name>
+		<!-- 逗号分割多个加载器 -->
+		<param-value>org.coody.framework.web.loader.WebAppLoader,
+		org.coody.framework.task.loader.TaskLoader,
+		</param-value>
+	</context-param>
+	<!-- 配置监听器 -->
+	<listener>
+		<listener-class>org.coody.framework.web.listen.IcopServletListen</listener-class>
+	</listener>
+	<!-- 初始化分发器 -->
+	<servlet>
+		<servlet-name>DispatServlet</servlet-name>
+		<servlet-class>org.coody.framework.web.DispatServlet</servlet-class>
+		<init-param>
+			<param-name>viewPath</param-name>
+			<param-value>/</param-value>
+		</init-param>
+	</servlet>
+	<!-- MVC配置 -->
+	<servlet-mapping>
+		<servlet-name>DispatServlet</servlet-name>
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>
+```
+
+具体用例详见：https://gitee.com/coodyer/czone
+
+### 10. 版权说明：
 
 
 
@@ -271,4 +343,5 @@ no.3、示例
 
 交流群号:218481849
 
-基于Coody Framework的案例系统：https://gitee.com/coodyer/czone  (研发中)
+基于Coody Framework的博文系统：https://gitee.com/coodyer/czone  (研发中)
+
