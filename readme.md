@@ -27,6 +27,36 @@
 
 2018-06-28： 已经发布内测版至maven中央仓库。nexus搜索： Coody即可(发布于28日。第三方nexus可能未同步)
 
+引用地址：
+
+```
+                <dependency>
+			<groupId>org.coody.framework</groupId>
+			<artifactId>coody-core</artifactId>
+			<version>alpha-1.0.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.coody.framework</groupId>
+			<artifactId>coody-jdbc</artifactId>
+			<version>alpha-1.0.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.coody.framework</groupId>
+			<artifactId>coody-cache</artifactId>
+			<version>alpha-1.0.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.coody.framework</groupId>
+			<artifactId>coody-task</artifactId>
+			<version>alpha-1.0.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.coody.framework</groupId>
+			<artifactId>coody-web</artifactId>
+			<version>alpha-1.0.3</version>
+		</dependency>
+```
 
 
 =======================================================
