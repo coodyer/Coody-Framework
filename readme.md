@@ -30,7 +30,7 @@
 引用地址：
 
 ```
-                <dependency>
+<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-core</artifactId>
 			<version>alpha-1.0.3</version>
