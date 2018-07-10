@@ -181,19 +181,33 @@ org.coody.framework.box.point.AspectPoint 本类用于多切面的调度和适�
 
 
 ```
+
 	<!-- 配置扫描的包 -->
 	<context-param>
 		<param-name>scanPacket</param-name>
-		<param-value>org.coody.web</param-value>
+		<!-- 逗号分割多个包名 -->
+		<param-value>org.coody.czone</param-value>
+	</context-param>
+	<!-- 配置初始化适配器 -->
+	<context-param>
+		<param-name>initLoader</param-name>
+		<!-- 逗号分割多个加载器 -->
+		<param-value>org.coody.framework.web.loader.WebAppLoader,
+		org.coody.framework.task.loader.TaskLoader,
+		</param-value>
 	</context-param>
 	<!-- 配置监听器 -->
 	<listener>
-		<listener-class>org.coody.framework.box.init.BoxServletListen</listener-class>
+		<listener-class>org.coody.framework.web.listen.IcopServletListen</listener-class>
 	</listener>
 	<!-- 初始化分发器 -->
 	<servlet>
 		<servlet-name>DispatServlet</servlet-name>
-		<servlet-class>org.coody.framework.box.mvc.DispatServlet</servlet-class>
+		<servlet-class>org.coody.framework.web.DispatServlet</servlet-class>
+		<init-param>
+			<param-name>viewPath</param-name>
+			<param-value>/</param-value>
+		</init-param>
 	</servlet>
 	<!-- MVC配置 -->
 	<servlet-mapping>
