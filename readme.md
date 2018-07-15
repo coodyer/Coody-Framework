@@ -27,6 +27,8 @@
 
 2018-06-28： 已经发布内测版至maven中央仓库。nexus搜索： Coody即可(发布于28日。第三方nexus可能未同步)
 
+Coody Framework实战项目：https://gitee.com/coodyer/czone/
+
 引用地址：
 
 ```
