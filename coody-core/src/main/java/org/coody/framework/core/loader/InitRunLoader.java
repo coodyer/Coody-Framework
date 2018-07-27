@@ -1,5 +1,6 @@
 package org.coody.framework.core.loader;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -34,7 +35,11 @@ public class InitRunLoader implements IcopLoader {
 					inits.add(new Runnable() {
 						@Override
 						public void run() {
-							face.init();
+							try {
+								face.init();
+							} catch (Exception e) {
+								PrintException.printException(logger, e);
+							}
 						}
 					});
 				} catch (Exception e) {

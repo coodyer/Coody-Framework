@@ -1,8 +1,5 @@
 package org.coody.framework.jdbc;
 
-import java.beans.PropertyVetoException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,12 +13,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.TreeMap;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.dbcp.BasicDataSource;
 import org.coody.framework.core.entity.BaseModel;
 import org.coody.framework.core.entity.BeanEntity;
 import org.coody.framework.core.util.DateUtils;
@@ -36,24 +31,15 @@ import org.coody.framework.jdbc.util.JdbcUtil;
 
 public class JdbcHandle {
 
-	private DataSource dataSource;
+	protected DataSource dataSource;
 
-	public void initConfig(String configPath) throws IOException, PropertyVetoException {
-		// 1.获取DBCP数据源实现类对象
-		Properties prop = new Properties();
-		BasicDataSource bds = new BasicDataSource();
-		InputStream in = this.getClass().getClassLoader().getResourceAsStream(configPath);
-		prop.load(in);
-		bds.setDriverClassName(prop.getProperty("jdbc.driverClass"));
-		bds.setUrl(prop.getProperty("jdbc.url"));
-		bds.setUsername(prop.getProperty("jdbc.user"));
-		bds.setPassword(prop.getProperty("jdbc.password"));
-		bds.setTestOnBorrow(false);
-		bds.setTimeBetweenEvictionRunsMillis(30000);
-		bds.setMinEvictableIdleTimeMillis(1800000);
-		// 3.设置连接池的参数
-		bds.setMaxActive(5);
-		dataSource = bds;
+
+	public DataSource getDataSource() {
+		return dataSource;
+	}
+
+	public void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
 	}
 
 	/**
@@ -83,14 +69,6 @@ public class JdbcHandle {
 		}
 	}
 
-	// 驱动程序名
-	String driver = "";
-	// URL指向要访问的数据库名scutcs
-	String url = "";
-	// MySQL配置时的用户名
-	String user = "";
-	// MySQL配置时的密码
-	String password = "";
 
 	public List<Map<String, Object>> baseQuery(String sql, Object... params) {
 		ResultSet resultSet = null;

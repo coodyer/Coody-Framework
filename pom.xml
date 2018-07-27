@@ -20,9 +20,6 @@
 		<noson.version>1.0.7</noson.version>
 		<java.compiler.argument />
 		<java.test.compiler.argument>${java.compiler.argument}</java.test.compiler.argument>
-		<commons-pool.version>20030825.183949</commons-pool.version>
-		<commons-dbcp.version>20030825.184428</commons-dbcp.version>
-		<commons-collections.version>20031027.000000</commons-collections.version>
 		<servlet-api.version>6.0.53</servlet-api.version>
 		<kryo.version>2.24.0</kryo.version>
 		<coody.version>${project.version}</coody.version>
@@ -181,21 +178,6 @@
 				<groupId>com.gitee.ainilili</groupId>
 				<artifactId>noson</artifactId>
 				<version>${noson.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-pool</groupId>
-				<artifactId>commons-pool</artifactId>
-				<version>${commons-pool.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-dbcp</groupId>
-				<artifactId>commons-dbcp</artifactId>
-				<version>${commons-dbcp.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-collections</groupId>
-				<artifactId>commons-collections</artifactId>
-				<version>${commons-collections.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.tomcat</groupId>
