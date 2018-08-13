@@ -7,6 +7,6 @@ public class BeanInitException extends IcopException{
 
 
 	public BeanInitException(Class<?> clazz){
-		super("Bean初始化失败:"+clazz.getName());
+		super("Bean初始化失败 >>"+clazz.getName());
 	}
 }

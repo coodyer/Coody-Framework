@@ -83,7 +83,7 @@ public class AspectLoader implements IcopLoader {
 					if (StringUtil.isAllNull(annotationClass, classMappath, methodMappath)) {
 						continue;
 					}
-					logger.debug("初始化切面方法:"+">>"+MethodSignUtil.getMethodKey(cla, method));
+					logger.debug("初始化切面方法 >>"+MethodSignUtil.getMethodKey(cla, method));
 					AspectEntity aspectEntity = new AspectEntity();
 					// 装载切面控制方法
 					aspectEntity.setAnnotationClass(annotationClass);

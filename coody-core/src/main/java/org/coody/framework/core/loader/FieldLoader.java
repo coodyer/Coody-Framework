@@ -50,7 +50,7 @@ public class FieldLoader implements IcopLoader {
 				}
 				field.setAccessible(true);
 				Object writeValue = BeanContainer.getBean(beanName);
-				logger.debug("注入字段:"+field.getName()+">>"+bean.getClass().getName());
+				logger.debug("注入字段 >>"+field.getName()+":"+bean.getClass().getName());
 				field.set(bean, writeValue);
 			}
 		}

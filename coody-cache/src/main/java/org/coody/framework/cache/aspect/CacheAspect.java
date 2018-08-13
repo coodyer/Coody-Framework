@@ -68,7 +68,7 @@ public class CacheAspect {
 		// 获取缓存
 		try {
 			Object result = cacheable.getCache(key);
-			logger.debug("获取缓存:" + key + ",结果:" + result);
+			logger.debug("获取缓存 >>" + key + ",结果:" + result);
 			if (!StringUtil.isNullOrEmpty(result)) {
 				return result;
 			}
@@ -79,7 +79,7 @@ public class CacheAspect {
 		if (result != null) {
 			try {
 				cacheable.setCache(key, result, cacheTimer);
-				logger.debug("设置缓存:" + key + ",结果:" + result + ",缓存时间:" + cacheTimer);
+				logger.debug("设置缓存 >>" + key + ",结果:" + result + ",缓存时间:" + cacheTimer);
 			} catch (Exception e) {
 			}
 		}
@@ -116,7 +116,7 @@ public class CacheAspect {
 				if (!StringUtil.isNullOrEmpty(handle.fields())) {
 					key = MethodSignUtil.getFieldKey(clazz, method, paras, key, handle.fields());
 				}
-				logger.debug("删除缓存:" + key);
+				logger.debug("删除缓存 >>" + key);
 				cacheable.delCache(key);
 			} catch (Exception e) {
 				e.printStackTrace();

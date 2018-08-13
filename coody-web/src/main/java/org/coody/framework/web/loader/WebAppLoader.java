@@ -63,7 +63,7 @@ public class WebAppLoader implements IcopLoader {
 						} else {
 							adaptClass = methodParamsAdapt.value();
 						}
-						logger.debug("初始化Mapping地址:"+path+">>"+MethodSignUtil.getMethodKey(clazz, method));
+						logger.debug("初始化Mapping地址 >>"+path+":"+MethodSignUtil.getMethodKey(clazz, method));
 						MvcMapping mapping = new MvcMapping();
 						mapping.setBean(bean);
 						mapping.setPath(path);

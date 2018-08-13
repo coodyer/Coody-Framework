@@ -52,7 +52,6 @@ public class TaskTrigger implements InitBeanFace{
 		cronExpressionMap.put(method, zonedDateTime);
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateUtils.DATETIME_PATTERN, Locale.CHINA);
 		Date nextRunDate=DateUtils.toDate(zonedDateTime.toLocalDateTime().format(formatter));
-		//logger.debug(bean.getClass().getName()+":"+method.getName()+" will run on "+DateUtils.toString(nextRunDate));
 		long timeRage=nextRunDate.getTime()-System.currentTimeMillis();
 		TaskThreadPool.TASK_POOL.schedule(new Runnable() {
 			@Override

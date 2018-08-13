@@ -64,7 +64,7 @@ public class BeanLoader implements IcopLoader {
 				if (StringUtil.isNullOrEmpty(beanName)) {
 					continue;
 				}
-				logger.debug("初始化Bean:"+beanName+">>"+cla.getName());
+				logger.debug("初始化Bean >>"+beanName+":"+cla.getName());
 				BeanContainer.setBean(beanName, bean);
 			}
 		}

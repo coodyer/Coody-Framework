@@ -518,14 +518,5 @@ public class CronExpression {
 	}
 
 	public static void main(String[] args) {
-		CronExpression express = new CronExpression("0/5 * * * * ? ");
-		ZonedDateTime zonedDateTime = ZonedDateTime.now();
-		System.out.println(DateUtils.getDateTimeString());
-		for (int i = 0; i < 100; i++) {
-			zonedDateTime = express.nextTimeAfter(zonedDateTime);
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateUtils.DATETIME_PATTERN, Locale.CHINA);
-			System.out.println(zonedDateTime.toLocalDateTime().format(formatter));
-		}
-
 	}
 }

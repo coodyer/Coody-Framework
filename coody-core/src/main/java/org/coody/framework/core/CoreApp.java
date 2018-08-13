@@ -72,37 +72,15 @@ public class CoreApp {
 		}
 		long tInit=System.currentTimeMillis();
 		for(Class<?> loader:currentLoaders){
-			logger.info(loader.getName()+":开始加载");
+			logger.info(loader.getName()+" >>开始加载");
 			long t0=System.currentTimeMillis();
 			IcopLoader icopLoader=(IcopLoader) loader.newInstance();
 			icopLoader.doLoader(clazzs);
 			long t1=System.currentTimeMillis();
-			logger.info(loader.getName()+":加载耗时>>"+(t1-t0)+"ms");
+			logger.info(loader.getName()+" >>加载耗时:"+(t1-t0)+"ms");
 		}
 		long tEnd=System.currentTimeMillis();
-		logger.info("Coody Framework:加载耗时>>"+(tEnd-tInit)+"ms");
-		/*long t1=System.currentTimeMillis();
-		new AspectLoader().doLoader(clazzs);
-		long t2=System.currentTimeMillis();
-		//new TaskLoader().doLoader(clazzs);
-		long t3=System.currentTimeMillis();
-		new BeanLoader().doLoader(clazzs);
-		long t4=System.currentTimeMillis();
-		new FieldLoader().doLoader(clazzs);
-		long t5=System.currentTimeMillis();
-		//new MvcLoader().doLoader(clazzs);
-		long t6=System.currentTimeMillis();
-		new InitRunLoader().doLoader(clazzs);
-		long t7=System.currentTimeMillis();
-
-		logger.info("包扫描:"+(t1-t0));
-		logger.info("切面加载:"+(t2-t1));
-		logger.info("定时任务加载:"+(t3-t2));
-		logger.info("bean加载:"+(t4-t3));
-		logger.info("对象注入:"+(t5-t4));
-		logger.info("mvc加载:"+(t6-t5));
-		logger.info("InitBean加载:"+(t7-t6));
-		logger.info("总耗时:"+(t7-t0));*/
+		logger.info("Coody Framework >>加载耗时:"+(tEnd-tInit)+"ms");
 	}
 
 }

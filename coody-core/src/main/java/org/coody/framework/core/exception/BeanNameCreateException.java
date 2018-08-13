@@ -7,6 +7,6 @@ public class BeanNameCreateException extends IcopException{
 
 
 	public BeanNameCreateException(Class<?> clazz){
-		super("BeanName创建失败:"+clazz.getName());
+		super("BeanName创建失败 >>"+clazz.getName());
 	}
 }

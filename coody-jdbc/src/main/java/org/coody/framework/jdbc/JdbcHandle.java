@@ -81,7 +81,7 @@ public class JdbcHandle {
 				// statement用来执行SQL语句
 				statement = conn.prepareStatement(sql);
 				Long threadId = Thread.currentThread().getId();
-				System.out.println("[线程ID：" + threadId + "][执行语句:" + parseParams(sql, params) + "]");
+				System.out.println("[线程ID >>" + threadId + "][执行语句:" + parseParams(sql, params) + "]");
 				if (!StringUtil.isNullOrEmpty(params)) {
 					for (int i = 0; i < params.length; i++) {
 						statement.setObject((i + 1), params[i]);

@@ -30,9 +30,6 @@ public class BeanContainer {
 		if (StringUtil.isNullOrEmpty(map)) {
 			return null;
 		}
-		for (String key : map.keySet()) {
-			System.out.println(key);
-		}
 		String realBeanName = cla.getName();
 		return (T) map.get(realBeanName);
 	}

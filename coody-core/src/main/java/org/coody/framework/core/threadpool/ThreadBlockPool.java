@@ -48,7 +48,7 @@ public class ThreadBlockPool {
 	}
 	public void execute() {
 		if (!isActivity) {
-			logger.info("ThreadBlockPool:线程池已销毁==================");
+			logger.info("ThreadBlockPool >>线程池已销毁");
 		}
 		isActivity = false;
 		if (runnables==null||runnables.isEmpty()) {
@@ -59,7 +59,7 @@ public class ThreadBlockPool {
 			currThread = maxThread;
 		}
 		exePool = Executors.newFixedThreadPool(maxThread);
-		logger.info("ThreadBlockPool:[" + maxThread + "]执行中==================");
+		logger.info("ThreadBlockPool >>[" + maxThread + "]执行中");
 		for (Runnable runnable : runnables) {
 			exePool.execute(runnable);
 		}
@@ -69,12 +69,12 @@ public class ThreadBlockPool {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		logger.info("ThreadBlockPool:[" + maxThread + "]执行完毕==================");
+		logger.info("ThreadBlockPool:[" + maxThread + "]执行完毕");
 	}
 
 	public boolean pushTask(List<Runnable> runnables) {
 		if (!isActivity) {
-			logger.info("ThreadBlockPool:线程池已销毁==================");
+			logger.info("ThreadBlockPool >>线程池已销毁");
 		}
 		this.runnables.addAll(runnables);
 		return isActivity;
@@ -82,7 +82,7 @@ public class ThreadBlockPool {
 
 	public boolean pushTask(Runnable runnable) {
 		if (!isActivity) {
-			logger.info("ThreadBlockPool:线程池已销毁==================");
+			logger.info("ThreadBlockPool >>线程池已销毁");
 		}
 		runnables.add(runnable);
 		return isActivity;

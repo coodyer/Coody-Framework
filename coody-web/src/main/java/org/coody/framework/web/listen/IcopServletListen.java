@@ -21,7 +21,7 @@ public class IcopServletListen implements ServletContextListener {
 		try {
 			String packet = event.getServletContext().getInitParameter("scanPacket");
 			if (StringUtil.isNullOrEmpty(packet)) {
-				logger.error("启动参数:scanPacket为空");
+				logger.error("启动参数为空 >>scanPacket");
 				return;
 			}
 			String initLoader=event.getServletContext().getInitParameter("initLoader");

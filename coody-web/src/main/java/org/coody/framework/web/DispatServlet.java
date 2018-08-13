@@ -26,7 +26,7 @@ public class DispatServlet extends HttpServlet{
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
 		String path=request.getServletPath();
-		logger.debug("收到请求:"+path);
+		logger.debug("收到请求 >>"+path);
 		if(!MappingContainer.containsPath(path)){
 			response.getWriter().print("page not found");
 			response.setStatus(404);
