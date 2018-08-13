@@ -8,7 +8,6 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.coody.framework.core.annotation.InitBean;
 import org.coody.framework.core.container.BeanContainer;
-import org.coody.framework.core.exception.BeanConflictException;
 import org.coody.framework.core.exception.BeanInitException;
 import org.coody.framework.core.exception.BeanNameCreateException;
 import org.coody.framework.core.loader.iface.IcopLoader;
@@ -65,11 +64,8 @@ public class BeanLoader implements IcopLoader {
 				if (StringUtil.isNullOrEmpty(beanName)) {
 					continue;
 				}
-				if (BeanContainer.containsBean(beanName)) {
-					throw new BeanConflictException(beanName);
-				}
 				logger.debug("初始化Bean:"+beanName+">>"+cla.getName());
-				BeanContainer.writeBean(beanName, bean);
+				BeanContainer.setBean(beanName, bean);
 			}
 		}
 	}

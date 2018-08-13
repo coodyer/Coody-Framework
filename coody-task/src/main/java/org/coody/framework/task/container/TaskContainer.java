@@ -10,7 +10,7 @@ public class TaskContainer {
 	private static List<TaskEntity> taskContainer=new ArrayList<TaskContainer.TaskEntity>();
 	
 	
-	public static void writeTaskEntity(Class<?> clazz,Method method,String cron){
+	public static void setTaskEntity(Class<?> clazz,Method method,String cron){
 		TaskEntity task=new TaskEntity();
 		task.setClazz(clazz);
 		task.setCron(cron);

@@ -44,7 +44,7 @@ public class FieldLoader implements IcopLoader {
 				if (StringUtil.isNullOrEmpty(beanName)) {
 					beanName = field.getType().getName();
 				}
-				if (!BeanContainer.containsBean(beanName)) {
+				if (!BeanContainer.contains(beanName)) {
 					throw new BeanNotFoundException(beanName, bean.getClass());
 				}
 				field.setAccessible(true);

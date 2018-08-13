@@ -1099,6 +1099,7 @@ public class PropertUtil {
 		return annotations;
 	}
 
+	@SuppressWarnings("unlikely-arg-type")
 	public static Set<Class<?>> getIfaceClass(Class<?> clazz) {
 		if (IFACE_CLAZZS.containsKey(clazz)) {
 			return IFACE_CLAZZS.get(clazz);

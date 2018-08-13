@@ -76,7 +76,7 @@ public class TaskLoader implements IcopLoader {
 				aspectEntity.setAnnotationClass(new Class<?>[] { CronTask.class });
 				aspectEntity.setAspectInvokeMethod(TaskTrigger.getTriggerMethod());
 				FrameworkConstant.writeToAspectMap(MethodSignUtil.getMethodUnionKey(TaskTrigger.getTriggerMethod()), aspectEntity);
-				TaskContainer.writeTaskEntity(clazz, method, cron);
+				TaskContainer.setTaskEntity(clazz, method, cron);
 			}
 		}
 	}

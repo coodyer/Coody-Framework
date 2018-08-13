@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.coody.framework</groupId>
 	<artifactId>coody</artifactId>
-	<version>alpha-1.0.4</version>
+	<version>alpha-1.0.5</version>
 	<packaging>pom</packaging>
 	<name>${project.artifactId}</name>
 	<description>By:Coody</description>
@@ -23,6 +24,8 @@
 		<servlet-api.version>6.0.53</servlet-api.version>
 		<kryo.version>2.24.0</kryo.version>
 		<coody.version>${project.version}</coody.version>
+		<jspc.version>6.0.24</jspc.version>
+		<jstl.version>1.1.2</jstl.version>
 	</properties>
 
 
@@ -78,7 +81,7 @@
 					<configuration>
 						<serverId>nexus</serverId>
 						<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-						<autoReleaseAfterClose>true</autoReleaseAfterClose>
+						<autoReleaseAfterClose>false</autoReleaseAfterClose>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -160,6 +163,7 @@
 		<module>coody-jdbc</module>
 		<module>coody-task</module>
 		<module>coody-rcc</module>
+		<module>coody-taboo</module>
 	</modules>
 
 	<dependencyManagement>
@@ -189,6 +193,16 @@
 				<groupId>com.esotericsoftware.kryo</groupId>
 				<artifactId>kryo</artifactId>
 				<version>${kryo.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.jasper</groupId>
+				<artifactId>com.springsource.org.apache.jasper</artifactId>
+				<version>${jspc.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>jstl</artifactId>
+				<version>${jstl.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

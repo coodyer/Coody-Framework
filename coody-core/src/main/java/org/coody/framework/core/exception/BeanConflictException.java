@@ -7,10 +7,10 @@ public class BeanConflictException extends IcopException{
 
 
 	public BeanConflictException(String bean){
-		super("Bean已经存在:"+bean);
+		super("Bean冲突:"+bean);
 	}
 	
 	public BeanConflictException(String bean,Exception e){
-		super("Bean已经存在:"+bean, e);
+		super("Bean冲突:"+bean, e);
 	}
 }
