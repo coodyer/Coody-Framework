@@ -163,7 +163,7 @@
 		<module>coody-jdbc</module>
 		<module>coody-task</module>
 		<module>coody-rcc</module>
-		<module>coody-taboo</module>
+		<!-- <module>coody-taboo</module> -->
 	</modules>
 
 	<dependencyManagement>
