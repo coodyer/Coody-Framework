@@ -1,33 +1,70 @@
 
-### Icop
+## Coody Framework
 
-更新记录：
+#### 背景：
 
-2018-02-24： 初步研发，实现IOC+AOP。
+一名野生的民间技术爱好者，早期活跃于各网络安全论坛，而后由白帽转战编程。因谋生而从事互联网技术研发四年有余。
 
-2018-02-25： 拓展MVC，基于MVC结合ICO+AOP实现轻量化类spring开发模式
+浑浑噩噩已经22岁了，看着朋友圈各种晒宝宝照片的老同学，只得感叹光阴似箭。而单身的笔者，随着岁月的流逝，寂寞空虚冷愈加强烈。故此，笔者选择通过技术研究来饱和业余生活。
 
-2018-02-26： 整改为maven模式，并整合自写ORM框架配合aop实现事物管理。
+#### 前言：
 
-2018-03-08： 拓展接口形式依赖注入。
+    Coody Framework 是由笔者业余时间编写的一套Ioc框架。由最初的项目内置代码发展至今的Maven中央仓库。历时4个月有余。
 
-2018-03-10： 拓展对注解形式Cron定时任务的支持。
+    而在今后的时间里，Coody Framework将不断完善，争取今年内发布一套成熟的release版本。同时，笔者也会自带成功案例。
 
-2018-03-21： icop即将用于一套博文平台研发。在实际研发需求中不断拓展本框架，本框架主体功能暂时停止更新，研发完成将整顿本项目至相对稳定。
+#### 用途与优势：
+    
+    Coody Framework是一套轻量化Ioc框架。除分布式(即Rcc模块)未完成外，其余均已经过笔者本地测试。全框架大小214kb。
+    
+    Coody Framework 依赖cglib-3.2、log4j-1.2、noson-1.0.7。
 
-2018-03-21： 在博文系统研发中有通配形AOP需求，经过规划并提供类通配、方法通配等支持。
+    基于Coody Framework框架的web项目启动耗时约370ms(在i5 2320上所耗费的时间)、加上tomcat所消耗的时间，约4s-5s
+    
+    基于Coody Framework框架的测试用例已在服务器长跑3个月有余：http://118.126.117.84/ (静态资源无法展示由于coody.org未备案)
 
-2018-04-22： 微调mvc相关功能，支持request和response在controller中进行注入(线程安全)
+    Coody Framework框架包含以下模块
 
-2018-04-22： 整改mvc参数适配器，支持自定义参数适配。
+        coody-core ：框架核心包，包括Ioc+Aop的实现，包括相关工具和超类。
 
-2018-06-02： 筹划拓展分布式体系，并引入字节码技术创建实现类，提供通讯、序列化、注册中心等接口
+        coody-web  ：框架web-mvc的实现包，实现了mvc功能体系。
 
-2018-06-05： 项目拆分成Maven多模块化模式，为发布maven中央仓库做准备
+        coody-cache：框架缓存的实现，实现了基础缓存，切面缓存，并提供相关切面技术的支持。
 
-2018-06-28： 已经发布内测版至maven中央仓库。nexus搜索： Coody即可(发布于28日。第三方nexus可能未同步)
+        coody-jdbc ：框架orm的实现，实现了基于mysql下基础操作的封装，实现了各种简易操作，拓展了切面事物。
+        
+        coody-task ：框架定时任务的实现，基于cron实现了定时任务，提供了注解定时任务的支持。
 
-Coody Framework实战项目：https://gitee.com/coodyer/czone/
+        coody-rcc  ：框架分布式的实现，提供注册中心、序列化、通信协议等接口。字节码创建子类的实现(分布式功能未完成)
+
+
+#### 更新记录：
+
+    2018-02-24： 初步研发，实现Ioc+Aop。
+
+    2018-02-25： 拓展Mvc，基于MVC结合Ioc+Aop实现轻量化(类spring)开发模式
+
+    2018-02-26： 由最初的常规java project整改为Maven Project，并整合自写ORM框架配合aop实现事物管理。
+
+    2018-03-08： 拓展接口形式依赖注入，对interface的Ioc提供支持。
+
+    2018-03-10： 拓展定时任务，基于切面通过注解(cron)实现任务调度。
+
+    2018-03-21： 使用Coody Framework整合至一个外置项目中并成功运行。
+
+    2018-03-21： 为切面的拦截条件新增类通配、方法通配，同时支持一个拦截方法通过多个注解引入不同的拦截规则。
+
+    2018-04-22： 微调Mvc相关功能，支持request和response在controller中进行注入(线程安全)
+
+    2018-04-22： 整改Mvc参数适配器，支持自定义参数适配。
+
+    2018-06-02： 筹划拓展分布式体系，并引入字节码技术创建实现类，提供通讯、序列化、注册中心等接口
+
+    2018-06-05： 项目拆分成Maven多模块化模式，为发布maven中央仓库做准备
+
+    2018-06-28： 发布Alpha至Maven中央仓库。nexus搜索"Coody"即可
+
+    Coody Framework实战项目：https://gitee.com/coodyer/czone/
 
 引用地址：
 
@@ -35,28 +72,28 @@ Coody Framework实战项目：https://gitee.com/coodyer/czone/
         <dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-core</artifactId>
-			<version>alpha-1.0.3</version>
+			<version>alpha-1.0.4</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-jdbc</artifactId>
-			<version>alpha-1.0.3</version>
+			<version>alpha-1.0.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-cache</artifactId>
-			<version>alpha-1.0.3</version>
+			<version>alpha-1.0.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-task</artifactId>
-			<version>alpha-1.0.3</version>
+			<version>alpha-1.0.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-web</artifactId>
-			<version>alpha-1.0.3</version>
+			<version>alpha-1.0.4</version>
 		</dependency>
 ```
 
@@ -68,250 +105,80 @@ Coody Framework实战项目：https://gitee.com/coodyer/czone/
 ### 1. 项目背景：
 
 
-由于笔者近期参与的一些项目体系未使用到任何框架，而笔者对spring体系特别向往，故此研发本项目。
+    纵观整个国内开源圈，难以寻找一套比较成熟的Ioc框架。然实现一套Ioc框架并没有太高的技术含量和工作量。
+
+    故此，笔者着手将业余时间的一些代码和案例汇总，研发Coody Framework。
 
 
 
 ### 2. 功能说明：
 
 
-本项目实现注解形式的bean加载、依赖注入、切面等功能。简单实现mvc。
-
+    Coody Framewrok实现了：IOC依赖注入、AOP切面、MVC、定时任务、切面缓存、ORM等功能，分布式Rcc模块也已进入研发阶段。
  
 
-### 3. 项目特点：
+### 3. 环境说明：
 
 
-本项目使用cglib。秉承轻量、易用、简单、高效等原则。依赖jar：cglib-nodep-3.1.jar fastjson-1.2.31.jar log4j-1.2.17.jar  依赖jar包其余版本自行测试。
+    JDK1.8+
 
+### 4. 相关文档：
+
+coody-core   ：[Coody-Core](http://gitee.com/coodyer/coody-icop/tree/coody-maven/coody-core)
+
+coody-web    ：[Coody Web](http://gitee.com/coodyer/coody-icop/tree/coody-maven/coody-web)
+
+coody-cache  ：[Coody Cache](http://gitee.com/coodyer/coody-icop/tree/coody-maven/coody-cache)
+
+coody-jdbc   ：[Coody Jdbc](http://gitee.com/coodyer/coody-icop/tree/coody-maven/coody-jdbc)
+
+coody-task   ：[Coody Task](http://gitee.com/coodyer/coody-icop/tree/coody-maven/coody-task)
+
+coody-rcc    ：[Coody Rcc](http://gitee.com/coodyer/coody-icop/tree/coody-maven/coody-rcc) 
  
 
-### 4. 环境说明：
 
+### 5. 发展计划：
 
-JDK1.8+
+    1、完善rcc分布式模块
 
- 
+    2、为Coody Framework提供完整的配置中心
 
-### 5.目录结构：
- 
+    3、完成博文系统并作为成功案例
 
-![输入图片说明](https://gitee.com/uploads/images/2018/0314/235011_b6f79022_1200611.png "0Z3WX6~`I946H3JIA1OI]_X.png")
+    4、提供完整的文档
 
- 
+    5、接入MiniCat实现类SpringBoot开发模式(可选)
 
-### 6. 程序架构：
 
+### 6. 合作意向：
 
-由于在撰写本文背景下无作图环境，故此略去架构图。以下提供一些结构说明(在后期的迭代中，可能略有变动)
-
- **(1)、包说明** 
-
-org.coody.framework.entity常用实体包。
-
-org.coody.framework.util  常用工具包
-
-org.coody.framework.box  核心实现包
-
-org.coody.framework.box.adapt 适配器包
-
-org.coody.framework.box.annotation 注解包
-
-org.coody.framework.box.container 容器包
-
-org.coody.framework.box.constant 常量包
-
-org.coody.framework.box.iface 接口包
-
-org.coody.framework.box.init 初始化入口包
-
-org.coody.framework.box.mvc MVC实现包
-
-org.coody.framework.box.proxy 动态代理包
-
-org.coody.framework.box.wrapper 包装类
-
- **(2)、类说明-注解** 
-
-org.coody.framework.box.annotation.Around环绕通知注解标识，用于切面实现
-
-org.coody.framework.box.annotation.InitBean初始化Bean。类似于spring的Service等注解，标记一个bean类
-
-org.coody.framework.box.annotation.JsonSerialize序列化JSON输出，用于controller方法标识。类似于spring的ResponseBody注解
-
-org.coody.framework.box.annotation.OutBean 输出Bean。类似于Resource/AutoWired注解
-
-org.coody.framework.box.annotation.PathBinding 初始化Bean。类似于spring的Controller等注解，内置参数为请求路径
-
- **(3)、类说明-适配器** 
-
-org.coody.framework.box.adapt.ParamsAdapt  参数适配器，用于MVC下参数的装载(目前只实现request、response、session三个参数的自动装载)
-
- **(4)、类说明-容器** 
-
-org.coody.framework.box.container.BeanContainer 容器，用于存储bean，类似于spring的application
-
-org.coody.framework.box.container.MappingContainer  Mvc映射地址容器
-
- **(5)、类说明-接口** 
-
-org.coody.framework.box.iface.InitFace 初始化接口，凡是实现该接口的bean需实现init方法。在容器启动完成后执行。
-
- **(6)、类说明-启动器** 
-
-org.coody.framework.box.init.BoxRute 容器入口。通过该类的init(packet)方法指定扫描包路径
-
-org.coody.framework.box.init.BoxServletListen 监听器，配置在webxml用于引导容器初始化
-
- **(7)、类说明-mvc分发器** 
-
-org.coody.framework.box.mvc.DispatServlet 类似于spring的DispatServlet
-
- **(8)、类说明-代理工具** 
-
-org.coody.framework.box.proxy.CglibProxy 基于cglib字节码创建子类的实现
-
- **(9)、类说明-包装类** 
-
-org.coody.framework.box.point.AspectPoint 本类用于多切面的调度和适配  
-
- 
-
-### 7.使用说明：
-
- **(1)、web.xml说明** 
-
-
-```
-
-	<!-- 配置扫描的包 -->
-	<context-param>
-		<param-name>scanPacket</param-name>
-		<!-- 逗号分割多个包名 -->
-		<param-value>org.coody.czone</param-value>
-	</context-param>
-	<!-- 配置初始化适配器 -->
-	<context-param>
-		<param-name>initLoader</param-name>
-		<!-- 逗号分割多个加载器 -->
-		<param-value>org.coody.framework.web.loader.WebAppLoader,
-		org.coody.framework.task.loader.TaskLoader,
-		</param-value>
-	</context-param>
-	<!-- 配置监听器 -->
-	<listener>
-		<listener-class>org.coody.framework.web.listen.IcopServletListen</listener-class>
-	</listener>
-	<!-- 初始化分发器 -->
-	<servlet>
-		<servlet-name>DispatServlet</servlet-name>
-		<servlet-class>org.coody.framework.web.DispatServlet</servlet-class>
-		<init-param>
-			<param-name>viewPath</param-name>
-			<param-value>/</param-value>
-		</init-param>
-	</servlet>
-	<!-- MVC配置 -->
-	<servlet-mapping>
-		<servlet-name>DispatServlet</servlet-name>
-		<url-pattern>*.do</url-pattern>
-	</servlet-mapping>
-```
-
-
-
-
-
-
- **(2)、MVC使用说明** 
-
-no.1、在scanPacket指定的包目录下某个类使用@PathBinding("/test")注解。传入参数即该类映射路径
-
-no.2、在方法上面指定@PathBinding("/index.do")注解，传入参数即方法映射路径
-
-no.3、该方法的访问路径为 /test/index.do
-
-no.4、映射方法拓展注解@JsonSerialize 被该注解标识的方法将输出json
-
-no.5、示例：
-
-
-![输入图片说明](https://gitee.com/uploads/images/2018/0228/085812_e2836fe6_1200611.jpeg "mvc.jpg")
-
-
- **(3)、IOC使用说明** 
-
-no.1、在需要初始化为bean的类上指定@InitBean注解
-
-no.2、在需要IOC赋值的字段上指定@OutBean
-
-no.3、示例
-
-
-![输入图片说明](https://gitee.com/uploads/images/2018/0228/085831_4605c756_1200611.jpeg "ioc1.jpg")
-
-
-通过以上注解，完成整个IOC依赖注入的全过程。
-
-
- **(4)、切面使用说明** 
-
- _no.1_ 、自定义一个注解
-
- _no.2_ 、在需要拦截的方法上面标识该注解
-
- _no.3_ 、编写一个类，通过@InitBean修饰以实例化bean。在bean内部编写方法。方法用@Around注解修饰。@Around注解传入值为第一步的自定义注解。方法参数类型为AspectWrapper
-
- _no.4_ 、在如上操作完成后，凡是包含该自定义注解的方法均通过环绕通知
-
- _no.5_ 、示例：
-
-
-![输入图片说明](https://gitee.com/uploads/images/2018/0228/085901_39327602_1200611.png "aspect.png")
-
-
-
-
-
-### 8. 示例：
-
+    首先说明一下，开发一套框架并不需要多么高深的技术。相反，开发一套框架非常简单，我们都是在追溯偷懒的艺术。
     
- **依赖注入**  :heart: 
+    通过一些特殊的机制和算法，提供一系列为开发者服务的解决方案。
 
-![输入图片说明](https://gitee.com/uploads/images/2018/0314/235137_6318dce2_1200611.png "[}5%ZQRL_T8R62TP5BXDUGF.png")
+    1、如果你逻辑思维活跃
 
- **切面编程**   :blue_heart: 
+    2、如果你具备java相关的技术
 
-![输入图片说明](https://gitee.com/uploads/images/2018/0314/235227_3d683631_1200611.png "EOC5SKADKLN}P`F`1@]EATS.png")
+    3、如果你有互联网产品开发的实际经验
 
- **定时任务**  :purple_heart: 
+    4、如果你对Coody Framework 的研究有一定的兴趣
 
-![输入图片说明](https://gitee.com/uploads/images/2018/0314/235300_1427cd5d_1200611.png "ALP63PY8`6MU2B]0AYL}Z16.png")
+    那么，请联系我，笔者真诚的希望你能加入到Coody Framework 的开发中来，并肩作战，为国内开源技术做贡献。
 
- **MVC**  :green_heart: 
-
-![输入图片说明](https://gitee.com/uploads/images/2018/0314/235433_0318b322_1200611.png "1GAQ1OY1895$[W2}RF%XCVT.png")
-
- **事物管理 ** :heartpulse: 
-
-![输入图片说明](https://gitee.com/uploads/images/2018/0314/235504_5666dcbb_1200611.png "$9`DAN2(F25R%_[P@)H$9SS.png")
+### 7. 版权说明：
 
 
-具体用例详见：https://gitee.com/coodyer/czone
+    在本项目源代码中，已有测试demo，包括mvc、切面等示例
 
-### 9. 版权说明：
+    作者：Coody
+    
+    版权：©2014-2020 Test404 All right reserved. 版权所有
 
+    反馈邮箱：644556636@qq.com
 
+    交流群号:218481849
 
-在本项目源代码中，已有测试demo，包括mvc、切面等示例
-
-作者：Coody
-
-版权：©2014-2020 Test404 All right reserved. 版权所有
-
-反馈邮箱：644556636@qq.com
-
-交流群号:218481849
-
-基于Coody Framework的博文系统：https://gitee.com/coodyer/czone  (研发中)
+    基于Coody Framework的博文系统：https://gitee.com/coodyer/czone  (研发中)
 
