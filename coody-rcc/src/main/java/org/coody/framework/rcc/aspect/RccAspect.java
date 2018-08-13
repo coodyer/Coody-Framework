@@ -2,8 +2,6 @@ package org.coody.framework.rcc.aspect;
 
 import java.lang.reflect.Method;
 
-import javax.annotation.Resource;
-
 import org.coody.framework.core.annotation.Around;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.point.AspectPoint;
