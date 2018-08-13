@@ -6,7 +6,7 @@ import java.lang.reflect.Modifier;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.coody.framework.core.annotation.InitBean;
+import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.annotation.Order;
 import org.coody.framework.core.constant.FrameworkConstant;
 import org.coody.framework.core.entity.AspectEntity;
@@ -52,7 +52,7 @@ public class TaskLoader implements IcopLoader {
 			if(clazz.isEnum()){
 				continue;
 			}
-			Annotation initBean = PropertUtil.getAnnotation(clazz, InitBean.class);
+			Annotation initBean = PropertUtil.getAnnotation(clazz, AutoBuild.class);
 			if (StringUtil.isNullOrEmpty(initBean)) {
 				continue;
 			}

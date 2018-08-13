@@ -4,13 +4,13 @@ import java.sql.Connection;
 import java.util.List;
 
 import org.coody.framework.core.annotation.Around;
-import org.coody.framework.core.annotation.InitBean;
+import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.point.AspectPoint;
 import org.coody.framework.core.util.StringUtil;
 import org.coody.framework.jdbc.annotation.Transacted;
 import org.coody.framework.jdbc.container.TransactedThreadContainer;
 
-@InitBean
+@AutoBuild
 public class TransactedAspect {
 
 	/**

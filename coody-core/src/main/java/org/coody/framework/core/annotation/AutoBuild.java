@@ -5,9 +5,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.TYPE)
+@Target({ElementType.TYPE,ElementType.FIELD,ElementType.ANNOTATION_TYPE,ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME) 
-public @interface InitBean {
+public @interface AutoBuild {
 	
 	String value() default "";
 }

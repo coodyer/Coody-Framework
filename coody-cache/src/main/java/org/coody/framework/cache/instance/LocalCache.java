@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.coody.framework.cache.instance.iface.IcopCacheFace;
 import org.coody.framework.cache.pool.CacheThreadPool;
-import org.coody.framework.core.annotation.InitBean;
+import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.util.AntUtil;
 import org.coody.framework.core.util.StringUtil;
 
@@ -21,7 +21,7 @@ import org.coody.framework.core.util.StringUtil;
  *
  */
 
-@InitBean
+@AutoBuild
 @SuppressWarnings("unchecked")
 public class LocalCache implements IcopCacheFace {
 

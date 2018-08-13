@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.coody.framework.core.annotation.InitBean;
+import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.exception.BeanConflictException;
 import org.coody.framework.core.util.ClassUtil;
 import org.coody.framework.core.util.PropertUtil;
@@ -95,7 +95,7 @@ public class BeanContainer {
 		if (ClassUtil.isCglibProxyClassName(clazz.getName())) {
 			clazz = clazz.getSuperclass();
 		}
-		List<Annotation> initBeans = PropertUtil.getAnnotations(clazz, InitBean.class);
+		List<Annotation> initBeans = PropertUtil.getAnnotations(clazz, AutoBuild.class);
 		if (StringUtil.isNullOrEmpty(initBeans)) {
 			return null;
 		}

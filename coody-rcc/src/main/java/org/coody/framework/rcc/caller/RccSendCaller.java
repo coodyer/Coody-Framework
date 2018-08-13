@@ -1,8 +1,8 @@
 package org.coody.framework.rcc.caller;
 
-import org.coody.framework.core.annotation.InitBean;
+import org.coody.framework.core.annotation.AutoBuild;
 
-@InitBean
+@AutoBuild
 public class RccSendCaller {
 
 	/**

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.coody.framework.core.annotation.InitBean;
+import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.exception.BeanInitException;
 import org.coody.framework.core.exception.BeanNameCreateException;
@@ -48,8 +48,8 @@ public class BeanLoader implements IcopLoader {
 			if(StringUtil.isNullOrEmpty(cla.getAnnotations())){
 				continue;
 			}
-			Annotation initBean = PropertUtil.getAnnotation(cla, InitBean.class);
-			if (StringUtil.isNullOrEmpty(initBean)) {
+			Annotation autoBuild = PropertUtil.getAnnotation(cla, AutoBuild.class);
+			if (StringUtil.isNullOrEmpty(autoBuild)) {
 				continue;
 			}
 			List<String> beanNames = BeanContainer.getBeanNames(cla);

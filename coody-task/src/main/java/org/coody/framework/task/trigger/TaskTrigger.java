@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
-import org.coody.framework.core.annotation.InitBean;
+import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.bean.InitBeanFace;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.point.AspectPoint;
@@ -24,7 +24,7 @@ import org.coody.framework.task.cron.CronExpression;
 import org.coody.framework.task.threadpool.TaskThreadPool;
 
 
-@InitBean
+@AutoBuild
 public class TaskTrigger implements InitBeanFace{
 	
 	private static Map<Method, ZonedDateTime> cronExpressionMap=new ConcurrentHashMap<Method, ZonedDateTime>();

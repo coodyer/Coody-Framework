@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
+import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.exception.BeanNotFoundException;
 import org.coody.framework.core.loader.iface.IcopLoader;
@@ -36,11 +37,11 @@ public class FieldLoader implements IcopLoader {
 				if (StringUtil.isNullOrEmpty(field.getAnnotations())) {
 					continue;
 				}
-				Annotation writeBean = PropertUtil.getAnnotation(field, Resource.class);
-				if (StringUtil.isNullOrEmpty(writeBean)) {
+				Annotation autoBuild = PropertUtil.getAnnotation(field, AutoBuild.class);
+				if (StringUtil.isNullOrEmpty(autoBuild)) {
 					continue;
 				}
-				String beanName = PropertUtil.getAnnotationValue(writeBean, "name");
+				String beanName = PropertUtil.getAnnotationValue(autoBuild, "name");
 				if (StringUtil.isNullOrEmpty(beanName)) {
 					beanName = field.getType().getName();
 				}

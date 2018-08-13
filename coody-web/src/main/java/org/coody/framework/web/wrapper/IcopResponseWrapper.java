@@ -9,10 +9,10 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
-import org.coody.framework.core.annotation.InitBean;
+import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.web.container.HttpContainer;
 
-@InitBean
+@AutoBuild
 public class IcopResponseWrapper implements ServletResponse, HttpServletResponse {
 
 	@Override

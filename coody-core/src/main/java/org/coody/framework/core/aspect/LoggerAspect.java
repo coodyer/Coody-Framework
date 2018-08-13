@@ -3,14 +3,14 @@ package org.coody.framework.core.aspect;
 import java.lang.reflect.Method;
 
 import org.coody.framework.core.annotation.Around;
-import org.coody.framework.core.annotation.InitBean;
+import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.annotation.LogHead;
 import org.coody.framework.core.point.AspectPoint;
 import org.coody.framework.core.util.LoggerUtil;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
 
-@InitBean
+@AutoBuild
 public class LoggerAspect {
 
 	@Around(annotationClass=LogHead.class)

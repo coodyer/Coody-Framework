@@ -11,7 +11,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.coody.framework.core.annotation.Around;
 import org.coody.framework.core.annotation.Arounds;
-import org.coody.framework.core.annotation.InitBean;
+import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.constant.FrameworkConstant;
 import org.coody.framework.core.entity.AspectEntity;
 import org.coody.framework.core.loader.iface.IcopLoader;
@@ -46,7 +46,7 @@ public class AspectLoader implements IcopLoader {
 			if(cla.isEnum()){
 				continue;
 			}
-			Annotation initBean = PropertUtil.getAnnotation(cla, InitBean.class);
+			Annotation initBean = PropertUtil.getAnnotation(cla, AutoBuild.class);
 			if (initBean == null) {
 				continue;
 			}

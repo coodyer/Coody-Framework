@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.coody.framework.core.annotation.InitBean;
+import org.coody.framework.core.annotation.AutoBuild;
 
 /**
  * 服务者
@@ -14,7 +14,7 @@ import org.coody.framework.core.annotation.InitBean;
  */
 @Target({ElementType.METHOD,ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME) 
-@InitBean
+@AutoBuild
 public @interface RccImplement {
 
 	/**

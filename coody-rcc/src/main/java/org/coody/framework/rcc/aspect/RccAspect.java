@@ -5,19 +5,19 @@ import java.lang.reflect.Method;
 import javax.annotation.Resource;
 
 import org.coody.framework.core.annotation.Around;
-import org.coody.framework.core.annotation.InitBean;
+import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.point.AspectPoint;
 import org.coody.framework.core.util.MethodSignUtil;
 import org.coody.framework.rcc.annotation.RccInterface;
 import org.coody.framework.rcc.caller.RccSendCaller;
 import org.coody.framework.rcc.serialer.iface.RccSerialer;
 
-@InitBean
+@AutoBuild
 public class RccAspect {
 
-	@Resource
+	@AutoBuild
 	RccSerialer serialer;
-	@Resource
+	@AutoBuild
 	RccSendCaller caller;
 
 	/**

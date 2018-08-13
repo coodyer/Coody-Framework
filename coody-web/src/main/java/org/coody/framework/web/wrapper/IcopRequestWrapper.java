@@ -15,11 +15,11 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.coody.framework.core.annotation.InitBean;
+import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.web.container.HttpContainer;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
-@InitBean
+@AutoBuild
 public class IcopRequestWrapper implements ServletRequest,HttpServletRequest {
 
 	@Override

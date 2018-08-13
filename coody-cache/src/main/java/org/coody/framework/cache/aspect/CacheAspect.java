@@ -10,16 +10,16 @@ import org.coody.framework.cache.annotation.CacheWipes;
 import org.coody.framework.cache.annotation.CacheWrite;
 import org.coody.framework.cache.instance.iface.IcopCacheFace;
 import org.coody.framework.core.annotation.Around;
-import org.coody.framework.core.annotation.InitBean;
+import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.point.AspectPoint;
 import org.coody.framework.core.util.MethodSignUtil;
 import org.coody.framework.core.util.StringUtil;
 
-@InitBean
+@AutoBuild
 public class CacheAspect {
 
 	
-	@Resource
+	@AutoBuild
 	IcopCacheFace cacheable;
 	
 	

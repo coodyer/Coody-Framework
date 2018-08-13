@@ -1,10 +1,10 @@
 package org.coody.framework.rcc.serialer;
 
-import org.coody.framework.core.annotation.InitBean;
+import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.rcc.serialer.iface.RccSerialer;
 import org.coody.framework.rcc.util.KryoUtil;
 
-@InitBean
+@AutoBuild
 public class KryoSerialer implements RccSerialer{
 
 	@Override
