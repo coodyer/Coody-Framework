@@ -56,7 +56,10 @@
 
 
 2、进行相关配置(web.xml)
-	`<!-- 配置扫描的包 -->
+
+
+```
+<!-- 配置扫描的包 -->
 	<context-param>
 		<param-name>scanPacket</param-name>
 		<!-- 逗号分割多个包名 -->
@@ -92,7 +95,10 @@ org.coody.framework.web.DispatServlet
 	<servlet-mapping>
 		<servlet-name>DispatServlet</servlet-name>
 		<url-pattern>*.do</url-pattern>
-	</servlet-mapping>`
+	</servlet-mapping>
+```
+
+
 ### 如何编写一个Controller
 1、新建一个Controller
 
