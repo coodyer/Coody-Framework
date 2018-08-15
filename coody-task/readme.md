@@ -10,4 +10,4 @@
     1) 轻量化定时任务体系
 ### 如何使用
     1、在一个bean方法上添加CronTask注解即可
-    ![输入图片说明](https://images.gitee.com/uploads/images/2018/0815/181345_e71cce03_1200611.png "task.png")
+![输入图片说明](https://images.gitee.com/uploads/images/2018/0815/181345_e71cce03_1200611.png "task.png")
