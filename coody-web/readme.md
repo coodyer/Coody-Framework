@@ -26,7 +26,7 @@
 1、添加相关依赖
 
 ```
-                <dependency>
+            <dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-core</artifactId>
 			<version>alpha-1.0.6</version>
