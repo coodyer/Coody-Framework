@@ -96,22 +96,22 @@ org.coody.framework.web.DispatServlet
 ### 如何编写一个Controller
 1、新建一个Controller
 
-    ![输入图片说明](https://images.gitee.com/uploads/images/2018/0815/180637_d6e17fb5_1200611.png "1.png")
+![输入图片说明](https://images.gitee.com/uploads/images/2018/0815/180637_d6e17fb5_1200611.png "1.png")
 
 2、初始化并指定其映射路径
 
-    ![输入图片说明](https://images.gitee.com/uploads/images/2018/0815/180646_0dae77fe_1200611.png "2.png")
+![输入图片说明](https://images.gitee.com/uploads/images/2018/0815/180646_0dae77fe_1200611.png "2.png")
 
 3、新建一个方法
 
-    ![输入图片说明](https://images.gitee.com/uploads/images/2018/0815/180653_215bdff0_1200611.png "3.png")
+![输入图片说明](https://images.gitee.com/uploads/images/2018/0815/180653_215bdff0_1200611.png "3.png")
 
 4、为该方法指定请求路径
 
-    ![输入图片说明](https://images.gitee.com/uploads/images/2018/0815/180715_0a18183f_1200611.png "4.png")
+![输入图片说明](https://images.gitee.com/uploads/images/2018/0815/180715_0a18183f_1200611.png "4.png")
     
 5、添加返回页面
 
-    ![输入图片说明](https://images.gitee.com/uploads/images/2018/0815/180722_fcf0857d_1200611.png "5.png")
+![输入图片说明](https://images.gitee.com/uploads/images/2018/0815/180722_fcf0857d_1200611.png "5.png")
 
 6、访问：/test/hello.do即可
