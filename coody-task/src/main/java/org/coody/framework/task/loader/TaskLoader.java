@@ -8,8 +8,6 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.annotation.Order;
-import org.coody.framework.core.constant.FrameworkConstant;
-import org.coody.framework.core.entity.AspectEntity;
 import org.coody.framework.core.loader.iface.IcopLoader;
 import org.coody.framework.core.util.MethodSignUtil;
 import org.coody.framework.core.util.PrintException;
@@ -18,7 +16,6 @@ import org.coody.framework.core.util.StringUtil;
 import org.coody.framework.task.annotation.CronTask;
 import org.coody.framework.task.container.TaskContainer;
 import org.coody.framework.task.exception.ErrorCronException;
-import org.coody.framework.task.trigger.TaskTrigger;
 
 /**
  * 定时任务加载器
@@ -71,11 +68,6 @@ public class TaskLoader implements IcopLoader {
 					continue;
 				}
 				logger.debug("初始化定时任务 >>"+cron+":"+MethodSignUtil.getMethodKey(clazz, method));
-				AspectEntity aspectEntity = new AspectEntity();
-				// 装载切面控制方法
-				aspectEntity.setAnnotationClass(new Class<?>[] { CronTask.class });
-				aspectEntity.setAspectInvokeMethod(TaskTrigger.getTriggerMethod());
-				FrameworkConstant.writeToAspectMap(MethodSignUtil.getMethodUnionKey(method), aspectEntity);
 				TaskContainer.setTaskEntity(clazz, method, cron);
 			}
 		}

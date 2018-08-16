@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
+import org.coody.framework.core.annotation.Around;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.bean.InitBeanFace;
 import org.coody.framework.core.container.BeanContainer;
@@ -73,7 +74,8 @@ public class TaskTrigger implements InitBeanFace{
 	 * @return
 	 * @throws Throwable
 	 */
-	public static Object taskTrigger(AspectPoint aspect) throws Throwable {
+	@Around(annotationClass=CronTask.class)
+	public Object taskTrigger(AspectPoint aspect) throws Throwable {
 		Method method=aspect.getMethod();
 		CronTask cronTask=method.getAnnotation(CronTask.class);
 		Object bean=aspect.getBean();
