@@ -163,6 +163,7 @@ public class LocalCache implements IcopCacheFace {
 
 		public TimeoutTimerTask(String key, LocalCache cacheHandle) {
 			this.ceKey = key;
+			this.cacheHandle=cacheHandle;
 		}
 
 		@Override
