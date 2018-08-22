@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.coody.framework.core.annotation.Order;
-import org.coody.framework.core.exception.base.IcopException;
+import org.coody.framework.core.exception.base.CoodyException;
 import org.coody.framework.core.loader.AspectLoader;
 import org.coody.framework.core.loader.BeanLoader;
 import org.coody.framework.core.loader.FieldLoader;
@@ -33,7 +33,7 @@ public class CoreApp {
 	
 	public static void pushLoader(Class<?> loader){
 		if(!IcopLoader.class.isAssignableFrom(loader)){
-			throw new IcopException(loader.getName()+"不是加载器");
+			throw new CoodyException(loader.getName()+"不是加载器");
 		}
 		Integer seq=Integer.MAX_VALUE-1;
 		Order order=loader.getClass().getAnnotation(Order.class);

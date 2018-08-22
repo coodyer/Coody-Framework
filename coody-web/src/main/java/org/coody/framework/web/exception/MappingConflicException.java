@@ -1,9 +1,9 @@
 package org.coody.framework.web.exception;
 
-import org.coody.framework.core.exception.base.IcopException;
+import org.coody.framework.core.exception.base.CoodyException;
 
 @SuppressWarnings("serial")
-public class MappingConflicException extends IcopException{
+public class MappingConflicException extends CoodyException{
 
 
 	public MappingConflicException(String path) {

@@ -18,6 +18,8 @@ import org.coody.framework.jdbc.annotation.Table;
 import org.coody.framework.jdbc.entity.JDBCEntity;
 import org.coody.framework.jdbc.entity.Pager;
 import org.coody.framework.jdbc.entity.Where;
+import org.coody.framework.jdbc.exception.BuildModeltException;
+import org.coody.framework.jdbc.exception.BuildSqlException;
 
 
 public class JdbcUtil {
@@ -187,8 +189,7 @@ public class JdbcUtil {
 			}
 			return map;
 		} catch (Exception e) {
-			
-			return null;
+			throw new BuildSqlException("编译sql报错>>"+obj, e);
 		}
 	}
 	
@@ -304,7 +305,7 @@ public class JdbcUtil {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T parseBean(Class<?> cla, Map<String, Object> sourceMap) {
+	public static <T> T buildBean(Class<?> cla, Map<String, Object> sourceMap) {
 		if (StringUtil.findNull(cla, sourceMap) > -1) {
 			return null;
 		}
@@ -317,8 +318,7 @@ public class JdbcUtil {
 			}
 			return (T) obj;
 		} catch (Exception e) {
-			
-			return null;
+			throw new BuildModeltException("解析为Model异常>>class:"+cla.getName()+",data:"+sourceMap, e);
 		}
 	}
 	
@@ -330,17 +330,16 @@ public class JdbcUtil {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> List<T> parseBeans(Class<?> cla, List<Map<String, Object>> sourceMaps) {
+	public static <T> List<T> buildBeans(Class<?> cla, List<Map<String, Object>> sourceMaps) {
 		if (StringUtil.findNull(cla, sourceMaps) > -1) {
 			return null;
 		}
 		List<T> lines=new ArrayList<T>();
 		for(Map<String, Object> line:sourceMaps){
-			try {
-				lines.add((T) parseBean(cla, line));
-			} catch (Exception e) {
-				// TODO: handle exception
+			if(StringUtil.isNullOrEmpty(line)) {
+				continue;
 			}
+				lines.add((T) buildBean(cla, line));
 		}
 		if(StringUtil.isNullOrEmpty(lines)){
 			return null;

@@ -1,9 +1,9 @@
 package org.coody.framework.rcc.exception;
 
-import org.coody.framework.core.exception.base.IcopException;
+import org.coody.framework.core.exception.base.CoodyException;
 
 @SuppressWarnings("serial")
-public class NoMethodException extends IcopException{
+public class NoMethodException extends CoodyException{
 
 
 	public NoMethodException(Class<?> clazz) {

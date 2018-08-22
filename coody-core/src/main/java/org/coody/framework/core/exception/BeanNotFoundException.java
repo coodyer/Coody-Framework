@@ -1,9 +1,9 @@
 package org.coody.framework.core.exception;
 
-import org.coody.framework.core.exception.base.IcopException;
+import org.coody.framework.core.exception.base.CoodyException;
 
 @SuppressWarnings("serial")
-public class BeanNotFoundException extends IcopException{
+public class BeanNotFoundException extends CoodyException{
 
 	
 	public BeanNotFoundException(String bean){

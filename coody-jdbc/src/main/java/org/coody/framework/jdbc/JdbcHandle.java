@@ -19,6 +19,7 @@ import javax.sql.DataSource;
 
 import org.coody.framework.core.entity.BaseModel;
 import org.coody.framework.core.entity.BeanEntity;
+import org.coody.framework.core.logger.BaseLogger;
 import org.coody.framework.core.util.DateUtils;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
@@ -27,12 +28,28 @@ import org.coody.framework.jdbc.container.TransactedThreadContainer;
 import org.coody.framework.jdbc.entity.JDBCEntity;
 import org.coody.framework.jdbc.entity.Pager;
 import org.coody.framework.jdbc.entity.Where;
+import org.coody.framework.jdbc.exception.BuildResultException;
+import org.coody.framework.jdbc.exception.ExecSqlException;
+import org.coody.framework.jdbc.exception.FormatParamsException;
+import org.coody.framework.jdbc.exception.PrimaryKeyException;
 import org.coody.framework.jdbc.util.JdbcUtil;
+import org.nico.noson.Noson;
 
 public class JdbcHandle {
 
-	protected DataSource dataSource;
+	static BaseLogger logger = BaseLogger.getLogger(BaseLogger.class);
 
+	public Boolean formatSql = true;
+
+	public Boolean getFormatSql() {
+		return formatSql;
+	}
+
+	public void setFormatSql(Boolean formatSql) {
+		this.formatSql = formatSql;
+	}
+
+	protected DataSource dataSource;
 
 	public DataSource getDataSource() {
 		return dataSource;
@@ -62,13 +79,10 @@ public class JdbcHandle {
 				primaryKeys.add(primaryKey);
 			}
 			return primaryKeys;
-
 		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
+			throw new PrimaryKeyException("获取主键列表出现异常", e);
 		}
 	}
-
 
 	public List<Map<String, Object>> baseQuery(String sql, Object... params) {
 		ResultSet resultSet = null;
@@ -81,7 +95,11 @@ public class JdbcHandle {
 				// statement用来执行SQL语句
 				statement = conn.prepareStatement(sql);
 				Long threadId = Thread.currentThread().getId();
-				System.out.println("[线程ID >>" + threadId + "][执行语句:" + parseParams(sql, params) + "]");
+				String outSql = sql;
+				if (formatSql) {
+					outSql = formatParams(sql, params);
+				}
+				logger.debug("[线程ID:" + threadId + "][执行语句:" + outSql + "]");
 				if (!StringUtil.isNullOrEmpty(params)) {
 					for (int i = 0; i < params.length; i++) {
 						statement.setObject((i + 1), params[i]);
@@ -89,10 +107,10 @@ public class JdbcHandle {
 				}
 				// 执行语句，返回结果
 				resultSet = statement.executeQuery();
-				return parseResult(resultSet);
+				return buildResult(resultSet);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new ExecSqlException("语句执行异常>>sql:" + sql + ",params:" +Noson.reversal(params), e);
 		} finally {
 			if (!TransactedThreadContainer.hasTransacted()) {
 				// 关闭连接对象
@@ -121,10 +139,8 @@ public class JdbcHandle {
 	/**
 	 * 执行SQL更新语句
 	 * 
-	 * @param sql
-	 *            语句
-	 * @param paraMap
-	 *            参数
+	 * @param sql     语句
+	 * @param paraMap 参数
 	 * @return
 	 */
 	public Long baseUpdate(String sql, Object... params) {
@@ -155,7 +171,7 @@ public class JdbcHandle {
 				return code.longValue();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new ExecSqlException("语句执行异常>>sql:" + sql + ",params:" + Noson.reversal(params), e);
 		} finally {
 			if (!TransactedThreadContainer.hasTransacted()) {
 				// 关闭连接对象
@@ -199,8 +215,7 @@ public class JdbcHandle {
 	 * 执行SQL语句
 	 * 
 	 * @param sql
-	 * @param paraMap
-	 *            参数map容器
+	 * @param paraMap 参数map容器
 	 * @return 结果集
 	 */
 	public List<Map<String, Object>> query(String sql, Object... paras) {
@@ -237,12 +252,9 @@ public class JdbcHandle {
 	/**
 	 * 执行SQL语句获得任意类型结果
 	 * 
-	 * @param clazz
-	 *            返回类型
-	 * @param sql
-	 *            sql语句
-	 * @param paras
-	 *            参数列表
+	 * @param clazz 返回类型
+	 * @param sql   sql语句
+	 * @param paras 参数列表
 	 * @return
 	 */
 	public <T> T queryFirstAuto(Class<?> clazz, String sql, Object... paras) {
@@ -256,12 +268,9 @@ public class JdbcHandle {
 	/**
 	 * 执行SQL语句获得任意类型结果
 	 * 
-	 * @param clazz
-	 *            返回类型
-	 * @param sql
-	 *            sql语句
-	 * @param paras
-	 *            参数列表
+	 * @param clazz 返回类型
+	 * @param sql   sql语句
+	 * @param paras 参数列表
 	 * @return
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -283,6 +292,9 @@ public class JdbcHandle {
 		sql = formatSql(sql);
 		List list = new ArrayList();
 		for (Map<String, Object> line : records) {
+			if(StringUtil.isNullOrEmpty(line)) {
+				continue;
+			}
 			Object value = PropertUtil.parseValue(new ArrayList<Object>(line.values()).get(0), clazz);
 			if (StringUtil.isNullOrEmpty(value)) {
 				if (sql.contains("select count(") || sql.contains("select sum(") || sql.contains("select avg(")) {
@@ -308,12 +320,8 @@ public class JdbcHandle {
 			for (String key : rec.keySet()) {
 				Object value = rec.get(key);
 				if (!StringUtil.isNullOrEmpty(value)) {
-					try {
-						value = PropertUtil.parseValue(value, fieldType);
-						list.add(value);
-					} catch (Exception e) {
-
-					}
+					value = PropertUtil.parseValue(value, fieldType);
+					list.add(value);
 				}
 				break;
 			}
@@ -324,52 +332,45 @@ public class JdbcHandle {
 	/**
 	 * 根据多个字段查询对象
 	 * 
-	 * @param cla
-	 *            类
-	 * @param paraMap
-	 *            条件集合
+	 * @param cla     类
+	 * @param paraMap 条件集合
 	 * @return
 	 */
 	public <T> List<T> findBean(Class<?> cla, Map<String, Object> paraMap) {
 		List<Map<String, Object>> recs = findRecord(cla, paraMap, null, null);
-		return JdbcUtil.parseBeans(cla, recs);
+		return JdbcUtil.buildBeans(cla, recs);
 	}
 
 	/**
 	 * 根据多个字段查询对象
 	 * 
-	 * @param cla
-	 *            类
-	 * @param paraMap
-	 *            条件集合
+	 * @param cla     类
+	 * @param paraMap 条件集合
 	 * @return
 	 */
 	public <T> List<T> findBean(Class<?> cla, Map<String, Object> paraMap, String orderField, Boolean isDesc) {
 		List<Map<String, Object>> recs = findRecord(cla, paraMap, orderField, isDesc);
-		return JdbcUtil.parseBeans(cla, recs);
+		return JdbcUtil.buildBeans(cla, recs);
 	}
 
 	/**
 	 * 根据字段查询对象
 	 * 
-	 * @param cla
-	 *            类
-	 * @param fieldName
-	 *            字段名
-	 * @param fieldValue
-	 *            字段值,可支持集合与数组IN查询
+	 * @param cla        类
+	 * @param fieldName  字段名
+	 * @param fieldValue 字段值,可支持集合与数组IN查询
 	 * @return
 	 */
 	public <T> List<T> findBean(Class<?> cla, String fieldName, Object fieldValue, String orderField, Boolean isDesc) {
 		Map<String, Object> paraMap = new HashMap<String, Object>();
 		paraMap.put(fieldName, fieldValue);
 		List<Map<String, Object>> recs = findRecord(cla, paraMap, orderField, isDesc);
-		return JdbcUtil.parseBeans(cla, recs);
+		return JdbcUtil.buildBeans(cla, recs);
 	}
 
 	public <T> List<T> findBean(Class<?> cla, String orderField, Boolean isDesc) {
 		List<Map<String, Object>> recs = findRecord(cla, null, orderField, isDesc);
-		return JdbcUtil.parseBeans(cla, recs);
+		return JdbcUtil.buildBeans(cla, recs);
 	}
 
 	/**
@@ -387,79 +388,65 @@ public class JdbcHandle {
 	/**
 	 * 根据对象查询对象集合
 	 * 
-	 * @param obj
-	 *            对象
-	 * @param where
-	 *            where条件
-	 * @param pager
-	 *            分页对象
+	 * @param obj   对象
+	 * @param where where条件
+	 * @param pager 分页对象
 	 * @return
 	 */
 	public <T> List<T> findBean(Object obj, Where where, Pager pager) {
 		List<Map<String, Object>> list = findRecord(obj, where, pager, null, null);
-		return JdbcUtil.parseBeans(getObjectClass(obj), list);
+		return JdbcUtil.buildBeans(getObjectClass(obj), list);
 	}
 
 	/**
 	 * 根据对象查询对象集合
 	 * 
-	 * @param obj
-	 *            对象
-	 * @param where
-	 *            where条件
-	 * @param pager
-	 *            分页对象
+	 * @param obj   对象
+	 * @param where where条件
+	 * @param pager 分页对象
 	 * @return
 	 */
 	public <T> List<T> findBean(Object obj, Where where, Pager pager, String orderField, Boolean isDesc) {
 		List<Map<String, Object>> list = findRecord(obj, where, pager, orderField, isDesc);
-		return JdbcUtil.parseBeans(getObjectClass(obj), list);
+		return JdbcUtil.buildBeans(getObjectClass(obj), list);
 	}
 
 	/**
 	 * 根据对象查询对象集合
 	 * 
-	 * @param obj
-	 *            对象
-	 * @param where
-	 *            where条件
-	 * @param pager
-	 *            分页对象
+	 * @param obj   对象
+	 * @param where where条件
+	 * @param pager 分页对象
 	 * @return
 	 */
 	public <T> List<T> findBean(Object obj, Where where, String orderField, Boolean isDesc) {
 		List<Map<String, Object>> list = findRecord(obj, where, null, orderField, isDesc);
-		return JdbcUtil.parseBeans(getObjectClass(obj), list);
+		return JdbcUtil.buildBeans(getObjectClass(obj), list);
 	}
 
 	/**
 	 * 根据对象查询对象集合
 	 * 
-	 * @param obj
-	 *            对象
-	 * @param where
-	 *            where条件
-	 * @param pager
-	 *            分页对象
+	 * @param obj   对象
+	 * @param where where条件
+	 * @param pager 分页对象
 	 * @return
 	 */
 	public <T> List<T> findBean(Object obj, Pager pager) {
 		List<Map<String, Object>> list = findRecord(obj, null, pager, null, null);
-		return JdbcUtil.parseBeans(getObjectClass(obj), list);
+		return JdbcUtil.buildBeans(getObjectClass(obj), list);
 	}
 
 	/**
 	 * 根据对象查询对象
 	 * 
-	 * @param obj
-	 *            对象条件
-	 * @param where
-	 *            where条件
+	 * @param obj   对象条件
+	 * @param where where条件
 	 * @return
 	 */
 	public <T> List<T> findBean(Object obj, Where where) {
 		List<Map<String, Object>> list = findRecord(obj, where, null, null, null);
-		return JdbcUtil.parseBeans(getObjectClass(obj), list);
+		return JdbcUtil.buildBeans(getObjectClass(obj), list);
 	}
 
 	/**
@@ -470,7 +457,7 @@ public class JdbcHandle {
 	 */
 	public <T> List<T> findBean(Object obj) {
 		List<Map<String, Object>> list = findRecord(obj, null, null, null, null);
-		return JdbcUtil.parseBeans(getObjectClass(obj), list);
+		return JdbcUtil.buildBeans(getObjectClass(obj), list);
 	}
 
 	/**
@@ -519,7 +506,7 @@ public class JdbcHandle {
 		if (StringUtil.isNullOrEmpty(list)) {
 			return null;
 		}
-		return JdbcUtil.parseBean(getObjectClass(obj), list.get(0));
+		return JdbcUtil.buildBean(getObjectClass(obj), list.get(0));
 	}
 
 	/**
@@ -552,18 +539,15 @@ public class JdbcHandle {
 	 */
 	public <T> T findBeanFirst(Class<?> cla, Map<String, Object> paraMap) {
 		Map<String, Object> record = findRecordFirst(cla, paraMap, null, null);
-		return JdbcUtil.parseBean(cla, record);
+		return JdbcUtil.buildBean(cla, record);
 	}
 
 	/**
 	 * 根据对象查询结果集
 	 * 
-	 * @param obj
-	 *            对象条件
-	 * @param where
-	 *            where条件
-	 * @param pager
-	 *            分页信息
+	 * @param obj   对象条件
+	 * @param where where条件
+	 * @param pager 分页信息
 	 * @return
 	 */
 	public List<Map<String, Object>> findRecord(Object obj, Where where, Pager pager, String orderField,
@@ -575,10 +559,8 @@ public class JdbcHandle {
 	/**
 	 * 根据字段查询结果集
 	 * 
-	 * @param cla
-	 *            类
-	 * @param paraMap
-	 *            多个字段
+	 * @param cla     类
+	 * @param paraMap 多个字段
 	 * @return
 	 */
 	public List<Map<String, Object>> findRecord(Class<?> cla, Map<String, Object> paraMap, String orderField,
@@ -637,10 +619,8 @@ public class JdbcHandle {
 	/**
 	 * 分页查询
 	 * 
-	 * @param obj
-	 *            对象条件
-	 * @param pager
-	 *            分页信息
+	 * @param obj   对象条件
+	 * @param pager 分页信息
 	 * @return
 	 */
 	public Pager findPager(Object obj, Pager pager) {
@@ -650,10 +630,8 @@ public class JdbcHandle {
 	/**
 	 * 分页查询
 	 * 
-	 * @param obj
-	 *            对象条件
-	 * @param pager
-	 *            分页信息
+	 * @param obj   对象条件
+	 * @param pager 分页信息
 	 * @return
 	 */
 	public Pager findPager(Object obj, Pager pager, String orderField, Boolean isDesc) {
@@ -663,12 +641,9 @@ public class JdbcHandle {
 	/**
 	 * 分页查询
 	 * 
-	 * @param obj
-	 *            对象条件
-	 * @param where
-	 *            where条件
-	 * @param pager
-	 *            分页条件
+	 * @param obj   对象条件
+	 * @param where where条件
+	 * @param pager 分页条件
 	 * @return
 	 */
 	public Pager findPager(Object obj, Where where, Pager pager, String orderField, Boolean isDesc) {
@@ -676,7 +651,7 @@ public class JdbcHandle {
 		Integer totalRows = getCount(jDBCEntity.getSql(), jDBCEntity.getParams());
 		pager.setTotalRows(totalRows);
 		List<Map<String, Object>> list = baseQuery(jDBCEntity.getSql(), jDBCEntity.getParams());
-		List<?> objList = JdbcUtil.parseBeans(getObjectClass(obj), list);
+		List<?> objList = JdbcUtil.buildBeans(getObjectClass(obj), list);
 		pager.setData(objList);
 		return pager;
 	}
@@ -684,12 +659,9 @@ public class JdbcHandle {
 	/**
 	 * 分页查询
 	 * 
-	 * @param obj
-	 *            对象条件
-	 * @param where
-	 *            where条件
-	 * @param pager
-	 *            分页条件
+	 * @param obj   对象条件
+	 * @param where where条件
+	 * @param pager 分页条件
 	 * @return
 	 */
 	public Pager findFieldPager(Object obj, String queryField, Where where, Pager pager) {
@@ -698,7 +670,7 @@ public class JdbcHandle {
 		Integer totalRows = getCount(jDBCEntity.getSql(), jDBCEntity.getParams());
 		pager.setTotalRows(totalRows);
 		List<Map<String, Object>> list = baseQuery(jDBCEntity.getSql(), jDBCEntity.getParams());
-		List<?> objList = JdbcUtil.parseBeans(getObjectClass(obj), list);
+		List<?> objList = JdbcUtil.buildBeans(getObjectClass(obj), list);
 		pager.setData(objList);
 		return pager;
 	}
@@ -706,10 +678,8 @@ public class JdbcHandle {
 	/**
 	 * 根据语句和条件查询总记录数
 	 * 
-	 * @param sql
-	 *            语句
-	 * @param map
-	 *            条件容器
+	 * @param sql 语句
+	 * @param map 条件容器
 	 * @return
 	 */
 	public Integer getCount(String sql, Object... params) {
@@ -906,10 +876,8 @@ public class JdbcHandle {
 	/**
 	 * 保存或更新
 	 * 
-	 * @param obj
-	 *            欲保存的对象
-	 * @param addFields
-	 *            当数据存在时累加的字段
+	 * @param obj       欲保存的对象
+	 * @param addFields 当数据存在时累加的字段
 	 * @return
 	 */
 	public Long saveOrUpdateAuto(Object obj, String... addFields) {
@@ -1027,7 +995,7 @@ public class JdbcHandle {
 		return sql.toLowerCase();
 	}
 
-	private String parseParams(String sql, Object... params) {
+	private String formatParams(String sql, Object... params) {
 		sql += " ";
 		String[] sqlRanks = sql.split("\\?");
 		if (sqlRanks.length == 1) {
@@ -1049,7 +1017,7 @@ public class JdbcHandle {
 					}
 					sb.append(value);
 				} catch (Exception e) {
-					// TODO: handle exception
+					throw new FormatParamsException("格式化参数出现异常>>sql:" + sql + ",params:" + params.toString());
 				}
 			}
 		}
@@ -1073,7 +1041,7 @@ public class JdbcHandle {
 		return conn;
 	}
 
-	private List<Map<String, Object>> parseResult(ResultSet resultSet) {
+	private List<Map<String, Object>> buildResult(ResultSet resultSet) {
 		String columnName = null;
 		Object obj = null;
 		List<Map<String, Object>> allRecord = new ArrayList<Map<String, Object>>();
@@ -1083,22 +1051,26 @@ public class JdbcHandle {
 				ResultSetMetaData data = resultSet.getMetaData();
 				Map<String, Object> record = new HashMap<String, Object>();
 				for (int i = 1; i <= data.getColumnCount(); i++) {
-					// 获得列名
-					columnName = data.getColumnName(i);
-					// 获得列值
-					obj = resultSet.getObject(columnName);
-					// 数据字段存入集合
-					record.put(columnName, obj);
+					try {// 获得列名
+						columnName = data.getColumnName(i);
+						if(StringUtil.isNullOrEmpty(columnName)) {
+							continue;
+						}
+						// 获得列值
+						obj = resultSet.getObject(columnName);
+						// 数据字段存入集合
+						record.put(columnName, obj);
+					} catch (Exception e) {
+						throw new BuildResultException("解析参数出现异常", e);
+					}
 				}
 				// 数据列存入集合
 				allRecord.add(record);
 			}
 			return allRecord;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new BuildResultException("解析参数出现异常", e);
 		}
-		return null;
 	}
-
 
 }

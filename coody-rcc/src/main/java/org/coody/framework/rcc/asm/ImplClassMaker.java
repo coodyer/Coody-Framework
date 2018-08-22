@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.coody.framework.core.exception.base.IcopException;
+import org.coody.framework.core.exception.base.CoodyException;
 import org.coody.framework.core.logger.BaseLogger;
 import org.coody.framework.core.util.PrintException;
 import org.coody.framework.core.util.PropertUtil;
@@ -136,7 +136,7 @@ public class ImplClassMaker {
 					avTemp.visitEnd();
 				}
 			} catch (Exception e) {
-				throw new IcopException("注解解析失败", e);
+				throw new CoodyException("注解解析失败", e);
 			}
 		}
 		if (returnType == void.class) {

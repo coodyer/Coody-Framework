@@ -1,9 +1,9 @@
 package org.coody.framework.core.exception;
 
-import org.coody.framework.core.exception.base.IcopException;
+import org.coody.framework.core.exception.base.CoodyException;
 
 @SuppressWarnings("serial")
-public class BeanInitException extends IcopException{
+public class BeanInitException extends CoodyException{
 
 
 	public BeanInitException(Class<?> clazz){
