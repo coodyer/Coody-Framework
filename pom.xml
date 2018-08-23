@@ -70,7 +70,7 @@
 					<configuration>
 						<source>${java.version.source}</source>
 						<target>${java.version.target}</target>
-						<compilerArgument>${java.compiler.argument}</compilerArgument>
+						<compilerArgument>-parameters</compilerArgument>
 					</configuration>
 				</plugin>
 				<plugin>
