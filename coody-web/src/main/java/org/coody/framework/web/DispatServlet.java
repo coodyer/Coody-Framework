@@ -28,12 +28,12 @@ public class DispatServlet extends HttpServlet{
 		response.setCharacterEncoding("UTF-8");
 		String path=request.getServletPath();
 		logger.debug("收到请求 >>"+path);
-		if(!MappingContainer.containsPath(path)){
+		MvcMapping mapping=MappingContainer.getMapping(path);
+		if(mapping==null){
 			response.getWriter().print("page not found");
 			response.setStatus(404);
 			return;
 		}
-		MvcMapping mapping=MappingContainer.getMapping(path);
 		//装载Request
 		HttpContainer.setRequest(request);
 		HttpContainer.setResponse(response);
