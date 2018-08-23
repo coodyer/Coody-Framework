@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.coody.framework.core.util.PrintException;
 import org.coody.framework.core.util.StringUtil;
 import org.coody.framework.web.annotation.JsonOut;
 import org.coody.framework.web.container.HttpContainer;
@@ -59,7 +60,9 @@ public class DispatServlet extends HttpServlet{
 			String respFile=MessageFormat.format("{0}/{1}", viewPath,viewFileName);
 			request.getRequestDispatcher(respFile).forward(request, response);
 		} catch (Exception e) {
-			e.printStackTrace();
+			PrintException.printException(logger, e);
+			response.setStatus(500);
+			response.getWriter().print("page error");
 		}
 	}
 	@Override
