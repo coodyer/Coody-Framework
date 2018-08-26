@@ -29,28 +29,28 @@
         <dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-core</artifactId>
-			alpha-1.0.9
+			alpha-1.1.0
 		</dependency>
 
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-jdbc</artifactId>
-			alpha-1.0.9
+			alpha-1.1.0
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-cache</artifactId>
-			alpha-1.0.9
+			alpha-1.1.0
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-task</artifactId>
-			alpha-1.0.9
+			alpha-1.1.0
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-web</artifactId>
-			alpha-1.0.9
+			alpha-1.1.0
 		</dependency>
 ```
 
