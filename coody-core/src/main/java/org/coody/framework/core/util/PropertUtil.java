@@ -33,6 +33,7 @@ public class PropertUtil {
 	private static final Map<Method, List<BeanEntity>> PARAM_MAP = new ConcurrentHashMap<Method, List<BeanEntity>>();
 	private static final Map<Method, Set<Method>> IFACE_METHODS = new ConcurrentHashMap<Method, Set<Method>>();
 	private static final Map<Method, Set<Class<?>>> IFACE_CLAZZS = new ConcurrentHashMap<Method, Set<Class<?>>>();
+	private static final Map<Class<?>, Set<Method>> CLAZZS_METHODS = new ConcurrentHashMap<Class<?>, Set<Method>>();
 
 	public static void reload() {
 		FIELD_MAP.clear();
@@ -63,12 +64,9 @@ public class PropertUtil {
 	/**
 	 * 从对象中获取目标方法
 	 * 
-	 * @param methods
-	 *            方法数组
-	 * @param methodName
-	 *            方法名称
-	 * @param paras
-	 *            参数列表
+	 * @param methods    方法数组
+	 * @param methodName 方法名称
+	 * @param paras      参数列表
 	 * @return
 	 */
 	public static Method getTargeMethod(Method[] methods, String methodName, Class<?>... paraTypes) {
@@ -83,12 +81,9 @@ public class PropertUtil {
 	/**
 	 * 判断目标是否是当前方法
 	 * 
-	 * @param method
-	 *            当前方法
-	 * @param methodName
-	 *            目标方法名
-	 * @param paras
-	 *            目标方法参数列表
+	 * @param method     当前方法
+	 * @param methodName 目标方法名
+	 * @param paras      目标方法参数列表
 	 * @return
 	 */
 	private static boolean isTargeMethod(Method method, String methodName, Class<?>... paraTypes) {
@@ -443,12 +438,9 @@ public class PropertUtil {
 	/**
 	 * 设置字段值
 	 * 
-	 * @param obj
-	 *            实例对象
-	 * @param propertyName
-	 *            属性名
-	 * @param value
-	 *            新的字段值
+	 * @param obj          实例对象
+	 * @param propertyName 属性名
+	 * @param value        新的字段值
 	 * @return
 	 * @throws IllegalAccessException
 	 * @throws IllegalArgumentException
@@ -466,12 +458,9 @@ public class PropertUtil {
 	/**
 	 * 设置字段值
 	 * 
-	 * @param obj
-	 *            实例对象
-	 * @param propertyName
-	 *            属性名
-	 * @param value
-	 *            新的字段值
+	 * @param obj          实例对象
+	 * @param propertyName 属性名
+	 * @param value        新的字段值
 	 * @return
 	 * @throws IllegalAccessException
 	 * @throws IllegalArgumentException
@@ -528,12 +517,9 @@ public class PropertUtil {
 	/**
 	 * 设置字段值
 	 * 
-	 * @param obj
-	 *            实例对象
-	 * @param propertyName
-	 *            属性名
-	 * @param value
-	 *            新的字段值
+	 * @param obj          实例对象
+	 * @param propertyName 属性名
+	 * @param value        新的字段值
 	 * @return
 	 * @throws IllegalAccessException
 	 * @throws IllegalArgumentException
@@ -762,7 +748,6 @@ public class PropertUtil {
 		}
 		return null;
 	}
-
 
 	public static void setEnumFieldName(Class<?> clazz, String fieldName, String newFieldName) {
 		if (!clazz.isEnum()) {
@@ -1119,6 +1104,26 @@ public class PropertUtil {
 		return infaceClazzList;
 	}
 
+	public static Set<Method> getMethods(Class<?> clazz) {
+		if (CLAZZS_METHODS.containsKey(clazz)) {
+			return CLAZZS_METHODS.get(clazz);
+		}
+		Set<Method> methods = new HashSet<Method>();
+		Method[] clazzMethods = clazz.getDeclaredMethods();
+		if (!StringUtil.isNullOrEmpty(clazzMethods)) {
+			methods.addAll(Arrays.asList(clazzMethods));
+		}
+		Class<?> superClass = clazz.getSuperclass();
+		if (superClass != null && superClass != Object.class) {
+			Set<Method> superMethods = getMethods(superClass);
+			if (!StringUtil.isNullOrEmpty(superMethods)) {
+				methods.addAll(superMethods);
+			}
+		}
+		CLAZZS_METHODS.put(clazz, methods);
+		return methods;
+	}
+
 	/**
 	 * 设置注解字段值
 	 * 
@@ -1178,12 +1183,12 @@ public class PropertUtil {
 		return memberValues;
 	}
 
-	public static  <T extends Annotation> T getAnnotation(AccessibleObject accessible,Class<T> annotationClass) {
+	public static <T extends Annotation> T getAnnotation(AccessibleObject accessible, Class<T> annotationClass) {
 		if (!annotationClass.isAnnotation()) {
 			return null;
 		}
-		Annotation annotation=accessible.getAnnotation(annotationClass);
-		if(annotation!=null){
+		Annotation annotation = accessible.getAnnotation(annotationClass);
+		if (annotation != null) {
 			return (T) annotation;
 		}
 		Annotation[] annotations = accessible.getAnnotations();
@@ -1191,14 +1196,15 @@ public class PropertUtil {
 			return null;
 		}
 		for (Annotation annotationTemp : annotations) {
-			if(annotationTemp.annotationType().isAnnotationPresent(annotationClass)){
+			if (annotationTemp.annotationType().isAnnotationPresent(annotationClass)) {
 				return (T) annotationTemp;
 			}
 		}
 		return null;
 	}
 
-	public static  <T extends Annotation> List<Annotation> getAnnotations(AccessibleObject accessible,Class<T> annotationClass) {
+	public static <T extends Annotation> List<Annotation> getAnnotations(AccessibleObject accessible,
+			Class<T> annotationClass) {
 		if (!annotationClass.isAnnotation()) {
 			return null;
 		}
@@ -1206,25 +1212,26 @@ public class PropertUtil {
 		if (StringUtil.isNullOrEmpty(annotations)) {
 			return null;
 		}
-		List<Annotation> list=new ArrayList<Annotation>();
+		List<Annotation> list = new ArrayList<Annotation>();
 		for (Annotation annotationTemp : annotations) {
-			if(annotationTemp.annotationType()!=annotationClass&&!annotationTemp.annotationType().isAnnotationPresent(annotationClass)){
+			if (annotationTemp.annotationType() != annotationClass
+					&& !annotationTemp.annotationType().isAnnotationPresent(annotationClass)) {
 				continue;
 			}
 			list.add((T) annotationTemp);
 		}
-		if(StringUtil.isNullOrEmpty(list)){
+		if (StringUtil.isNullOrEmpty(list)) {
 			return null;
 		}
 		return list;
 	}
-	
-	public static  <T extends Annotation> T getAnnotation(Class<?> clazz,Class<T> annotationClass) {
+
+	public static <T extends Annotation> T getAnnotation(Class<?> clazz, Class<T> annotationClass) {
 		if (!annotationClass.isAnnotation()) {
 			return null;
 		}
-		Annotation annotation=clazz.getAnnotation(annotationClass);
-		if(annotation!=null){
+		Annotation annotation = clazz.getAnnotation(annotationClass);
+		if (annotation != null) {
 			return (T) annotation;
 		}
 		Annotation[] annotations = clazz.getAnnotations();
@@ -1232,14 +1239,14 @@ public class PropertUtil {
 			return null;
 		}
 		for (Annotation annotationTemp : annotations) {
-			if(annotationTemp.annotationType().isAnnotationPresent(annotationClass)){
+			if (annotationTemp.annotationType().isAnnotationPresent(annotationClass)) {
 				return (T) annotationTemp;
 			}
 		}
 		return null;
 	}
 
-	public static  <T extends Annotation> List<Annotation> getAnnotations(Class<?> clazz,Class<T> annotationClass) {
+	public static <T extends Annotation> List<Annotation> getAnnotations(Class<?> clazz, Class<T> annotationClass) {
 		if (!annotationClass.isAnnotation()) {
 			return null;
 		}
@@ -1247,14 +1254,15 @@ public class PropertUtil {
 		if (StringUtil.isNullOrEmpty(annotations)) {
 			return null;
 		}
-		List<Annotation> list=new ArrayList<Annotation>();
+		List<Annotation> list = new ArrayList<Annotation>();
 		for (Annotation annotationTemp : annotations) {
-			if(annotationTemp.annotationType()!=annotationClass&&!annotationTemp.annotationType().isAnnotationPresent(annotationClass)){
+			if (annotationTemp.annotationType() != annotationClass
+					&& !annotationTemp.annotationType().isAnnotationPresent(annotationClass)) {
 				continue;
 			}
 			list.add((T) annotationTemp);
 		}
-		if(StringUtil.isNullOrEmpty(list)){
+		if (StringUtil.isNullOrEmpty(list)) {
 			return null;
 		}
 		return list;

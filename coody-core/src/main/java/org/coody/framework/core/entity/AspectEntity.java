@@ -1,6 +1,7 @@
 package org.coody.framework.core.entity;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 @SuppressWarnings("serial")
 public class AspectEntity extends BaseModel {
@@ -13,9 +14,33 @@ public class AspectEntity extends BaseModel {
 	
 	private Method aspectInvokeMethod;
 	
+	private Boolean masturbation;
+	
+	private Class<?> aspectClazz;
+	
+	
+	
 	
 
 	
+	
+	
+	public Class<?> getAspectClazz() {
+		return aspectClazz;
+	}
+
+	public void setAspectClazz(Class<?> aspectClazz) {
+		this.aspectClazz = aspectClazz;
+	}
+
+	public Boolean getMasturbation() {
+		return masturbation;
+	}
+
+	public void setMasturbation(Boolean masturbation) {
+		this.masturbation = masturbation;
+	}
+
 	public Method getAspectInvokeMethod() {
 		return aspectInvokeMethod;
 	}
@@ -48,4 +73,11 @@ public class AspectEntity extends BaseModel {
 		this.classMappath = classMappath;
 	}
 
+	@Override
+	public String toString() {
+		return "AspectEntity [annotationClass=" + Arrays.toString(annotationClass) + ", methodMappath=" + methodMappath
+				+ ", classMappath=" + classMappath + ", aspectInvokeMethod=" + aspectInvokeMethod + "]";
+	}
+
+	
 }

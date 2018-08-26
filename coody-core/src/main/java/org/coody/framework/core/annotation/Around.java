@@ -16,10 +16,27 @@ import java.lang.annotation.Target;
 @Repeatable(Arounds.class)
 public @interface Around {
 
+	/**
+	 * 注解
+	 * @return
+	 */
     Class<?>[] annotationClass() default {};
     
+    /**
+     * 方法匹配(ant表达式)，可用MethodSignUtil.getMethodUnionKey(method) 获取方法标识对比
+     * @return
+     */
     String methodMappath() default "";
     
+    /**
+     * 类匹配(ant表达式)
+     * @return
+     */
     String classMappath() default "";
     
+    /**
+     * 是否拦截自类调用
+     * @return
+     */
+    boolean masturbation() default true;
 }

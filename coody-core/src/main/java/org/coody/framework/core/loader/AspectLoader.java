@@ -6,6 +6,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -46,6 +47,9 @@ public class AspectLoader implements IcopLoader {
 			if(cla.isEnum()){
 				continue;
 			}
+			if(cla.getName().contains("EncryptAspect")) {
+				System.out.println("0k");
+			}
 			Annotation initBean = PropertUtil.getAnnotation(cla, AutoBuild.class);
 			if (initBean == null) {
 				continue;
@@ -77,19 +81,23 @@ public class AspectLoader implements IcopLoader {
 					}
 				}
 				for (Annotation around : arounds) {
-					Class<?>[] annotationClass=PropertUtil.getAnnotationValue(around, "annotationClass");
-					String classMappath=PropertUtil.getAnnotationValue(around, "classMappath");
-					String methodMappath=PropertUtil.getAnnotationValue(around, "methodMappath");
+					Map<String, Object> annotationValueMap=PropertUtil.getAnnotationValueMap(around);
+					Class<?>[] annotationClass= (Class<?>[]) annotationValueMap.get("annotationClass");
+					String classMappath=(String) annotationValueMap.get("classMappath");
+					String methodMappath=(String) annotationValueMap.get("methodMappath");
 					if (StringUtil.isAllNull(annotationClass, classMappath, methodMappath)) {
 						continue;
 					}
+					Boolean masturbation=(Boolean) annotationValueMap.get("masturbation");
 					logger.debug("初始化切面方法 >>"+MethodSignUtil.getMethodKey(cla, method));
 					AspectEntity aspectEntity = new AspectEntity();
 					// 装载切面控制方法
 					aspectEntity.setAnnotationClass(annotationClass);
-					aspectEntity.setMethodMappath(classMappath);
-					aspectEntity.setClassMappath(methodMappath);
+					aspectEntity.setMethodMappath(methodMappath);
+					aspectEntity.setClassMappath(classMappath);
 					aspectEntity.setAspectInvokeMethod(method);
+					aspectEntity.setMasturbation(masturbation);
+					aspectEntity.setAspectClazz(cla);
 					String methodKey = MethodSignUtil.getMethodUnionKey(method);
 					FrameworkConstant.writeToAspectMap(methodKey, aspectEntity);
 				}
