@@ -115,11 +115,11 @@ public class AspectPoint extends BaseModel {
 			if (childPoint == null) {
 				return proxy.invokeSuper(bean, params);
 			}
-			ThreadContainer.set(aspectFlag, this);
 			childPoint.setParams(params);
 			if (ThreadContainer.get(aspectFlag) != null) {
 				return childPoint.invoke();
 			}
+			ThreadContainer.set(aspectFlag, this);
 			return childPoint.getAspectMethod().invoke(childPoint.getAspectBean(), childPoint);
 		} finally {
 			ThreadContainer.remove(aspectFlag);
