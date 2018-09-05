@@ -48,23 +48,24 @@ public class CglibProxy implements MethodInterceptor {
 	}
 
 	private boolean isNeedProxyMethods(Class<?> clazz) {
-		if (StringUtil.isNullOrEmpty(clazz.getDeclaredMethods())) {
+		Set<Method> methods=PropertUtil.getMethods(clazz);
+		if (StringUtil.isNullOrEmpty(methods)) {
 			return false;
 		}
 		boolean needProxy = false;
-		for (Method method : clazz.getDeclaredMethods()) {
+		for (Method method : methods) {
 			for (List<AspectEntity> aspectEntitys : FrameworkConstant.ASPECT_MAP.values()) {
 				for (AspectEntity aspectEntity : aspectEntitys) {
 					if (!needProxy(clazz, aspectEntity, method)) {
 						continue;
 					}
 					if (InterceptContainer.INTERCEPT_MAP.containsKey(method)) {
-						InterceptContainer.INTERCEPT_MAP.get(method).add(aspectEntity.getAspectInvokeMethod());
+						InterceptContainer.INTERCEPT_MAP.get(method).add(aspectEntity);
 						needProxy = true;
 						continue;
 					}
-					Set<Method> aspectMethods = new HashSet<Method>();
-					aspectMethods.add(aspectEntity.getAspectInvokeMethod());
+					Set<AspectEntity> aspectMethods = new HashSet<AspectEntity>();
+					aspectMethods.add(aspectEntity);
 					InterceptContainer.INTERCEPT_MAP.put(method, aspectMethods);
 				}
 				needProxy = true;
@@ -125,50 +126,54 @@ public class CglibProxy implements MethodInterceptor {
 			return proxy.invokeSuper(bean, params);
 		}
 		point.setParams(params);
-		return point.getAspectMethod().invoke(point.getAspectBean(), point);
+		return point.invoke();
 	}
 
 	private AspectPoint getMethodPoint(Object bean, Method method, MethodProxy proxy) {
 		if (InterceptContainer.METHOD_INTERCEPT_MAP.containsKey(method)) {
 			return InterceptContainer.METHOD_INTERCEPT_MAP.get(method);
 		}
-		List<Method> invokeMethods = new ArrayList<Method>(InterceptContainer.INTERCEPT_MAP.get(method));
-		Method aspectMethod = invokeMethods.get(0);
+		List<AspectEntity> invokeMethods = new ArrayList<AspectEntity>(InterceptContainer.INTERCEPT_MAP.get(method));
+		AspectEntity aspectEntity = invokeMethods.get(0);
 		invokeMethods.remove(0);
-		Class<?> clazz = PropertUtil.getClass(aspectMethod);
-		Object aspectBean = BeanContainer.getBean(clazz);
+		Object aspectBean = BeanContainer.getBean(aspectEntity.getAspectClazz());
 		AspectPoint point = new AspectPoint();
 		point.setAspectBean(aspectBean);
-		point.setAspectMethod(aspectMethod);
+		point.setAspectMethod(aspectEntity.getAspectInvokeMethod());
 		point.setBean(bean);
 		point.setClazz(bean.getClass());
 		point.setMethod(method);
 		point.setProxy(proxy);
+		point.setMasturbation(aspectEntity.getMasturbation());
 		AspectPoint childPoint = parseAspect(point, invokeMethods);
 		if (childPoint != null) {
 			point.setChildPoint(childPoint);
 		}
-		InterceptContainer.METHOD_INTERCEPT_MAP.put(method, point);
-		return point;
+		AspectPoint turboPoint=new AspectPoint();
+		turboPoint.setChildPoint(point);
+		turboPoint.setMasturbation(point.getMasturbation());
+		turboPoint.setClazz(bean.getClass());
+		InterceptContainer.METHOD_INTERCEPT_MAP.put(method, turboPoint);
+		return turboPoint;
 	}
 
-	private AspectPoint parseAspect(AspectPoint basePoint, List<Method> invokeMethods) {
-		if (StringUtil.isNullOrEmpty(invokeMethods)) {
+	private AspectPoint parseAspect(AspectPoint basePoint, List<AspectEntity> invokeAspects) {
+		if (StringUtil.isNullOrEmpty(invokeAspects)) {
 			return null;
 		}
-		Method aspectMethod = invokeMethods.get(0);
-		invokeMethods.remove(0);
-		Class<?> clazz = PropertUtil.getClass(aspectMethod);
-		Object aspectBean = BeanContainer.getBean(clazz);
+		AspectEntity aspectEntity = invokeAspects.get(0);
+		invokeAspects.remove(0);
+		Object aspectBean = BeanContainer.getBean(aspectEntity.getAspectClazz());
 
 		AspectPoint point = new AspectPoint();
 		point.setAspectBean(aspectBean);
-		point.setAspectMethod(aspectMethod);
+		point.setAspectMethod(aspectEntity.getAspectInvokeMethod());
 		point.setBean(basePoint.getBean());
 		point.setClazz(basePoint.getBean().getClass());
 		point.setMethod(basePoint.getMethod());
 		point.setProxy(basePoint.getProxy());
-		AspectPoint childPoint = parseAspect(basePoint, invokeMethods);
+		point.setMasturbation(aspectEntity.getMasturbation());
+		AspectPoint childPoint = parseAspect(basePoint, invokeAspects);
 		if (childPoint != null) {
 			point.setChildPoint(childPoint);
 			return point;

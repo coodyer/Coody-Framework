@@ -21,7 +21,7 @@
 
     基于Coody Framework框架的web项目启动耗时约370ms(在i5 2320上所耗费的时间)、加上tomcat所消耗的时间，约4s-5s
     
-    基于Coody Framework框架的测试用例已在服务器长跑3个月有余：http://118.126.117.84/ (静态资源无法展示由于coody.org未备案)
+    基于Coody Framework框架的测试用例已在服务器长跑3个月有余：http://czone.icoody.cn/ 
 
     Coody Framework框架包含以下模块
 
@@ -72,28 +72,28 @@
         <dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-core</artifactId>
-			<version>alpha-1.0.9</version>
+			<version>alpha-1.1.1</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-jdbc</artifactId>
-			<version>alpha-1.0.9</version>
+			<version>alpha-1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-cache</artifactId>
-			<version>alpha-1.0.9</version>
+			<version>alpha-1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-task</artifactId>
-			<version>alpha-1.0.9</version>
+			<version>alpha-1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-web</artifactId>
-			<version>alpha-1.0.9</version>
+			<version>alpha-1.1.1</version>
 		</dependency>
 ```
 

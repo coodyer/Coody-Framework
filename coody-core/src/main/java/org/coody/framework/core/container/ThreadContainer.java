@@ -31,6 +31,11 @@ public class ThreadContainer {
 		THREAD_LOCAL.get().put(fieldName, value);
 	}
 	
+	public static void remove(String fieldName){
+		initThreadContainer();
+		THREAD_LOCAL.get().remove(fieldName);
+	}
+	
 	public static boolean containsKey(String fieldName){
 		initThreadContainer();
 		return  THREAD_LOCAL.get().containsKey(fieldName);
