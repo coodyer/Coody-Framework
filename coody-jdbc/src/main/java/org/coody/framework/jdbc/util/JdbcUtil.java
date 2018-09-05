@@ -52,12 +52,19 @@ public class JdbcUtil {
 				clazz=(Class<?>) obj;
 			}
 			String modelName=clazz.getSimpleName();
+			return  getTableName(modelName);
+		} catch (Exception e) {
+			
+		}
+		return null;
+	}
+	public static String getTableName(String modelName) {
+		try {
 			if(IS_UNPARSE_TABLE){
 				return unParsParaName(modelName);
 			}
 			return modelName;
 		} catch (Exception e) {
-			
 		}
 		return null;
 	}

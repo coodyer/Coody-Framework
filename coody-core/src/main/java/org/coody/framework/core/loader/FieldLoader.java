@@ -39,7 +39,7 @@ public class FieldLoader implements IcopLoader {
 				if (StringUtil.isNullOrEmpty(autoBuild)) {
 					continue;
 				}
-				String beanName = PropertUtil.getAnnotationValue(autoBuild, "name");
+				String beanName = PropertUtil.getAnnotationValue(autoBuild, "value");
 				if (StringUtil.isNullOrEmpty(beanName)) {
 					beanName = field.getType().getName();
 				}
