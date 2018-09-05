@@ -173,20 +173,43 @@
 
 #### (4)、Mvc的使用:
 
+###### 简易使用
+
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/100714_8374f8be_1200611.png "d.png")
 
+###### 参数适配器
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/100925_52aa6bee_1200611.png "e.png")
 
-系统提供的参数装载器位于org.coody.framework.web.adapt包下
+###### 系统提供的参数装载器位于org.coody.framework.web.adapt包下
 
-FormMealAdapt：混合装载适配器，form表单装载到多个bean，平级装载，字段名谁有谁得。
-FormNomalAdapt：混合装载适配器，form表单装载到多个bean，以方法参数名为请求参数前缀。
-GeneralAdapt：简易装载适配器，装载request、response、session等参数。
-JsonMealAdapt：混合装载适配器，json数据混合装载到bean，平级装载，字段名谁有谁得。
-JsonNomalAdapt：混合装载适配器，json数据装载到多个bean，以方法参数名为请求参数前缀。
+    FormMealAdapt：混合装载适配器，form表单装载到多个bean，平级装载，字段名谁有谁得。
+
+    FormNomalAdapt：混合装载适配器，form表单装载到多个bean，以方法参数名为请求参数前缀。
+
+    GeneralAdapt：简易装载适配器，装载request、response、session等参数。
+
+    JsonMealAdapt：混合装载适配器，json数据混合装载到bean，平级装载，字段名谁有谁得。
+
+    JsonNomalAdapt：混合装载适配器，json数据装载到多个bean，以方法参数名为请求参数前缀。
 
 
+#### (5)、定时任务的使用:
 
+![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/101505_aad09568_1200611.png "f.png")
+
+#### (6)、切面的使用:
+
+![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/101713_066e33cb_1200611.png "g.png")
+
+#### (7)、事物的使用:
+
+![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/101840_c99a11c6_1200611.png "h.png")
+
+#### (8)、缓存的使用:
+
+![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/102029_b0ba0804_1200611.png "i.png")
+
+缓存使用请参考具体文档
 
 ### 5. 具体文档：
 
