@@ -122,7 +122,11 @@
 
     JDK1.8+
 
-### 4. 相关文档：
+### 4. 基本示例:
+
+##实例化一个Bean:
+
+### 5. 相关文档：
 
 coody-core   ：[Coody-Core](http://gitee.com/coodyer/coody-icop/tree/coody-maven/coody-core)
 
@@ -138,7 +142,7 @@ coody-rcc    ：[Coody Rcc](http://gitee.com/coodyer/coody-icop/tree/coody-maven
  
 
 
-### 5. 发展计划：
+### 6. 发展计划：
 
     1、完善rcc分布式模块
 
@@ -151,7 +155,7 @@ coody-rcc    ：[Coody Rcc](http://gitee.com/coodyer/coody-icop/tree/coody-maven
     5、接入MiniCat实现类SpringBoot开发模式(可选)
 
 
-### 6. 合作意向：
+### 7. 合作意向：
 
     首先说明一下，开发一套框架并不需要多么高深的技术。相反，开发一套框架非常简单，我们都是在追溯偷懒的艺术。
     
@@ -167,7 +171,7 @@ coody-rcc    ：[Coody Rcc](http://gitee.com/coodyer/coody-icop/tree/coody-maven
 
     那么，请联系我，笔者真诚的希望你能加入到Coody Framework 的开发中来，并肩作战，为国内开源技术做贡献。
 
-### 7. 版权说明：
+### 8. 版权说明：
 
 
     在本项目源代码中，已有测试demo，包括mvc、切面等示例
