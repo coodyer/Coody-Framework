@@ -124,19 +124,19 @@
 
 ### 4. 基本示例:
 
-#### (1)、实例化一个Bean:
+##### (1)、实例化一个Bean:
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/100026_1a540d5b_1200611.png "a.png")
 
 实例化一个bean只需要在一个Class标明@AutoBuild注解即可
 
-#### (2)、注入Bean到一个类字段:
+##### (2)、注入Bean到一个类字段:
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/100233_dda96161_1200611.png "b.png")
 
 注入Bean到字段，只需要在该字段上面标明@AutoBuild注解
 
-#### (3)、web.xml配置:
+##### (3)、web.xml配置:
 
     `	<!-- 配置扫描的包 -->
 	<context-param>
@@ -171,7 +171,7 @@
 	</servlet-mapping>`
 
 
-#### (4)、Mvc的使用:
+##### (4)、Mvc的使用:
 
 ###### 简易使用
 
@@ -193,19 +193,19 @@
     JsonNomalAdapt：混合装载适配器，json数据装载到多个bean，以方法参数名为请求参数前缀。
 
 
-#### (5)、定时任务的使用:
+##### (5)、定时任务的使用:
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/101505_aad09568_1200611.png "f.png")
 
-#### (6)、切面的使用:
+##### (6)、切面的使用:
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/101713_066e33cb_1200611.png "g.png")
 
-#### (7)、事物的使用:
+##### (7)、事物的使用:
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/101840_c99a11c6_1200611.png "h.png")
 
-#### (8)、缓存的使用:
+##### (8)、缓存的使用:
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/102029_b0ba0804_1200611.png "i.png")
 
