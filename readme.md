@@ -124,9 +124,71 @@
 
 ### 4. 基本示例:
 
-## 实例化一个Bean:
+#### (1)、实例化一个Bean:
 
-### 5. 相关文档：
+![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/100026_1a540d5b_1200611.png "a.png")
+
+实例化一个bean只需要在一个Class标明@AutoBuild注解即可
+
+#### (2)、注入Bean到一个类字段:
+
+![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/100233_dda96161_1200611.png "b.png")
+
+注入Bean到字段，只需要在该字段上面标明@AutoBuild注解
+
+#### (3)、web.xml配置:
+
+    `	<!-- 配置扫描的包 -->
+	<context-param>
+		<param-name>scanPacket</param-name>
+		<!-- 逗号分割多个包名 -->
+		<param-value>org.coody.czone</param-value>
+	</context-param>
+	<!-- 配置初始化适配器 -->
+	<context-param>
+		<param-name>initLoader</param-name>
+		<!-- 逗号分割多个加载器 -->
+		<param-value>org.coody.framework.web.loader.WebAppLoader,org.coody.framework.task.loader.TaskLoader</param-value>
+	</context-param>
+	<!-- 配置监听器 -->
+	<listener>
+		<listener-class>org.coody.framework.web.listen.IcopServletListen</listener-class>
+	</listener>
+	<!-- 初始化分发器 -->
+	<servlet>
+		<servlet-name>DispatServlet</servlet-name>
+		<servlet-class>org.coody.framework.web.DispatServlet</servlet-class>
+		<init-param>
+			<!-- 静态页面目录配置 -->
+			<param-name>viewPath</param-name>
+			<param-value>/</param-value>
+		</init-param>
+	</servlet>
+	<!-- MVC配置 -->
+	<servlet-mapping>
+		<servlet-name>DispatServlet</servlet-name>
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>`
+
+
+#### (4)、Mvc的使用:
+
+![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/100714_8374f8be_1200611.png "d.png")
+
+![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/100925_52aa6bee_1200611.png "e.png")
+
+系统提供的参数装载器位于org.coody.framework.web.adapt包下
+
+FormMealAdapt：混合装载适配器，form表单装载到多个bean，平级装载，字段名谁有谁得。
+FormNomalAdapt：混合装载适配器，form表单装载到多个bean，以方法参数名为请求参数前缀。
+GeneralAdapt：简易装载适配器，装载request、response、session等参数。
+JsonMealAdapt：混合装载适配器，json数据混合装载到bean，平级装载，字段名谁有谁得。
+JsonNomalAdapt：混合装载适配器，json数据装载到多个bean，以方法参数名为请求参数前缀。
+
+
+
+
+### 5. 具体文档：
 
 coody-core   ：[Coody-Core](http://gitee.com/coodyer/coody-icop/tree/coody-maven/coody-core)
 
