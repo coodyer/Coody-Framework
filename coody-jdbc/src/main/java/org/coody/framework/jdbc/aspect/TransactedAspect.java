@@ -37,11 +37,7 @@ public class TransactedAspect {
 				return result;
 			}
 			for(Connection conn:connections){
-				try{
 					conn.commit();
-				}catch (Exception e) {
-					PrintException.printException(logger, e);
-				}
 			}
 			return result;
 		}
