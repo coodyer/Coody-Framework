@@ -37,6 +37,11 @@
 
         coody-rcc  ：框架分布式的实现，提供注册中心、序列化、通信协议等接口。字节码创建子类的实现(分布式功能未完成)
 
+#### 优秀合作项目推荐
+| 项目 | 码云地址 | 简介 |
+| ------------- |-------------|-------------|
+| Coody Framework | [gitee.com/mail_osc/wangmarket](https://gitee.com/mail_osc/wangmarket) | 网市场云建站系统，系统成熟、流程完善、细节精致、使用简单。极低的成本投入，半分钟安装部署，选好模版一键导入。最快出网站，最快赚到钱。 |
+
 
 #### 更新记录：
 
@@ -122,7 +127,96 @@
 
     JDK1.8+
 
-### 4. 相关文档：
+### 4. 基本示例:
+
+##### (1)、实例化一个Bean:
+
+![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/100026_1a540d5b_1200611.png "a.png")
+
+实例化一个bean只需要在一个Class标明@AutoBuild注解即可
+
+##### (2)、注入Bean到一个类字段:
+
+![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/100233_dda96161_1200611.png "b.png")
+
+注入Bean到字段，只需要在该字段上面标明@AutoBuild注解
+
+##### (3)、web.xml配置:
+
+    `	<!-- 配置扫描的包 -->
+	<context-param>
+		<param-name>scanPacket</param-name>
+		<!-- 逗号分割多个包名 -->
+		<param-value>org.coody.czone</param-value>
+	</context-param>
+	<!-- 配置初始化适配器 -->
+	<context-param>
+		<param-name>initLoader</param-name>
+		<!-- 逗号分割多个加载器 -->
+		<param-value>org.coody.framework.web.loader.WebAppLoader,org.coody.framework.task.loader.TaskLoader</param-value>
+	</context-param>
+	<!-- 配置监听器 -->
+	<listener>
+		<listener-class>org.coody.framework.web.listen.IcopServletListen</listener-class>
+	</listener>
+	<!-- 初始化分发器 -->
+	<servlet>
+		<servlet-name>DispatServlet</servlet-name>
+		<servlet-class>org.coody.framework.web.DispatServlet</servlet-class>
+		<init-param>
+			<!-- 静态页面目录配置 -->
+			<param-name>viewPath</param-name>
+			<param-value>/</param-value>
+		</init-param>
+	</servlet>
+	<!-- MVC配置 -->
+	<servlet-mapping>
+		<servlet-name>DispatServlet</servlet-name>
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>`
+
+
+##### (4)、Mvc的使用:
+
+###### 简易使用
+
+![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/100714_8374f8be_1200611.png "d.png")
+
+###### 参数适配器
+![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/100925_52aa6bee_1200611.png "e.png")
+
+###### 系统提供的参数装载器位于org.coody.framework.web.adapt包下
+
+    FormMealAdapt：混合装载适配器，form表单装载到多个bean，平级装载，字段名谁有谁得。
+
+    FormNomalAdapt：混合装载适配器，form表单装载到多个bean，以方法参数名为请求参数前缀。
+
+    GeneralAdapt：简易装载适配器，装载request、response、session等参数。
+
+    JsonMealAdapt：混合装载适配器，json数据混合装载到bean，平级装载，字段名谁有谁得。
+
+    JsonNomalAdapt：混合装载适配器，json数据装载到多个bean，以方法参数名为请求参数前缀。
+
+
+##### (5)、定时任务的使用:
+
+![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/101505_aad09568_1200611.png "f.png")
+
+##### (6)、切面的使用:
+
+![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/101713_066e33cb_1200611.png "g.png")
+
+##### (7)、事物的使用:
+
+![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/101840_c99a11c6_1200611.png "h.png")
+
+##### (8)、缓存的使用:
+
+![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/102029_b0ba0804_1200611.png "i.png")
+
+缓存使用请参考具体文档
+
+### 5. 具体文档：
 
 coody-core   ：[Coody-Core](http://gitee.com/coodyer/coody-icop/tree/coody-maven/coody-core)
 
@@ -138,7 +232,7 @@ coody-rcc    ：[Coody Rcc](http://gitee.com/coodyer/coody-icop/tree/coody-maven
  
 
 
-### 5. 发展计划：
+### 6. 发展计划：
 
     1、完善rcc分布式模块
 
@@ -151,7 +245,7 @@ coody-rcc    ：[Coody Rcc](http://gitee.com/coodyer/coody-icop/tree/coody-maven
     5、接入MiniCat实现类SpringBoot开发模式(可选)
 
 
-### 6. 合作意向：
+### 7. 合作意向：
 
     首先说明一下，开发一套框架并不需要多么高深的技术。相反，开发一套框架非常简单，我们都是在追溯偷懒的艺术。
     
@@ -167,7 +261,7 @@ coody-rcc    ：[Coody Rcc](http://gitee.com/coodyer/coody-icop/tree/coody-maven
 
     那么，请联系我，笔者真诚的希望你能加入到Coody Framework 的开发中来，并肩作战，为国内开源技术做贡献。
 
-### 7. 版权说明：
+### 8. 版权说明：
 
 
     在本项目源代码中，已有测试demo，包括mvc、切面等示例
