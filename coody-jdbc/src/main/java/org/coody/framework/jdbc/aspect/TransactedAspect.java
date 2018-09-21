@@ -14,57 +14,56 @@ import org.coody.framework.jdbc.container.TransactedThreadContainer;
 
 @AutoBuild
 public class TransactedAspect {
-	
-	BaseLogger logger=BaseLogger.getLogger(this.getClass());
+
+	BaseLogger logger = BaseLogger.getLogger(this.getClass());
 
 	/**
 	 * 事物控制
+	 * 
 	 * @param wrapper
 	 * @return
 	 * @throws Throwable
 	 */
-	@Around(annotationClass=Transacted.class)
-	public Object transacted(AspectPoint wrapper) throws Throwable{
-		if(TransactedThreadContainer.hasTransacted()){
+	@Around(annotationClass = Transacted.class)
+	public Object transacted(AspectPoint wrapper) throws Throwable {
+		if (TransactedThreadContainer.hasTransacted()) {
 			return wrapper.invoke();
 		}
-		try{
+		try {
 			TransactedThreadContainer.writeHasTransacted();
-			Object result= wrapper.invoke();
-			//提交事物
-			List<Connection> connections=TransactedThreadContainer.getConnections();
-			if(StringUtil.isNullOrEmpty(connections)){
+			Object result = wrapper.invoke();
+			// 提交事物
+			List<Connection> connections = TransactedThreadContainer.getConnections();
+			if (StringUtil.isNullOrEmpty(connections)) {
 				return result;
 			}
-			for(Connection conn:connections){
-					conn.commit();
+			for (Connection conn : connections) {
+				conn.commit();
 			}
 			return result;
-		}
-		catch (Exception e) {
-			//回滚事物
-			List<Connection> connections=TransactedThreadContainer.getConnections();
-			if(StringUtil.isNullOrEmpty(connections)){
+		} catch (Exception e) {
+			// 回滚事物
+			List<Connection> connections = TransactedThreadContainer.getConnections();
+			if (StringUtil.isNullOrEmpty(connections)) {
 				throw e;
 			}
-			for(Connection conn:connections){
-				try{
+			for (Connection conn : connections) {
+				try {
 					conn.rollback();
-				}catch (Exception ex) {
+				} catch (Exception ex) {
 					PrintException.printException(logger, e);
 				}
 			}
 			throw e;
-		}
-		finally {
-			//关闭连接
-			List<Connection> connections=TransactedThreadContainer.getConnections();
+		} finally {
+			// 关闭连接
+			List<Connection> connections = TransactedThreadContainer.getConnections();
 			TransactedThreadContainer.clear();
-			if(StringUtil.isNullOrEmpty(connections)){
-				for(Connection conn:connections){
-					try{
+			if (StringUtil.isNullOrEmpty(connections)) {
+				for (Connection conn : connections) {
+					try {
 						conn.close();
-					}catch (Exception e) {
+					} catch (Exception e) {
 						// TODO: handle exception
 					}
 				}
