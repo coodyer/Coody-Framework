@@ -1,6 +1,7 @@
 package org.coody.framework.jdbc;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -11,8 +12,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.sql.DataSource;
@@ -64,8 +67,9 @@ public class JdbcHandle {
 	 * 
 	 * @param tableName
 	 * @return
+	 * @throws SQLException 
 	 */
-	public List<String> getPrimaryKeys(String tableName) {
+	public List<String> getPrimaryKeys(String tableName) throws SQLException {
 		if (StringUtil.isNullOrEmpty(tableName)) {
 			return null;
 		}
@@ -81,6 +85,10 @@ public class JdbcHandle {
 			return primaryKeys;
 		} catch (Exception e) {
 			throw new PrimaryKeyException("获取主键列表出现异常", e);
+		}finally {
+			if(conn!=null) {
+				conn.close();
+			}
 		}
 	}
 
@@ -948,6 +956,24 @@ public class JdbcHandle {
 	 * 插入功能区 -end
 	 */
 
+	
+	
+	public Set<String> getTables() throws SQLException {
+		Connection connection = dataSource.getConnection();
+		try {
+			DatabaseMetaData metaData = connection.getMetaData();
+			ResultSet resultSet = metaData.getTables(null, null, null, new String[] { "TABLE" });
+			Set<String> tables = new HashSet<String>();
+			while (resultSet.next()) {
+				tables.add(resultSet.getString(3));
+			}
+			return tables;
+		} finally {
+			if(connection!=null) {
+				connection.close();
+			}
+		}
+	}
 	/**
 	 * 内部方法 -start
 	 */
