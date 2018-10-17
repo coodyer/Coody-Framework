@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 
 import org.coody.framework.core.annotation.Around;
 import org.coody.framework.core.annotation.AutoBuild;
-import org.coody.framework.core.point.AspectPoint;
+import org.coody.framework.core.point.AspectAble;
 import org.coody.framework.core.util.MethodSignUtil;
 import org.coody.framework.rcc.annotation.RccInterface;
 import org.coody.framework.rcc.caller.RccSendCaller;
@@ -26,15 +26,15 @@ public class RccAspect {
 	 * @throws Throwable
 	 */
 	@Around(annotationClass = RccInterface.class)
-	public Object remoteCall(AspectPoint wrapper) throws Throwable {
+	public Object remoteCall(AspectAble able) throws Throwable {
 		// AOP获取方法执行信息
-		Method method = wrapper.getMethod();
+		Method method = able.getPoint().getMethod();
 		// 获得调用参数
-		Object[] params = wrapper.getParams();
+		Object[] params = able.getParams();
 		// 序列化参数
 		byte[] data = serialer.serialize(params);
 		// 远程调用
-		String methodKey = MethodSignUtil.getMethodKey(wrapper.getClazz(), method);
+		String methodKey = MethodSignUtil.getMethodKey(able.getPoint().getClazz(), method);
 		byte[] result = caller.send(methodKey, data);
 		if (result == null) {
 			return null;

@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import org.coody.framework.core.annotation.Around;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.annotation.LogHead;
-import org.coody.framework.core.point.AspectPoint;
+import org.coody.framework.core.point.AspectAble;
 import org.coody.framework.core.util.LoggerUtil;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
@@ -14,10 +14,10 @@ import org.coody.framework.core.util.StringUtil;
 public class LoggerAspect {
 
 	@Around(annotationClass=LogHead.class)
-	public Object logMonitor(AspectPoint wrapper) throws Throwable{
+	public Object logMonitor(AspectAble able) throws Throwable{
 		try {
 			// AOP获取方法执行信息
-			Method method = wrapper.getMethod();
+			Method method = able.getPoint().getMethod();
 			Class<?> clazz = PropertUtil.getClass(method);
 			String module = LoggerUtil.getCurrLog();
 			if (!StringUtil.isNullOrEmpty(module)) {
@@ -37,7 +37,7 @@ public class LoggerAspect {
 				module += method.getName();
 			}
 			LoggerUtil.writeLog(module);
-			return wrapper.invoke();
+			return able.invoke();
 		} finally {
 			LoggerUtil.minusLog();
 		}

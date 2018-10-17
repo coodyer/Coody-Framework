@@ -9,7 +9,7 @@ import org.coody.framework.core.entity.BaseModel;
 import net.sf.cglib.proxy.MethodProxy;
 
 @SuppressWarnings("serial")
-public class AspectPoint extends BaseModel {
+public class AspectPoint extends BaseModel implements Cloneable {
 
 	// 业务bean
 	private Object bean;
@@ -19,8 +19,7 @@ public class AspectPoint extends BaseModel {
 	private MethodProxy proxy;
 	// 业务所在class
 	private Class<?> clazz;
-	// 业务方法所需参数
-	private Object[] params;
+	//子切面
 	private AspectPoint childPoint;
 	// 切面方法
 	private Method aspectMethod;
@@ -69,13 +68,6 @@ public class AspectPoint extends BaseModel {
 		this.clazz = clazz;
 	}
 
-	public Object[] getParams() {
-		return params;
-	}
-
-	public void setParams(Object[] params) {
-		this.params = params;
-	}
 
 	public Method getAspectMethod() {
 		return aspectMethod;
@@ -101,26 +93,26 @@ public class AspectPoint extends BaseModel {
 		this.aspectBean = aspectBean;
 	}
 
-	public Object invoke() throws Throwable {
+	public Object invoke(AspectAble aspectAble,Object []params) throws Throwable {
 
 		if (masturbation) {
 			if (childPoint == null) {
 				return proxy.invokeSuper(bean, params);
 			}
-			childPoint.setParams(params);
-			return childPoint.getAspectMethod().invoke(childPoint.getAspectBean(), childPoint);
+			aspectAble.setPoint(childPoint);
+			return childPoint.getAspectMethod().invoke(childPoint.getAspectBean(), aspectAble);
 		}
 		String aspectFlag = AspectConstant.THREAD_ENCRYPT_FLAG +"_"+ clazz.getName();
 		try {
 			if (childPoint == null) {
 				return proxy.invokeSuper(bean, params);
 			}
-			childPoint.setParams(params);
+			aspectAble.setPoint(childPoint);
 			if (ThreadContainer.get(aspectFlag) != null) {
-				return childPoint.invoke();
+				return childPoint.invoke(aspectAble,params);
 			}
 			ThreadContainer.set(aspectFlag, this);
-			return childPoint.getAspectMethod().invoke(childPoint.getAspectBean(), childPoint);
+			return childPoint.getAspectMethod().invoke(childPoint.getAspectBean(), aspectAble);
 		} finally {
 			ThreadContainer.remove(aspectFlag);
 		}

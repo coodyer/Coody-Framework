@@ -11,6 +11,7 @@ import org.coody.framework.cache.annotation.CacheWrite;
 import org.coody.framework.cache.instance.iface.IcopCacheFace;
 import org.coody.framework.core.annotation.Around;
 import org.coody.framework.core.annotation.AutoBuild;
+import org.coody.framework.core.point.AspectAble;
 import org.coody.framework.core.point.AspectPoint;
 import org.coody.framework.core.util.MethodSignUtil;
 import org.coody.framework.core.util.StringUtil;
@@ -33,19 +34,19 @@ public class CacheAspect {
 	 * @throws Throwable
 	 */
 	@Around(annotationClass=CacheWrite.class)
-	public Object cCacheWrite(AspectPoint aspect) throws Throwable {
-		Class<?> clazz = aspect.getClazz();
-		Method method = aspect.getMethod();
+	public Object cCacheWrite(AspectAble able) throws Throwable {
+		Class<?> clazz = able.getPoint().getClazz();
+		Method method = able.getPoint().getMethod();
 		if (method == null) {
-			return aspect.invoke();
+			return able.invoke();
 		}
 		// 获取注解
 		CacheWrite handle = method.getAnnotation(CacheWrite.class);
 		if (handle == null) {
-			return aspect.invoke();
+			return able.invoke();
 		}
 		// 封装缓存KEY
-		Object[] paras = aspect.getParams();
+		Object[] paras = able.getParams();
 		String key = handle.key();
 		try {
 			if (StringUtil.isNullOrEmpty(key)) {
@@ -75,7 +76,7 @@ public class CacheAspect {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		Object result = aspect.invoke();
+		Object result = able.invoke();
 		if (result != null) {
 			try {
 				cacheable.setCache(key, result, cacheTimer);
@@ -95,14 +96,14 @@ public class CacheAspect {
 	 */
 	@Around(annotationClass=CacheWipes.class)
 	@Around(annotationClass=CacheWipe.class)
-	public Object zCacheWipe(AspectPoint aspect) throws Throwable {
-		Class<?> clazz = aspect.getClazz();
-		Method method = aspect.getMethod();
+	public Object zCacheWipe(AspectAble able) throws Throwable {
+		Class<?> clazz = able.getPoint().getClazz();
+		Method method = able.getPoint().getMethod();
 		if (method == null) {
-			return aspect.invoke();
+			return able.invoke();
 		}
-		Object[] paras = aspect.getParams();
-		Object result = aspect.invoke();
+		Object[] paras = able.getParams();
+		Object result = able.invoke();
 		CacheWipe[] handles = method.getAnnotationsByType(CacheWipe.class);
 		if (StringUtil.isNullOrEmpty(handles)) {
 			return result;

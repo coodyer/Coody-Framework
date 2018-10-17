@@ -12,6 +12,7 @@ import org.coody.framework.core.constant.FrameworkConstant;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.container.InterceptContainer;
 import org.coody.framework.core.entity.AspectEntity;
+import org.coody.framework.core.point.AspectAble;
 import org.coody.framework.core.point.AspectPoint;
 import org.coody.framework.core.util.AntUtil;
 import org.coody.framework.core.util.MethodSignUtil;
@@ -125,8 +126,8 @@ public class CglibProxy implements MethodInterceptor {
 			//该方法不存在AOP拦截
 			return proxy.invokeSuper(bean, params);
 		}
-		point.setParams(params);
-		return point.invoke();
+		AspectAble aspectAble=new AspectAble(point,params);
+		return aspectAble.invoke();
 	}
 
 	private AspectPoint getMethodPoint(Object bean, Method method, MethodProxy proxy) {

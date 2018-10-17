@@ -15,7 +15,7 @@ import org.coody.framework.core.annotation.Around;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.bean.InitBeanFace;
 import org.coody.framework.core.container.BeanContainer;
-import org.coody.framework.core.point.AspectPoint;
+import org.coody.framework.core.point.AspectAble;
 import org.coody.framework.core.util.DateUtils;
 import org.coody.framework.core.util.StringUtil;
 import org.coody.framework.task.annotation.CronTask;
@@ -75,13 +75,13 @@ public class TaskTrigger implements InitBeanFace{
 	 * @throws Throwable
 	 */
 	@Around(annotationClass=CronTask.class)
-	public Object taskTrigger(AspectPoint aspect) throws Throwable {
-		Method method=aspect.getMethod();
+	public Object taskTrigger(AspectAble able) throws Throwable {
+		Method method=able.getPoint().getMethod();
 		CronTask cronTask=method.getAnnotation(CronTask.class);
-		Object bean=aspect.getBean();
+		Object bean=able.getPoint().getBean();
 		String cron=cronTask.value();
 		try{
-			return aspect.invoke();
+			return able.invoke();
 		}finally {
 			ZonedDateTime zonedDateTime=cronExpressionMap.get(method);
 			trigger(bean, method, cron,zonedDateTime);
