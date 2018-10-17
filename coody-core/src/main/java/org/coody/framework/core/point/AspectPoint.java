@@ -1,5 +1,6 @@
 package org.coody.framework.core.point;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.coody.framework.core.constant.AspectConstant;
@@ -19,7 +20,7 @@ public class AspectPoint extends BaseModel implements Cloneable {
 	private MethodProxy proxy;
 	// 业务所在class
 	private Class<?> clazz;
-	//子切面
+	// 子切面
 	private AspectPoint childPoint;
 	// 切面方法
 	private Method aspectMethod;
@@ -68,7 +69,6 @@ public class AspectPoint extends BaseModel implements Cloneable {
 		this.clazz = clazz;
 	}
 
-
 	public Method getAspectMethod() {
 		return aspectMethod;
 	}
@@ -93,7 +93,7 @@ public class AspectPoint extends BaseModel implements Cloneable {
 		this.aspectBean = aspectBean;
 	}
 
-	public Object invoke(AspectAble aspectAble,Object []params) throws Throwable {
+	public Object invoke(AspectAble aspectAble, Object[] params) throws Throwable {
 
 		if (masturbation) {
 			if (childPoint == null) {
@@ -102,17 +102,19 @@ public class AspectPoint extends BaseModel implements Cloneable {
 			aspectAble.setPoint(childPoint);
 			return childPoint.getAspectMethod().invoke(childPoint.getAspectBean(), aspectAble);
 		}
-		String aspectFlag = AspectConstant.THREAD_ENCRYPT_FLAG +"_"+ clazz.getName();
+		String aspectFlag = AspectConstant.THREAD_ENCRYPT_FLAG + "_" + clazz.getName();
 		try {
 			if (childPoint == null) {
 				return proxy.invokeSuper(bean, params);
 			}
 			aspectAble.setPoint(childPoint);
 			if (ThreadContainer.get(aspectFlag) != null) {
-				return childPoint.invoke(aspectAble,params);
+				return childPoint.invoke(aspectAble, params);
 			}
 			ThreadContainer.set(aspectFlag, this);
 			return childPoint.getAspectMethod().invoke(childPoint.getAspectBean(), aspectAble);
+		} catch (InvocationTargetException e) {
+			throw e.getTargetException();
 		} finally {
 			ThreadContainer.remove(aspectFlag);
 		}
