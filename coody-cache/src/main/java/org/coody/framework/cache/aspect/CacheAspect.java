@@ -9,7 +9,7 @@ import org.coody.framework.cache.annotation.CacheWrite;
 import org.coody.framework.cache.instance.iface.IcopCacheFace;
 import org.coody.framework.core.annotation.Around;
 import org.coody.framework.core.annotation.AutoBuild;
-import org.coody.framework.core.point.AspectAble;
+import org.coody.framework.core.entity.AspectPoint;
 import org.coody.framework.core.util.MethodSignUtil;
 import org.coody.framework.core.util.StringUtil;
 
@@ -31,19 +31,19 @@ public class CacheAspect {
 	 * @throws Throwable
 	 */
 	@Around(annotationClass=CacheWrite.class)
-	public Object cCacheWrite(AspectAble able) throws Throwable {
-		Class<?> clazz = able.getPoint().getClazz();
-		Method method = able.getPoint().getMethod();
+	public Object cCacheWrite(AspectPoint point) throws Throwable {
+		Class<?> clazz = point.getAbler().getClazz();
+		Method method = point.getAbler().getMethod();
 		if (method == null) {
-			return able.invoke();
+			return point.invoke();
 		}
 		// 获取注解
 		CacheWrite handle = method.getAnnotation(CacheWrite.class);
 		if (handle == null) {
-			return able.invoke();
+			return point.invoke();
 		}
 		// 封装缓存KEY
-		Object[] paras = able.getParams();
+		Object[] paras = point.getParams();
 		String key = handle.key();
 		try {
 			if (StringUtil.isNullOrEmpty(key)) {
@@ -73,7 +73,7 @@ public class CacheAspect {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		Object result = able.invoke();
+		Object result = point.invoke();
 		if (result != null) {
 			try {
 				cacheable.setCache(key, result, cacheTimer);
@@ -93,9 +93,9 @@ public class CacheAspect {
 	 */
 	@Around(annotationClass=CacheWipes.class)
 	@Around(annotationClass=CacheWipe.class)
-	public Object zCacheWipe(AspectAble able) throws Throwable {
-		Class<?> clazz = able.getPoint().getClazz();
-		Method method = able.getPoint().getMethod();
+	public Object zCacheWipe(AspectPoint able) throws Throwable {
+		Class<?> clazz = able.getAbler().getClazz();
+		Method method = able.getAbler().getMethod();
 		if (method == null) {
 			return able.invoke();
 		}

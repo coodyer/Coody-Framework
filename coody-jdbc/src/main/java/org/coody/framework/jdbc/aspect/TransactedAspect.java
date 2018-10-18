@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.coody.framework.core.annotation.Around;
 import org.coody.framework.core.annotation.AutoBuild;
+import org.coody.framework.core.entity.AspectPoint;
 import org.coody.framework.core.logger.BaseLogger;
-import org.coody.framework.core.point.AspectAble;
 import org.coody.framework.core.util.PrintException;
 import org.coody.framework.core.util.StringUtil;
 import org.coody.framework.jdbc.annotation.Transacted;
@@ -25,13 +25,13 @@ public class TransactedAspect {
 	 * @throws Throwable
 	 */
 	@Around(annotationClass = Transacted.class)
-	public Object transacted(AspectAble able) throws Throwable {
+	public Object transacted(AspectPoint point) throws Throwable {
 		if (TransactedThreadContainer.hasTransacted()) {
-			return able.invoke();
+			return point.invoke();
 		}
 		try {
 			TransactedThreadContainer.writeHasTransacted();
-			Object result = able.invoke();
+			Object result = point.invoke();
 			// 提交事物
 			List<Connection> connections = TransactedThreadContainer.getConnections();
 			if (StringUtil.isNullOrEmpty(connections)) {

@@ -1,16 +1,15 @@
-package org.coody.framework.core.point;
+package org.coody.framework.core.entity;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.coody.framework.core.constant.AspectConstant;
 import org.coody.framework.core.container.ThreadContainer;
-import org.coody.framework.core.entity.BaseModel;
 
 import net.sf.cglib.proxy.MethodProxy;
 
 @SuppressWarnings("serial")
-public class AspectPoint extends BaseModel implements Cloneable {
+public class AspectAbler extends BaseModel implements Cloneable {
 
 	// 业务bean
 	private Object bean;
@@ -21,7 +20,7 @@ public class AspectPoint extends BaseModel implements Cloneable {
 	// 业务所在class
 	private Class<?> clazz;
 	// 子切面
-	private AspectPoint childPoint;
+	private AspectAbler childAbler;
 	// 切面方法
 	private Method aspectMethod;
 	// 切面bean
@@ -77,12 +76,13 @@ public class AspectPoint extends BaseModel implements Cloneable {
 		this.aspectMethod = aspectMethod;
 	}
 
-	public AspectPoint getChildPoint() {
-		return childPoint;
+
+	public AspectAbler getChildAbler() {
+		return childAbler;
 	}
 
-	public void setChildPoint(AspectPoint childPoint) {
-		this.childPoint = childPoint;
+	public void setChildAbler(AspectAbler childAbler) {
+		this.childAbler = childAbler;
 	}
 
 	public Object getAspectBean() {
@@ -93,26 +93,26 @@ public class AspectPoint extends BaseModel implements Cloneable {
 		this.aspectBean = aspectBean;
 	}
 
-	public Object invoke(AspectAble aspectAble, Object[] params) throws Throwable {
+	public Object invoke(AspectPoint point, Object[] params) throws Throwable {
 
 		if (masturbation) {
-			if (childPoint == null) {
+			if (childAbler == null) {
 				return proxy.invokeSuper(bean, params);
 			}
-			aspectAble.setPoint(childPoint);
-			return childPoint.getAspectMethod().invoke(childPoint.getAspectBean(), aspectAble);
+			point.setAbler(childAbler);
+			return childAbler.getAspectMethod().invoke(childAbler.getAspectBean(), point);
 		}
 		String aspectFlag = AspectConstant.THREAD_ENCRYPT_FLAG + "_" + clazz.getName();
 		try {
-			if (childPoint == null) {
+			if (childAbler == null) {
 				return proxy.invokeSuper(bean, params);
 			}
-			aspectAble.setPoint(childPoint);
+			point.setAbler(childAbler);
 			if (ThreadContainer.get(aspectFlag) != null) {
-				return childPoint.invoke(aspectAble, params);
+				return childAbler.invoke(point, params);
 			}
 			ThreadContainer.set(aspectFlag, this);
-			return childPoint.getAspectMethod().invoke(childPoint.getAspectBean(), aspectAble);
+			return childAbler.getAspectMethod().invoke(childAbler.getAspectBean(), point);
 		} catch (InvocationTargetException e) {
 			throw e.getTargetException();
 		} finally {

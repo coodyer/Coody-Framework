@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.coody.framework.core.entity.AspectAbler;
 import org.coody.framework.core.entity.AspectEntity;
-import org.coody.framework.core.point.AspectPoint;
 
 public class InterceptContainer {
 
@@ -15,5 +15,5 @@ public class InterceptContainer {
 	 */
 	public static final Map<Method, Set<AspectEntity>> INTERCEPT_MAP = new ConcurrentHashMap<Method, Set<AspectEntity>>();
 
-	public static final Map<Method, AspectPoint> METHOD_INTERCEPT_MAP = new ConcurrentHashMap<Method, AspectPoint>();
+	public static final Map<Method, AspectAbler> METHOD_INTERCEPT_MAP = new ConcurrentHashMap<Method, AspectAbler>();
 }

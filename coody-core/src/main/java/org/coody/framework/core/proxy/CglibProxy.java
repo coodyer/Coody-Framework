@@ -11,9 +11,9 @@ import java.util.Set;
 import org.coody.framework.core.constant.FrameworkConstant;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.container.InterceptContainer;
+import org.coody.framework.core.entity.AspectAbler;
 import org.coody.framework.core.entity.AspectEntity;
-import org.coody.framework.core.point.AspectAble;
-import org.coody.framework.core.point.AspectPoint;
+import org.coody.framework.core.entity.AspectPoint;
 import org.coody.framework.core.util.AntUtil;
 import org.coody.framework.core.util.MethodSignUtil;
 import org.coody.framework.core.util.PropertUtil;
@@ -121,16 +121,16 @@ public class CglibProxy implements MethodInterceptor {
 			return proxy.invokeSuper(bean, params);
 		}
 		//获取拦截该方法的切面
-		AspectPoint point = getMethodPoint(bean, method, proxy);
+		AspectAbler point = getMethodPoint(bean, method, proxy);
 		if (point == null) {
 			//该方法不存在AOP拦截
 			return proxy.invokeSuper(bean, params);
 		}
-		AspectAble aspectAble=new AspectAble(point,params);
+		AspectPoint aspectAble=new AspectPoint(point,params);
 		return aspectAble.invoke();
 	}
 
-	private AspectPoint getMethodPoint(Object bean, Method method, MethodProxy proxy) {
+	private AspectAbler getMethodPoint(Object bean, Method method, MethodProxy proxy) {
 		if (InterceptContainer.METHOD_INTERCEPT_MAP.containsKey(method)) {
 			return InterceptContainer.METHOD_INTERCEPT_MAP.get(method);
 		}
@@ -138,27 +138,27 @@ public class CglibProxy implements MethodInterceptor {
 		AspectEntity aspectEntity = invokeMethods.get(0);
 		invokeMethods.remove(0);
 		Object aspectBean = BeanContainer.getBean(aspectEntity.getAspectClazz());
-		AspectPoint point = new AspectPoint();
-		point.setAspectBean(aspectBean);
-		point.setAspectMethod(aspectEntity.getAspectInvokeMethod());
-		point.setBean(bean);
-		point.setClazz(bean.getClass());
-		point.setMethod(method);
-		point.setProxy(proxy);
-		point.setMasturbation(aspectEntity.getMasturbation());
-		AspectPoint childPoint = parseAspect(point, invokeMethods);
-		if (childPoint != null) {
-			point.setChildPoint(childPoint);
+		AspectAbler abler = new AspectAbler();
+		abler.setAspectBean(aspectBean);
+		abler.setAspectMethod(aspectEntity.getAspectInvokeMethod());
+		abler.setBean(bean);
+		abler.setClazz(bean.getClass());
+		abler.setMethod(method);
+		abler.setProxy(proxy);
+		abler.setMasturbation(aspectEntity.getMasturbation());
+		AspectAbler childAbler = parseAspect(abler, invokeMethods);
+		if (childAbler != null) {
+			abler.setChildAbler(childAbler);
 		}
-		AspectPoint turboPoint=new AspectPoint();
-		turboPoint.setChildPoint(point);
-		turboPoint.setMasturbation(point.getMasturbation());
+		AspectAbler turboPoint=new AspectAbler();
+		turboPoint.setChildAbler(abler);
+		turboPoint.setMasturbation(abler.getMasturbation());
 		turboPoint.setClazz(bean.getClass());
 		InterceptContainer.METHOD_INTERCEPT_MAP.put(method, turboPoint);
 		return turboPoint;
 	}
 
-	private AspectPoint parseAspect(AspectPoint basePoint, List<AspectEntity> invokeAspects) {
+	private AspectAbler parseAspect(AspectAbler basePoint, List<AspectEntity> invokeAspects) {
 		if (StringUtil.isNullOrEmpty(invokeAspects)) {
 			return null;
 		}
@@ -166,19 +166,19 @@ public class CglibProxy implements MethodInterceptor {
 		invokeAspects.remove(0);
 		Object aspectBean = BeanContainer.getBean(aspectEntity.getAspectClazz());
 
-		AspectPoint point = new AspectPoint();
-		point.setAspectBean(aspectBean);
-		point.setAspectMethod(aspectEntity.getAspectInvokeMethod());
-		point.setBean(basePoint.getBean());
-		point.setClazz(basePoint.getBean().getClass());
-		point.setMethod(basePoint.getMethod());
-		point.setProxy(basePoint.getProxy());
-		point.setMasturbation(aspectEntity.getMasturbation());
-		AspectPoint childPoint = parseAspect(basePoint, invokeAspects);
-		if (childPoint != null) {
-			point.setChildPoint(childPoint);
-			return point;
+		AspectAbler abler = new AspectAbler();
+		abler.setAspectBean(aspectBean);
+		abler.setAspectMethod(aspectEntity.getAspectInvokeMethod());
+		abler.setBean(basePoint.getBean());
+		abler.setClazz(basePoint.getBean().getClass());
+		abler.setMethod(basePoint.getMethod());
+		abler.setProxy(basePoint.getProxy());
+		abler.setMasturbation(aspectEntity.getMasturbation());
+		AspectAbler childAbler = parseAspect(basePoint, invokeAspects);
+		if (childAbler != null) {
+			abler.setChildAbler(childAbler);
+			return abler;
 		}
-		return point;
+		return abler;
 	}
 }
