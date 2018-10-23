@@ -31,7 +31,7 @@
 
         coody-cache：框架缓存的实现，实现了基础缓存，切面缓存，并提供相关切面技术的支持。
 
-        coody-jdbc ：框架orm的实现，实现了基于mysql下基础操作的封装，实现了各种简易操作，拓展了切面事物。
+        coody-jdbc ：框架orm的实现，实现了基于mysql下基础操作的封装，实现了各种简易操作，拓展了切面事务。
         
         coody-task ：框架定时任务的实现，基于cron实现了定时任务，提供了注解定时任务的支持。
 
@@ -49,7 +49,7 @@
 
     2018-02-25： 拓展Mvc，基于MVC结合Ioc+Aop实现轻量化(类spring)开发模式
 
-    2018-02-26： 由最初的常规java project整改为Maven Project，并整合自写ORM框架配合aop实现事物管理。
+    2018-02-26： 由最初的常规java project整改为Maven Project，并整合自写ORM框架配合aop实现事务管理。
 
     2018-03-08： 拓展接口形式依赖注入，对interface的Ioc提供支持。
 
@@ -206,7 +206,7 @@
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/101713_066e33cb_1200611.png "g.png")
 
-##### (7)、事物的使用:
+##### (7)、事务的使用:
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/101840_c99a11c6_1200611.png "h.png")
 
