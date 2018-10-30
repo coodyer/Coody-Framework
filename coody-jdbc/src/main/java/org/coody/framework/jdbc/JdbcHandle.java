@@ -721,7 +721,7 @@ public class JdbcHandle {
 	 * @param objs
 	 * @return
 	 */
-	public Long doUpdate(String sql, Object... objs) {
+	public Long update(String sql, Object... objs) {
 		Map<Integer, Object> map = new HashMap<Integer, Object>();
 		for (Object obj : objs) {
 			map.put(map.size() + 1, obj);
@@ -735,7 +735,7 @@ public class JdbcHandle {
 	 * @param sql
 	 * @return
 	 */
-	public Long doUpdate(String sql) {
+	public Long update(String sql) {
 		return baseUpdate(sql, new Object[] {});
 	}
 
