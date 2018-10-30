@@ -12,6 +12,10 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+
+/**
+ * Copy From Internate
+ */
 public class ClassUtil {
 
 	public static final String CGLIB_CLASS_SEPARATOR = "$$";
