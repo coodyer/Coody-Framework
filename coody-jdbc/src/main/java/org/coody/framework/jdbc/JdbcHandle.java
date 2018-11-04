@@ -67,7 +67,7 @@ public class JdbcHandle {
 	 * 
 	 * @param tableName
 	 * @return
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	public List<String> getPrimaryKeys(String tableName) throws SQLException {
 		if (StringUtil.isNullOrEmpty(tableName)) {
@@ -85,8 +85,8 @@ public class JdbcHandle {
 			return primaryKeys;
 		} catch (Exception e) {
 			throw new PrimaryKeyException("获取主键列表出现异常", e);
-		}finally {
-			if(conn!=null) {
+		} finally {
+			if (conn != null) {
 				conn.close();
 			}
 		}
@@ -118,7 +118,7 @@ public class JdbcHandle {
 				return buildResult(resultSet);
 			}
 		} catch (Exception e) {
-			throw new ExecSqlException("语句执行异常>>sql:" + sql + ",params:" +Noson.reversal(params), e);
+			throw new ExecSqlException("语句执行异常>>sql:" + sql + ",params:" + Noson.reversal(params), e);
 		} finally {
 			if (!TransactedThreadContainer.hasTransacted()) {
 				// 关闭连接对象
@@ -147,8 +147,10 @@ public class JdbcHandle {
 	/**
 	 * 执行SQL更新语句
 	 * 
-	 * @param sql     语句
-	 * @param paraMap 参数
+	 * @param sql
+	 *            语句
+	 * @param paraMap
+	 *            参数
 	 * @return
 	 */
 	public Long baseUpdate(String sql, Object... params) {
@@ -174,6 +176,7 @@ public class JdbcHandle {
 							return rs.getLong(1);
 						}
 					} catch (Exception e) {
+						throw new ExecSqlException("解析结果异常>>sql:" + sql + ",params:" + Noson.reversal(params), e);
 					}
 				}
 				return code.longValue();
@@ -223,7 +226,8 @@ public class JdbcHandle {
 	 * 执行SQL语句
 	 * 
 	 * @param sql
-	 * @param paraMap 参数map容器
+	 * @param paraMap
+	 *            参数map容器
 	 * @return 结果集
 	 */
 	public List<Map<String, Object>> query(String sql, Object... paras) {
@@ -260,9 +264,12 @@ public class JdbcHandle {
 	/**
 	 * 执行SQL语句获得任意类型结果
 	 * 
-	 * @param clazz 返回类型
-	 * @param sql   sql语句
-	 * @param paras 参数列表
+	 * @param clazz
+	 *            返回类型
+	 * @param sql
+	 *            sql语句
+	 * @param paras
+	 *            参数列表
 	 * @return
 	 */
 	public <T> T queryFirstAuto(Class<?> clazz, String sql, Object... paras) {
@@ -276,9 +283,12 @@ public class JdbcHandle {
 	/**
 	 * 执行SQL语句获得任意类型结果
 	 * 
-	 * @param clazz 返回类型
-	 * @param sql   sql语句
-	 * @param paras 参数列表
+	 * @param clazz
+	 *            返回类型
+	 * @param sql
+	 *            sql语句
+	 * @param paras
+	 *            参数列表
 	 * @return
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -300,7 +310,7 @@ public class JdbcHandle {
 		sql = formatSql(sql);
 		List list = new ArrayList();
 		for (Map<String, Object> line : records) {
-			if(StringUtil.isNullOrEmpty(line)) {
+			if (StringUtil.isNullOrEmpty(line)) {
 				continue;
 			}
 			Object value = PropertUtil.parseValue(new ArrayList<Object>(line.values()).get(0), clazz);
@@ -340,8 +350,10 @@ public class JdbcHandle {
 	/**
 	 * 根据多个字段查询对象
 	 * 
-	 * @param cla     类
-	 * @param paraMap 条件集合
+	 * @param cla
+	 *            类
+	 * @param paraMap
+	 *            条件集合
 	 * @return
 	 */
 	public <T> List<T> findBean(Class<?> cla, Map<String, Object> paraMap) {
@@ -352,8 +364,10 @@ public class JdbcHandle {
 	/**
 	 * 根据多个字段查询对象
 	 * 
-	 * @param cla     类
-	 * @param paraMap 条件集合
+	 * @param cla
+	 *            类
+	 * @param paraMap
+	 *            条件集合
 	 * @return
 	 */
 	public <T> List<T> findBean(Class<?> cla, Map<String, Object> paraMap, String orderField, Boolean isDesc) {
@@ -364,9 +378,12 @@ public class JdbcHandle {
 	/**
 	 * 根据字段查询对象
 	 * 
-	 * @param cla        类
-	 * @param fieldName  字段名
-	 * @param fieldValue 字段值,可支持集合与数组IN查询
+	 * @param cla
+	 *            类
+	 * @param fieldName
+	 *            字段名
+	 * @param fieldValue
+	 *            字段值,可支持集合与数组IN查询
 	 * @return
 	 */
 	public <T> List<T> findBean(Class<?> cla, String fieldName, Object fieldValue, String orderField, Boolean isDesc) {
@@ -396,9 +413,12 @@ public class JdbcHandle {
 	/**
 	 * 根据对象查询对象集合
 	 * 
-	 * @param obj   对象
-	 * @param where where条件
-	 * @param pager 分页对象
+	 * @param obj
+	 *            对象
+	 * @param where
+	 *            where条件
+	 * @param pager
+	 *            分页对象
 	 * @return
 	 */
 	public <T> List<T> findBean(Object obj, Where where, Pager pager) {
@@ -409,9 +429,12 @@ public class JdbcHandle {
 	/**
 	 * 根据对象查询对象集合
 	 * 
-	 * @param obj   对象
-	 * @param where where条件
-	 * @param pager 分页对象
+	 * @param obj
+	 *            对象
+	 * @param where
+	 *            where条件
+	 * @param pager
+	 *            分页对象
 	 * @return
 	 */
 	public <T> List<T> findBean(Object obj, Where where, Pager pager, String orderField, Boolean isDesc) {
@@ -422,9 +445,12 @@ public class JdbcHandle {
 	/**
 	 * 根据对象查询对象集合
 	 * 
-	 * @param obj   对象
-	 * @param where where条件
-	 * @param pager 分页对象
+	 * @param obj
+	 *            对象
+	 * @param where
+	 *            where条件
+	 * @param pager
+	 *            分页对象
 	 * @return
 	 */
 	public <T> List<T> findBean(Object obj, Where where, String orderField, Boolean isDesc) {
@@ -435,9 +461,12 @@ public class JdbcHandle {
 	/**
 	 * 根据对象查询对象集合
 	 * 
-	 * @param obj   对象
-	 * @param where where条件
-	 * @param pager 分页对象
+	 * @param obj
+	 *            对象
+	 * @param where
+	 *            where条件
+	 * @param pager
+	 *            分页对象
 	 * @return
 	 */
 	public <T> List<T> findBean(Object obj, Pager pager) {
@@ -448,8 +477,10 @@ public class JdbcHandle {
 	/**
 	 * 根据对象查询对象
 	 * 
-	 * @param obj   对象条件
-	 * @param where where条件
+	 * @param obj
+	 *            对象条件
+	 * @param where
+	 *            where条件
 	 * @return
 	 */
 	public <T> List<T> findBean(Object obj, Where where) {
@@ -553,9 +584,12 @@ public class JdbcHandle {
 	/**
 	 * 根据对象查询结果集
 	 * 
-	 * @param obj   对象条件
-	 * @param where where条件
-	 * @param pager 分页信息
+	 * @param obj
+	 *            对象条件
+	 * @param where
+	 *            where条件
+	 * @param pager
+	 *            分页信息
 	 * @return
 	 */
 	public List<Map<String, Object>> findRecord(Object obj, Where where, Pager pager, String orderField,
@@ -567,8 +601,10 @@ public class JdbcHandle {
 	/**
 	 * 根据字段查询结果集
 	 * 
-	 * @param cla     类
-	 * @param paraMap 多个字段
+	 * @param cla
+	 *            类
+	 * @param paraMap
+	 *            多个字段
 	 * @return
 	 */
 	public List<Map<String, Object>> findRecord(Class<?> cla, Map<String, Object> paraMap, String orderField,
@@ -627,8 +663,10 @@ public class JdbcHandle {
 	/**
 	 * 分页查询
 	 * 
-	 * @param obj   对象条件
-	 * @param pager 分页信息
+	 * @param obj
+	 *            对象条件
+	 * @param pager
+	 *            分页信息
 	 * @return
 	 */
 	public Pager findPager(Object obj, Pager pager) {
@@ -638,8 +676,10 @@ public class JdbcHandle {
 	/**
 	 * 分页查询
 	 * 
-	 * @param obj   对象条件
-	 * @param pager 分页信息
+	 * @param obj
+	 *            对象条件
+	 * @param pager
+	 *            分页信息
 	 * @return
 	 */
 	public Pager findPager(Object obj, Pager pager, String orderField, Boolean isDesc) {
@@ -649,9 +689,12 @@ public class JdbcHandle {
 	/**
 	 * 分页查询
 	 * 
-	 * @param obj   对象条件
-	 * @param where where条件
-	 * @param pager 分页条件
+	 * @param obj
+	 *            对象条件
+	 * @param where
+	 *            where条件
+	 * @param pager
+	 *            分页条件
 	 * @return
 	 */
 	public Pager findPager(Object obj, Where where, Pager pager, String orderField, Boolean isDesc) {
@@ -667,9 +710,12 @@ public class JdbcHandle {
 	/**
 	 * 分页查询
 	 * 
-	 * @param obj   对象条件
-	 * @param where where条件
-	 * @param pager 分页条件
+	 * @param obj
+	 *            对象条件
+	 * @param where
+	 *            where条件
+	 * @param pager
+	 *            分页条件
 	 * @return
 	 */
 	public Pager findFieldPager(Object obj, String queryField, Where where, Pager pager) {
@@ -686,8 +732,10 @@ public class JdbcHandle {
 	/**
 	 * 根据语句和条件查询总记录数
 	 * 
-	 * @param sql 语句
-	 * @param map 条件容器
+	 * @param sql
+	 *            语句
+	 * @param map
+	 *            条件容器
 	 * @return
 	 */
 	public Integer getCount(String sql, Object... params) {
@@ -747,12 +795,14 @@ public class JdbcHandle {
 	 * @return
 	 */
 	public Long update(Object obj, String... priKeyNames) {
+		if (obj == null) {
+			return -1L;
+		}
+		// 获取表名
+		String tableName = JdbcUtil.getTableName(obj);
+		StringBuilder sql = new StringBuilder(MessageFormat.format("update {0} set ", tableName));
 		try {
-			if (obj == null) {
-				return -1L;
-			}
-			// 获取表名
-			String tableName = JdbcUtil.getTableName(obj);
+
 			// 获取属性列表
 			List<BeanEntity> prpres = PropertUtil.getBeanFields(obj);
 			if (prpres == null || prpres.isEmpty()) {
@@ -760,7 +810,7 @@ public class JdbcHandle {
 			}
 			List<String> priKeys = Arrays.<String>asList(priKeyNames);
 			// 拼接SQL语句
-			StringBuilder sql = new StringBuilder(MessageFormat.format("update {0} set ", tableName));
+
 			Map<Integer, Object> paraMap = new TreeMap<Integer, Object>();
 			BeanEntity vo = null;
 			String fieldName = null;
@@ -803,9 +853,8 @@ public class JdbcHandle {
 			}
 			return baseUpdate(sql.toString(), paraMap.values().toArray());
 		} catch (Exception e) {
-
+			throw new ExecSqlException("语句执行异常>>sql:" + sql + ",priKeyNames:" + Noson.reversal(priKeyNames), e);
 		}
-		return -1L;
 	}
 
 	/**
@@ -826,19 +875,19 @@ public class JdbcHandle {
 	 * @return
 	 */
 	public Long insert(Object obj) {
+		if (obj == null) {
+			return -1L;
+		}
+		// 获取表名
+		String tableName = JdbcUtil.getTableName(obj);
+		// 获取属性列表
+		List<BeanEntity> prpres = PropertUtil.getBeanFields(obj);
+		if (prpres == null || prpres.isEmpty()) {
+			return -1L;
+		}
+		// 拼接SQL语句
+		StringBuilder sql = new StringBuilder(MessageFormat.format("insert into {0} set ", tableName));
 		try {
-			if (obj == null) {
-				return -1L;
-			}
-			// 获取表名
-			String tableName = JdbcUtil.getTableName(obj);
-			// 获取属性列表
-			List<BeanEntity> prpres = PropertUtil.getBeanFields(obj);
-			if (prpres == null || prpres.isEmpty()) {
-				return -1L;
-			}
-			// 拼接SQL语句
-			StringBuilder sql = new StringBuilder(MessageFormat.format("insert into {0} set ", tableName));
 			Map<Integer, Object> paraMap = new TreeMap<Integer, Object>();
 			BeanEntity vo = null;
 			String fieldName = null;
@@ -865,9 +914,8 @@ public class JdbcHandle {
 			}
 			return baseUpdate(sql.toString(), paraMap.values().toArray());
 		} catch (Exception e) {
-
+			throw new ExecSqlException("语句执行异常>>sql:" + sql , e);
 		}
-		return -1L;
 	}
 
 	/**
@@ -884,8 +932,10 @@ public class JdbcHandle {
 	/**
 	 * 保存或更新
 	 * 
-	 * @param obj       欲保存的对象
-	 * @param addFields 当数据存在时累加的字段
+	 * @param obj
+	 *            欲保存的对象
+	 * @param addFields
+	 *            当数据存在时累加的字段
 	 * @return
 	 */
 	public Long saveOrUpdateAuto(Object obj, String... addFields) {
@@ -956,8 +1006,6 @@ public class JdbcHandle {
 	 * 插入功能区 -end
 	 */
 
-	
-	
 	public Set<String> getTables() throws SQLException {
 		Connection connection = dataSource.getConnection();
 		try {
@@ -969,11 +1017,12 @@ public class JdbcHandle {
 			}
 			return tables;
 		} finally {
-			if(connection!=null) {
+			if (connection != null) {
 				connection.close();
 			}
 		}
 	}
+
 	/**
 	 * 内部方法 -start
 	 */
@@ -1079,7 +1128,7 @@ public class JdbcHandle {
 				for (int i = 1; i <= data.getColumnCount(); i++) {
 					try {// 获得列名
 						columnName = data.getColumnName(i);
-						if(StringUtil.isNullOrEmpty(columnName)) {
+						if (StringUtil.isNullOrEmpty(columnName)) {
 							continue;
 						}
 						// 获得列值
