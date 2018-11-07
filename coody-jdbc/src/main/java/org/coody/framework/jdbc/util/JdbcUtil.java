@@ -14,10 +14,13 @@ import org.coody.framework.core.entity.BeanEntity;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
 import org.coody.framework.jdbc.annotation.Column;
+import org.coody.framework.jdbc.annotation.DBVague;
 import org.coody.framework.jdbc.annotation.Table;
 import org.coody.framework.jdbc.entity.JDBCEntity;
 import org.coody.framework.jdbc.entity.Pager;
 import org.coody.framework.jdbc.entity.Where;
+import org.coody.framework.jdbc.entity.Where.OrWhere;
+import org.coody.framework.jdbc.entity.Where.ThisWhere;
 import org.coody.framework.jdbc.exception.BuildModeltException;
 import org.coody.framework.jdbc.exception.BuildSqlException;
 
@@ -239,24 +242,19 @@ public class JdbcUtil {
 	/**
 	 * 解析对象条件、where条件、分页条件
 	 * 
-	 * @param obj
-	 *            对象条件
-	 * @param where
-	 *            where条件
-	 * @param pager
-	 *            分页条件
+	 * @param obj   对象条件
+	 * @param where where条件
+	 * @param pager 分页条件
 	 * @return
 	 */
-	public static JDBCEntity parseSQL(Object obj, Where where, Pager pager,
-			String orderField, Boolean isDesc) {
+	public static JDBCEntity parseSQL(Object obj, Where where, Pager pager, String orderField, Boolean isDesc) {
 		if (obj == null) {
 			return null;
 		}
 		// 获取表名
 		String tableName = getTableName(obj);
-		StringBuilder sb = new StringBuilder(MessageFormat.format(
-				"select * from {0} where 1=1 ", tableName));
-		List<Object> params=new ArrayList<Object>();
+		StringBuilder sb = new StringBuilder(MessageFormat.format("select * from {0} where 1=1 ", tableName));
+		List<Object> params = new ArrayList<Object>();
 		// 封装对象内置条件,默认以等于
 		if (!(obj instanceof java.lang.Class)) {
 			List<BeanEntity> prpres = PropertUtil.getBeanFields(obj);
@@ -267,27 +265,62 @@ public class JdbcUtil {
 				if (entity.getFieldValue() == null) {
 					continue;
 				}
-				sb.append(MessageFormat.format(" and {0}=? ",
-						JdbcUtil.getColumnName(entity)));
-				params.add(entity.getFieldValue());
+				if (!String.class.isAssignableFrom(entity.getFieldType())) {
+					sb.append(MessageFormat.format(" and {0}=? ", JdbcUtil.getColumnName(entity)));
+					params.add(entity.getFieldValue());
+					continue;
+				}
+				DBVague vague = entity.getAnnotation(DBVague.class);
+				if (vague == null || StringUtil.isNullOrEmpty(vague.value())) {
+					sb.append(MessageFormat.format(" and {0}=? ", JdbcUtil.getColumnName(entity)));
+					params.add(entity.getFieldValue());
+					continue;
+				}
+				sb.append(MessageFormat.format(" and {0} like ? ", JdbcUtil.getColumnName(entity)));
+				String example = vague.value();
+				params.add(example.replace("#{0}", entity.getFieldValue().toString()));
 			}
 		}
 		// 封装where条件
-		if (!StringUtil.isNullOrEmpty(where)
-				&& !StringUtil.isNullOrEmpty(where.getWheres())) {
-			List<Where.ThisWhere> wheres = where.getWheres();
-			for (Where.ThisWhere childWhere : wheres) {
-				sb.append(MessageFormat.format(" and {0} {1} ",
-						childWhere.getFieldName(), childWhere.getSymbol()));
-				if (StringUtil.isNullOrEmpty(childWhere.getFieldValues())) {
+		if (!StringUtil.isNullOrEmpty(where) && !StringUtil.isNullOrEmpty(where.getWheres())) {
+			List<Where.WhereFace> wheres = where.getWheres();
+			for (Where.WhereFace childWhere : wheres) {
+				if (childWhere == null) {
 					continue;
 				}
-				String inParaSql = StringUtil.getInPara(childWhere
-						.getFieldValues().size());
-				sb.append(MessageFormat.format(" ({0})  ", inParaSql));
-				for (Object value : childWhere.getFieldValues()) {
-					params.add(value);
+				if (Where.OrWhere.class.isAssignableFrom(childWhere.getClass())) {
+					Where.OrWhere orWheres = (OrWhere) childWhere;
+					if (StringUtil.isNullOrEmpty(orWheres.getWheres())) {
+						continue;
+					}
+					sb.append(" and (1=2");
+					for (Where.ThisWhere orWhere : orWheres.getWheres()) {
+						sb.append(MessageFormat.format(" or {0} {1} ", orWhere.getFieldName(), orWhere.getSymbol()));
+						if (StringUtil.isNullOrEmpty(orWhere.getFieldValues())) {
+							continue;
+						}
+						String inParaSql = StringUtil.getInPara(orWhere.getFieldValues().size());
+						sb.append(MessageFormat.format(" ({0})  ", inParaSql));
+						for (Object value : orWhere.getFieldValues()) {
+							params.add(value);
+						}
+					}
+					sb.append(" )");
+					continue;
 				}
+				if(Where.ThisWhere.class.isAssignableFrom(childWhere.getClass())) {
+					Where.ThisWhere thisWhere=(ThisWhere) childWhere;
+					sb.append(MessageFormat.format(" and {0} {1} ", thisWhere.getFieldName(), thisWhere.getSymbol()));
+					if (StringUtil.isNullOrEmpty(thisWhere.getFieldValues())) {
+						continue;
+					}
+					String inParaSql = StringUtil.getInPara(thisWhere.getFieldValues().size());
+					sb.append(MessageFormat.format(" ({0})  ", inParaSql));
+					for (Object value : thisWhere.getFieldValues()) {
+						params.add(value);
+					}
+				}
+				
 			}
 		}
 		// 封装排序条件

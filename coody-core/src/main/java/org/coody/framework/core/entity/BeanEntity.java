@@ -14,13 +14,14 @@ public class BeanEntity extends BaseModel{
 	private Annotation[] fieldAnnotations;
 	private Field sourceField;
 	
-	public Annotation getAnnotation(Class<?> clazz){
+	@SuppressWarnings("unchecked")
+	public <T extends Annotation> T getAnnotation(Class<?> clazz){
 		if(StringUtil.isNullOrEmpty(fieldAnnotations)){
 			return null;
 		}
 		for (Annotation annotation:fieldAnnotations) {
 			if(clazz.isAssignableFrom(annotation.annotationType())){
-				return annotation;
+				return (T) annotation;
 			}
 		}
 		return null;
