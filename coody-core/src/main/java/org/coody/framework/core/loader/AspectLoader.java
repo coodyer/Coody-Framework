@@ -47,9 +47,6 @@ public class AspectLoader implements IcopLoader {
 			if(cla.isEnum()){
 				continue;
 			}
-			if(cla.getName().contains("EncryptAspect")) {
-				System.out.println("0k");
-			}
 			Annotation initBean = PropertUtil.getAnnotation(cla, AutoBuild.class);
 			if (initBean == null) {
 				continue;
