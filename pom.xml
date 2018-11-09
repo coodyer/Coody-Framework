@@ -18,7 +18,7 @@
 		<java.version.target>1.8</java.version.target>
 		<cglib.version>3.2.9</cglib.version>
 		<log4j.version>1.2.9</log4j.version>
-		<noson.version>1.1.4</noson.version>
+		<noson.version>1.1.5</noson.version>
 		<java.compiler.argument />
 		<java.test.compiler.argument>${java.compiler.argument}</java.test.compiler.argument>
 		<servlet-api.version>6.0.53</servlet-api.version>
