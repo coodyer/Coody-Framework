@@ -272,8 +272,8 @@ public class JdbcHandle {
 	 *            参数列表
 	 * @return
 	 */
-	public <T> T queryFirstAuto(Class<?> clazz, String sql, Object... paras) {
-		List<T> list = queryAuto(clazz, sql, paras);
+	public <T> T queryFirst(Class<?> clazz, String sql, Object... paras) {
+		List<T> list = query(clazz, sql, paras);
 		if (StringUtil.isNullOrEmpty(list)) {
 			return null;
 		}
@@ -292,7 +292,7 @@ public class JdbcHandle {
 	 * @return
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public <T> List<T> queryAuto(Class<?> clazz, String sql, Object... paras) {
+	public <T> List<T> query(Class<?> clazz, String sql, Object... paras) {
 		List<Map<String, Object>> records = query(sql, paras);
 		if (StringUtil.isNullOrEmpty(records)) {
 			return null;
@@ -740,7 +740,7 @@ public class JdbcHandle {
 	 */
 	public Integer getCount(String sql, Object... params) {
 		sql = parsCountSql(sql);
-		Integer count = queryFirstAuto(Integer.class, sql, params);
+		Integer count = queryFirst(Integer.class, sql, params);
 		return count;
 	}
 
@@ -925,8 +925,8 @@ public class JdbcHandle {
 	 * @param priKeyName
 	 * @return
 	 */
-	public Long saveOrUpdateAuto(Object obj) {
-		return saveOrUpdateAuto(obj, new String[] {});
+	public Long saveOrUpdate(Object obj) {
+		return saveOrUpdate(obj, new String[] {});
 	}
 
 	/**
@@ -938,7 +938,7 @@ public class JdbcHandle {
 	 *            当数据存在时累加的字段
 	 * @return
 	 */
-	public Long saveOrUpdateAuto(Object obj, String... addFields) {
+	public Long saveOrUpdate(Object obj, String... addFields) {
 		if (obj == null) {
 			return -1L;
 		}
