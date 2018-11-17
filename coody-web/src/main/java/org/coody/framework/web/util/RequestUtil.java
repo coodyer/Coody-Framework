@@ -127,8 +127,8 @@ public class RequestUtil {
 	 * @return
 	 */
 	public static <T> T getBeanRemove(HttpServletRequest request,
-			String paraName, Object obj, String... paraArgs) {
-		return getBean(request, obj, null, paraName, null, true, paraArgs);
+			String paraName, Object obj,boolean removeEmpty, String... paraArgs) {
+		return getBean(request, obj, null, paraName, null, true, paraArgs,removeEmpty);
 	}
 
 	/**
@@ -143,8 +143,8 @@ public class RequestUtil {
 	 * @return
 	 */
 	public static <T> T getBeanAccept(HttpServletRequest request,
-			String paraName, Object obj, String... paraArgs) {
-		return getBean(request, obj, null, paraName, null, false, paraArgs);
+			String paraName, Object obj,boolean removeEmpty, String... paraArgs) {
+		return getBean(request, obj, null, paraName, null, false, paraArgs,removeEmpty);
 	}
 
 	/**
@@ -157,14 +157,15 @@ public class RequestUtil {
 	 * @return
 	 */
 	public static <T> T getBeanAll(HttpServletRequest request, String paraName,
-			Object obj) {
-		return getBean(request, obj, null, paraName, null, true, null);
+			Object obj,boolean removeEmpty) {
+		return getBean(request, obj, null, paraName, null, true, null,removeEmpty);
 	}
+
 
 	@SuppressWarnings("unchecked")
 	private static <T> T getBean(HttpServletRequest request, Object obj,
 			List<BeanEntity> fields, String baseName, String firstSuffix,
-			Boolean isReplace, String[] paraArgs) {
+			Boolean isReplace, String[] paraArgs,boolean removeEmpty) {
 		try {
 			if (obj instanceof Class) {
 				obj = ((Class<?>) obj).newInstance();
@@ -212,13 +213,16 @@ public class RequestUtil {
 					if (BaseModel.class.isAssignableFrom(entity.getFieldType())) {
 						childObj = entity.getFieldType().newInstance();
 						childObj = getBean(request, childObj, null, paraName,
-								firstSuffix, isReplace, paraArgs);
+								firstSuffix, isReplace, paraArgs,removeEmpty);
 						PropertUtil.setProperties(obj, entity.getFieldName(),
 								childObj);
 						continue;
 					}
 					paraValue = request.getParameter(paraName);
-					if (StringUtil.isNullOrEmpty(paraValue)) {
+					if (paraValue==null) {
+						continue;
+					}
+					if(removeEmpty&&StringUtil.isNullOrEmpty(paraValue)){
 						continue;
 					}
 					PropertUtil.setProperties(obj, entity.getFieldName(),
@@ -229,8 +233,7 @@ public class RequestUtil {
 			}
 			return (T) obj;
 		} catch (Exception e) {
-			
-
+			e.printStackTrace();
 		}
 		return null;
 	}

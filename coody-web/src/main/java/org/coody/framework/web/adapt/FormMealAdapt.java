@@ -44,7 +44,7 @@ public class FormMealAdapt implements IcopParamsAdapt {
 				continue;
 			}
 			if (BaseModel.class.isAssignableFrom(beanEntity.getFieldType())) {
-				params[i] = RequestUtil.getBeanAll(request, null, beanEntity.getFieldType());
+				params[i] = RequestUtil.getBeanAll(request, null, beanEntity.getFieldType(),true);
 				continue;
 			}
 			if (beanEntity.getFieldType().isPrimitive()||InsideTypeConstant.INSIDE_TYPES.contains(beanEntity.getFieldType())) {

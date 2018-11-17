@@ -48,7 +48,7 @@ public class FormNomalAdapt implements IcopParamsAdapt{
 				if(paramNameAnnotion!=null){
 					paraName=paramNameAnnotion.value();
 				}
-				params[i] = RequestUtil.getBeanAll(request, paraName, beanEntity.getFieldType());
+				params[i] = RequestUtil.getBeanAll(request, paraName, beanEntity.getFieldType(),true);
 				continue;
 			}
 			if (beanEntity.getFieldType().isPrimitive()||InsideTypeConstant.INSIDE_TYPES.contains(beanEntity.getFieldType())) {
