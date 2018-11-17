@@ -176,7 +176,7 @@ public class JdbcHandle {
 							return rs.getLong(1);
 						}
 					} catch (Exception e) {
-						throw new ExecSqlException("解析结果异常>>sql:" + sql + ",params:" + Noson.reversal(params), e);
+						return code.longValue();
 					}
 				}
 				return code.longValue();
