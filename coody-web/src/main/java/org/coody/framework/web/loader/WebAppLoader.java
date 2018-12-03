@@ -43,13 +43,13 @@ public class WebAppLoader implements IcopLoader {
 			}
 			Method[] methods = clazz.getDeclaredMethods();
 			ParamsAdapt clazzParamsAdapt = PropertUtil.getAnnotation(clazz, ParamsAdapt.class);
-			for (String clazzBinding : classBindings.value()) {
+			for (String clazzBinding : classBindings.path()) {
 				for (Method method : methods) {
 					PathBinding methodBinding = PropertUtil.getAnnotation(method, PathBinding.class);
 					if (StringUtil.isNullOrEmpty(methodBinding)) {
 						continue;
 					}
-					for (String bindingPath : methodBinding.value()) {
+					for (String bindingPath : methodBinding.path()) {
 						String path = StringUtil.formatPath(clazzBinding + "/" + bindingPath);
 						if (MappingContainer.containsPath(path)) {
 							throw new MappingConflicException(path);

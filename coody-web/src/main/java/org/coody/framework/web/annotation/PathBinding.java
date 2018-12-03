@@ -17,5 +17,5 @@ import org.coody.framework.core.annotation.AutoBuild;
 @AutoBuild
 public @interface PathBinding {
 
-	String [] value() default {""};
+	String [] path() default {""};
 }

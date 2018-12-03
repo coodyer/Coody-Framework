@@ -1,6 +1,7 @@
 package org.coody.framework.core.container;
 
 import java.lang.annotation.Annotation;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -101,14 +102,14 @@ public class BeanContainer {
 				continue;
 			}
 			String beanName = clazz.getName();
-			Object value = PropertUtil.getAnnotationValue(annotation, "value");
-			if (StringUtil.isNullOrEmpty(value) || value.getClass().isArray()) {
+			String value = PropertUtil.getAnnotationValue(annotation, "value");
+			if (StringUtil.isNullOrEmpty(value)) {
 				return beanName;
 			}
-			if (!StringUtil.isNullOrEmpty(beanName)) {
-				return beanName;
+			if (!StringUtil.isNullOrEmpty(value)) {
+				return value;
 			}
-			return clazz.getName();
+			return beanName;
 		}
 		return null;
 	}
