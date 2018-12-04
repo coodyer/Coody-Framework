@@ -16,6 +16,16 @@ import org.coody.framework.core.annotation.AutoBuild;
 @Retention(RetentionPolicy.RUNTIME) 
 @AutoBuild
 public @interface PathBinding {
+	
+	/**
+	 * BeanName
+	 * @return
+	 */
+	String value();
 
+	/**
+	 * MVC Mapping
+	 * @return
+	 */
 	String [] path() default {""};
 }
