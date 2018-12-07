@@ -277,7 +277,5 @@ coody-rcc    ：[Coody Rcc](http://gitee.com/coodyer/coody-icop/tree/coody-maven
 
     反馈邮箱：644556636@qq.com
 
-    交流群号:218481849
-
     基于Coody Framework的博文系统：https://gitee.com/coodyer/czone  (研发中)
 
