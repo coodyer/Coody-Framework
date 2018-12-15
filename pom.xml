@@ -163,8 +163,7 @@
 		<module>coody-task</module>
 		<module>coody-rcc</module>
 		<!-- <module>coody-taboo</module> -->
-    <module>clock</module>
-    <module>coody-clock</module>
+		<!-- <module>coody-clock</module> -->
   </modules>
 
 	<dependencyManagement>
