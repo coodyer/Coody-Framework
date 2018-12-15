@@ -957,7 +957,56 @@ public class JdbcHandle {
 		sql.append(diySql);
 		return baseUpdate(sql.toString(), paras.toArray());
 	}
+	/**
+	 * 批量保存或更新
+	 * 
+	 * @param obj       欲保存的对象
+	 * @param addFields 当数据存在时累加的字段
+	 * @return 成功数
+	 */
+	public Integer batchSaveOrUpdate(List<? extends BaseModel> objs) {
+		return batchSaveOrUpdate(objs, new String[] {});
+	}
+	public Integer batchSaveOrUpdate(List<? extends BaseModel> objs, String... addFields) {
+		Map<String, List<Object[]>> batchMap = new HashMap<String, List<Object[]>>();
 
+		for (Object obj : objs) {
+			if (obj == null) {
+				continue;
+			}
+			// 获取表名
+			String tableName = JdbcUtil.getTableName(obj);
+			// 拼接SQL语句
+			StringBuilder sql = new StringBuilder(MessageFormat.format("insert into {0} set ", tableName));
+			List<Object> paras = new ArrayList<Object>();
+			String diySql = JdbcUtil.parseBeanSetSql(obj, paras);
+			if (StringUtil.isNullOrEmpty(diySql)) {
+				continue;
+			}
+			sql.append(diySql);
+			sql.append(" ON DUPLICATE KEY UPDATE ");
+			diySql = JdbcUtil.parseBeanSetSql(obj, paras, addFields);
+			sql.append(diySql);
+			if (!batchMap.containsKey(sql.toString())) {
+				batchMap.put(sql.toString(), new ArrayList<Object[]>());
+			}
+			batchMap.get(sql.toString()).add(paras.toArray());
+		}
+		if (StringUtil.isNullOrEmpty(batchMap)) {
+			return 0;
+		}
+		Integer result = 0;
+		for (String sql : batchMap.keySet()) {
+			int[] codes = jdbcTemplate.batchUpdate(sql, batchMap.get(sql));
+			for (int code : codes) {
+				if (code < 0) {
+					continue;
+				}
+				result++;
+			}
+		}
+		return result;
+	}
 	private String parseFieldSql(Object obj, List<Object> params, String... addFields) {
 		List<BeanEntity> prpres = PropertUtil.getBeanFields(obj);
 		StringBuilder sql = new StringBuilder();
