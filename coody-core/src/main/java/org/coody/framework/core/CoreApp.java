@@ -38,9 +38,12 @@ public class CoreApp {
 		}
 	};
 
-	public static Set<Class<?>> initLoader(String assember) throws ClassNotFoundException {
+	public static List<Class<?>> initLoader(String assember) throws ClassNotFoundException {
 		String[] loaders = assember.split(",");
 		for (String loader : loaders) {
+			if(StringUtil.isNullOrEmpty(loader)){
+				continue;
+			}
 			Class<?> loaderClazz = Class.forName(loader.trim());
 			if (!CoodyLoader.class.isAssignableFrom(loaderClazz)) {
 				throw new CoodyException(loaderClazz.getName() + "不是加载器");
@@ -50,15 +53,12 @@ public class CoreApp {
 			if (order != null) {
 				seq = order.value();
 			}
-			if (loadersMap.containsKey(seq)) {
-				loadersMap.get(seq).add(loaderClazz);
-				continue;
+			if (!loadersMap.containsKey(seq)) {
+				loadersMap.put(seq, new ArrayList<Class<?>>());
 			}
-			List<Class<?>> loaderList = new ArrayList<Class<?>>();
-			loaderList.add(loaderClazz);
-			loadersMap.put(seq, loaderList);
+			loadersMap.get(seq).add(loaderClazz);
 		}
-		Set<Class<?>> currentLoaders = new HashSet<Class<?>>();
+		List<Class<?>> currentLoaders = new ArrayList<Class<?>>();
 		for (Integer key : loadersMap.keySet()) {
 			for (Class<?> clazz : loadersMap.get(key)) {
 				if (currentLoaders.contains(clazz)) {
@@ -89,7 +89,7 @@ public class CoreApp {
 
 	public static void init(CoodyConfig config) throws Exception {
 		// 初始化组建加载器
-		Set<Class<?>> loaders = initLoader(config.assember);
+		List<Class<?>> loaders = initLoader(config.assember);
 		// 初始化扫描类
 		Set<Class<?>> clazzs = initScanner(config.packager);
 		

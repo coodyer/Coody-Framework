@@ -41,13 +41,12 @@ public class CustomBeanLoader implements CoodyLoader {
 		for (String key : map.keySet()) {
 			Map<String, String> beanConfig = map.get(key);
 			String clazzName = beanConfig.get(CoodyConfig.CLASS_NAME);
-			String beanName = beanConfig.get(CoodyConfig.BEAN_NAME);
 			Class<?> clazz = Class.forName(clazzName);
-			Object bean=BeanAssember.initBean(clazz, beanName);
+			Object bean=BeanAssember.initBean(clazz, key);
 			if(bean==null){
 				continue;
 			}
-			beans.put(beanName, bean);
+			beans.put(key, bean);
 		}
 		
 		//初始化所有字段
@@ -59,6 +58,6 @@ public class CustomBeanLoader implements CoodyLoader {
 
 	public static void main(String[] args) {
 		System.out.println(CoodyConfig.BEAN_MAPPER);
-		System.out.println(MatchUtil.isParaMatch("coody.bean.jedis.host", CoodyConfig.BEAN_MAPPER));
+		System.out.println( MatchUtil.matchExport("${aaa}", CoodyConfig.INPUT_BEAN_MAPPER));
 	}
 }

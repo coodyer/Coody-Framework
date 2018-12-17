@@ -2,7 +2,6 @@ package org.coody.framework.core.container;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -85,7 +84,7 @@ public class BeanContainer {
 		return beanContainer.containsKey(beanName);
 	}
 
-	public static Collection<?> getBeans() {
+	public static HashSet<?> getBeans() {
 		HashSet<Object> beans = new HashSet<Object>();
 		for (String key : beanContainer.keySet()) {
 			Map<String, Object> map = beanContainer.get(key);

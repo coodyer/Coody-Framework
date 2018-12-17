@@ -19,6 +19,7 @@ import org.coody.framework.core.proxy.CglibProxy;
 import org.coody.framework.core.util.MatchUtil;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
+import org.nico.noson.Noson;
 
 @AutoBuild
 public class BeanAssember {
@@ -60,7 +61,7 @@ public class BeanAssember {
 		if (StringUtil.isNullOrEmpty(fields)) {
 			return;
 		}
-		for (Field field : fields) {
+		fieldSet:for (Field field : fields) {
 			if (StringUtil.isNullOrEmpty(field.getAnnotations())) {
 				continue;
 			}
@@ -68,17 +69,21 @@ public class BeanAssember {
 			if (StringUtil.isNullOrEmpty(autoBuild)) {
 				continue;
 			}
-			String beanName = PropertUtil.getAnnotationValue(autoBuild, "value");
-			if (StringUtil.isNullOrEmpty(beanName)) {
-				beanName = field.getType().getName();
+			String[] beanNames = PropertUtil.getAnnotationValue(autoBuild, "value");
+			beanSearch:for(String beanName:beanNames){
+				if (StringUtil.isNullOrEmpty(beanName)) {
+					beanName = field.getType().getName();
+				}
+				if (!BeanContainer.contains(beanName)) {
+					continue beanSearch;
+				}
+				field.setAccessible(true);
+				Object writeValue = BeanContainer.getBean(beanName);
+				logger.debug("注入字段 >>" + field.getName() + ":" + bean.getClass().getName());
+				field.set(bean, writeValue);
+				continue fieldSet;
 			}
-			if (!BeanContainer.contains(beanName)) {
-				throw new BeanNotFoundException(beanName, bean.getClass());
-			}
-			field.setAccessible(true);
-			Object writeValue = BeanContainer.getBean(beanName);
-			logger.debug("注入字段 >>" + field.getName() + ":" + bean.getClass().getName());
-			field.set(bean, writeValue);
+			throw new BeanNotFoundException(Noson.reversal(beanNames), bean.getClass());
 		}
 		if (StringUtil.isNullOrEmpty(params)) {
 			return;
@@ -92,12 +97,14 @@ public class BeanAssember {
 				PropertUtil.setFieldValue(bean, field,value);
 				continue;
 			}
-			Map<String, String> beanConfig = MatchUtil.matchParamMap(value, CoodyConfig.INPUT_BEAN_MAPPER);
-			if(beanConfig==null||!beanConfig.containsKey(CoodyConfig.BEAN_NAME)){
-				PropertUtil.setFieldValue(bean, field,value);
-				continue;
+			String beanName = MatchUtil.matchExportFirst(value, CoodyConfig.INPUT_BEAN_MAPPER);
+			if(StringUtil.isNullOrEmpty(beanName)){
+				throw new BeanNotFoundException(beanName, bean.getClass());
 			}
-			Object inputBean=BeanContainer.getBean(beanConfig.get(CoodyConfig.BEAN_NAME));
+			Object inputBean=BeanContainer.getBean(beanName);
+			if(inputBean==null){
+				throw new BeanNotFoundException(beanName, bean.getClass());
+			}
 			PropertUtil.setFieldValue(bean, field,inputBean);
 		}
 	}

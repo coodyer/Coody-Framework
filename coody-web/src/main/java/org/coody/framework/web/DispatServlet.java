@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.coody.framework.core.util.PrintException;
 import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.web.adapt.iface.CoodyParamsAdapt;
 import org.coody.framework.web.annotation.JsonOut;
 import org.coody.framework.web.container.HttpContainer;
 import org.coody.framework.web.container.MappingContainer;
@@ -38,7 +39,8 @@ public class DispatServlet extends HttpServlet{
 		HttpContainer.setRequest(request);
 		HttpContainer.setResponse(response);
 		try {
-			Object[] params=mapping.getParamsAdapt().doAdapt(mapping, request, response, request.getSession());
+			CoodyParamsAdapt adapt=mapping.getParamsAdapt();
+			Object[] params=adapt.doAdapt(mapping, request, response, request.getSession());
 			Object	result=mapping.getMethod().invoke(mapping.getBean(), params);
 			if(result==null){
 				return;

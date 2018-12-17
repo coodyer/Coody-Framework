@@ -31,11 +31,11 @@ public class CoodyConfig {
 	/**
 	 * Bean配置
 	 */
-	public static final String BEAN_MAPPER = PREFIX + ".bean.${" + BEAN_NAME + "}.${" + PROPERTY + "}";
+	public static final String BEAN_MAPPER = PREFIX + "\\.bean\\.${" + BEAN_NAME + "}\\.${" + PROPERTY + "}";
 	/**
 	 * Bean表达式
 	 */
-	public static final String INPUT_BEAN_MAPPER = "${bean}";
+	public static final String INPUT_BEAN_MAPPER = "\\$\\{([A-Za-z0-9_]+)\\}";
 	/**
 	 * 扫描的包配置
 	 */
@@ -59,7 +59,7 @@ public class CoodyConfig {
 			}
 			field.setAccessible(true);
 			String defaulltValue = (String) field.get(this);
-			if (defaulltValue == null) {
+			if (StringUtil.isNullOrEmpty(defaulltValue)) {
 				field.set(this, configValue);
 				continue;
 			}

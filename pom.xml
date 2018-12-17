@@ -72,7 +72,7 @@
 						<compilerArgument>-parameters</compilerArgument>
 					</configuration>
 				</plugin>
-				<plugin>
+				<!-- <plugin>
 					<groupId>org.sonatype.plugins</groupId>
 					<artifactId>nexus-staging-maven-plugin</artifactId>
 					<version>1.6.7</version>
@@ -125,7 +125,7 @@
 							</goals>
 						</execution>
 					</executions>
-				</plugin>
+				</plugin> -->
 			</plugins>
 		</pluginManagement>
 		<plugins>
