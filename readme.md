@@ -77,28 +77,28 @@
         <dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-core</artifactId>
-			<version>alpha-1.1.7</version>
+			<version>alpha-1.1.9</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-jdbc</artifactId>
-			<version>alpha-1.1.7</version>
+			<version>alpha-1.1.9</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-cache</artifactId>
-			<version>alpha-1.1.7</version>
+			<version>alpha-1.1.9</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-task</artifactId>
-			<version>alpha-1.1.7</version>
+			<version>alpha-1.1.9</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-web</artifactId>
-			<version>alpha-1.1.7</version>
+			<version>alpha-1.1.9</version>
 		</dependency>
 ```
 
@@ -143,40 +143,56 @@
 
 ##### (3)、web.xml配置:
 
-    `	<!-- 配置扫描的包 -->
-	<context-param>
-		<param-name>scanPacket</param-name>
-		<!-- 逗号分割多个包名 -->
-		<param-value>org.coody.czone</param-value>
-	</context-param>
-	<!-- 配置初始化适配器 -->
-	<context-param>
-		<param-name>initLoader</param-name>
-		<!-- 逗号分割多个加载器 -->
-		<param-value>org.coody.framework.web.loader.WebAppLoader,org.coody.framework.task.loader.TaskLoader</param-value>
-	</context-param>
-	<!-- 配置监听器 -->
-	<listener>
-		<listener-class>org.coody.framework.web.listen.IcopServletListen</listener-class>
-	</listener>
-	<!-- 初始化分发器 -->
-	<servlet>
-		<servlet-name>DispatServlet</servlet-name>
-		<servlet-class>org.coody.framework.web.DispatServlet</servlet-class>
-		<init-param>
-			<!-- 静态页面目录配置 -->
-			<param-name>viewPath</param-name>
-			<param-value>/</param-value>
-		</init-param>
-	</servlet>
-	<!-- MVC配置 -->
-	<servlet-mapping>
-		<servlet-name>DispatServlet</servlet-name>
-		<url-pattern>*.do</url-pattern>
-	</servlet-mapping>`
+
+```
+  <!-- 初始化加载配置文件目录 -->
+  <context-param>
+    <param-name>configPath</param-name>
+    <param-value>config</param-value>
+  </context-param>
+  <!-- 监听器 -->
+  <listener>
+    <listener-class>org.coody.framework.web.listen.CoodyServletListen</listener-class>
+  </listener>
+  <!-- mvc路由器 -->
+  <servlet>
+    <servlet-name>DispatServlet</servlet-name>
+    <servlet-class>org.coody.framework.web.DispatServlet</servlet-class>
+    <!-- 静态资源目录 -->
+    <init-param>
+      <param-name>viewPath</param-name>
+      <param-value>/</param-value>
+    </init-param>
+  </servlet>
+  <!-- mvc拦截规则 -->
+  <servlet-mapping>
+    <servlet-name>DispatServlet</servlet-name>
+    <url-pattern>*.do</url-pattern>
+  </servlet-mapping>
+```
+
+##### (4)、配置一个bean:
+
+######## 配置dataConfig  （coody.bean.{bean名称}.${字段名}）
+
+coody.bean.hikariDataSource.class=com.zaxxer.hikari.HikariDataSource
+coody.bean.hikariDataSource.driverClassName=com.mysql.jdbc.Driver
+coody.bean.hikariDataSource.jdbcUrl=jdbc\:mysql\://127.0.0.1:3306/czone?useUnicode\=true&characterEncoding\=utf-8
+coody.bean.hikariDataSource.username=root
+coody.bean.hikariDataSource.password=123456
+coody.bean.hikariDataSource.maxPoolSize=64
+coody.bean.hikariDataSource.minIdle=8
+
+####### 配置jdbcHandle  (当值为${xxx}，即${bean名称})
+coody.bean.jdbcHandle.class=org.coody.framework.jdbc.JdbcHandle
+coody.bean.jdbcHandle.dataSource=${hikariDataSource}
+
+如图：
+
+![输入图片说明](https://images.gitee.com/uploads/images/2018/1217/231538_89f28ab4_1200611.png "aa.png")
 
 
-##### (4)、Mvc的使用:
+##### (5)、Mvc的使用:
 
 ###### 简易使用
 
@@ -203,19 +219,19 @@
     JsonNomalAdapt：混合装载适配器，json数据装载到多个bean，以方法参数名为请求参数前缀。
 
 
-##### (5)、定时任务的使用:
+##### (6)、定时任务的使用:
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/101505_aad09568_1200611.png "f.png")
 
-##### (6)、切面的使用:
+##### (7)、切面的使用:
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/101713_066e33cb_1200611.png "g.png")
 
-##### (7)、事务的使用:
+##### (8)、事务的使用:
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/101840_c99a11c6_1200611.png "h.png")
 
-##### (8)、缓存的使用:
+##### (9)、缓存的使用:
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/0905/102029_b0ba0804_1200611.png "i.png")
 
@@ -241,7 +257,7 @@ coody-rcc    ：[Coody Rcc](http://gitee.com/coodyer/coody-icop/tree/coody-maven
 
     1、完善rcc分布式模块
 
-    2、为Coody Framework提供完整的配置中心
+    2、为Coody Framework提供完整的配置中心(已初步实现)
 
     3、完成博文系统并作为成功案例
 
