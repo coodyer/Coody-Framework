@@ -13,7 +13,7 @@ import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.web.container.HttpContainer;
 
 @AutoBuild
-public class IcopResponseWrapper implements ServletResponse, HttpServletResponse {
+public class CoodyResponseWrapper implements ServletResponse, HttpServletResponse {
 
 	@Override
 	public void addCookie(Cookie arg0) {

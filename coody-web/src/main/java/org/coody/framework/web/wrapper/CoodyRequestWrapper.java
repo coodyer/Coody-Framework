@@ -20,7 +20,7 @@ import org.coody.framework.web.container.HttpContainer;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 @AutoBuild
-public class IcopRequestWrapper implements ServletRequest,HttpServletRequest {
+public class CoodyRequestWrapper implements ServletRequest,HttpServletRequest {
 
 	@Override
 	public String getParameter(String name) {

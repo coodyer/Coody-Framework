@@ -21,11 +21,6 @@ public @interface PathBinding {
 	 * BeanName
 	 * @return
 	 */
-	String value();
+	String [] value();
 
-	/**
-	 * MVC Mapping
-	 * @return
-	 */
-	String [] path() default {""};
 }

@@ -11,7 +11,7 @@ import org.coody.framework.web.entity.MvcMapping;
  * @author admin
  *
  */
-public interface IcopParamsAdapt {
+public interface CoodyParamsAdapt {
 
 	/**
 	 * 参数自动装载，目前支持简单的HTTP参数

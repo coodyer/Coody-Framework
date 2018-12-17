@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.coody.framework.core.entity.BaseModel;
 import org.coody.framework.core.entity.BeanEntity;
-import org.coody.framework.web.adapt.iface.IcopParamsAdapt;
+import org.coody.framework.web.adapt.iface.CoodyParamsAdapt;
 
 @SuppressWarnings("serial")
 public class MvcMapping extends BaseModel {
@@ -18,13 +18,13 @@ public class MvcMapping extends BaseModel {
 
 	private List<BeanEntity> paramTypes;
 
-	private IcopParamsAdapt paramsAdapt;
+	private CoodyParamsAdapt paramsAdapt;
 
-	public IcopParamsAdapt getParamsAdapt() {
+	public CoodyParamsAdapt getParamsAdapt() {
 		return paramsAdapt;
 	}
 
-	public void setParamsAdapt(IcopParamsAdapt paramsAdapt) {
+	public void setParamsAdapt(CoodyParamsAdapt paramsAdapt) {
 		this.paramsAdapt = paramsAdapt;
 	}
 

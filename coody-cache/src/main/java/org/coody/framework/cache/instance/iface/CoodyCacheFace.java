@@ -5,7 +5,7 @@ package org.coody.framework.cache.instance.iface;
  * @author Coody
  *
  */
-public interface IcopCacheFace {
+public interface CoodyCacheFace {
 
 	/**
 	 * 设置缓存

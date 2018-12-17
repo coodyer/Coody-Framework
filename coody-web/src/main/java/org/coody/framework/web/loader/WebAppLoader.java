@@ -4,13 +4,13 @@ import java.lang.reflect.Method;
 import java.util.Set;
 
 import org.coody.framework.core.container.BeanContainer;
-import org.coody.framework.core.loader.iface.IcopLoader;
+import org.coody.framework.core.loader.iface.CoodyLoader;
 import org.coody.framework.core.logger.BaseLogger;
 import org.coody.framework.core.util.ClassUtil;
 import org.coody.framework.core.util.MethodSignUtil;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
-import org.coody.framework.web.adapt.iface.IcopParamsAdapt;
+import org.coody.framework.web.adapt.iface.CoodyParamsAdapt;
 import org.coody.framework.web.annotation.ParamsAdapt;
 import org.coody.framework.web.annotation.PathBinding;
 import org.coody.framework.web.constant.MvcContant;
@@ -24,7 +24,7 @@ import org.coody.framework.web.exception.MappingConflicException;
  * @author Coody
  *
  */
-public class WebAppLoader implements IcopLoader {
+public class WebAppLoader implements CoodyLoader {
 
 	BaseLogger logger=BaseLogger.getLogger(BaseLogger.class);
 	@Override
@@ -43,13 +43,13 @@ public class WebAppLoader implements IcopLoader {
 			}
 			Method[] methods = clazz.getDeclaredMethods();
 			ParamsAdapt clazzParamsAdapt = PropertUtil.getAnnotation(clazz, ParamsAdapt.class);
-			for (String clazzBinding : classBindings.path()) {
+			for (String clazzBinding : classBindings.value()) {
 				for (Method method : methods) {
 					PathBinding methodBinding = PropertUtil.getAnnotation(method, PathBinding.class);
 					if (StringUtil.isNullOrEmpty(methodBinding)) {
 						continue;
 					}
-					for (String bindingPath : methodBinding.path()) {
+					for (String bindingPath : methodBinding.value()) {
 						String path = StringUtil.formatPath(clazzBinding + "/" + bindingPath);
 						if (MappingContainer.containsPath(path)) {
 							throw new MappingConflicException(path);
@@ -67,7 +67,7 @@ public class WebAppLoader implements IcopLoader {
 						MvcMapping mapping = new MvcMapping();
 						mapping.setBean(bean);
 						mapping.setPath(path);
-						mapping.setParamsAdapt(((IcopParamsAdapt) adaptClass.newInstance()));
+						mapping.setParamsAdapt(((CoodyParamsAdapt) adaptClass.newInstance()));
 						mapping.setMethod(method);
 						mapping.setParamTypes(PropertUtil.getMethodParas(method));
 						MappingContainer.writeMapping(mapping);

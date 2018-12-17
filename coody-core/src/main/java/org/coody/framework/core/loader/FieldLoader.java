@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.exception.BeanNotFoundException;
-import org.coody.framework.core.loader.iface.IcopLoader;
+import org.coody.framework.core.loader.iface.CoodyLoader;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
 
@@ -20,7 +20,7 @@ import org.coody.framework.core.util.StringUtil;
  * @author Coody
  *
  */
-public class FieldLoader implements IcopLoader {
+public class FieldLoader implements CoodyLoader {
 	
 	private static final Logger logger = Logger.getLogger(FieldLoader.class);
 

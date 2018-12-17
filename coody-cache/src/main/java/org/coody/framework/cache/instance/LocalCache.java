@@ -8,7 +8,7 @@ import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-import org.coody.framework.cache.instance.iface.IcopCacheFace;
+import org.coody.framework.cache.instance.iface.CoodyCacheFace;
 import org.coody.framework.cache.pool.CacheThreadPool;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.util.AntUtil;
@@ -23,7 +23,7 @@ import org.coody.framework.core.util.StringUtil;
 
 @AutoBuild
 @SuppressWarnings("unchecked")
-public class LocalCache implements IcopCacheFace {
+public class LocalCache implements CoodyCacheFace {
 
 	private static final ConcurrentHashMap<String, Object> CACHE_CONTAINER;
 	static Object mutex = new Object();

@@ -9,7 +9,7 @@ import org.coody.framework.core.entity.BaseModel;
 import org.coody.framework.core.entity.BeanEntity;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
-import org.coody.framework.web.adapt.iface.IcopParamsAdapt;
+import org.coody.framework.web.adapt.iface.CoodyParamsAdapt;
 import org.coody.framework.web.annotation.ParamName;
 import org.coody.framework.web.entity.MvcMapping;
 import org.coody.framework.web.util.RequestUtil;
@@ -19,7 +19,7 @@ import org.coody.framework.web.util.RequestUtil;
  * @author admin
  *
  */
-public class FormNomalAdapt implements IcopParamsAdapt{
+public class FormNomalAdapt implements CoodyParamsAdapt{
 
 	@Override
 	public Object[] doAdapt(MvcMapping mapping, HttpServletRequest request, HttpServletResponse response,

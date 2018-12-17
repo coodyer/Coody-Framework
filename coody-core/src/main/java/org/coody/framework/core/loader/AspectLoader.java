@@ -15,7 +15,7 @@ import org.coody.framework.core.annotation.Arounds;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.constant.FrameworkConstant;
 import org.coody.framework.core.entity.AspectEntity;
-import org.coody.framework.core.loader.iface.IcopLoader;
+import org.coody.framework.core.loader.iface.CoodyLoader;
 import org.coody.framework.core.util.MethodSignUtil;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
@@ -26,7 +26,7 @@ import org.coody.framework.core.util.StringUtil;
  * @author Coody
  *
  */
-public class AspectLoader implements IcopLoader {
+public class AspectLoader implements CoodyLoader {
 
 	private static final Logger logger = Logger.getLogger(AspectLoader.class);
 	@Override

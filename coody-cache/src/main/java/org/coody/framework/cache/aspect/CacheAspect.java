@@ -6,7 +6,7 @@ import org.apache.log4j.Logger;
 import org.coody.framework.cache.annotation.CacheWipe;
 import org.coody.framework.cache.annotation.CacheWipes;
 import org.coody.framework.cache.annotation.CacheWrite;
-import org.coody.framework.cache.instance.iface.IcopCacheFace;
+import org.coody.framework.cache.instance.iface.CoodyCacheFace;
 import org.coody.framework.core.annotation.Around;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.entity.AspectPoint;
@@ -18,7 +18,7 @@ public class CacheAspect {
 
 	
 	@AutoBuild
-	IcopCacheFace cacheable;
+	CoodyCacheFace cacheable;
 	
 	
 	private final Logger logger = Logger.getLogger(this.getClass());

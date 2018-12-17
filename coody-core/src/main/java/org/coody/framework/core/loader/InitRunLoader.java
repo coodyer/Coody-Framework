@@ -7,7 +7,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.coody.framework.core.bean.InitBeanFace;
 import org.coody.framework.core.container.BeanContainer;
-import org.coody.framework.core.loader.iface.IcopLoader;
+import org.coody.framework.core.loader.iface.CoodyLoader;
 import org.coody.framework.core.threadpool.ThreadBlockPool;
 import org.coody.framework.core.util.PrintException;
 import org.coody.framework.core.util.StringUtil;
@@ -18,7 +18,7 @@ import org.coody.framework.core.util.StringUtil;
  * @author Coody
  *
  */
-public class InitRunLoader implements IcopLoader {
+public class InitRunLoader implements CoodyLoader {
 
 	private static final Logger logger = Logger.getLogger(InitRunLoader.class);
 

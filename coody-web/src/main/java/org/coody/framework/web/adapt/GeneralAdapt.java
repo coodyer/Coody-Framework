@@ -6,7 +6,7 @@ import javax.servlet.http.HttpSession;
 
 import org.coody.framework.core.entity.BeanEntity;
 import org.coody.framework.core.util.StringUtil;
-import org.coody.framework.web.adapt.iface.IcopParamsAdapt;
+import org.coody.framework.web.adapt.iface.CoodyParamsAdapt;
 import org.coody.framework.web.entity.MvcMapping;
 
 /**
@@ -15,7 +15,7 @@ import org.coody.framework.web.entity.MvcMapping;
  * @author admin
  *
  */
-public class GeneralAdapt implements IcopParamsAdapt {
+public class GeneralAdapt implements CoodyParamsAdapt {
 
 	@Override
 	public Object[] doAdapt(MvcMapping mapping, HttpServletRequest request, HttpServletResponse response,

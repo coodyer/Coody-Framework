@@ -1,8 +1,7 @@
 package org.coody.framework.core.container;
 
 import java.lang.annotation.Annotation;
-import java.nio.file.Path;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,27 +11,31 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.coody.framework.core.annotation.AutoBuild;
+import org.coody.framework.core.constant.InsideTypeConstant;
 import org.coody.framework.core.exception.BeanConflictException;
 import org.coody.framework.core.util.ClassUtil;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
 
+/**
+ * 
+ * @author Coody
+ *
+ *         2018年12月17日
+ * 
+ * @blog 54sb.org
+ */
 @SuppressWarnings({ "unchecked" })
 public class BeanContainer {
 
 	private static Map<String, Map<String, Object>> beanContainer = new ConcurrentHashMap<String, Map<String, Object>>();
 
 	public static <T> T getBean(Class<?> cla) {
-		String beanName = getBeanName(cla);
+		String beanName = getGeneralBeanName(cla);
 		if (StringUtil.isNullOrEmpty(beanName)) {
 			return null;
 		}
-		Map<String, Object> map = beanContainer.get(beanName);
-		if (StringUtil.isNullOrEmpty(map)) {
-			return null;
-		}
-		String realBeanName = cla.getName();
-		return (T) map.get(realBeanName);
+		return getBean(beanName);
 	}
 
 	public static <T> T getBean(String beanName) {
@@ -53,7 +56,7 @@ public class BeanContainer {
 	}
 
 	public static synchronized void setBean(String beanName, Object bean) {
-		Class<?> clazz=bean.getClass();
+		Class<?> clazz = bean.getClass();
 		if (ClassUtil.isCglibProxyClassName(clazz.getName())) {
 			clazz = clazz.getSuperclass();
 		}
@@ -86,69 +89,66 @@ public class BeanContainer {
 		return beans;
 	}
 
-	public static String getBeanName(Class<?> clazz) {
-		if (StringUtil.isNullOrEmpty(clazz.getAnnotations())) {
-			return null;
-		}
+	public static Set<String> getDeclaredBeanNames(Class<?> clazz) {
 		if (ClassUtil.isCglibProxyClassName(clazz.getName())) {
 			clazz = clazz.getSuperclass();
 		}
+		Set<String> beanNames = new HashSet<String>();
+		beanNames.add(clazz.getName());
+		if (StringUtil.isNullOrEmpty(clazz.getAnnotations())) {
+			return beanNames;
+		}
 		List<Annotation> initBeans = PropertUtil.getAnnotations(clazz, AutoBuild.class);
 		if (StringUtil.isNullOrEmpty(initBeans)) {
-			return null;
+			return beanNames;
 		}
 		for (Annotation annotation : initBeans) {
 			if (StringUtil.isNullOrEmpty(annotation)) {
 				continue;
 			}
-			String beanName = clazz.getName();
-			String value = PropertUtil.getAnnotationValue(annotation, "value");
-			if (StringUtil.isNullOrEmpty(value)) {
-				return beanName;
+			String[] values = PropertUtil.getAnnotationValue(annotation, "value");
+			if (StringUtil.isNullOrEmpty(values)) {
+				continue;
 			}
-			if (!StringUtil.isNullOrEmpty(value)) {
-				return value;
-			}
-			return beanName;
+			beanNames.addAll(Arrays.asList(values));
 		}
-		return null;
+		return beanNames;
 	}
 
-	public static List<String> getBeanNames(Class<?> clazz) {
+	public static String getGeneralBeanName(Class<?> clazz) {
+		if (InsideTypeConstant.isSystem(clazz)) {
+			return null;
+		}
 		if (ClassUtil.isCglibProxyClassName(clazz.getName())) {
 			clazz = clazz.getSuperclass();
 		}
-		Set<String> beanNames = new HashSet<String>();
-		String beanName = getBeanName(clazz);
-		if (StringUtil.isNullOrEmpty(beanName)) {
+		return clazz.getName();
+	}
+
+	public static Set<String> getOverallBeanName(Class<?> clazz) {
+		if (InsideTypeConstant.isSystem(clazz)) {
 			return null;
 		}
-		beanNames.add(beanName);
-		beanNames.add(clazz.getName());
-		Class<?>[] clazzs = clazz.getInterfaces();
-		if (!StringUtil.isNullOrEmpty(clazzs)) {
-			for (Class<?> clazTemp : clazzs) {
-				if (clazTemp.getName().startsWith("java.util")) {
-					continue;
+		if (ClassUtil.isCglibProxyClassName(clazz.getName())) {
+			clazz = clazz.getSuperclass();
+		}
+		Set<String> beanNames = new HashSet<String>(getDeclaredBeanNames(clazz));
+		Class<?>[] interfaces = clazz.getInterfaces();
+		if (!StringUtil.isNullOrEmpty(interfaces)) {
+			for (Class<?> interfacer : interfaces) {
+				Set<String> interfaceBeanNames = getOverallBeanName(interfacer);
+				if (!StringUtil.isNullOrEmpty(interfaceBeanNames)) {
+					beanNames.addAll(interfaceBeanNames);
 				}
-				if (clazTemp.getName().startsWith("java.lang")) {
-					continue;
-				}
-				if (clazTemp.getName().startsWith("java.net")) {
-					continue;
-				}
-				beanNames.add(clazTemp.getName());
-				beanName = getBeanName(clazTemp);
-				if (StringUtil.isNullOrEmpty(beanName)) {
-					continue;
-				}
-				beanNames.add(beanName);
-				
 			}
 		}
-		if (StringUtil.isNullOrEmpty(beanNames)) {
-			return null;
+		Class<?> superer = clazz.getSuperclass();
+		if (!StringUtil.isNullOrEmpty(superer)) {
+			Set<String> superBeanNames = getOverallBeanName(superer);
+			if (!StringUtil.isNullOrEmpty(superBeanNames)) {
+				beanNames.addAll(superBeanNames);
+			}
 		}
-		return new ArrayList<String>(beanNames);
+		return beanNames;
 	}
 }

@@ -14,7 +14,7 @@ import org.coody.framework.core.loader.AspectLoader;
 import org.coody.framework.core.loader.BeanLoader;
 import org.coody.framework.core.loader.FieldLoader;
 import org.coody.framework.core.loader.InitRunLoader;
-import org.coody.framework.core.loader.iface.IcopLoader;
+import org.coody.framework.core.loader.iface.CoodyLoader;
 import org.coody.framework.core.logger.BaseLogger;
 import org.coody.framework.core.util.ClassUtil;
 import org.coody.framework.core.util.StringUtil;
@@ -32,7 +32,7 @@ public class CoreApp {
 	}};
 	
 	public static void pushLoader(Class<?> loader){
-		if(!IcopLoader.class.isAssignableFrom(loader)){
+		if(!CoodyLoader.class.isAssignableFrom(loader)){
 			throw new CoodyException(loader.getName()+"不是加载器");
 		}
 		Integer seq=Integer.MAX_VALUE-1;
@@ -74,7 +74,7 @@ public class CoreApp {
 		for(Class<?> loader:currentLoaders){
 			logger.info(loader.getName()+" >>开始加载");
 			long t0=System.currentTimeMillis();
-			IcopLoader icopLoader=(IcopLoader) loader.newInstance();
+			CoodyLoader icopLoader=(CoodyLoader) loader.newInstance();
 			icopLoader.doLoader(clazzs);
 			long t1=System.currentTimeMillis();
 			logger.info(loader.getName()+" >>加载耗时:"+(t1-t0)+"ms");

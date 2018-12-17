@@ -7,9 +7,9 @@ import org.apache.log4j.Logger;
 import org.coody.framework.core.CoreApp;
 import org.coody.framework.core.util.StringUtil;
 
-public class IcopServletListen implements ServletContextListener {
+public class CoodyServletListen implements ServletContextListener {
 
-	Logger logger = Logger.getLogger(IcopServletListen.class);
+	Logger logger = Logger.getLogger(CoodyServletListen.class);
 
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
