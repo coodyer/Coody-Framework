@@ -2,15 +2,11 @@ package org.coody.framework.core.loader;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
-import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.coody.framework.core.annotation.AutoBuild;
+import org.coody.framework.core.assember.BeanAssember;
 import org.coody.framework.core.container.BeanContainer;
-import org.coody.framework.core.exception.BeanInitException;
-import org.coody.framework.core.exception.BeanNameCreateException;
 import org.coody.framework.core.loader.iface.CoodyLoader;
-import org.coody.framework.core.proxy.CglibProxy;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
 
@@ -22,50 +18,32 @@ import org.coody.framework.core.util.StringUtil;
  */
 public class BeanLoader implements CoodyLoader {
 
-	private static final Logger logger = Logger.getLogger(BeanLoader.class);
-
-	static CglibProxy proxy = new CglibProxy();
-
 	@Override
-	public void doLoader(Set<Class<?>> clazzs) throws Exception {
-		if (StringUtil.isNullOrEmpty(clazzs)) {
+	public void doLoader() throws Exception {
+		if (StringUtil.isNullOrEmpty(BeanContainer.getClazzContainer())) {
 			return;
 		}
-		for (Class<?> cla : clazzs) {
-			if (cla.isAnnotation()) {
+		for (Class<?> clazz : BeanContainer.getClazzContainer()) {
+			if (clazz.isAnnotation()) {
 				continue;
 			}
-			if (cla.isInterface()) {
+			if (clazz.isInterface()) {
 				continue;
 			}
-			if (Modifier.isAbstract(cla.getModifiers())) {
+			if (Modifier.isAbstract(clazz.getModifiers())) {
 				continue;
 			}
-			if (cla.isEnum()) {
+			if (clazz.isEnum()) {
 				continue;
 			}
-			if (StringUtil.isNullOrEmpty(cla.getAnnotations())) {
+			if (StringUtil.isNullOrEmpty(clazz.getAnnotations())) {
 				continue;
 			}
-			Annotation autoBuild = PropertUtil.getAnnotation(cla, AutoBuild.class);
+			Annotation autoBuild = PropertUtil.getAnnotation(clazz, AutoBuild.class);
 			if (StringUtil.isNullOrEmpty(autoBuild)) {
 				continue;
 			}
-			Set<String> names = BeanContainer.getOverallBeanName(cla);
-			if (StringUtil.isNullOrEmpty(names)) {
-				throw new BeanNameCreateException(cla);
-			}
-			Object bean = proxy.getProxy(cla);
-			if (bean == null) {
-				throw new BeanInitException(cla);
-			}
-			for (String beanName : names) {
-				if (StringUtil.isNullOrEmpty(beanName)) {
-					continue;
-				}
-				logger.debug("初始化Bean >>" + beanName + ":" + cla.getName());
-				BeanContainer.setBean(beanName, bean);
-			}
+			BeanAssember.initBean(clazz);
 		}
 	}
 

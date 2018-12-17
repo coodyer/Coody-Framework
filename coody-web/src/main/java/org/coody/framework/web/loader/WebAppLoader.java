@@ -1,7 +1,6 @@
 package org.coody.framework.web.loader;
 
 import java.lang.reflect.Method;
-import java.util.Set;
 
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.loader.iface.CoodyLoader;
@@ -28,7 +27,7 @@ public class WebAppLoader implements CoodyLoader {
 
 	BaseLogger logger=BaseLogger.getLogger(BaseLogger.class);
 	@Override
-	public void doLoader(Set<Class<?>> clazzs) throws Exception {
+	public void doLoader() throws Exception {
 		for (Object bean:BeanContainer.getBeans()) {
 			if (StringUtil.isNullOrEmpty(bean)) {
 				continue;

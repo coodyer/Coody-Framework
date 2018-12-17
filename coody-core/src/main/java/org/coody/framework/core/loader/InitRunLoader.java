@@ -2,7 +2,6 @@ package org.coody.framework.core.loader;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.coody.framework.core.bean.InitBeanFace;
@@ -23,7 +22,7 @@ public class InitRunLoader implements CoodyLoader {
 	private static final Logger logger = Logger.getLogger(InitRunLoader.class);
 
 	@Override
-	public void doLoader(Set<Class<?>> clazzs) throws Exception {
+	public void doLoader() throws Exception {
 		List<Runnable> inits = new ArrayList<Runnable>();
 		for (Object bean : BeanContainer.getBeans()) {
 			if (bean instanceof InitBeanFace) {

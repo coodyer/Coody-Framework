@@ -27,6 +27,8 @@ import org.coody.framework.core.util.StringUtil;
  */
 @SuppressWarnings({ "unchecked" })
 public class BeanContainer {
+	
+	private static Set<Class<?>> clazzContainer=new HashSet<Class<?>>();
 
 	private static Map<String, Map<String, Object>> beanContainer = new ConcurrentHashMap<String, Map<String, Object>>();
 
@@ -36,6 +38,14 @@ public class BeanContainer {
 			return null;
 		}
 		return getBean(beanName);
+	}
+
+	public static Set<Class<?>> getClazzContainer() {
+		return clazzContainer;
+	}
+
+	public static void setClazzContainer(Set<Class<?>> clazzContainer) {
+		BeanContainer.clazzContainer = clazzContainer;
 	}
 
 	public static <T> T getBean(String beanName) {
@@ -127,7 +137,7 @@ public class BeanContainer {
 
 	public static Set<String> getOverallBeanName(Class<?> clazz) {
 		if (InsideTypeConstant.isSystem(clazz)) {
-			return null;
+			return new HashSet<String>();
 		}
 		if (ClassUtil.isCglibProxyClassName(clazz.getName())) {
 			clazz = clazz.getSuperclass();

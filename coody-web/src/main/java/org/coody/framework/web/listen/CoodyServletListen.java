@@ -5,6 +5,9 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.log4j.Logger;
 import org.coody.framework.core.CoreApp;
+import org.coody.framework.core.build.ConfigBuilder;
+import org.coody.framework.core.config.CoodyConfig;
+import org.coody.framework.core.exception.InitException;
 import org.coody.framework.core.util.StringUtil;
 
 public class CoodyServletListen implements ServletContextListener {
@@ -19,21 +22,17 @@ public class CoodyServletListen implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
 		try {
-			String packet = event.getServletContext().getInitParameter("scanPacket");
-			if (StringUtil.isNullOrEmpty(packet)) {
-				logger.error("启动参数为空 >>scanPacket");
-				return;
+			String config = event.getServletContext().getInitParameter("configPath");
+			if (StringUtil.isNullOrEmpty(config)) {
+				throw new InitException("配置为空 >>configPath");
 			}
-			String initLoader=event.getServletContext().getInitParameter("initLoader");
-			String []loaders=initLoader.split(",");
-			for(String loader:loaders){
-				loader=loader.trim();
-				CoreApp.pushLoader(Class.forName(loader));
-			}
-			String[] packets = packet.split(",");
-			CoreApp.init(packets);
+			ConfigBuilder.builder(config);
+			//载入框架配置
+			CoodyConfig coodyConfig=new CoodyConfig();
+			coodyConfig.init();
+			//框架启动
+			CoreApp.init(coodyConfig);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

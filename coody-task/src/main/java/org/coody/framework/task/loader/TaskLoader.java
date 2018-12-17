@@ -3,11 +3,11 @@ package org.coody.framework.task.loader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.annotation.Order;
+import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.loader.iface.CoodyLoader;
 import org.coody.framework.core.util.MethodSignUtil;
 import org.coody.framework.core.util.PrintException;
@@ -32,11 +32,11 @@ public class TaskLoader implements CoodyLoader {
 
 
 	@Override
-	public void doLoader(Set<Class<?>> clazzs) throws Exception {
-		if (StringUtil.isNullOrEmpty(clazzs)) {
+	public void doLoader() throws Exception {
+		if (StringUtil.isNullOrEmpty(BeanContainer.getClazzContainer())) {
 			return;
 		}
-		for (Class<?> clazz:clazzs) {
+		for (Class<?> clazz:BeanContainer.getClazzContainer()) {
 			if (clazz.isAnnotation()) {
 				continue;
 			}

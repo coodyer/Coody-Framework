@@ -1,31 +1,71 @@
 package org.coody.framework.core.config;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.net.URISyntaxException;
+
+import org.coody.framework.core.build.ConfigBuilder;
+import org.coody.framework.core.util.StringUtil;
 
 public class CoodyConfig {
 
 	/**
-	 * 要扫描的包
+	 * 配置前缀
 	 */
-	public static final List<String> SCANNER_PACKET=new ArrayList<String>();
-	
+	public static final String PREFIX = "coody";
+
 	/**
-	 * 要附加的类
+	 * BeanName
 	 */
-	public static final List<Class<?>> INIT_CLAZZS=new ArrayList<Class<?>>();
-	
-	
-	
+	public static final String BEAN_NAME = "bean";
+
+	/**
+	 * Property
+	 */
+	public static final String PROPERTY = "property";
+	/**
+	 * ClassName
+	 */
+	public static final String CLASS_NAME="class";
+	/**
+	 * Bean配置
+	 */
+	public static final String BEAN_MAPPER = PREFIX + ".bean.${" + BEAN_NAME + "}.${" + PROPERTY + "}";
+	/**
+	 * Bean表达式
+	 */
+	public static final String INPUT_BEAN_MAPPER = "${bean}";
 	/**
 	 * 扫描的包配置
 	 */
-	public static String base_package="";
-	
+	public String packager = "org.coody.framework";
+
 	/**
-	 * 要初始化的bean
+	 * 要启动的组件
 	 */
-	public static String addition="";
-	
-	
+	public String assember = "";
+
+	public void init() throws IllegalArgumentException, IllegalAccessException, IOException, URISyntaxException {
+		Field[] fields = this.getClass().getDeclaredFields();
+		for (Field field : fields) {
+			if (Modifier.isFinal(field.getModifiers())) {
+				continue;
+			}
+			String configField = PREFIX + "." + field.getName();
+			String configValue = ConfigBuilder.getProperty(configField);
+			if (StringUtil.isNullOrEmpty(configValue)) {
+				continue;
+			}
+			field.setAccessible(true);
+			String defaulltValue = (String) field.get(this);
+			if (defaulltValue == null) {
+				field.set(this, configValue);
+				continue;
+			}
+			configValue = defaulltValue + "," + configValue;
+			field.set(this, configValue);
+		}
+
+	}
 }

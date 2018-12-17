@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.coody.framework.core.annotation.Around;
 import org.coody.framework.core.annotation.Arounds;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.constant.FrameworkConstant;
+import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.entity.AspectEntity;
 import org.coody.framework.core.loader.iface.CoodyLoader;
 import org.coody.framework.core.util.MethodSignUtil;
@@ -30,11 +30,11 @@ public class AspectLoader implements CoodyLoader {
 
 	private static final Logger logger = Logger.getLogger(AspectLoader.class);
 	@Override
-	public void doLoader(Set<Class<?>> clazzs) throws Exception {
-		if (StringUtil.isNullOrEmpty(clazzs)) {
+	public void doLoader() throws Exception {
+		if (StringUtil.isNullOrEmpty(BeanContainer.getClazzContainer())) {
 			return;
 		}
-		for (Class<?> cla : clazzs) {
+		for (Class<?> cla : BeanContainer.getClazzContainer()) {
 			if (cla.isAnnotation()) {
 				continue;
 			}
