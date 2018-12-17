@@ -191,8 +191,11 @@
 
 
 ####### 配置jdbcHandle  (当值为${表达式}，即${bean名称})
+
     coody.bean.jdbcHandle.class=org.coody.framework.jdbc.JdbcHandle
+
     coody.bean.jdbcHandle.dataSource=${hikariDataSource}
+
 
 如图：
 
