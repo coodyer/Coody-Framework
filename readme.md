@@ -183,7 +183,7 @@ coody.bean.hikariDataSource.password=123456
 coody.bean.hikariDataSource.maxPoolSize=64
 coody.bean.hikariDataSource.minIdle=8
 
-####### 配置jdbcHandle  (当值为${xxx}，即${bean名称})
+####### 配置jdbcHandle  (当值为${表达式}，即${bean名称})
 coody.bean.jdbcHandle.class=org.coody.framework.jdbc.JdbcHandle
 coody.bean.jdbcHandle.dataSource=${hikariDataSource}
 
