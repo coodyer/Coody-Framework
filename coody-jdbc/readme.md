@@ -1,6 +1,6 @@
 #### Coody Jdbc
 
-###注意事项：
+### 注意事项：
 在系统开发中对于数据库模型尽量不要使用基础数据类型，所有的实体类需继承BaseModel。文档中灰色方法为不常用方法，红色为常用方法。
 
 ###面向问题：
@@ -14,7 +14,27 @@
 
 可剔除dao层
 
-###核心方法：
+### 配置：
+
+
+```
+#配置dataConfig
+
+coody.bean.hikariDataSource.class=com.zaxxer.hikari.HikariDataSource
+coody.bean.hikariDataSource.driverClassName=com.mysql.jdbc.Driver
+coody.bean.hikariDataSource.jdbcUrl=jdbc\:mysql\://127.0.0.1/czone?useUnicode\=true&characterEncoding\=utf-8
+coody.bean.hikariDataSource.username=root
+coody.bean.hikariDataSource.password=123456
+coody.bean.hikariDataSource.maxPoolSize=64
+coody.bean.hikariDataSource.minIdle=8
+
+#配置jdbcHandle
+coody.bean.jdbcHandle.class=org.coody.framework.jdbc.JdbcHandle
+coody.bean.jdbcHandle.dataSource=${hikariDataSource}
+```
+
+
+### 核心方法：
 List<Map<String, Object>> baseQuery(String sql, Object... paras)
 
 
@@ -29,7 +49,7 @@ baseUpdate用于更新操作。是数据库更新操作最终流入点
 
 
 
-###公开方法：
+### 公开方法：
 
 ### query(String sql)
 List<Map<String, Object>> query(String sql)
