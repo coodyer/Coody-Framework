@@ -175,17 +175,24 @@
 
 ######## 配置dataConfig  （coody.bean.{bean名称}.${字段名}）
 
-coody.bean.hikariDataSource.class=com.zaxxer.hikari.HikariDataSource
-coody.bean.hikariDataSource.driverClassName=com.mysql.jdbc.Driver
-coody.bean.hikariDataSource.jdbcUrl=jdbc\:mysql\://127.0.0.1:3306/czone?useUnicode\=true&characterEncoding\=utf-8
-coody.bean.hikariDataSource.username=root
-coody.bean.hikariDataSource.password=123456
-coody.bean.hikariDataSource.maxPoolSize=64
-coody.bean.hikariDataSource.minIdle=8
+    coody.bean.hikariDataSource.class=com.zaxxer.hikari.HikariDataSource
+
+    coody.bean.hikariDataSource.driverClassName=com.mysql.jdbc.Driver
+
+    coody.bean.hikariDataSource.jdbcUrl=jdbc\:mysql\://127.0.0.1:3306/czone?useUnicode\=true&characterEncoding\=utf-8
+
+    coody.bean.hikariDataSource.username=root
+
+    coody.bean.hikariDataSource.password=123456
+
+    coody.bean.hikariDataSource.maxPoolSize=64
+
+    coody.bean.hikariDataSource.minIdle=8
+
 
 ####### 配置jdbcHandle  (当值为${表达式}，即${bean名称})
-coody.bean.jdbcHandle.class=org.coody.framework.jdbc.JdbcHandle
-coody.bean.jdbcHandle.dataSource=${hikariDataSource}
+    coody.bean.jdbcHandle.class=org.coody.framework.jdbc.JdbcHandle
+    coody.bean.jdbcHandle.dataSource=${hikariDataSource}
 
 如图：
 
