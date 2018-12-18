@@ -34,7 +34,7 @@ public class RccAspect {
 		// 序列化参数
 		byte[] data = serialer.serialize(params);
 		// 远程调用
-		String methodKey = MethodSignUtil.getMethodKey(point.getAbler().getClazz(), method);
+		String methodKey = MethodSignUtil.getMethodUnionKey(method);
 		byte[] result = caller.send(methodKey, data);
 		if (result == null) {
 			return null;
