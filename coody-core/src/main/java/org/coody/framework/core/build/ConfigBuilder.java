@@ -54,7 +54,7 @@ public class ConfigBuilder {
 				if (StringUtil.hasNull(key, value)) {
 					continue;
 				}
-				config.put(key, value);
+				config.put(key, value.trim());
 			}
 			return;
 		}
