@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.constant.InsideTypeConstant;
@@ -26,10 +25,12 @@ import org.coody.framework.core.util.StringUtil;
  */
 @SuppressWarnings({ "unchecked" })
 public class BeanContainer {
-	
-	private static Set<Class<?>> clazzContainer=new HashSet<Class<?>>();
 
-	private static Map<String, Map<String, Object>> beanContainer = new ConcurrentHashMap<String, Map<String, Object>>();
+	private static Set<Class<?>> clazzContainer = new HashSet<Class<?>>();
+
+	private static Map<String, Map<String, Object>> beanContainer = new HashMap<String, Map<String, Object>>();
+
+	private static Map<Class<?>, Set<String>> beanNameContainer = new HashMap<Class<?>, Set<String>>();
 
 	public static <T> T getBean(Class<?> cla) {
 		String beanName = getGeneralBeanName(cla);
@@ -98,30 +99,38 @@ public class BeanContainer {
 		return beans;
 	}
 
-	public static Set<String> getDeclaredBeanNames(Class<?> clazz) {
+	private static Set<String> getDeclaredBeanNames(Class<?> clazz) {
+		Set<String> beanNames = beanNameContainer.get(clazz);
+		if (!StringUtil.isNullOrEmpty(beanNames)) {
+			return beanNames;
+		}
 		if (ClassUtil.isCglibProxyClassName(clazz.getName())) {
 			clazz = clazz.getSuperclass();
 		}
-		Set<String> beanNames = new HashSet<String>();
-		beanNames.add(clazz.getName());
-		if (StringUtil.isNullOrEmpty(clazz.getAnnotations())) {
-			return beanNames;
-		}
-		List<Annotation> initBeans = PropertUtil.getAnnotations(clazz, AutoBuild.class);
-		if (StringUtil.isNullOrEmpty(initBeans)) {
-			return beanNames;
-		}
-		for (Annotation annotation : initBeans) {
-			if (StringUtil.isNullOrEmpty(annotation)) {
-				continue;
+		try {
+			beanNames = new HashSet<String>();
+			beanNames.add(clazz.getName());
+			if (StringUtil.isNullOrEmpty(clazz.getAnnotations())) {
+				return beanNames;
 			}
-			String[] values = PropertUtil.getAnnotationValue(annotation, "value");
-			if (StringUtil.isNullOrEmpty(values)) {
-				continue;
+			List<Annotation> initBeans = PropertUtil.getAnnotations(clazz, AutoBuild.class);
+			if (StringUtil.isNullOrEmpty(initBeans)) {
+				return beanNames;
 			}
-			beanNames.addAll(Arrays.asList(values));
+			for (Annotation annotation : initBeans) {
+				if (StringUtil.isNullOrEmpty(annotation)) {
+					continue;
+				}
+				String[] values = PropertUtil.getAnnotationValue(annotation, "value");
+				if (StringUtil.isNullOrEmpty(values)) {
+					continue;
+				}
+				beanNames.addAll(Arrays.asList(values));
+			}
+			return beanNames;
+		} finally {
+			beanNameContainer.put(clazz, beanNames);
 		}
-		return beanNames;
 	}
 
 	public static String getGeneralBeanName(Class<?> clazz) {
@@ -135,9 +144,6 @@ public class BeanContainer {
 	}
 
 	public static Set<String> getOverallBeanName(Class<?> clazz) {
-		if (InsideTypeConstant.isSystem(clazz)) {
-			return new HashSet<String>();
-		}
 		if (ClassUtil.isCglibProxyClassName(clazz.getName())) {
 			clazz = clazz.getSuperclass();
 		}
@@ -158,6 +164,7 @@ public class BeanContainer {
 				beanNames.addAll(superBeanNames);
 			}
 		}
+		
 		return beanNames;
 	}
 }

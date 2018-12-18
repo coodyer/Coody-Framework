@@ -226,8 +226,6 @@ public class CronExpression {
 
 	public ZonedDateTime nextTimeAfter(ZonedDateTime afterTime, ZonedDateTime dateTimeBarrier) {
 		ZonedDateTime nextTime = ZonedDateTime.from(afterTime).withNano(0).plusSeconds(1).withNano(0);
-		;
-
 		while (true) { // day of week
 			while (true) { // month
 				while (true) { // day of month

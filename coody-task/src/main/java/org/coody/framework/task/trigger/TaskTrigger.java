@@ -1,7 +1,10 @@
 package org.coody.framework.task.trigger;
 
 import java.lang.reflect.Method;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -24,49 +27,47 @@ import org.coody.framework.task.container.TaskContainer.TaskEntity;
 import org.coody.framework.task.cron.CronExpression;
 import org.coody.framework.task.threadpool.TaskThreadPool;
 
-
 @AutoBuild
-public class TaskTrigger implements InitBeanFace{
-	
-	private static Map<Method, ZonedDateTime> cronExpressionMap=new ConcurrentHashMap<Method, ZonedDateTime>();
-	static Logger logger=Logger.getLogger(TaskTrigger.class);
-	
-	public static Method getTriggerMethod(){
-		Method[] methods=TaskTrigger.class.getDeclaredMethods();
-		if(StringUtil.isNullOrEmpty(methods)){
+public class TaskTrigger implements InitBeanFace {
+
+	private static Map<Method, ZonedDateTime> cronExpressionMap = new ConcurrentHashMap<Method, ZonedDateTime>();
+	static Logger logger = Logger.getLogger(TaskTrigger.class);
+
+	public static Method getTriggerMethod() {
+		Method[] methods = TaskTrigger.class.getDeclaredMethods();
+		if (StringUtil.isNullOrEmpty(methods)) {
 			return null;
 		}
-		for(Method method:methods){
-			if("taskTrigger".equals(method.getName())){
+		for (Method method : methods) {
+			if ("taskTrigger".equals(method.getName())) {
 				return method;
 			}
 		}
 		return null;
 	}
-	
-	public static void trigger(Object bean,Method method,String cron,ZonedDateTime zonedDateTime){
+
+	public static void trigger(Object bean, Method method, String cron, ZonedDateTime zonedDateTime) {
 		CronExpression express = new CronExpression(cron);
-		if(zonedDateTime==null){
-			zonedDateTime=ZonedDateTime.now(ZoneId.systemDefault());
+		if (zonedDateTime == null) {
+			zonedDateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneOffset.UTC);
 		}
-		zonedDateTime=express.nextTimeAfter(zonedDateTime);
+		zonedDateTime = express.nextTimeAfter(zonedDateTime);
 		cronExpressionMap.put(method, zonedDateTime);
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateUtils.DATETIME_PATTERN, Locale.CHINA);
-		Date nextRunDate=DateUtils.toDate(zonedDateTime.toLocalDateTime().format(formatter));
-		long timeRage=nextRunDate.getTime()-System.currentTimeMillis();
+		Date nextTime = Date.from(zonedDateTime.toInstant());
+		long timeRage = nextTime.getTime() - System.currentTimeMillis();
 		TaskThreadPool.TASK_POOL.schedule(new Runnable() {
 			@Override
 			public void run() {
-				Object[] params={};
+				Object[] params = {};
 				try {
 					method.invoke(bean, params);
 				} catch (Exception e) {
 					e.printStackTrace();
-				} 
+				}
 			}
-		},timeRage , TimeUnit.MILLISECONDS);
+		}, timeRage, TimeUnit.MILLISECONDS);
 	}
-	
+
 	/**
 	 * 定时任务管理
 	 * 
@@ -74,24 +75,37 @@ public class TaskTrigger implements InitBeanFace{
 	 * @return
 	 * @throws Throwable
 	 */
-	@Around(annotationClass=CronTask.class)
+	@Around(annotationClass = CronTask.class)
 	public Object taskTrigger(AspectPoint point) throws Throwable {
-		Method method=point.getAbler().getMethod();
-		CronTask cronTask=method.getAnnotation(CronTask.class);
-		Object bean=point.getAbler().getBean();
-		String cron=cronTask.value();
-		try{
+		Method method = point.getAbler().getMethod();
+		CronTask cronTask = method.getAnnotation(CronTask.class);
+		Object bean = point.getAbler().getBean();
+		String cron = cronTask.value();
+		try {
 			return point.invoke();
-		}finally {
-			ZonedDateTime zonedDateTime=cronExpressionMap.get(method);
-			trigger(bean, method, cron,zonedDateTime);
+		} finally {
+			ZonedDateTime zonedDateTime = cronExpressionMap.get(method);
+			trigger(bean, method, cron, zonedDateTime);
 		}
 	}
-	
-	public void init(){
+
+	public void init() {
 		for (TaskEntity task : TaskContainer.getTaskEntitys()) {
+			long t1 = System.currentTimeMillis();
 			Object bean = BeanContainer.getBean(task.getClazz());
 			TaskTrigger.trigger(bean, task.getMethod(), task.getCron(), null);
+			System.out.println("执行耗时>>" + (System.currentTimeMillis() - t1) + ">>" + task.getMethod());
 		}
 	}
+
+	public static void main(String[] args) {
+		ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneOffset.UTC);
+		
+		CronExpression express = new CronExpression("0/1 * * * * ? ");
+		long t1 = System.currentTimeMillis();
+		zonedDateTime = express.nextTimeAfter(zonedDateTime);
+		
+		System.out.println(System.currentTimeMillis() - t1);
+	}
+
 }

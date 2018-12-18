@@ -38,13 +38,7 @@ public class AspectLoader implements CoodyLoader {
 			if (cla.isAnnotation()) {
 				continue;
 			}
-			if (cla.isInterface()) {
-				continue;
-			}
-			if(Modifier.isAbstract(cla.getModifiers())){
-				continue;
-			}
-			if(cla.isEnum()){
+			if (StringUtil.isNullOrEmpty(cla.getAnnotations())) {
 				continue;
 			}
 			Annotation initBean = PropertUtil.getAnnotation(cla, AutoBuild.class);

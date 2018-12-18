@@ -1,7 +1,6 @@
 package org.coody.framework.core.loader;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Modifier;
 
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.assember.BeanAssember;
@@ -25,15 +24,6 @@ public class BeanLoader implements CoodyLoader {
 		}
 		for (Class<?> clazz : BeanContainer.getClazzContainer()) {
 			if (clazz.isAnnotation()) {
-				continue;
-			}
-			if (clazz.isInterface()) {
-				continue;
-			}
-			if (Modifier.isAbstract(clazz.getModifiers())) {
-				continue;
-			}
-			if (clazz.isEnum()) {
 				continue;
 			}
 			if (StringUtil.isNullOrEmpty(clazz.getAnnotations())) {

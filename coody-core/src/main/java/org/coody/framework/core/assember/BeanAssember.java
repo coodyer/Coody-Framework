@@ -2,6 +2,7 @@ package org.coody.framework.core.assember;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -10,12 +11,14 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.config.CoodyConfig;
+import org.coody.framework.core.constant.InsideTypeConstant;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.exception.BeanInitException;
 import org.coody.framework.core.exception.BeanNameCreateException;
 import org.coody.framework.core.exception.BeanNotFoundException;
 import org.coody.framework.core.loader.BeanLoader;
 import org.coody.framework.core.proxy.CglibProxy;
+import org.coody.framework.core.util.ClassUtil;
 import org.coody.framework.core.util.MatchUtil;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
@@ -114,6 +117,9 @@ public class BeanAssember {
 	}
 
 	private static List<Field> loadFields(Class<?> clazz) {
+		if(ClassUtil.isCglibProxyClassName(clazz.getName())){
+			clazz=clazz.getSuperclass();
+		}
 		List<Field> fields = new ArrayList<Field>();
 		Field[] fieldArgs = clazz.getDeclaredFields();
 		for (Field f : fieldArgs) {
