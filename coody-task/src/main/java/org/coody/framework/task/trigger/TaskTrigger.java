@@ -1,14 +1,10 @@
 package org.coody.framework.task.trigger;
 
 import java.lang.reflect.Method;
-import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -19,7 +15,6 @@ import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.bean.InitBeanFace;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.entity.AspectPoint;
-import org.coody.framework.core.util.DateUtils;
 import org.coody.framework.core.util.StringUtil;
 import org.coody.framework.task.annotation.CronTask;
 import org.coody.framework.task.container.TaskContainer;
@@ -91,10 +86,8 @@ public class TaskTrigger implements InitBeanFace {
 
 	public void init() {
 		for (TaskEntity task : TaskContainer.getTaskEntitys()) {
-			long t1 = System.currentTimeMillis();
 			Object bean = BeanContainer.getBean(task.getClazz());
 			TaskTrigger.trigger(bean, task.getMethod(), task.getCron(), null);
-			System.out.println("执行耗时>>" + (System.currentTimeMillis() - t1) + ">>" + task.getMethod());
 		}
 	}
 
