@@ -138,7 +138,6 @@ public class ParameterNameUtil {
 		public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 			try {
 				final List<String> parameterNames;
-
 				Executable executable = executableMap.get(name+desc);
 				if (executable == null) {
 					return null;
