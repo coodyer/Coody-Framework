@@ -4,16 +4,25 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.AsyncContext;
+import javax.servlet.DispatcherType;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
 import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpUpgradeHandler;
+import javax.servlet.http.Part;
 
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.web.container.HttpContainer;
@@ -283,6 +292,66 @@ public class CoodyRequestWrapper implements ServletRequest,HttpServletRequest {
 	@Override
 	public boolean isUserInRole(String arg0) {
 		return HttpContainer.getRequest().isUserInRole(arg0);
+	}
+	@Override
+	public boolean authenticate(HttpServletResponse arg0) throws IOException, ServletException {
+		return HttpContainer.getRequest().authenticate(arg0);
+	}
+	@Override
+	public String changeSessionId() {
+		return HttpContainer.getRequest().changeSessionId();
+	}
+	@Override
+	public Part getPart(String arg0) throws IOException, ServletException {
+		return HttpContainer.getRequest().getPart(arg0);
+	}
+	@Override
+	public Collection<Part> getParts() throws IOException, ServletException {
+		return HttpContainer.getRequest().getParts();
+	}
+	@Override
+	public void login(String arg0, String arg1) throws ServletException {
+		HttpContainer.getRequest().login(arg0, arg1);
+	}
+	@Override
+	public void logout() throws ServletException {
+		HttpContainer.getRequest().logout();
+	}
+	@Override
+	public <T extends HttpUpgradeHandler> T upgrade(Class<T> arg0) throws IOException, ServletException {
+		return HttpContainer.getRequest().upgrade(arg0);
+	}
+	@Override
+	public AsyncContext getAsyncContext() {
+		return HttpContainer.getRequest().getAsyncContext();
+	}
+	@Override
+	public long getContentLengthLong() {
+		return HttpContainer.getRequest().getContentLengthLong();
+	}
+	@Override
+	public DispatcherType getDispatcherType() {
+		return HttpContainer.getRequest().getDispatcherType();
+	}
+	@Override
+	public ServletContext getServletContext() {
+		return HttpContainer.getRequest().getServletContext();
+	}
+	@Override
+	public boolean isAsyncStarted() {
+		return HttpContainer.getRequest().isAsyncStarted();
+	}
+	@Override
+	public boolean isAsyncSupported() {
+		return HttpContainer.getRequest().isAsyncSupported();
+	}
+	@Override
+	public AsyncContext startAsync() throws IllegalStateException {
+		return HttpContainer.getRequest().startAsync();
+	}
+	@Override
+	public AsyncContext startAsync(ServletRequest arg0, ServletResponse arg1) throws IllegalStateException {
+		return HttpContainer.getRequest().startAsync(arg0, arg1);
 	}
 
 }

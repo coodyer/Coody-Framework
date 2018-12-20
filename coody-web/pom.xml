@@ -22,15 +22,16 @@
 			<version>${coody.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.tomcat</groupId>
-			<artifactId>servlet-api</artifactId>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
+
 	</dependencies>
-	
-	
-	
-	
+
+
+
+
 
 	<build>
 		<plugins>

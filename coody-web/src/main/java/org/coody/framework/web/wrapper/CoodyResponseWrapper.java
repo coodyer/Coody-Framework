@@ -2,6 +2,7 @@ package org.coody.framework.web.wrapper;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.Locale;
 
 import javax.servlet.ServletOutputStream;
@@ -192,6 +193,31 @@ public class CoodyResponseWrapper implements ServletResponse, HttpServletRespons
 	public void setLocale(Locale arg0) {
 		HttpContainer.getResponse().setLocale(arg0);
 
+	}
+
+	@Override
+	public String getHeader(String arg0) {
+		return HttpContainer.getResponse().getHeader(arg0);
+	}
+
+	@Override
+	public Collection<String> getHeaderNames() {
+		return HttpContainer.getResponse().getHeaderNames();
+	}
+
+	@Override
+	public Collection<String> getHeaders(String arg0) {
+		return HttpContainer.getResponse().getHeaders(arg0);
+	}
+
+	@Override
+	public int getStatus() {
+		return HttpContainer.getResponse().getStatus();
+	}
+
+	@Override
+	public void setContentLengthLong(long arg0) {
+		HttpContainer.getResponse().setContentLengthLong(arg0);
 	}
 
 }
