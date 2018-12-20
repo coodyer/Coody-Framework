@@ -44,7 +44,7 @@ public class ParameterNameUtil {
 			public void run() {
 				while (true) {
 					try {
-						TimeUnit.MILLISECONDS.sleep(10);
+						TimeUnit.MILLISECONDS.sleep(1);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}

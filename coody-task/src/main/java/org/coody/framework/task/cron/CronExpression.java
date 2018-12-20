@@ -516,5 +516,9 @@ public class CronExpression {
 	}
 
 	public static void main(String[] args) {
+		
+		SimpleField secondField = new SimpleField(CronFieldType.SECOND, "10" );
+		System.out.println(secondField.matches(1));
+		System.out.println(secondField.matches(10));
 	}
 }

@@ -15,6 +15,7 @@ import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.bean.InitBeanFace;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.entity.AspectPoint;
+import org.coody.framework.core.threadpool.ThreadBlockPool;
 import org.coody.framework.core.util.StringUtil;
 import org.coody.framework.task.annotation.CronTask;
 import org.coody.framework.task.container.TaskContainer;
@@ -85,20 +86,20 @@ public class TaskTrigger implements InitBeanFace {
 	}
 
 	public void init() {
+		if(StringUtil.isNullOrEmpty(TaskContainer.getTaskEntitys())){
+			return;
+		}
+		ThreadBlockPool threadBlockPool=new ThreadBlockPool(TaskContainer.getTaskEntitys().size(),60);
 		for (TaskEntity task : TaskContainer.getTaskEntitys()) {
 			Object bean = BeanContainer.getBean(task.getClazz());
-			TaskTrigger.trigger(bean, task.getMethod(), task.getCron(), null);
+			Runnable runnable=new Runnable() {
+				@Override
+				public void run() {
+					TaskTrigger.trigger(bean, task.getMethod(), task.getCron(), null);
+				}
+			};
+			threadBlockPool.pushTask(runnable);
 		}
+		threadBlockPool.execute();
 	}
-
-	public static void main(String[] args) {
-		ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneOffset.UTC);
-		
-		CronExpression express = new CronExpression("0/1 * * * * ? ");
-		long t1 = System.currentTimeMillis();
-		zonedDateTime = express.nextTimeAfter(zonedDateTime);
-		
-		System.out.println(System.currentTimeMillis() - t1);
-	}
-
 }
