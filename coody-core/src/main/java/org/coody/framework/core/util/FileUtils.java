@@ -42,13 +42,13 @@ public class FileUtils {
 				// 文件夹不存在，创建
 				file.mkdir();
 			}
-			file = new File(folderName + "/" + fileName);
+			file = new File(folderName +  File.separator + fileName);
 			if (!file.exists()) {
 				// 文件夹不存在，创建
 				file.createNewFile();
 			}
 			// 打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
-			writer = new FileWriter(folderName + "/" + fileName, true);
+			writer = new FileWriter(folderName +  File.separator + fileName, true);
 			writer.write(content);
 		} catch (IOException e) {
 			PrintException.printException(logger, e);
