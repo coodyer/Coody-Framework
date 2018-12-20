@@ -23,6 +23,7 @@ import org.coody.framework.core.util.StringUtil;
  * @email 644556636@qq.com
  * @blog 54sb.org
  */
+@SuppressWarnings("unchecked")
 public class RequestUtil {
 
 	
@@ -32,7 +33,6 @@ public class RequestUtil {
 		request.getSession().setAttribute(USER_SESSION, user);
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T> T getUser(HttpServletRequest request) {
 		return (T) request.getSession().getAttribute(USER_SESSION);
 	}
@@ -50,7 +50,6 @@ public class RequestUtil {
 		request.getSession().setAttribute("sys_ver_code", code);
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T> T getCode(HttpServletRequest request) {
 		return (T) request.getSession().getAttribute("sys_ver_code");
 	}
@@ -162,7 +161,6 @@ public class RequestUtil {
 	}
 
 
-	@SuppressWarnings("unchecked")
 	private static <T> T getBean(HttpServletRequest request, Object obj,
 			List<BeanEntity> fields, String baseName, String firstSuffix,
 			Boolean isReplace, String[] paraArgs,boolean removeEmpty) {
@@ -238,7 +236,6 @@ public class RequestUtil {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	public static void keepParas(HttpServletRequest request) {
 		Enumeration<String> paras = request.getParameterNames();
 		if (StringUtil.isNullOrEmpty(paras)) {
@@ -309,7 +306,6 @@ public class RequestUtil {
 		}
 		return sb.toString();
 	}
-	@SuppressWarnings("unchecked")
 	public static Map<String, Object> getParas(HttpServletRequest request) {
 		Map<String, String[]> map=request.getParameterMap();
 		if(StringUtil.isNullOrEmpty(map)){

@@ -118,14 +118,13 @@ public class ParameterNameUtil {
 				for (int j = 0; j < types.length; j++) {
 					types[j] = Type.getType(constructor.getParameterTypes()[j]);
 				}
-				executableMap.put(Type.getMethodDescriptor(Type.VOID_TYPE, types), constructor);
+				executableMap.put(constructor.getName()+Type.getMethodDescriptor(Type.VOID_TYPE, types), constructor);
 			}
 			List<Method> methods = new ArrayList<Method>(Arrays.asList(clazz.getMethods()));
 			methods.addAll(Arrays.asList(clazz.getDeclaredMethods()));
 			for (Method method : methods) {
-				executableMap.put(Type.getMethodDescriptor(method), method);
+				executableMap.put(method.getName()+Type.getMethodDescriptor(method), method);
 			}
-
 		}
 
 		public Map<Executable, List<String>> getExecutableParameters() {
@@ -140,14 +139,13 @@ public class ParameterNameUtil {
 			try {
 				final List<String> parameterNames;
 
-				Executable executable = executableMap.get(desc);
+				Executable executable = executableMap.get(name+desc);
 				if (executable == null) {
 					return null;
 				}
 				parameterNames = new ArrayList<String>(executable.getParameterTypes().length);
 				parameterNames.addAll(Collections.<String>nCopies(executable.getParameterTypes().length, null));
 				executableParameters.put(executable, parameterNames);
-
 				return new MethodVisitor(Opcodes.ASM7) {
 					public void visitLocalVariable(String name, String desc, String signature, Label start, Label end,
 							int index) {
@@ -159,6 +157,9 @@ public class ParameterNameUtil {
 							return;
 						}
 						if (index > 0) {
+							if(index>parameterNames.size()){
+								return;
+							}
 							parameterNames.set(index - 1, name);
 							return;
 						}

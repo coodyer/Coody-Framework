@@ -68,6 +68,7 @@ public class WebAppLoader implements CoodyLoader {
 						mapping.setPath(path);
 						mapping.setParamsAdapt(((CoodyParamsAdapt) adaptClass.newInstance()));
 						mapping.setMethod(method);
+						//获取参数列表  to check
 						mapping.setParamTypes(PropertUtil.getMethodParas(method));
 						MappingContainer.writeMapping(mapping);
 					}
