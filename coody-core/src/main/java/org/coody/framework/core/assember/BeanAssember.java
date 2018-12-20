@@ -18,11 +18,11 @@ import org.coody.framework.core.loader.BeanLoader;
 import org.coody.framework.core.proxy.CglibProxy;
 import org.coody.framework.core.util.ClassUtil;
 import org.coody.framework.core.util.MatchUtil;
+import org.coody.framework.core.util.ParameterNameUtil;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
 import org.nico.noson.Noson;
 
-@AutoBuild
 public class BeanAssember {
 
 	private static final Logger logger = Logger.getLogger(BeanLoader.class);
@@ -54,6 +54,8 @@ public class BeanAssember {
 			logger.debug("初始化Bean >>" + beanName + ":" + cla.getName());
 			BeanContainer.setBean(beanName, bean);
 		}
+		//启动字节码加速
+		ParameterNameUtil.doExecutable(cla);
 		return (T) bean;
 	}
 	

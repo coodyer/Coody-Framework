@@ -144,6 +144,9 @@ public class BeanContainer {
 	}
 
 	public static Set<String> getOverallBeanName(Class<?> clazz) {
+		if(InsideTypeConstant.isSystem(clazz)){
+			return new HashSet<String>();
+		}
 		if (ClassUtil.isCglibProxyClassName(clazz.getName())) {
 			clazz = clazz.getSuperclass();
 		}
