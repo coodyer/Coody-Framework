@@ -63,7 +63,7 @@ public class ConfigBuilder {
 			return;
 		}
 		for (String filePath : files) {
-			String path = file.getPath() + "/" + filePath;
+			String path = file.getPath() +  File.separator+ filePath;
 			File childFile = new File(path);
 			loadPropertByDir(childFile);
 		}
