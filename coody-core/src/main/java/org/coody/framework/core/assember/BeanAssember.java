@@ -2,7 +2,6 @@ package org.coody.framework.core.assember;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +10,6 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.config.CoodyConfig;
-import org.coody.framework.core.constant.InsideTypeConstant;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.exception.BeanInitException;
 import org.coody.framework.core.exception.BeanNameCreateException;
@@ -37,6 +35,30 @@ public class BeanAssember {
 
 	@SuppressWarnings("unchecked")
 	public static <T> T initBean(Class<?> cla,String additionBeanName) {
+		
+		Set<String> names = BeanContainer.getOverallBeanName(cla);
+		if(!StringUtil.isNullOrEmpty(additionBeanName)){
+			names.add(additionBeanName);
+		}
+		if (StringUtil.isNullOrEmpty(names)) {
+			throw new BeanNameCreateException(cla);
+		}
+		Object bean = proxy.getProxy(cla);
+		if (bean == null) {
+			throw new BeanInitException(cla);
+		}
+		for (String beanName : names) {
+			if (StringUtil.isNullOrEmpty(beanName)) {
+				continue;
+			}
+			logger.debug("初始化Bean >>" + beanName + ":" + cla.getName());
+			BeanContainer.setBean(beanName, bean);
+		}
+		return (T) bean;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> T initBean(Class<?> cla,String additionBeanName,Map<String, Object> params) {
 		
 		Set<String> names = BeanContainer.getOverallBeanName(cla);
 		if(!StringUtil.isNullOrEmpty(additionBeanName)){

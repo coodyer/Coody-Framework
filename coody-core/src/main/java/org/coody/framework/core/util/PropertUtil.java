@@ -2,11 +2,11 @@ package org.coody.framework.core.util;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Executable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Parameter;
 import java.lang.reflect.Proxy;
 import java.security.InvalidParameterException;
 import java.text.ParseException;
@@ -392,8 +392,8 @@ public class PropertUtil {
 	 * @param method
 	 * @return
 	 */
-	public static Class<?> getClass(Method method) {
-		Class<?> cla = (Class<?>) PropertUtil.getFieldValue(method, "clazz");
+	public static Class<?> getClass(Executable executable) {
+		Class<?> cla = (Class<?>) PropertUtil.getFieldValue(executable, "clazz");
 		return cla;
 	}
 
@@ -1036,14 +1036,7 @@ public class PropertUtil {
 	 * @return
 	 */
 	public static List<String> getMethodParaNames(Method method) {
-		if (StringUtil.isNullOrEmpty(method.getParameters())) {
-			return null;
-		}
-		List<String> paramNames = new ArrayList<String>();
-		for (Parameter parameter : method.getParameters()) {
-			paramNames.add(parameter.getName());
-		}
-		return paramNames;
+		return ParameterNameUtil.getParameters(method);
 	}
 
 	public static Set<Method> getIfaceMethods(Method method) {
