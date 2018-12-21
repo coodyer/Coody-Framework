@@ -190,7 +190,7 @@
     coody.bean.hikariDataConfig.field.minIdle=8
 
 
-####### 配置jdbcHandle  （coody.bean.{bean名称}.parament.${参数名}），当值为${表达式}，即${bean名称}
+####### 配置DataSource  （coody.bean.{bean名称}.parament.${参数名}），当值为${表达式}，即${bean名称}
 
     coody.bean.hikariDataSource.class=com.zaxxer.hikari.HikariDataSource
 
