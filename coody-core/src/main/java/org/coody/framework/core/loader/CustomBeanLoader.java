@@ -130,6 +130,9 @@ public class CustomBeanLoader implements CoodyLoader {
 				String valueBeanName = MatchUtil.matchExportFirst(propertyMap.get(poperty), CoodyConfig.INPUT_BEAN_MAPPER);
 				if(!StringUtil.isNullOrEmpty(valueBeanName)){
 					if(!configMap.containsKey(valueBeanName)){
+						if(!configMap.get(key).containsKey(CoodyConfig.CLASS_NAME)){
+							continue configCheck; 
+						}
 						Class<?> clazz = Class.forName(configMap.get(key).get(CoodyConfig.CLASS_NAME));
 						throw new BeanNotFoundException(valueBeanName, clazz);
 					}
