@@ -173,33 +173,34 @@
 
 ##### (4)、配置一个bean:
 
-######## 配置dataConfig  （coody.bean.{bean名称}.${字段名}）
+######## 配置dataConfig  （coody.bean.{bean名称}.field.${字段名}）
+
+    coody.bean.hikariDataConfig.class=com.zaxxer.hikari.HikariConfig
+
+    coody.bean.hikariDataConfig.field.driverClassName=com.mysql.jdbc.Driver
+
+    coody.bean.hikariDataConfig.field.jdbcUrl=jdbc\:mysql\://127.0.0.1/czone?useUnicode\=true&characterEncoding\=utf-8
+
+    coody.bean.hikariDataConfig.field.username=root
+
+    coody.bean.hikariDataConfig.field.password=root
+
+    coody.bean.hikariDataConfig.field.maxPoolSize=64
+
+    coody.bean.hikariDataConfig.field.minIdle=8
+
+
+####### 配置jdbcHandle  （coody.bean.{bean名称}.parament.${参数名}），当值为${表达式}，即${bean名称}
 
     coody.bean.hikariDataSource.class=com.zaxxer.hikari.HikariDataSource
 
-    coody.bean.hikariDataSource.driverClassName=com.mysql.jdbc.Driver
+    coody.bean.hikariDataSource.parament.configuration=${hikariDataConfig}
 
-    coody.bean.hikariDataSource.jdbcUrl=jdbc\:mysql\://127.0.0.1:3306/czone?useUnicode\=true&characterEncoding\=utf-8
-
-    coody.bean.hikariDataSource.username=root
-
-    coody.bean.hikariDataSource.password=123456
-
-    coody.bean.hikariDataSource.maxPoolSize=64
-
-    coody.bean.hikariDataSource.minIdle=8
-
-
-####### 配置jdbcHandle  (当值为${表达式}，即${bean名称})
-
-    coody.bean.jdbcHandle.class=org.coody.framework.jdbc.JdbcHandle
-
-    coody.bean.jdbcHandle.dataSource=${hikariDataSource}
-
+注意：表达式coody.bean.{bean名称}.方式.${参数名}中。当方式为field的时候，代表通过设置参数值初始化Bean，field的值与字段名一致；当方式为parament的时候，代表通过构造函数初始化Bean。parament的值与参数名一致。
 
 如图：
 
-![输入图片说明](https://images.gitee.com/uploads/images/2018/1217/231538_89f28ab4_1200611.png "aa.png")
+![输入图片说明](https://images.gitee.com/uploads/images/2018/1221/150706_02849aef_1200611.png "cc.png")
 
 
 ##### (5)、Mvc的使用:
