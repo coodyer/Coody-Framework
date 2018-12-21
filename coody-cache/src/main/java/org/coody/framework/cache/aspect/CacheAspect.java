@@ -8,16 +8,13 @@ import org.coody.framework.cache.annotation.CacheWipes;
 import org.coody.framework.cache.annotation.CacheWrite;
 import org.coody.framework.cache.instance.iface.CoodyCacheFace;
 import org.coody.framework.core.annotation.Around;
-import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.entity.AspectPoint;
 import org.coody.framework.core.util.MethodSignUtil;
 import org.coody.framework.core.util.StringUtil;
 
-@AutoBuild
 public class CacheAspect {
 
 	
-	@AutoBuild
 	CoodyCacheFace cacheable;
 	
 	

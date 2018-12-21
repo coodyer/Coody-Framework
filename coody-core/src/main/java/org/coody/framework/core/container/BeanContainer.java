@@ -57,7 +57,7 @@ public class BeanContainer {
 			return null;
 		}
 		if (map.size() > 1) {
-			throw new BeanConflictException(beanName);
+			throw new BeanConflictException(beanName+"存在多个实例,未明确指定");
 		}
 		for (String key : map.keySet()) {
 			return (T) map.get(key);
