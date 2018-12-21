@@ -24,6 +24,7 @@ public class ConfigBuilder {
 	public static Set<String> propertyKeySet() {
 		return config.keySet();
 	}
+
 	public static Integer getPropertyInteger(String key) {
 		return StringUtil.toInteger(config.get(key));
 	}
@@ -52,7 +53,7 @@ public class ConfigBuilder {
 				String key = (String) keys.nextElement();
 				String value = prop.getProperty(key);
 				if (StringUtil.hasNull(key, value)) {
-					continue;
+					value = "";
 				}
 				config.put(key, value.trim());
 			}
@@ -63,7 +64,7 @@ public class ConfigBuilder {
 			return;
 		}
 		for (String filePath : files) {
-			String path = file.getPath() +  File.separator+ filePath;
+			String path = file.getPath() + File.separator + filePath;
 			File childFile = new File(path);
 			loadPropertByDir(childFile);
 		}

@@ -1,11 +1,15 @@
 package org.coody.framework.core.proxy;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.coody.framework.core.constant.FrameworkConstant;
@@ -14,8 +18,12 @@ import org.coody.framework.core.container.InterceptContainer;
 import org.coody.framework.core.entity.AspectAbler;
 import org.coody.framework.core.entity.AspectEntity;
 import org.coody.framework.core.entity.AspectPoint;
+import org.coody.framework.core.entity.BaseModel;
+import org.coody.framework.core.exception.BeanInitException;
+import org.coody.framework.core.exception.MappedExecutableException;
 import org.coody.framework.core.util.AntUtil;
 import org.coody.framework.core.util.MethodSignUtil;
+import org.coody.framework.core.util.ParameterNameUtil;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
 
@@ -25,31 +33,92 @@ import net.sf.cglib.proxy.MethodProxy;
 
 public class CglibProxy implements MethodInterceptor {
 
-
-
-	public Object getProxy(Class<?> clazz)  {
-		Integer modifier = clazz.getModifiers();
-		if (Modifier.isAbstract(modifier)) {
-			return null;
-		}
-		if (Modifier.isInterface(modifier)) {
-			return null;
-		}
-		if (!isNeedProxyMethods(clazz)) {
-			try {
-				return clazz.newInstance();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		Enhancer enhancer = new Enhancer();
-		enhancer.setSuperclass(clazz);
-		enhancer.setCallback(this);
-		return enhancer.create();
+	public Object getProxy(Class<?> clazz) {
+		return getProxy(clazz, null);
 	}
 
-	private boolean isNeedProxyMethods(Class<?> clazz) {
-		Set<Method> methods=PropertUtil.getMethods(clazz);
+	public Object getProxy(Class<?> clazz, Map<String, Object> parameterMap) {
+		try {
+			Integer modifier = clazz.getModifiers();
+			if (Modifier.isAbstract(modifier)) {
+				return null;
+			}
+			if (Modifier.isInterface(modifier)) {
+				return null;
+			}
+			MappedConstructor mappedConstructor = getConstructor(clazz, parameterMap);
+			if (!hasProxy(clazz)) {
+				try {
+					return mappedConstructor.getConstructor().newInstance(mappedConstructor.getParameters());
+				} catch (Exception e) {
+					throw new BeanInitException(clazz, e);
+				}
+			}
+			Enhancer enhancer = new Enhancer();
+			enhancer.setSuperclass(clazz);
+			enhancer.setCallback(this);
+			if (StringUtil.isNullOrEmpty(mappedConstructor.getTypes())) {
+				return enhancer.create();
+			}
+			return enhancer.create(mappedConstructor.getTypes(), mappedConstructor.getParameters());
+		} catch (Exception e) {
+			throw new BeanInitException(clazz, e);
+		}
+
+	}
+
+	public MappedConstructor getConstructor(Class<?> clazz, Map<String, Object> parameterMap) {
+		if (StringUtil.isNullOrEmpty(parameterMap)) {
+			MappedConstructor mappedConstructor = new MappedConstructor();
+			for (Constructor<?> constructor : clazz.getConstructors()) {
+				if (constructor.getParameterCount() > 0) {
+					continue;
+				}
+				mappedConstructor.setConstructor(constructor);
+			}
+			if (mappedConstructor.getConstructor() == null) {
+				throw new MappedExecutableException(clazz, parameterMap.keySet());
+			}
+			return mappedConstructor;
+		}
+		Map<Executable, List<String>> executableParameters = ParameterNameUtil.getExecutableParameters(clazz);
+		if (StringUtil.isNullOrEmpty(executableParameters)) {
+			throw new MappedExecutableException(clazz, parameterMap.keySet());
+		}
+		List<String> inputParameters = new ArrayList<String>(parameterMap.keySet());
+		Collections.sort(inputParameters);
+
+		checkExecutable: for (Executable executable : executableParameters.keySet()) {
+			if (!(executable instanceof Constructor)) {
+				continue checkExecutable;
+			}
+			List<String> defParameters = executableParameters.get(executable);
+			if (defParameters.size() != parameterMap.size()) {
+				continue checkExecutable;
+			}
+			List<String> tempParameters = new ArrayList<String>(defParameters);
+			Collections.sort(tempParameters);
+			for (int i = 0; i < tempParameters.size(); i++) {
+				if (!tempParameters.get(i).equals(inputParameters.get(i))) {
+					continue checkExecutable;
+				}
+			}
+			MappedConstructor mappedConstructor = new MappedConstructor();
+			mappedConstructor.setConstructor((Constructor<?>) executable);
+			mappedConstructor.setTypes(executable.getParameterTypes());
+			Object[] parameterValues = new Object[defParameters.size()];
+			for (int i = 0; i < defParameters.size(); i++) {
+				Object value = parameterMap.get(defParameters.get(i));
+				parameterValues[i] =PropertUtil.parseValue(value,mappedConstructor.getTypes()[i]);
+			}
+			mappedConstructor.setParameters(parameterValues);
+			return mappedConstructor;
+		}
+		throw new MappedExecutableException(clazz, parameterMap.keySet());
+	}
+
+	private boolean hasProxy(Class<?> clazz) {
+		Set<Method> methods = PropertUtil.getMethods(clazz);
 		if (StringUtil.isNullOrEmpty(methods)) {
 			return false;
 		}
@@ -117,20 +186,20 @@ public class CglibProxy implements MethodInterceptor {
 	@Override
 	public Object intercept(Object bean, Method method, Object[] params, MethodProxy proxy) throws Throwable {
 		if (!InterceptContainer.INTERCEPT_MAP.containsKey(method)) {
-			//该方法不存在AOP拦截
+			// 该方法不存在AOP拦截
 			return proxy.invokeSuper(bean, params);
 		}
-		//获取拦截该方法的切面
-		AspectAbler point = getMethodPoint(bean, method, proxy);
+		// 获取拦截该方法的切面
+		AspectAbler point = getPoint(bean, method, proxy);
 		if (point == null) {
-			//该方法不存在AOP拦截
+			// 该方法不存在AOP拦截
 			return proxy.invokeSuper(bean, params);
 		}
-		AspectPoint aspectAble=new AspectPoint(point,params);
+		AspectPoint aspectAble = new AspectPoint(point, params);
 		return aspectAble.invoke();
 	}
 
-	private AspectAbler getMethodPoint(Object bean, Method method, MethodProxy proxy) {
+	private AspectAbler getPoint(Object bean, Method method, MethodProxy proxy) {
 		if (InterceptContainer.METHOD_INTERCEPT_MAP.containsKey(method)) {
 			return InterceptContainer.METHOD_INTERCEPT_MAP.get(method);
 		}
@@ -150,7 +219,7 @@ public class CglibProxy implements MethodInterceptor {
 		if (childAbler != null) {
 			abler.setChildAbler(childAbler);
 		}
-		AspectAbler turboPoint=new AspectAbler();
+		AspectAbler turboPoint = new AspectAbler();
 		turboPoint.setChildAbler(abler);
 		turboPoint.setMasturbation(abler.getMasturbation());
 		turboPoint.setClazz(bean.getClass());
@@ -180,5 +249,44 @@ public class CglibProxy implements MethodInterceptor {
 			return abler;
 		}
 		return abler;
+	}
+
+	@SuppressWarnings("serial")
+	public static class MappedConstructor extends BaseModel {
+
+		private Constructor<?> constructor;
+
+		private Class<?>[] types;
+
+		private Object[] parameters;
+
+		public Constructor<?> getConstructor() {
+			return constructor;
+		}
+
+		public void setConstructor(Constructor<?> constructor) {
+			this.constructor = constructor;
+		}
+
+		public Class<?>[] getTypes() {
+			return types;
+		}
+
+		public void setTypes(Class<?>[] executable) {
+			this.types = executable;
+		}
+
+		public Object[] getParameters() {
+			return parameters;
+		}
+
+		public void setParameters(Object[] parameters) {
+			this.parameters = parameters;
+		}
+
+	}
+
+	public static void main(String[] args) {
+		System.out.println(CglibProxy.class.getConstructors().length);
 	}
 }

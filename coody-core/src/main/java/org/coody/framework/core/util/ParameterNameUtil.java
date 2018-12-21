@@ -7,11 +7,12 @@ import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -38,7 +39,7 @@ public class ParameterNameUtil {
 	private static final ConcurrentLinkedQueue<Class<?>> EXECUTABLE_QUEUE = new ConcurrentLinkedQueue<Class<?>>();
 
 	static {
-		//启动队列守护线程，用于加速
+		// 启动队列守护线程，用于加速
 		Thread executableQueueThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -120,7 +121,8 @@ public class ParameterNameUtil {
 		InputStream in = null;
 		try {
 			ClassLoader classLoader = declaringClass.getClassLoader();
-			in = classLoader.getResourceAsStream(declaringClass.getName().replace('.', '/') + ".class");
+			String fileName = declaringClass.getName().replace('.', '/') + ".class";
+			in = classLoader.getResourceAsStream(fileName);
 			ClassReader reader = new ClassReader(in);
 			return reader;
 		} finally {
@@ -141,21 +143,40 @@ public class ParameterNameUtil {
 
 		public ExecutableParameterNameVisitor(Class<?> clazz) {
 			super(Opcodes.ASM7);
-			List<Constructor<?>> constructors = new ArrayList<Constructor<?>>(
-					Arrays.<Constructor<?>>asList(clazz.getConstructors()));
-			constructors.addAll(Arrays.asList(clazz.getDeclaredConstructors()));
-			for (Constructor<?> constructor : constructors) {
-				Type[] types = new Type[constructor.getParameterTypes().length];
-				for (int j = 0; j < types.length; j++) {
-					types[j] = Type.getType(constructor.getParameterTypes()[j]);
+			Set<Executable> executables = getExecutables(clazz);
+			for (Executable executable : executables) {
+				if (executable instanceof Method) {
+					executableMap.put(executable.getName() + "." + Type.getMethodDescriptor((Method) executable),
+							executable);
+					continue;
 				}
-				executableMap.put(constructor.getName() + Type.getMethodDescriptor(Type.VOID_TYPE, types), constructor);
+				Type[] types = new Type[executable.getParameterTypes().length];
+				for (int j = 0; j < types.length; j++) {
+					types[j] = Type.getType(executable.getParameterTypes()[j]);
+				}
+				String name = "<init>";
+				executableMap.put(name + "." + Type.getConstructorDescriptor((Constructor<?>) executable), executable);
 			}
-			List<Method> methods = new ArrayList<Method>(Arrays.asList(clazz.getMethods()));
-			methods.addAll(Arrays.asList(clazz.getDeclaredMethods()));
-			for (Method method : methods) {
-				executableMap.put(method.getName() + Type.getMethodDescriptor(method), method);
+		}
+
+		private Set<Executable> getExecutables(Class<?> clazz) {
+			if (clazz == Object.class) {
+				return null;
 			}
+			Set<Executable> executables = new HashSet<Executable>();
+			for (Method method : clazz.getDeclaredMethods()) {
+				executables.add(method);
+			}
+			for (Constructor<?> constructor : clazz.getConstructors()) {
+				executables.add(constructor);
+			}
+			if (clazz.getSuperclass() != null) {
+				Set<Executable> childerExecutables = getExecutables(clazz.getSuperclass());
+				if (!(childerExecutables == null || childerExecutables.isEmpty())) {
+					executables.addAll(childerExecutables);
+				}
+			}
+			return executables;
 		}
 
 		public Map<Executable, List<String>> getExecutableParameters() {
@@ -169,7 +190,7 @@ public class ParameterNameUtil {
 		public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 			try {
 				final List<String> parameterNames;
-				Executable executable = executableMap.get(name + desc);
+				Executable executable = executableMap.get(name + "." + desc);
 				if (executable == null) {
 					return null;
 				}

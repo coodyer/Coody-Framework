@@ -29,9 +29,17 @@ public class CoodyConfig {
 	 */
 	public static final String CLASS_NAME="class";
 	/**
-	 * Bean配置
+	 * Bean基础配置
 	 */
-	public static final String BEAN_MAPPER = PREFIX + "\\.bean\\.${" + BEAN_NAME + "}\\.${" + PROPERTY + "}";
+	public static final String BEAN_CONFIG_MAPPER = PREFIX + "\\.bean\\.${" + BEAN_NAME + "}\\.${" + PROPERTY + "}";
+	/**
+	 * Bean构造参数配置
+	 */
+	public static final String BEAN_PARAMENT_MAPPER = PREFIX + "\\.bean\\.${" + BEAN_NAME + "}\\.parament\\.${" + PROPERTY + "}";
+	/**
+	 * Bean字段配置
+	 */
+	public static final String BEAN_FIELD_MAPPER = PREFIX + "\\.bean\\.${" + BEAN_NAME + "}\\.field\\.${" + PROPERTY + "}";
 	/**
 	 * Bean表达式
 	 */

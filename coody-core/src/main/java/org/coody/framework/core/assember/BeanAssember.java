@@ -9,7 +9,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.coody.framework.core.annotation.AutoBuild;
-import org.coody.framework.core.config.CoodyConfig;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.exception.BeanInitException;
 import org.coody.framework.core.exception.BeanNameCreateException;
@@ -17,7 +16,6 @@ import org.coody.framework.core.exception.BeanNotFoundException;
 import org.coody.framework.core.loader.BeanLoader;
 import org.coody.framework.core.proxy.CglibProxy;
 import org.coody.framework.core.util.ClassUtil;
-import org.coody.framework.core.util.MatchUtil;
 import org.coody.framework.core.util.ParameterNameUtil;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
@@ -33,17 +31,21 @@ public class BeanAssember {
 		return initBean(cla, null);
 	}
 
+	public static <T> T initBean(Class<?> cla, String additionBeanName) {
+		return initBean(cla, additionBeanName, null);
+	}
+
 	@SuppressWarnings("unchecked")
-	public static <T> T initBean(Class<?> cla,String additionBeanName) {
-		
+	public static <T> T initBean(Class<?> cla, String additionBeanName, Map<String, Object> parameterMap) {
+
 		Set<String> names = BeanContainer.getOverallBeanName(cla);
-		if(!StringUtil.isNullOrEmpty(additionBeanName)){
+		if (!StringUtil.isNullOrEmpty(additionBeanName)) {
 			names.add(additionBeanName);
 		}
 		if (StringUtil.isNullOrEmpty(names)) {
 			throw new BeanNameCreateException(cla);
 		}
-		Object bean = proxy.getProxy(cla);
+		Object bean = proxy.getProxy(cla, parameterMap);
 		if (bean == null) {
 			throw new BeanInitException(cla);
 		}
@@ -54,41 +56,20 @@ public class BeanAssember {
 			logger.debug("初始化Bean >>" + beanName + ":" + cla.getName());
 			BeanContainer.setBean(beanName, bean);
 		}
-		//启动字节码加速
-		ParameterNameUtil.doExecutable(cla);
-		return (T) bean;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public static <T> T initBean(Class<?> cla,String additionBeanName,Map<String, Object> params) {
-		
-		Set<String> names = BeanContainer.getOverallBeanName(cla);
-		if(!StringUtil.isNullOrEmpty(additionBeanName)){
-			names.add(additionBeanName);
-		}
-		if (StringUtil.isNullOrEmpty(names)) {
-			throw new BeanNameCreateException(cla);
-		}
-		Object bean = proxy.getProxy(cla);
-		if (bean == null) {
-			throw new BeanInitException(cla);
-		}
-		for (String beanName : names) {
-			if (StringUtil.isNullOrEmpty(beanName)) {
-				continue;
-			}
-			logger.debug("初始化Bean >>" + beanName + ":" + cla.getName());
-			BeanContainer.setBean(beanName, bean);
+		if (StringUtil.isNullOrEmpty(parameterMap)) {
+			// 启动字节码加速
+			ParameterNameUtil.doExecutable(cla);
 		}
 		return (T) bean;
 	}
-	public static void initField(Object bean, Map<String, String> params)
+
+	public static void initField(Object bean, Map<String, Object> parameterMap)
 			throws IllegalArgumentException, IllegalAccessException {
 		List<Field> fields = loadFields(bean.getClass());
 		if (StringUtil.isNullOrEmpty(fields)) {
 			return;
 		}
-		fieldSet:for (Field field : fields) {
+		fieldSet: for (Field field : fields) {
 			if (StringUtil.isNullOrEmpty(field.getAnnotations())) {
 				continue;
 			}
@@ -97,7 +78,7 @@ public class BeanAssember {
 				continue;
 			}
 			String[] beanNames = PropertUtil.getAnnotationValue(autoBuild, "value");
-			beanSearch:for(String beanName:beanNames){
+			beanSearch: for (String beanName : beanNames) {
 				if (StringUtil.isNullOrEmpty(beanName)) {
 					beanName = field.getType().getName();
 				}
@@ -112,27 +93,14 @@ public class BeanAssember {
 			}
 			throw new BeanNotFoundException(Noson.reversal(beanNames), bean.getClass());
 		}
-		if (StringUtil.isNullOrEmpty(params)) {
+		if (StringUtil.isNullOrEmpty(parameterMap)) {
 			return;
 		}
 		for (Field field : fields) {
-			if (!params.containsKey(field.getName())) {
+			if (!parameterMap.containsKey(field.getName())) {
 				continue;
 			}
-			String value= params.get(field.getName());
-			if(!MatchUtil.isParaMatch(value,  CoodyConfig.INPUT_BEAN_MAPPER)){
-				PropertUtil.setFieldValue(bean, field,value);
-				continue;
-			}
-			String beanName = MatchUtil.matchExportFirst(value, CoodyConfig.INPUT_BEAN_MAPPER);
-			if(StringUtil.isNullOrEmpty(beanName)){
-				throw new BeanNotFoundException(beanName, bean.getClass());
-			}
-			Object inputBean=BeanContainer.getBean(beanName);
-			if(inputBean==null){
-				throw new BeanNotFoundException(beanName, bean.getClass());
-			}
-			PropertUtil.setFieldValue(bean, field,inputBean);
+			PropertUtil.setFieldValue(bean, field, parameterMap.get(field.getName()));
 		}
 	}
 
@@ -141,8 +109,8 @@ public class BeanAssember {
 	}
 
 	private static List<Field> loadFields(Class<?> clazz) {
-		if(ClassUtil.isCglibProxyClassName(clazz.getName())){
-			clazz=clazz.getSuperclass();
+		if (ClassUtil.isCglibProxyClassName(clazz.getName())) {
+			clazz = clazz.getSuperclass();
 		}
 		List<Field> fields = new ArrayList<Field>();
 		Field[] fieldArgs = clazz.getDeclaredFields();

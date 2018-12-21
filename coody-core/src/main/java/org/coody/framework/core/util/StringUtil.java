@@ -375,7 +375,6 @@ public class StringUtil {
 		List<Object> objList = Arrays.asList(objs);
 		return collectionMosaic(objList, mosaicChr);
 	}
-
 	/**
 	 * 把一个数组按照分隔符拼接成字符串
 	 * 
@@ -415,7 +414,7 @@ public class StringUtil {
 	 * @param 分隔符
 	 * @return 字符串
 	 */
-	public static String collectionMosaic(List<?> objs, String mosaicChr) {
+	public static String collectionMosaic(Collection<?> objs, String mosaicChr) {
 		if (objs == null || objs.isEmpty()) {
 			return null;
 		}
