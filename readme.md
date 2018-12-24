@@ -77,28 +77,28 @@
         <dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-core</artifactId>
-			<version>alpha-1.1.9</version>
+			<version>alpha-1.2.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-jdbc</artifactId>
-			<version>alpha-1.1.9</version>
+			<version>alpha-1.2.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-cache</artifactId>
-			<version>alpha-1.1.9</version>
+			<version>alpha-1.2.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-task</artifactId>
-			<version>alpha-1.1.9</version>
+			<version>alpha-1.2.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-web</artifactId>
-			<version>alpha-1.1.9</version>
+			<version>alpha-1.2.0</version>
 		</dependency>
 ```
 
