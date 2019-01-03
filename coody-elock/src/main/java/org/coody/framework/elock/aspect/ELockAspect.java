@@ -14,7 +14,7 @@ import org.coody.framework.elock.annotation.ELock;
  * @author Coody
  * @date 2018年11月13日
  */
-public class RdLockAspect {
+public class ELockAspect {
 
 	/**
 	 * 分布式锁
