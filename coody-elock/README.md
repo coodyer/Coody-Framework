@@ -20,6 +20,13 @@
 
 #### 使用说明
 
+##### Maven：
+    `<dependency>
+  <groupId>org.coody.framework</groupId>
+  <artifactId>coody-elock</artifactId>
+  <version>alpha-1.2.1</version>
+</dependency>`
+
 ###### 1. 初始化JedisPool
 
 ```
@@ -30,6 +37,7 @@
 		//传入ip、端口、密码、超时时间、配置器初始化
 		ELockCache.initJedisPool(host, port, secretKey, timeOut, jedisPoolConfig);
 ```
+
 
 注：无密码请传null
 
