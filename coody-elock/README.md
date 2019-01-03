@@ -139,6 +139,60 @@ public class ELockTest {
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/1214/184647_f99ea98c_1200611.png "c.png")
 
+###### 8.Coody Framework配置
+
+![输入图片说明](https://images.gitee.com/uploads/images/2019/0103/141224_a1711e32_1200611.png "屏幕截图.png")
+
+     
+###### 9.常规用法
+
+    1、使用代码添加分布式锁：
+
+
+```
+String key="USER_MODIFY_LOCK"+userId;
+		try {
+			LockHandle.lock(key, 20);
+			userDao.delUser(userId);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}finally {
+			LockHandle.unLock(key);
+		}
+```
+
+    
+![输入图片说明](https://images.gitee.com/uploads/images/2019/0103/141650_d442cc01_1200611.png "屏幕截图.png")
+
+    2、使用注解添加分布式锁：
+
+
+```
+	@ELock(name = "USER_MODIFY_LOCK", fields = "userId", waitTime = 20)
+	public void delUser(String userId) {
+		userDao.delUser(userId);
+	}
+```
+
+![输入图片说明](https://images.gitee.com/uploads/images/2019/0103/141847_48f9532f_1200611.png "屏幕截图.png")
+
+    3、使用执行器添加分布式锁：
+
+```
+public void delUser(String userId) throws InterruptedException {
+		String key="USER_MODIFY_LOCK"+userId;
+		Integer code=new AbstractLockAble(key,20) {
+			
+			@Override
+			public Object doService() {
+				return userDao.delUser(userId);
+			}
+		}.invoke();
+	}
+```
+
+
+![输入图片说明](https://images.gitee.com/uploads/images/2019/0103/142026_3c84a07f_1200611.png "屏幕截图.png")
 
 ### 版权说明：
 
