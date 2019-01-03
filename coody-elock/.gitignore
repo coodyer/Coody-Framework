@@ -1,0 +1,9 @@
+target
+.settings
+.project
+*.jar
+*.war
+*.class
+*.log
+.classpath
+coody-taboo
