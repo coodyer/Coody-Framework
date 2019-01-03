@@ -7,7 +7,7 @@ import org.coody.framework.core.entity.AspectPoint;
 import org.coody.framework.core.util.MethodSignUtil;
 import org.coody.framework.core.util.StringUtil;
 import org.coody.framework.elock.LockHandle;
-import org.coody.framework.elock.annotation.DLock;
+import org.coody.framework.elock.annotation.ELock;
 
 /**
  * 
@@ -23,14 +23,14 @@ public class RdLockAspect {
 	 * @return
 	 * @throws Throwable
 	 */
-	@Around(annotationClass=DLock.class)
+	@Around(annotationClass=ELock.class)
 	public Object rdLock(AspectPoint point) throws Throwable {
 		String lockName = null;
 			// AOP启动监听
 			Method method = point.getAbler().getMethod();
 			Class<?> clazz = point.getAbler().getClazz();
 
-			DLock dlock = method.getAnnotation(DLock.class);
+			ELock dlock = method.getAnnotation(ELock.class);
 			lockName = dlock.name();
 			if (StringUtil.isNullOrEmpty(lockName)) {
 				lockName = MethodSignUtil.getMethodKey(clazz, method);

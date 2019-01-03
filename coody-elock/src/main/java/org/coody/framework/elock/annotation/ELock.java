@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DLock {
+public @interface ELock {
 
 	/**
 	 * 锁基础名称
