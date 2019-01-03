@@ -21,11 +21,16 @@
 #### 使用说明
 
 ##### Maven：
-    `<dependency>
+
+
+```
+<dependency>
   <groupId>org.coody.framework</groupId>
   <artifactId>coody-elock</artifactId>
   <version>alpha-1.2.1</version>
-</dependency>`
+</dependency>
+```
+
 
 ###### 1. 初始化JedisPool
 
