@@ -37,6 +37,8 @@
 
         coody-rcc  ：框架分布式的实现，提供注册中心、序列化、通信协议等接口。字节码创建子类的实现(分布式功能未完成)
 
+        coody-elock：框架分布式锁的实现，通过redis订阅实现的高性能分布式锁
+
 #### 优秀合作项目推荐
 | 项目 | 码云地址 | 简介 |
 | ------------- |-------------|-------------|
@@ -69,7 +71,9 @@
 
     2018-06-28： 发布Alpha至Maven中央仓库。nexus搜索"Coody"即可
 
-    Coody Framework实战项目：https://gitee.com/coodyer/czone/
+    2018-12-31： 新增分布式锁elock，并发行alpha-1.2.1版本
+
+     Coody Framework实战项目：https://gitee.com/coodyer/czone/
 
 引用地址：
 
@@ -77,28 +81,33 @@
         <dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-core</artifactId>
-			<version>alpha-1.2.0</version>
+			<version>alpha-1.2.1</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-jdbc</artifactId>
-			<version>alpha-1.2.0</version>
+			<version>alpha-1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-cache</artifactId>
-			<version>alpha-1.2.0</version>
+			<version>alpha-1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-task</artifactId>
-			<version>alpha-1.2.0</version>
+			<version>alpha-1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-web</artifactId>
-			<version>alpha-1.2.0</version>
+			<version>alpha-1.2.1</version>
+		</dependency>
+                <dependency>
+			<groupId>org.coody.framework</groupId>
+			<artifactId>coody-elock</artifactId>
+			<version>alpha-1.2.1</version>
 		</dependency>
 ```
 
@@ -250,17 +259,19 @@
 
 ### 5. 具体文档：
 
-coody-core   ：[Coody-Core](http://gitee.com/coodyer/coody-icop/tree/coody-maven/coody-core)
+coody-core   ：[Coody-Core](http://gitee.com/coodyer/coody-icop/tree/original/coody-core)
 
-coody-web    ：[Coody Web](http://gitee.com/coodyer/coody-icop/tree/coody-maven/coody-web)
+coody-web    ：[Coody Web](http://gitee.com/coodyer/coody-icop/tree/original/coody-web)
 
-coody-cache  ：[Coody Cache](http://gitee.com/coodyer/coody-icop/tree/coody-maven/coody-cache)
+coody-cache  ：[Coody Cache](http://gitee.com/coodyer/coody-icop/tree/original/coody-cache)
 
-coody-jdbc   ：[Coody Jdbc](http://gitee.com/coodyer/coody-icop/tree/coody-maven/coody-jdbc)
+coody-jdbc   ：[Coody Jdbc](http://gitee.com/coodyer/coody-icop/tree/original/coody-jdbc)
 
-coody-task   ：[Coody Task](http://gitee.com/coodyer/coody-icop/tree/coody-maven/coody-task)
+coody-task   ：[Coody Task](http://gitee.com/coodyer/coody-icop/tree/original/coody-task)
 
-coody-rcc    ：[Coody Rcc](http://gitee.com/coodyer/coody-icop/tree/coody-maven/coody-rcc) 
+coody-rcc    ：[Coody Rcc](http://gitee.com/coodyer/coody-icop/tree/original/coody-rcc) 
+
+coody-elock  ：[Coody Elock](http://gitee.com/coodyer/coody-icop/tree/original/coody-elock) 
  
 
 
