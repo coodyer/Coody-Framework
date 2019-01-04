@@ -10,7 +10,7 @@
 
 故此，笔者准备研发自己的分布式锁插件。
 
-注：本插件在未来一段时间将不断迭代，提供切面、redis集群、zookeeper支持等拓展，归属Coody Framework下，将发布Maven中央仓库。传送门：https://gitee.com/coodyer/coody-icop
+注：本插件在未来一段时间将不断迭代，提供切面、redis集群、zookeeper支持等拓展，归属Coody Framework下，将发布Maven中央仓库。
 
 
 #### 软件架构
