@@ -259,19 +259,19 @@
 
 ### 5. 具体文档：
 
-coody-core   ：[Coody-Core](http://gitee.com/coodyer/coody-icop/tree/original/coody-core)
+coody-core   ：[Coody-Core](http://gitee.com/coodyer/Coody-Framework/tree/original/coody-core)
 
-coody-web    ：[Coody Web](http://gitee.com/coodyer/coody-icop/tree/original/coody-web)
+coody-web    ：[Coody Web](http://gitee.com/coodyer/Coody-Framework/tree/original/coody-web)
 
-coody-cache  ：[Coody Cache](http://gitee.com/coodyer/coody-icop/tree/original/coody-cache)
+coody-cache  ：[Coody Cache](http://gitee.com/coodyer/Coody-Framework/tree/original/coody-cache)
 
-coody-jdbc   ：[Coody Jdbc](http://gitee.com/coodyer/coody-icop/tree/original/coody-jdbc)
+coody-jdbc   ：[Coody Jdbc](http://gitee.com/coodyer/Coody-Framework/tree/original/coody-jdbc)
 
-coody-task   ：[Coody Task](http://gitee.com/coodyer/coody-icop/tree/original/coody-task)
+coody-task   ：[Coody Task](http://gitee.com/coodyer/Coody-Framework/tree/original/coody-task)
 
-coody-rcc    ：[Coody Rcc](http://gitee.com/coodyer/coody-icop/tree/original/coody-rcc) 
+coody-rcc    ：[Coody Rcc](http://gitee.com/coodyer/Coody-Framework/tree/original/coody-rcc) 
 
-coody-elock  ：[Coody Elock](http://gitee.com/coodyer/coody-icop/tree/original/coody-elock) 
+coody-elock  ：[Coody Elock](http://gitee.com/coodyer/Coody-Framework/tree/original/coody-elock) 
  
 
 
