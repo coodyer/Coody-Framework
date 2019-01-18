@@ -58,12 +58,8 @@ ELocker.lock(key, expireSecond);
 ```
 ELocker.unLock(key);
 ```
-###### 4. 总揽
 
-![输入图片说明](https://images.gitee.com/uploads/images/2018/1214/184328_85eb2b55_1200611.png "a.png")
-
-
-###### 5. 注意
+###### 4. 注意
 
 加锁代码(ELocker.lock(key, expireSecond);)。需try{}catch{}包围，并在finally释放锁(ELocker.unLock(key);)
 
@@ -83,7 +79,7 @@ try {
 ```
 
 
-###### 6. 测试代码
+###### 5. 测试代码
 
 
 ```
@@ -148,16 +144,16 @@ public class ELockTest {
 
 ```
 
-###### 7. 执行效果
+###### 6. 执行效果
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/1214/184647_f99ea98c_1200611.png "c.png")
 
-###### 8.Coody Framework配置
+###### 7.Coody Framework配置
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2019/0103/141224_a1711e32_1200611.png "屏幕截图.png")
 
      
-###### 9.常规用法
+###### 8.常规用法
 
     1、使用代码添加分布式锁：
 
