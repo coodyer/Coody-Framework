@@ -50,13 +50,13 @@
 
 
 ```
-LockHandle.lock(key, expireSecond);
+ELocker.lock(key, expireSecond);
 ```
 
 ###### 3. 释放锁
 
 ```
-LockHandle.unLock(key);
+ELocker.unLock(key);
 ```
 ###### 4. 总揽
 
@@ -65,12 +65,12 @@ LockHandle.unLock(key);
 
 ###### 5. 注意
 
-加锁代码(LockHandle.lock(key, expireSecond);)。需try{}catch{}包围，并在finally释放锁(LockHandle.unLock(key);)
+加锁代码(ELocker.lock(key, expireSecond);)。需try{}catch{}包围，并在finally释放锁(ELocker.unLock(key);)
 
 
 ```
 try {
-			LockHandle.lock(key, 100);
+			ELocker.lock(key, 100);
 			for (int i = 0; i < 10; i++) {
 				System.out.println(Thread.currentThread().getId() + ">>" + i);
 				Thread.sleep(100l);
@@ -78,7 +78,7 @@ try {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} finally {
-			LockHandle.unLock(key);
+			ELocker.unLock(key);
 		}
 ```
 
@@ -92,7 +92,7 @@ package org.coody.framework.elock.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.coody.framework.elock.LockHandle;
+import org.coody.framework.elock.ELocker;
 import org.coody.framework.elock.redis.ELockCache;
 
 /**
@@ -133,7 +133,7 @@ public class ELockTest {
 	//要锁的方法
 	private static void test() {
 		try {
-			LockHandle.lock(key, 100);
+			ELocker.lock(key, 100);
 			for (int i = 0; i < 10; i++) {
 				System.out.println(Thread.currentThread().getId() + ">>" + i);
 				Thread.sleep(100l);
@@ -141,7 +141,7 @@ public class ELockTest {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} finally {
-			LockHandle.unLock(key);
+			ELocker.unLock(key);
 		}
 	}
 }
@@ -165,12 +165,12 @@ public class ELockTest {
 ```
 String key="USER_MODIFY_LOCK"+userId;
 		try {
-			LockHandle.lock(key, 20);
+			ELocker.lock(key, 20);
 			userDao.delUser(userId);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}finally {
-			LockHandle.unLock(key);
+			ELocker.unLock(key);
 		}
 ```
 
