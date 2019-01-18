@@ -5,6 +5,7 @@ import java.util.Map;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
 import org.coody.framework.elock.config.ClockConfigFactory;
+import org.coody.framework.elock.pointer.ELockerPointer;
 import org.coody.framework.elock.redis.entity.SubscriberEntity;
 
 import redis.clients.jedis.Jedis;
@@ -13,33 +14,70 @@ import redis.clients.jedis.JedisPoolConfig;
 
 public class ELockCache {
 
-	public static JedisPool jedisPool;
+	public JedisPool jedisPool;
 
-	public static synchronized void initJedisPool(String host, Integer port, String secretKey, Integer timeOut) {
-		initJedisPool(host, port, secretKey, timeOut, new JedisPoolConfig());
+	public ELockCache() {
+		System.err.println("构造函数被调用============================================");
+		ELockerPointer.setELockCache(this);
 	}
 
-	public static synchronized void initJedisPool(JedisPool inJediPool) {
-		jedisPool=inJediPool;
-		final Jedis jedis = ELockCache.jedisPool.getResource();
+	public ELockCache(JedisPool jedisPool) {
+		setJedisPool(jedisPool);
+		System.err.println("有参构造函数被调用============================================");
+		ELockerPointer.setELockCache(this);
+	}
+
+	public JedisPool getJedisPool() {
+		return jedisPool;
+	}
+
+	public void setJedisPool(JedisPool jedisPool) {
+		this.jedisPool = jedisPool;
+		ELockerPointer.setELockCache(this);
+		System.err.println("SET方法被调用============================================");
+		final Jedis jedis = jedisPool.getResource();
 		final SubscriberEntity subscriberEntity = new SubscriberEntity();
-		Thread thread=new Thread(new Runnable() {
+		Thread thread = new Thread(new Runnable() {
 			public void run() {
 				jedis.subscribe(subscriberEntity, ClockConfigFactory.CHANNEL);
 			}
 		});
 		thread.start();
 	}
-	public static synchronized void initJedisPool(String host, Integer port, String secretKey, Integer timeOut,
+
+	public synchronized void initJedisPool(String host, Integer port, String secretKey, Integer timeOut) {
+		initJedisPool(host, port, secretKey, timeOut, new JedisPoolConfig());
+	}
+
+	public synchronized void initJedisPool(JedisPool inJediPool) {
+		jedisPool = inJediPool;
+		final Jedis jedis = jedisPool.getResource();
+		final SubscriberEntity subscriberEntity = new SubscriberEntity();
+		Thread thread = new Thread(new Runnable() {
+			public void run() {
+				jedis.subscribe(subscriberEntity, ClockConfigFactory.CHANNEL);
+			}
+		});
+		thread.start();
+	}
+
+	public boolean isConnectioned() {
+		if (jedisPool == null) {
+			return false;
+		}
+		return true;
+	}
+
+	public synchronized void initJedisPool(String host, Integer port, String secretKey, Integer timeOut,
 			JedisPoolConfig jedisPoolConfig) {
-		if (StringUtil.isNullOrEmpty(secretKey)){
-			secretKey=null;
+		if (StringUtil.isNullOrEmpty(secretKey)) {
+			secretKey = null;
 		}
 		JedisPool inJediPool = new JedisPool(jedisPoolConfig, host, port, 10000, secretKey);
 		initJedisPool(inJediPool);
 	}
 
-	public static synchronized void initJedisPool(String host, Integer port, String secretKey, Integer timeOut,
+	public synchronized void initJedisPool(String host, Integer port, String secretKey, Integer timeOut,
 			Map<String, Object> jedisPoolConfig) {
 		JedisPoolConfig config = new JedisPoolConfig();
 		// 设置的逐出策略类名, 默认DefaultEvictionPolicy(当连接超过最大空闲时间,或连接数超过最大空闲连接数)
@@ -55,7 +93,7 @@ public class ELockCache {
 		initJedisPool(host, port, secretKey, timeOut, config);
 	}
 
-	public static Integer setNx(String key, Integer expire) {
+	public Integer setNx(String key, Integer expire) {
 		Jedis jedis = jedisPool.getResource();
 		try {
 			Long result = jedis.setnx(key, "1");
@@ -71,7 +109,7 @@ public class ELockCache {
 		}
 	}
 
-	public static void delCache(String key) {
+	public void delCache(String key) {
 		Jedis jedis = jedisPool.getResource();
 		try {
 			jedis.del(key);
@@ -84,7 +122,7 @@ public class ELockCache {
 		}
 	}
 
-	public static void publish(String channel, String msg) {
+	public void publish(String channel, String msg) {
 		Jedis jedis = jedisPool.getResource();
 		try {
 			jedis.publish(ClockConfigFactory.CHANNEL, msg);
@@ -96,6 +134,6 @@ public class ELockCache {
 				jedis.close();
 			}
 		}
-
 	}
+
 }

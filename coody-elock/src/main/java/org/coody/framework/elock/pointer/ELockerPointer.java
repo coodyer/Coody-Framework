@@ -1,4 +1,4 @@
-package org.coody.framework.elock.lock;
+package org.coody.framework.elock.pointer;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -8,14 +8,17 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.coody.framework.elock.config.ClockConfigFactory;
+import org.coody.framework.elock.exception.JedisNotInitedException;
 import org.coody.framework.elock.exception.LockTimeOutException;
-import org.coody.framework.elock.lock.wrapper.ThreadWrapper;
 import org.coody.framework.elock.redis.ELockCache;
+import org.coody.framework.elock.wrapper.ThreadWrapper;
 
 @SuppressWarnings("deprecation")
-public class ThreadLocker {
+public class ELockerPointer {
 
-	static Logger logger = Logger.getLogger(ThreadLocker.class);
+	private static ELockCache eLockCache;
+
+	static Logger logger = Logger.getLogger(ELockerPointer.class);
 
 	private static final Map<String, ConcurrentLinkedQueue<ThreadWrapper>> THREAD_CONTAINER = new ConcurrentHashMap<String, ConcurrentLinkedQueue<ThreadWrapper>>();
 
@@ -44,7 +47,9 @@ public class ThreadLocker {
 	 * @throws LockTimeOutException
 	 */
 	public static void fallIn(String key, Integer expireSecond) throws InterruptedException {
-
+		if (eLockCache == null || !eLockCache.isConnectioned()) {
+			throw new JedisNotInitedException("JedisPool未初始化");
+		}
 		Long timeOut = expireSecond.longValue() * 1000;
 		ThreadWrapper thread = new ThreadWrapper(Thread.currentThread(), timeOut);
 		synchronized (THREAD_CONTAINER) {
@@ -55,14 +60,14 @@ public class ThreadLocker {
 		}
 		while (!tryLock(key, expireSecond)) {
 			if (thread.isExpire()) {
-				throw new LockTimeOutException("等待锁超时>>" + key+">>"+thread.getThread().getId());
+				throw new LockTimeOutException("等待锁超时>>" + key + ">>" + thread.getThread().getId());
 			}
 			THREAD_CONTAINER.get(key).add(thread);
 			logger.debug("线程入列>>" + thread.getThread().getId());
 			Thread.currentThread().suspend();
 		}
 		if (thread.isExpire()) {
-				throw new LockTimeOutException("等待锁超时>>" + key+">>"+thread.getThread().getId());
+			throw new LockTimeOutException("等待锁超时>>" + key + ">>" + thread.getThread().getId());
 		}
 		logger.debug("线程执行>>" + thread.getThread().getId());
 	}
@@ -86,12 +91,12 @@ public class ThreadLocker {
 	}
 
 	public static void fallOut(String key) {
-		ELockCache.delCache(key);
-		ELockCache.publish(ClockConfigFactory.CHANNEL, key);
+		eLockCache.delCache(key);
+		eLockCache.publish(ClockConfigFactory.CHANNEL, key);
 	}
 
 	private static boolean tryLock(String key, Integer expireSecond) {
-		Integer result = ELockCache.setNx(key, expireSecond);
+		Integer result = eLockCache.setNx(key, expireSecond);
 		return result == 1;
 	}
 
@@ -111,4 +116,14 @@ public class ThreadLocker {
 		} catch (Exception e) {
 		}
 	}
+
+	public static ELockCache getELockCache() {
+		return eLockCache;
+	}
+
+	public static void setELockCache(ELockCache eLockCache) {
+		ELockerPointer.eLockCache = eLockCache;
+	}
+	
+	
 }

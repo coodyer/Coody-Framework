@@ -1,6 +1,6 @@
 package org.coody.framework.elock.process;
 
-import org.coody.framework.elock.LockHandle;
+import org.coody.framework.elock.ELocker;
 
 /**
  * 
@@ -41,10 +41,10 @@ public abstract class AbstractLockAble {
 	@SuppressWarnings({ "unchecked" })
 	public <T> T invoke() throws InterruptedException{
 		try {
-			LockHandle.lock(lockName,waitTime);
+			ELocker.lock(lockName,waitTime);
 			return (T) doService();
 		} finally {
-			LockHandle.unLock(lockName);
+			ELocker.unLock(lockName);
 		}
 	}
 }

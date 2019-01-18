@@ -1,8 +1,6 @@
 package org.coody.framework.elock;
 
-import org.coody.framework.elock.exception.JedisNotInitedException;
-import org.coody.framework.elock.lock.ThreadLocker;
-import org.coody.framework.elock.redis.ELockCache;
+import org.coody.framework.elock.pointer.ELockerPointer;
 
 /**
  * 分布式锁
@@ -10,7 +8,8 @@ import org.coody.framework.elock.redis.ELockCache;
  * @author Coody
  *
  */
-public class LockHandle {
+public class ELocker {
+	
 
 	/**
 	 * 加锁
@@ -21,11 +20,9 @@ public class LockHandle {
 	 */
 	public static void lock(String key, Integer expireSecond) throws InterruptedException {
 	
-		if (ELockCache.jedisPool == null) {
-			throw new JedisNotInitedException("JedisPool未初始化");
-		}
+		
 		// 锁入列
-		ThreadLocker.fallIn(key, expireSecond);
+		ELockerPointer.fallIn(key, expireSecond);
 	}
 
 	/**
@@ -34,7 +31,7 @@ public class LockHandle {
 	 * @param key
 	 */
 	public static void unLock(String key) {
-		ThreadLocker.fallOut(key);
+		ELockerPointer.fallOut(key);
 	}
 
 }

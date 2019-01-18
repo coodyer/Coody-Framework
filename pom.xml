@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.coody.framework</groupId>
 	<artifactId>coody</artifactId>
-	<version>alpha-1.2.1</version>
+	<version>alpha-1.2.2</version>
 	<packaging>pom</packaging>
 	<name>${project.artifactId}</name>
 	<description>By:Coody</description>
@@ -26,6 +26,7 @@
 		<jspc.version>6.0.24</jspc.version>
 		<jstl.version>1.1.2</jstl.version>
 		<jedis.version>2.9.0</jedis.version>
+		<aspectj.version>1.9.2</aspectj.version>
 	</properties>
 
 
@@ -113,7 +114,7 @@
 						</execution>
 					</executions>
 				</plugin>
-				<plugin>
+				 <plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-gpg-plugin</artifactId>
 					<version>1.5</version>
@@ -211,7 +212,11 @@
 				<artifactId>jedis</artifactId>
 				<version>${jedis.version}</version>
 			</dependency>
-
+			<dependency>
+			    <groupId>org.aspectj</groupId>
+			    <artifactId>aspectjrt</artifactId>
+			    <version>${aspectj.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

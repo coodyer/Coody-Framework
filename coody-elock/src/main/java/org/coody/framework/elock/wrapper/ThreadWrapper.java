@@ -1,4 +1,4 @@
-package org.coody.framework.elock.lock.wrapper;
+package org.coody.framework.elock.wrapper;
 
 /**
  * 
