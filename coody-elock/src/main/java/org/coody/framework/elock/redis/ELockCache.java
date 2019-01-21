@@ -17,13 +17,11 @@ public class ELockCache {
 	public JedisPool jedisPool;
 
 	public ELockCache() {
-		System.err.println("构造函数被调用============================================");
 		ELockerPointer.setELockCache(this);
 	}
 
 	public ELockCache(JedisPool jedisPool) {
 		setJedisPool(jedisPool);
-		System.err.println("有参构造函数被调用============================================");
 		ELockerPointer.setELockCache(this);
 	}
 
@@ -34,7 +32,6 @@ public class ELockCache {
 	public void setJedisPool(JedisPool jedisPool) {
 		this.jedisPool = jedisPool;
 		ELockerPointer.setELockCache(this);
-		System.err.println("SET方法被调用============================================");
 		final Jedis jedis = jedisPool.getResource();
 		final SubscriberEntity subscriberEntity = new SubscriberEntity();
 		Thread thread = new Thread(new Runnable() {
@@ -50,15 +47,7 @@ public class ELockCache {
 	}
 
 	public synchronized void initJedisPool(JedisPool inJediPool) {
-		jedisPool = inJediPool;
-		final Jedis jedis = jedisPool.getResource();
-		final SubscriberEntity subscriberEntity = new SubscriberEntity();
-		Thread thread = new Thread(new Runnable() {
-			public void run() {
-				jedis.subscribe(subscriberEntity, ClockConfigFactory.CHANNEL);
-			}
-		});
-		thread.start();
+		setJedisPool(inJediPool);
 	}
 
 	public boolean isConnectioned() {
