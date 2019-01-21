@@ -50,27 +50,23 @@
 
 
 ```
-LockHandle.lock(key, expireSecond);
+ELocker.lock(key, expireSecond);
 ```
 
 ###### 3. 释放锁
 
 ```
-LockHandle.unLock(key);
+ELocker.unLock(key);
 ```
-###### 4. 总揽
 
-![输入图片说明](https://images.gitee.com/uploads/images/2018/1214/184328_85eb2b55_1200611.png "a.png")
+###### 4. 注意
 
-
-###### 5. 注意
-
-加锁代码(LockHandle.lock(key, expireSecond);)。需try{}catch{}包围，并在finally释放锁(LockHandle.unLock(key);)
+加锁代码(ELocker.lock(key, expireSecond);)。需try{}catch{}包围，并在finally释放锁(ELocker.unLock(key);)
 
 
 ```
 try {
-			LockHandle.lock(key, 100);
+			ELocker.lock(key, 100);
 			for (int i = 0; i < 10; i++) {
 				System.out.println(Thread.currentThread().getId() + ">>" + i);
 				Thread.sleep(100l);
@@ -78,12 +74,12 @@ try {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} finally {
-			LockHandle.unLock(key);
+			ELocker.unLock(key);
 		}
 ```
 
 
-###### 6. 测试代码
+###### 5. 测试代码
 
 
 ```
@@ -92,7 +88,7 @@ package org.coody.framework.elock.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.coody.framework.elock.LockHandle;
+import org.coody.framework.elock.ELocker;
 import org.coody.framework.elock.redis.ELockCache;
 
 /**
@@ -133,7 +129,7 @@ public class ELockTest {
 	//要锁的方法
 	private static void test() {
 		try {
-			LockHandle.lock(key, 100);
+			ELocker.lock(key, 100);
 			for (int i = 0; i < 10; i++) {
 				System.out.println(Thread.currentThread().getId() + ">>" + i);
 				Thread.sleep(100l);
@@ -141,23 +137,23 @@ public class ELockTest {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} finally {
-			LockHandle.unLock(key);
+			ELocker.unLock(key);
 		}
 	}
 }
 
 ```
 
-###### 7. 执行效果
+###### 6. 执行效果
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/1214/184647_f99ea98c_1200611.png "c.png")
 
-###### 8.Coody Framework配置
+###### 7.Coody Framework配置
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2019/0103/141224_a1711e32_1200611.png "屏幕截图.png")
 
      
-###### 9.常规用法
+###### 8.常规用法
 
     1、使用代码添加分布式锁：
 
@@ -165,12 +161,12 @@ public class ELockTest {
 ```
 String key="USER_MODIFY_LOCK"+userId;
 		try {
-			LockHandle.lock(key, 20);
+			ELocker.lock(key, 20);
 			userDao.delUser(userId);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}finally {
-			LockHandle.unLock(key);
+			ELocker.unLock(key);
 		}
 ```
 
