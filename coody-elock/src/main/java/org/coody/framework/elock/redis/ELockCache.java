@@ -42,12 +42,12 @@ public class ELockCache {
 		thread.start();
 	}
 
-	public synchronized void initJedisPool(String host, Integer port, String secretKey, Integer timeOut) {
+	public synchronized static void initJedisPool(String host, Integer port, String secretKey, Integer timeOut) {
 		initJedisPool(host, port, secretKey, timeOut, new JedisPoolConfig());
 	}
 
-	public synchronized void initJedisPool(JedisPool inJediPool) {
-		setJedisPool(inJediPool);
+	public synchronized static void initJedisPool(JedisPool inJediPool) {
+		new ELockCache().setJedisPool(inJediPool);
 	}
 
 	public boolean isConnectioned() {
@@ -57,7 +57,7 @@ public class ELockCache {
 		return true;
 	}
 
-	public synchronized void initJedisPool(String host, Integer port, String secretKey, Integer timeOut,
+	public synchronized static void initJedisPool(String host, Integer port, String secretKey, Integer timeOut,
 			JedisPoolConfig jedisPoolConfig) {
 		if (StringUtil.isNullOrEmpty(secretKey)) {
 			secretKey = null;
@@ -66,7 +66,7 @@ public class ELockCache {
 		initJedisPool(inJediPool);
 	}
 
-	public synchronized void initJedisPool(String host, Integer port, String secretKey, Integer timeOut,
+	public synchronized static void initJedisPool(String host, Integer port, String secretKey, Integer timeOut,
 			Map<String, Object> jedisPoolConfig) {
 		JedisPoolConfig config = new JedisPoolConfig();
 		// 设置的逐出策略类名, 默认DefaultEvictionPolicy(当连接超过最大空闲时间,或连接数超过最大空闲连接数)
