@@ -96,8 +96,7 @@ public class ELockerPointer {
 	}
 
 	private static boolean tryLock(String key, Integer expireSecond) {
-		Integer result = eLockCache.setNx(key, expireSecond);
-		return result == 1;
+		return eLockCache.setNx(key, expireSecond);
 	}
 
 	private static synchronized void guard() {
@@ -124,6 +123,8 @@ public class ELockerPointer {
 	public static void setELockCache(ELockCache eLockCache) {
 		ELockerPointer.eLockCache = eLockCache;
 	}
+	
+	
 	
 	
 }

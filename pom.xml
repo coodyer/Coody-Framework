@@ -25,7 +25,7 @@
 		<coody.version>${project.version}</coody.version>
 		<jspc.version>6.0.24</jspc.version>
 		<jstl.version>1.1.2</jstl.version>
-		<jedis.version>2.9.0</jedis.version>
+		<jedis.version>3.0.1</jedis.version>
 		<aspectj.version>1.9.2</aspectj.version>
 	</properties>
 

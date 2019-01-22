@@ -11,8 +11,12 @@ import org.coody.framework.elock.redis.entity.SubscriberEntity;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.params.SetParams;
 
 public class ELockCache {
+	
+	
+	private static final String REDIS_SUCCESS_FLAG="OK";
 
 	public JedisPool jedisPool;
 
@@ -82,15 +86,23 @@ public class ELockCache {
 		initJedisPool(host, port, secretKey, timeOut, config);
 	}
 
-	public Integer setNx(String key, Integer expire) {
+	public boolean setNx(String key, Integer expireSecond) {
 		Jedis jedis = jedisPool.getResource();
 		try {
-			Long result = jedis.setnx(key, "1");
-			jedis.expire(key, expire);
-			return result.intValue();
+			SetParams setParams=new SetParams();
+			setParams.ex(10);
+			setParams.nx();
+			String result=jedis.set(key, String.valueOf(Thread.currentThread().getId()),setParams);
+			if(StringUtil.isNullOrEmpty(result)){
+				return false;
+			}
+			if(REDIS_SUCCESS_FLAG.equals(result)){
+				return true;
+			}
+			return false;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return 0;
+			return false;
 		} finally {
 			if (jedis != null) {
 				jedis.close();
