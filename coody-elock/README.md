@@ -27,7 +27,7 @@
 <dependency>
   <groupId>org.coody.framework</groupId>
   <artifactId>coody-elock</artifactId>
-  <version>alpha-1.2.1</version>
+  <version>alpha-1.2.4</version>
 </dependency>
 ```
 
