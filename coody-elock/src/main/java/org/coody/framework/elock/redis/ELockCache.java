@@ -90,7 +90,7 @@ public class ELockCache {
 		Jedis jedis = jedisPool.getResource();
 		try {
 			SetParams setParams=new SetParams();
-			setParams.ex(10);
+			setParams.ex(expireSecond);
 			setParams.nx();
 			String result=jedis.set(key, String.valueOf(Thread.currentThread().getId()),setParams);
 			if(StringUtil.isNullOrEmpty(result)){
