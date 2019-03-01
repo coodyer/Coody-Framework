@@ -33,7 +33,7 @@ public class ELockCache {
 		return jedisPool;
 	}
 
-	public void setJedisPool(JedisPool jedisPool) {
+	public ELockCache setJedisPool(JedisPool jedisPool) {
 		this.jedisPool = jedisPool;
 		ELockerPointer.setELockCache(this);
 		final Jedis jedis = jedisPool.getResource();
@@ -44,14 +44,15 @@ public class ELockCache {
 			}
 		});
 		thread.start();
+		return this;
 	}
 
-	public synchronized static void initJedisPool(String host, Integer port, String secretKey, Integer timeOut) {
-		initJedisPool(host, port, secretKey, timeOut, new JedisPoolConfig());
+	public synchronized static ELockCache initJedisPool(String host, Integer port, String secretKey, Integer timeOut) {
+		return initJedisPool(host, port, secretKey, timeOut, new JedisPoolConfig());
 	}
 
-	public synchronized static void initJedisPool(JedisPool inJediPool) {
-		new ELockCache().setJedisPool(inJediPool);
+	public synchronized static ELockCache initJedisPool(JedisPool inJediPool) {
+		return new ELockCache().setJedisPool(inJediPool);
 	}
 
 	public boolean isConnectioned() {
@@ -61,13 +62,13 @@ public class ELockCache {
 		return true;
 	}
 
-	public synchronized static void initJedisPool(String host, Integer port, String secretKey, Integer timeOut,
+	public synchronized static ELockCache initJedisPool(String host, Integer port, String secretKey, Integer timeOut,
 			JedisPoolConfig jedisPoolConfig) {
 		if (StringUtil.isNullOrEmpty(secretKey)) {
 			secretKey = null;
 		}
 		JedisPool inJediPool = new JedisPool(jedisPoolConfig, host, port, 10000, secretKey);
-		initJedisPool(inJediPool);
+		return initJedisPool(inJediPool);
 	}
 
 	public synchronized static void initJedisPool(String host, Integer port, String secretKey, Integer timeOut,
@@ -109,7 +110,19 @@ public class ELockCache {
 			}
 		}
 	}
-
+	public String getNx(String key) {
+		Jedis jedis = jedisPool.getResource();
+		try {
+			return jedis.get(key);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			if (jedis != null) {
+				jedis.close();
+			}
+		}
+	}
 	public void delCache(String key) {
 		Jedis jedis = jedisPool.getResource();
 		try {
