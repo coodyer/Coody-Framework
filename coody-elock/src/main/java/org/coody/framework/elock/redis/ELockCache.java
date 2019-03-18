@@ -139,7 +139,7 @@ public class ELockCache {
 	public void publish(String channel, String msg) {
 		Jedis jedis = jedisPool.getResource();
 		try {
-			jedis.publish(ClockConfigFactory.CHANNEL, msg);
+			jedis.publish(channel, msg);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;
