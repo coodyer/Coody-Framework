@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import org.coody.framework.core.annotation.Around;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.annotation.LogHead;
-import org.coody.framework.core.entity.AspectPoint;
+import org.coody.framework.core.model.AspectPoint;
 import org.coody.framework.core.util.LoggerUtil;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;

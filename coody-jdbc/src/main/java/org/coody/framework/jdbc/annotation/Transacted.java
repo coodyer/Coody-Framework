@@ -5,8 +5,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ElementType.METHOD,ElementType.ANNOTATION_TYPE})
-@Retention(RetentionPolicy.RUNTIME) 
+import org.coody.framework.core.annotation.MethodDeliver;
+
+@Target({ ElementType.METHOD, ElementType.TYPE, ElementType.ANNOTATION_TYPE })
+@Retention(RetentionPolicy.RUNTIME)
+@MethodDeliver
 public @interface Transacted {
 
 }

@@ -5,8 +5,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ElementType.TYPE,ElementType.METHOD})
+import org.coody.framework.core.annotation.MethodDeliver;
+
+@Target({ElementType.PARAMETER,ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME) 
+@MethodDeliver
 public @interface ParamName {
 	
 	String value() default "";

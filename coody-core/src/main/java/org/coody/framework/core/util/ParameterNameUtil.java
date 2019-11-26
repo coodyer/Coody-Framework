@@ -142,7 +142,7 @@ public class ParameterNameUtil {
 		private final Map<String, Executable> executableMap = new HashMap<String, Executable>();
 
 		public ExecutableParameterNameVisitor(Class<?> clazz) {
-			super(Opcodes.ASM7);
+			super(Opcodes.ASM5);
 			Set<Executable> executables = getExecutables(clazz);
 			for (Executable executable : executables) {
 				if (executable instanceof Method) {
@@ -197,7 +197,7 @@ public class ParameterNameUtil {
 				parameterNames = new ArrayList<String>(executable.getParameterTypes().length);
 				parameterNames.addAll(Collections.<String>nCopies(executable.getParameterTypes().length, null));
 				executableParameters.put(executable, parameterNames);
-				return new MethodVisitor(Opcodes.ASM7) {
+				return new MethodVisitor(Opcodes.ASM5) {
 					public void visitLocalVariable(String name, String desc, String signature, Label start, Label end,
 							int index) {
 						if (Modifier.isStatic(executable.getModifiers())) {

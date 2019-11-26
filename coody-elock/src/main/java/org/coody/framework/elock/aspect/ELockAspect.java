@@ -6,7 +6,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.coody.framework.core.annotation.Around;
-import org.coody.framework.core.entity.AspectPoint;
+import org.coody.framework.core.model.AspectPoint;
 import org.coody.framework.core.util.MethodSignUtil;
 import org.coody.framework.core.util.StringUtil;
 import org.coody.framework.elock.ELocker;

@@ -5,6 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.coody.framework.core.annotation.MethodDeliver;
+
 /**
  * JSON输出
  * @author admin
@@ -12,6 +14,7 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.METHOD,ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME) 
+@MethodDeliver
 public @interface JsonOut {
 
 }

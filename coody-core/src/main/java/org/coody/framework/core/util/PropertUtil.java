@@ -17,20 +17,22 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.coody.framework.core.entity.BeanEntity;
+import org.coody.framework.core.exception.base.CoodyException;
+import org.coody.framework.core.model.FieldEntity;
 
 @SuppressWarnings("unchecked")
 public class PropertUtil {
 
 	private static final Map<Class<?>, List<Field>> FIELD_MAP = new ConcurrentHashMap<Class<?>, List<Field>>();
 	private static final Map<Class<?>, List<Method>> METHOD_MAP = new ConcurrentHashMap<Class<?>, List<Method>>();
-	private static final Map<Method, List<BeanEntity>> PARAM_MAP = new ConcurrentHashMap<Method, List<BeanEntity>>();
+	private static final Map<Method, List<FieldEntity>> PARAM_MAP = new ConcurrentHashMap<Method, List<FieldEntity>>();
 	private static final Map<Method, Set<Method>> IFACE_METHODS = new ConcurrentHashMap<Method, Set<Method>>();
 	private static final Map<Method, Set<Class<?>>> IFACE_CLAZZS = new ConcurrentHashMap<Method, Set<Class<?>>>();
 	private static final Map<Class<?>, Set<Method>> CLAZZS_METHODS = new ConcurrentHashMap<Class<?>, Set<Method>>();
@@ -115,11 +117,11 @@ public class PropertUtil {
 		if (StringUtil.isNullOrEmpty(source)) {
 			return (T) targe;
 		}
-		List<BeanEntity> entitys = getBeanFields(source);
+		List<FieldEntity> entitys = getBeanFields(source);
 		if (StringUtil.isNullOrEmpty(entitys)) {
 			return (T) targe;
 		}
-		for (BeanEntity entity : entitys) {
+		for (FieldEntity entity : entitys) {
 			try {
 				setFieldValue(targe, entity.getFieldName(), entity.getFieldValue());
 			} catch (Exception e) {
@@ -162,11 +164,11 @@ public class PropertUtil {
 		}
 		try {
 			T value = (T) clazz.newInstance();
-			List<BeanEntity> entitys = getBeanFields(clazz);
+			List<FieldEntity> entitys = getBeanFields(clazz);
 			if (StringUtil.isNullOrEmpty(entitys)) {
 				return null;
 			}
-			for (BeanEntity entity : entitys) {
+			for (FieldEntity entity : entitys) {
 				try {
 					entity.getSourceField().setAccessible(true);
 					entity.getSourceField().set(value,
@@ -222,23 +224,21 @@ public class PropertUtil {
 	 * @param obj
 	 * @return
 	 */
-	public static List<BeanEntity> getBeanFields(Object obj) {
+	public static List<FieldEntity> getBeanFields(Object obj) {
 		if (StringUtil.isNullOrEmpty(obj)) {
 			return null;
 		}
 		Class<? extends Object> cla = getObjClass(obj);
-		List<BeanEntity> infos = getClassFields(cla);
+		List<FieldEntity> infos = getClassFields(cla);
 		if (StringUtil.isNullOrEmpty(infos)) {
 			return infos;
 		}
 		if (obj instanceof java.lang.Class) {
 			return infos;
 		}
-		for (BeanEntity info : infos) {
+		for (FieldEntity info : infos) {
 			try {
-				Field f = info.getSourceField();
-				f.setAccessible(true);
-				Object value = f.get(obj);
+				Object value = info.getSourceField().get(obj);
 				info.setFieldValue(value);
 			} catch (Exception e) {
 
@@ -253,15 +253,17 @@ public class PropertUtil {
 	 * @param cla
 	 * @return
 	 */
-	public static List<BeanEntity> getClassFields(Class<?> cla) {
+	public static List<FieldEntity> getClassFields(Class<?> cla) {
 		try {
 			List<Field> fields = loadFields(cla);
-			List<BeanEntity> infos = new ArrayList<BeanEntity>();
+			List<FieldEntity> infos = new ArrayList<FieldEntity>();
 			for (Field f : fields) {
 				if (f.getName().equalsIgnoreCase("serialVersionUID")) {
 					continue;
 				}
-				BeanEntity tmp = new BeanEntity();
+				f.setAccessible(true);
+				FieldEntity tmp = new FieldEntity();
+				tmp.setFieldOffset(UnsafeUtil.getFieldOffset(f));
 				tmp.setSourceField(f);
 				tmp.setFieldAnnotations(f.getAnnotations());
 				tmp.setFieldName(f.getName());
@@ -373,7 +375,7 @@ public class PropertUtil {
 		if (StringUtil.isNullOrEmpty(bean)) {
 			return null;
 		}
-		List<BeanEntity> beanEntitys = PropertUtil.getBeanFields(bean);
+		List<FieldEntity> beanEntitys = PropertUtil.getBeanFields(bean);
 		if (StringUtil.isNullOrEmpty(beanEntitys)) {
 			return null;
 		}
@@ -445,8 +447,7 @@ public class PropertUtil {
 	 * @throws IllegalAccessException
 	 * @throws IllegalArgumentException
 	 */
-	public static void setFieldValue(Object object, String propertyName, Object value)
-			throws IllegalArgumentException, IllegalAccessException {
+	public static void setFieldValue(Object object, String propertyName, Object value) throws CoodyException {
 		Field field = getField(object.getClass(), propertyName);
 		if (StringUtil.isNullOrEmpty(field)) {
 
@@ -465,14 +466,17 @@ public class PropertUtil {
 	 * @throws IllegalAccessException
 	 * @throws IllegalArgumentException
 	 */
-	public static void setFieldValue(Object object, Field field, Object value)
-			throws IllegalArgumentException, IllegalAccessException {
+	public static void setFieldValue(Object object, Field field, Object value) throws CoodyException {
 		field.setAccessible(true);
 		if (field.getType().isEnum()) {
-			setFieldValue(field, "name", value);
-			Object enmValue = field.get(object);
-			setFieldValue(enmValue, "name", value);
-			return;
+			try {
+				setFieldValue(field, "name", value);
+				Object enmValue = field.get(object);
+				setFieldValue(enmValue, "name", value);
+				return;
+			} catch (Exception e) {
+				throw new CoodyException("字段赋值失败", e);
+			}
 		}
 		if (Modifier.isFinal(field.getModifiers())) {
 			int modifiers = field.getModifiers();
@@ -511,7 +515,11 @@ public class PropertUtil {
 			return;
 		}
 		Object obj = parseValue(value, field.getType());
-		field.set(object, obj);
+		try {
+			field.set(object, obj);
+		} catch (Exception e) {
+			throw new CoodyException("字段赋值失败", e);
+		}
 	}
 
 	/**
@@ -530,7 +538,7 @@ public class PropertUtil {
 		if (StringUtil.isNullOrEmpty(object)) {
 			return;
 		}
-		List<BeanEntity> beanEntitys = PropertUtil.getBeanFields(object);
+		List<FieldEntity> beanEntitys = PropertUtil.getBeanFields(object);
 		if (StringUtil.isNullOrEmpty(beanEntitys)) {
 			return;
 		}
@@ -540,7 +548,7 @@ public class PropertUtil {
 		}
 		List<String> fields = new ArrayList<String>(Arrays.asList(propertyName.split("\\.")));
 		String fieldName = fields.get(0);
-		BeanEntity currField = PropertUtil.getByList(beanEntitys, "fieldName", fieldName);
+		FieldEntity currField = PropertUtil.getByList(beanEntitys, "fieldName", fieldName);
 		if (currField == null || (currField.getFieldValue() == null && value == null)) {
 			return;
 		}
@@ -672,8 +680,8 @@ public class PropertUtil {
 			return null;
 		}
 		Map<String, Object> map = new HashMap<String, Object>();
-		List<BeanEntity> entitys = PropertUtil.getBeanFields(obj);
-		for (BeanEntity entity : entitys) {
+		List<FieldEntity> entitys = PropertUtil.getBeanFields(obj);
+		for (FieldEntity entity : entitys) {
 			if (StringUtil.isNullOrEmpty(entity.getFieldValue())) {
 				continue;
 			}
@@ -868,12 +876,12 @@ public class PropertUtil {
 		if (StringUtil.isNullOrEmpty(obj)) {
 			return;
 		}
-		List<BeanEntity> fields = PropertUtil.getBeanFields(obj);
-		Map<String, BeanEntity> map = (Map<String, BeanEntity>) listToMap(fields, "fieldName");
+		List<FieldEntity> fields = PropertUtil.getBeanFields(obj);
+		Map<String, FieldEntity> map = (Map<String, FieldEntity>) listToMap(fields, "fieldName");
 		for (String tmp : fieldNames) {
 			try {
 				if (map.containsKey(tmp)) {
-					BeanEntity entity = map.get(tmp);
+					FieldEntity entity = map.get(tmp);
 					PropertUtil.setProperties(obj, entity.getFieldName(), null);
 				}
 			} catch (Exception e) {
@@ -893,12 +901,12 @@ public class PropertUtil {
 		if (StringUtil.isNullOrEmpty(obj)) {
 			return;
 		}
-		List<BeanEntity> fields = PropertUtil.getBeanFields(obj);
-		Map<String, BeanEntity> map = (Map<String, BeanEntity>) listToMap(fields, "fieldName");
+		List<FieldEntity> fields = PropertUtil.getBeanFields(obj);
+		Map<String, FieldEntity> map = (Map<String, FieldEntity>) listToMap(fields, "fieldName");
 		for (String tmp : fieldNames) {
 			try {
 				if (!map.containsKey(tmp)) {
-					BeanEntity entity = map.get(tmp);
+					FieldEntity entity = map.get(tmp);
 					PropertUtil.setProperties(obj, entity.getFieldName(), null);
 				}
 			} catch (Exception e) {
@@ -945,6 +953,9 @@ public class PropertUtil {
 						return 0d;
 					}
 				}
+				return value;
+			}
+			if (clazz.isAssignableFrom(value.getClass())) {
 				return value;
 			}
 			if (Integer.class.isAssignableFrom(clazz) || int.class.isAssignableFrom(clazz)) {
@@ -996,7 +1007,7 @@ public class PropertUtil {
 	 * @param method
 	 * @return
 	 */
-	public static List<BeanEntity> getMethodParas(Method method) {
+	public static List<FieldEntity> getMethodParameters(Method method) {
 		try {
 			if (PARAM_MAP.containsKey(method)) {
 				return PARAM_MAP.get(method);
@@ -1010,9 +1021,9 @@ public class PropertUtil {
 				return null;
 			}
 			Annotation[][] paraAnnotations = method.getParameterAnnotations();
-			List<BeanEntity> entitys = new ArrayList<BeanEntity>();
+			List<FieldEntity> entitys = new ArrayList<FieldEntity>();
 			for (int i = 0; i < paraNames.size(); i++) {
-				BeanEntity entity = new BeanEntity();
+				FieldEntity entity = new FieldEntity();
 				entity.setFieldName(paraNames.get(i));
 				entity.setFieldAnnotations(paraAnnotations[i]);
 				entity.setFieldType(types[i]);
@@ -1077,6 +1088,7 @@ public class PropertUtil {
 		return annotations;
 	}
 
+	@SuppressWarnings("unlikely-arg-type")
 	public static Set<Class<?>> getIfaceClass(Class<?> clazz) {
 		if (IFACE_CLAZZS.containsKey(clazz)) {
 			return IFACE_CLAZZS.get(clazz);
@@ -1259,4 +1271,49 @@ public class PropertUtil {
 		}
 		return list;
 	}
+
+	/**
+	 * 为方法或字段添加注解
+	 * 
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 */
+	public static void addAnnotations(AccessibleObject accessible, Annotation... annotations) throws Exception {
+		synchronized (accessible) {
+			if (StringUtil.hasNull(accessible, annotations)) {
+				throw new CoodyException("accessible or annotations is empty");
+			}
+			accessible.getAnnotations();
+			Field declaredAnnotationsField = PropertUtil.getField(accessible.getClass(), "declaredAnnotations");
+			if (Modifier.isTransient(declaredAnnotationsField.getModifiers())) {
+				Field modifiersField = Field.class.getDeclaredField("modifiers");
+				modifiersField.setAccessible(true);
+				modifiersField.set(declaredAnnotationsField,
+						declaredAnnotationsField.getModifiers() & ~Modifier.TRANSIENT);
+			}
+			declaredAnnotationsField.setAccessible(true);
+			Object declaredAnnotationsObject = declaredAnnotationsField.get(accessible);
+			if (declaredAnnotationsObject == null || declaredAnnotationsObject == Collections.EMPTY_MAP) {
+				declaredAnnotationsObject = new LinkedHashMap<Class<?>, Annotation>();
+			}
+			LinkedHashMap<Class<?>, Annotation> declaredAnnotations = (LinkedHashMap<Class<?>, Annotation>) declaredAnnotationsObject;
+			for (Annotation annotation : annotations) {
+				if (annotation == null) {
+					continue;
+				}
+				if (declaredAnnotations.containsKey(annotation.annotationType())) {
+					continue;
+				}
+				declaredAnnotations.put(annotation.annotationType(), annotation);
+			}
+			PropertUtil.setFieldValue(accessible, "declaredAnnotations", declaredAnnotations);
+			AccessibleObject root = PropertUtil.getFieldValue(accessible, "root");
+			while (root != null) {
+				addAnnotations(root, annotations);
+				root = PropertUtil.getFieldValue(root, "root");
+			}
+		}
+	}
+
 }

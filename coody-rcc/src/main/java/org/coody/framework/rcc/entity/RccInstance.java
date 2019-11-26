@@ -1,6 +1,6 @@
 package org.coody.framework.rcc.entity;
 
-import org.coody.framework.core.entity.BaseModel;
+import org.coody.framework.core.model.BaseModel;
 
 @SuppressWarnings("serial")
 public class RccInstance extends BaseModel{

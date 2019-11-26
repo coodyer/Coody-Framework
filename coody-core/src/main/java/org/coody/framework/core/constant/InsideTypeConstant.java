@@ -18,7 +18,7 @@ public class InsideTypeConstant {
 
 	public static final List<Class<?>> INSIDE_TYPES=new ArrayList<Class<?>>(Arrays.asList(
 			new Class<?>[]{
-				String.class,Integer.class,Double.class,Float.class,Boolean.class,Date.class
+				String.class,Integer.class,Double.class,Float.class,Boolean.class,Date.class,Long.class
 				}));
 	public static final List<String> SYSTEM_MATEHERS = new ArrayList<String>(
 			Arrays.asList(new String[] { "java.*", "javax.*" }));

@@ -15,12 +15,12 @@ import java.util.Set;
 import org.coody.framework.core.constant.FrameworkConstant;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.container.InterceptContainer;
-import org.coody.framework.core.entity.AspectAbler;
-import org.coody.framework.core.entity.AspectEntity;
-import org.coody.framework.core.entity.AspectPoint;
-import org.coody.framework.core.entity.BaseModel;
 import org.coody.framework.core.exception.BeanInitException;
 import org.coody.framework.core.exception.MappedExecutableException;
+import org.coody.framework.core.model.AspectAbler;
+import org.coody.framework.core.model.AspectEntity;
+import org.coody.framework.core.model.AspectPoint;
+import org.coody.framework.core.model.BaseModel;
 import org.coody.framework.core.util.AntUtil;
 import org.coody.framework.core.util.MethodSignUtil;
 import org.coody.framework.core.util.ParameterNameUtil;
@@ -214,7 +214,7 @@ public class CglibProxy implements MethodInterceptor {
 		abler.setClazz(bean.getClass());
 		abler.setMethod(method);
 		abler.setProxy(proxy);
-		abler.setMasturbation(aspectEntity.getMasturbation());
+		abler.setMasturbation(aspectEntity.getOwnIntercept());
 		AspectAbler childAbler = parseAspect(abler, invokeMethods);
 		if (childAbler != null) {
 			abler.setChildAbler(childAbler);
@@ -242,7 +242,7 @@ public class CglibProxy implements MethodInterceptor {
 		abler.setClazz(basePoint.getBean().getClass());
 		abler.setMethod(basePoint.getMethod());
 		abler.setProxy(basePoint.getProxy());
-		abler.setMasturbation(aspectEntity.getMasturbation());
+		abler.setMasturbation(aspectEntity.getOwnIntercept());
 		AspectAbler childAbler = parseAspect(basePoint, invokeAspects);
 		if (childAbler != null) {
 			abler.setChildAbler(childAbler);
@@ -286,7 +286,4 @@ public class CglibProxy implements MethodInterceptor {
 
 	}
 
-	public static void main(String[] args) {
-		System.out.println(CglibProxy.class.getConstructors().length);
-	}
 }

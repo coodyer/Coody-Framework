@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  * @author admin
  *
  */
-@Target({ElementType.METHOD,ElementType.ANNOTATION_TYPE})
+@Target({ElementType.METHOD,ElementType.ANNOTATION_TYPE,ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME) 
 public @interface CronTask {
 

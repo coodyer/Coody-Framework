@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.coody.framework.core.entity.AspectAbler;
-import org.coody.framework.core.entity.AspectEntity;
+import org.coody.framework.core.model.AspectAbler;
+import org.coody.framework.core.model.AspectEntity;
 
 public class InterceptContainer {
 

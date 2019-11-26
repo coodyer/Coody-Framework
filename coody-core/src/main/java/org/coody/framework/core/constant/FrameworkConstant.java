@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.coody.framework.core.entity.AspectEntity;
+import org.coody.framework.core.model.AspectEntity;
 
 public class FrameworkConstant {
 	

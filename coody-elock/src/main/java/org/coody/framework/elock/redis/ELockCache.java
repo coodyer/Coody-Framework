@@ -14,9 +14,8 @@ import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.params.SetParams;
 
 public class ELockCache {
-	
-	
-	private static final String REDIS_SUCCESS_FLAG="OK";
+
+	private static final String REDIS_SUCCESS_FLAG = "OK";
 
 	public JedisPool jedisPool;
 
@@ -79,9 +78,7 @@ public class ELockCache {
 			try {
 				PropertUtil.setFieldValue(config, key, jedisPoolConfig.get(key));
 			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 		initJedisPool(host, port, secretKey, timeOut, config);
@@ -90,14 +87,14 @@ public class ELockCache {
 	public boolean setNx(String key, Integer expireSecond) {
 		Jedis jedis = jedisPool.getResource();
 		try {
-			SetParams setParams=new SetParams();
+			SetParams setParams = new SetParams();
 			setParams.ex(expireSecond);
 			setParams.nx();
-			String result=jedis.set(key, String.valueOf(Thread.currentThread().getId()),setParams);
-			if(StringUtil.isNullOrEmpty(result)){
+			String result = jedis.set(key, String.valueOf(Thread.currentThread().getId()), setParams);
+			if (StringUtil.isNullOrEmpty(result)) {
 				return false;
 			}
-			if(REDIS_SUCCESS_FLAG.equals(result)){
+			if (REDIS_SUCCESS_FLAG.equals(result)) {
 				return true;
 			}
 			return false;
@@ -110,6 +107,7 @@ public class ELockCache {
 			}
 		}
 	}
+
 	public String getNx(String key) {
 		Jedis jedis = jedisPool.getResource();
 		try {
@@ -123,6 +121,7 @@ public class ELockCache {
 			}
 		}
 	}
+
 	public void delCache(String key) {
 		Jedis jedis = jedisPool.getResource();
 		try {

@@ -6,6 +6,7 @@ import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.assember.BeanAssember;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.loader.iface.CoodyLoader;
+import org.coody.framework.core.threadpool.ThreadBlockPool;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
 
@@ -22,6 +23,7 @@ public class BeanLoader implements CoodyLoader {
 		if (StringUtil.isNullOrEmpty(BeanContainer.getClazzContainer())) {
 			return;
 		}
+		ThreadBlockPool pool = new ThreadBlockPool(100, 60);
 		for (Class<?> clazz : BeanContainer.getClazzContainer()) {
 			if (clazz.isAnnotation()) {
 				continue;
@@ -29,12 +31,18 @@ public class BeanLoader implements CoodyLoader {
 			if (StringUtil.isNullOrEmpty(clazz.getAnnotations())) {
 				continue;
 			}
-			Annotation autoBuild = PropertUtil.getAnnotation(clazz, AutoBuild.class);
-			if (StringUtil.isNullOrEmpty(autoBuild)) {
-				continue;
-			}
-			BeanAssember.initBean(clazz);
+			pool.pushTask(new Runnable() {
+				@Override
+				public void run() {
+					Annotation autoBuild = PropertUtil.getAnnotation(clazz, AutoBuild.class);
+					if (StringUtil.isNullOrEmpty(autoBuild)) {
+						return;
+					}
+					BeanAssember.initBean(clazz);
+				}
+			});
 		}
+		pool.execute();
 	}
 
 }

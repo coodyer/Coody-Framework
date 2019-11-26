@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import org.coody.framework.cache.instance.iface.CoodyCacheFace;
-import org.coody.framework.cache.pool.CacheThreadPool;
+import org.coody.framework.cache.threadpool.CacheThreadPool;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.util.AntUtil;
 import org.coody.framework.core.util.StringUtil;
@@ -25,24 +25,19 @@ import org.coody.framework.core.util.StringUtil;
 @SuppressWarnings("unchecked")
 public class LocalCache implements CoodyCacheFace {
 
-	private static final ConcurrentHashMap<String, Object> CACHE_CONTAINER;
-	static Object mutex = new Object();
-	static {
-		CACHE_CONTAINER = new ConcurrentHashMap<String, Object>();
-	}
+	private static final ConcurrentHashMap<String, Object> CACHE_CONTAINER = new ConcurrentHashMap<String, Object>();
 
 	/**
 	 * 增加缓存对象
 	 * 
 	 * @param key
 	 * @param value
-	 * @param time
-	 *            有效时间
+	 * @param time  有效时间
 	 */
 	@Override
 	public void setCache(String key, Object value, Integer time) {
 		CACHE_CONTAINER.put(key, new CacheWrapper(time, value));
-		CacheThreadPool.TASK_POOL.schedule(new TimeoutTimerTask(key, this), time * 1000, TimeUnit.MILLISECONDS);
+		CacheThreadPool.TASK_POOL.schedule(new TimeoutTimerTask(key), time * 1000, TimeUnit.MILLISECONDS);
 	}
 
 	/**
@@ -157,13 +152,11 @@ public class LocalCache implements CoodyCacheFace {
 	 * @alterTime：2014年5月7日 上午9:34:39 @remark：
 	 * @version
 	 */
-	static class TimeoutTimerTask extends TimerTask {
+	class TimeoutTimerTask extends TimerTask {
 		private String ceKey;
-		private LocalCache cacheHandle;
 
-		public TimeoutTimerTask(String key, LocalCache cacheHandle) {
+		public TimeoutTimerTask(String key) {
 			this.ceKey = key;
-			this.cacheHandle=cacheHandle;
 		}
 
 		@Override
@@ -175,7 +168,7 @@ public class LocalCache implements CoodyCacheFace {
 			if (System.currentTimeMillis() < cacheWrapper.getDate().getTime()) {
 				return;
 			}
-			cacheHandle.delCache(ceKey);
+			delCache(ceKey);
 		}
 	}
 

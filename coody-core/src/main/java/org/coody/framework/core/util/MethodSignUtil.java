@@ -5,11 +5,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.coody.framework.core.entity.BeanEntity;
-import org.nico.noson.Noson;
+import org.coody.framework.core.model.FieldEntity;
+
+import com.alibaba.fastjson.JSON;
 
 public class MethodSignUtil {
-
 
 	public static String getFieldKey(Class<?> clazz, Method method, Object[] paras, String key, String[] fields) {
 		if (StringUtil.isNullOrEmpty(key)) {
@@ -34,24 +34,48 @@ public class MethodSignUtil {
 		if (StringUtil.isNullOrEmpty(obj)) {
 			return "";
 		}
-		String str =Noson.reversal(obj);
+		String str = JSON.toJSONString(obj);
 		return EncryptUtil.md5Code(str);
 	}
-	public static String getMethodUnionKey(Method method){
+
+	public static String getMethodUnionKey(Method method) {
 		String paraKey = "";
-		List<BeanEntity> beanEntitys = PropertUtil.getMethodParas(method);
+		List<FieldEntity> beanEntitys = PropertUtil.getMethodParameters(method);
 		if (!StringUtil.isNullOrEmpty(beanEntitys)) {
 			Set<String> methodParas = new HashSet<String>();
-			for (BeanEntity entity : beanEntitys) {
+			for (FieldEntity entity : beanEntitys) {
 				String methodParaLine = entity.getFieldType().getName() + " " + entity.getFieldName();
 				methodParas.add(methodParaLine);
 			}
 			paraKey = StringUtil.collectionMosaic(methodParas, ",");
 		}
-		Class<?> clazz=PropertUtil.getClass(method);
+		Class<?> clazz = PropertUtil.getClass(method);
 		String methodKey = clazz.getName() + "." + method.getName() + "(" + paraKey + ")";
 		return methodKey;
 	}
+
+	public static String getMethodKey(Method method) {
+		Class<?> clazz = PropertUtil.getClass(method);
+		return getMethodKey(clazz, method);
+	}
+
+	public static String getGeneralMethodKey(Method method) {
+		StringBuilder sb = new StringBuilder(method.getReturnType().getName());
+		sb.append("=").append(method.getName());
+		Class<?>[] paraTypes = method.getParameterTypes();
+		sb.append("(");
+		if (!StringUtil.isNullOrEmpty(paraTypes)) {
+			for (int i = 0; i < paraTypes.length; i++) {
+				sb.append(paraTypes[i].getName());
+				if (i < paraTypes.length - 1) {
+					sb.append(",");
+				}
+			}
+		}
+		sb.append(")");
+		return sb.toString();
+	}
+
 	public static String getMethodKey(Class<?> clazz, Method method) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(clazz.getName()).append(".").append(method.getName());
@@ -66,16 +90,16 @@ public class MethodSignUtil {
 			}
 		}
 		sb.append(")");
-		return  sb.toString();
+		return sb.toString();
 	}
-	
+
 	public static Object getMethodPara(Method method, String fieldName, Object[] args) {
-		List<BeanEntity> beanEntitys = PropertUtil.getMethodParas(method);
+		List<FieldEntity> beanEntitys = PropertUtil.getMethodParameters(method);
 		if (StringUtil.isNullOrEmpty(beanEntitys)) {
 			return "";
 		}
 		String[] fields = fieldName.split("\\.");
-		BeanEntity entity = (BeanEntity) PropertUtil.getByList(beanEntitys, "fieldName", fields[0]);
+		FieldEntity entity = (FieldEntity) PropertUtil.getByList(beanEntitys, "fieldName", fields[0]);
 		if (StringUtil.isNullOrEmpty(entity)) {
 			return "";
 		}
@@ -87,6 +111,5 @@ public class MethodSignUtil {
 		}
 		return para;
 	}
-
 
 }

@@ -1,6 +1,6 @@
 package org.coody.framework.web.constant;
 
-import org.coody.framework.web.adapt.FormMealAdapt;
+import org.coody.framework.web.adapter.FormMealAdapter;
 
 public class MvcContant {
 
@@ -19,5 +19,5 @@ public class MvcContant {
 	/**
 	 * 默认参数适配器
 	 */
-	public static final Class<?> DEFAULT_PARAM_ADAPT=FormMealAdapt.class;
+	public static final Class<?> DEFAULT_PARAM_ADAPT=FormMealAdapter.class;
 }

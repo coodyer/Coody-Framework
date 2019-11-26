@@ -19,7 +19,8 @@ import org.coody.framework.core.util.ClassUtil;
 import org.coody.framework.core.util.ParameterNameUtil;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
-import org.nico.noson.Noson;
+
+import com.alibaba.fastjson.JSON;
 
 public class BeanAssember {
 
@@ -91,7 +92,7 @@ public class BeanAssember {
 				field.set(bean, writeValue);
 				continue fieldSet;
 			}
-			throw new BeanNotFoundException(Noson.reversal(beanNames), bean.getClass());
+			throw new BeanNotFoundException(JSON.toJSONString(beanNames), bean.getClass());
 		}
 		if (StringUtil.isNullOrEmpty(parameterMap)) {
 			return;

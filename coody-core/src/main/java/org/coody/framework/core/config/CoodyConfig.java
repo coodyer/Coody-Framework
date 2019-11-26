@@ -1,20 +1,10 @@
 package org.coody.framework.core.config;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.net.URISyntaxException;
+import org.coody.framework.core.model.BaseConfig;
 
-import org.coody.framework.core.build.ConfigBuilder;
-import org.coody.framework.core.util.StringUtil;
+public class CoodyConfig extends BaseConfig {
 
-public class CoodyConfig {
-
-	/**
-	 * 配置前缀
-	 */
 	public static final String PREFIX = "coody";
-
 	/**
 	 * BeanName
 	 */
@@ -27,7 +17,7 @@ public class CoodyConfig {
 	/**
 	 * ClassName
 	 */
-	public static final String CLASS_NAME="class";
+	public static final String CLASS_NAME = "class";
 	/**
 	 * Bean基础配置
 	 */
@@ -35,11 +25,13 @@ public class CoodyConfig {
 	/**
 	 * Bean构造参数配置
 	 */
-	public static final String BEAN_PARAMENT_MAPPER = PREFIX + "\\.bean\\.${" + BEAN_NAME + "}\\.parament\\.${" + PROPERTY + "}";
+	public static final String BEAN_PARAMENT_MAPPER = PREFIX + "\\.bean\\.${" + BEAN_NAME + "}\\.parament\\.${"
+			+ PROPERTY + "}";
 	/**
 	 * Bean字段配置
 	 */
-	public static final String BEAN_FIELD_MAPPER = PREFIX + "\\.bean\\.${" + BEAN_NAME + "}\\.field\\.${" + PROPERTY + "}";
+	public static final String BEAN_FIELD_MAPPER = PREFIX + "\\.bean\\.${" + BEAN_NAME + "}\\.field\\.${" + PROPERTY
+			+ "}";
 	/**
 	 * Bean表达式
 	 */
@@ -47,33 +39,11 @@ public class CoodyConfig {
 	/**
 	 * 扫描的包配置
 	 */
-	public String packager = "org.coody.framework";
+	public String packager = "";
 
 	/**
 	 * 要启动的组件
 	 */
 	public String assember = "";
 
-	public void init() throws IllegalArgumentException, IllegalAccessException, IOException, URISyntaxException {
-		Field[] fields = this.getClass().getDeclaredFields();
-		for (Field field : fields) {
-			if (Modifier.isFinal(field.getModifiers())) {
-				continue;
-			}
-			String configField = PREFIX + "." + field.getName();
-			String configValue = ConfigBuilder.getProperty(configField);
-			if (StringUtil.isNullOrEmpty(configValue)) {
-				continue;
-			}
-			field.setAccessible(true);
-			String defaulltValue = (String) field.get(this);
-			if (StringUtil.isNullOrEmpty(defaulltValue)) {
-				field.set(this, configValue);
-				continue;
-			}
-			configValue = defaulltValue + "," + configValue;
-			field.set(this, configValue);
-		}
-
-	}
 }

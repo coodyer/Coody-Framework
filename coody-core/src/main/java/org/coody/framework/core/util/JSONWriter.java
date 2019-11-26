@@ -9,8 +9,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.coody.framework.core.entity.BaseModel;
-import org.coody.framework.core.entity.BeanEntity;
+import org.coody.framework.core.model.BaseModel;
+import org.coody.framework.core.model.FieldEntity;
 
 /**
  * @remark json工具类,此工具类修改过N次。改的脖子好痛啊，总算走向成熟。
@@ -91,12 +91,12 @@ public class JSONWriter {
 	private static String bean(Object object) {
 		try {
 			StringBuilder buf = new StringBuilder();
-			List<BeanEntity> list = PropertUtil.getBeanFields(object);
+			List<FieldEntity> list = PropertUtil.getBeanFields(object);
 			if (StringUtil.isNullOrEmpty(list)) {
 				return "";
 			}
 			buf.append(add("{"));
-			BeanEntity entity = null;
+			FieldEntity entity = null;
 			String tmp = null;
 			if (!StringUtil.isNullOrEmpty(list)) {
 				for (int i = 0; i < list.size(); i++) {

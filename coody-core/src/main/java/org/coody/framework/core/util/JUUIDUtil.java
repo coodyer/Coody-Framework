@@ -9,7 +9,4 @@ public class JUUIDUtil {
 			return str;
 	}
 
-	public static void main(String[] args) {
-		System.out.println(createUuid());
-	}
 }

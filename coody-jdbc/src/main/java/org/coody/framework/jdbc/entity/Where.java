@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.coody.framework.core.entity.BaseModel;
+import org.coody.framework.core.model.BaseModel;
 
 @SuppressWarnings("serial")
 public class Where extends BaseModel {

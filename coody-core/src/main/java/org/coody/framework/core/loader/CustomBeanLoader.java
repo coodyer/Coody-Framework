@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.coody.framework.core.assember.BeanAssember;
-import org.coody.framework.core.build.ConfigBuilder;
+import org.coody.framework.core.builder.ConfigBuilder;
 import org.coody.framework.core.config.CoodyConfig;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.exception.BeanNotFoundException;

@@ -48,14 +48,14 @@ public class DateUtils {
 	/**
 	 * 时间增减
 	 * 
-	 * @param date 时间
-	 * @param changeDay 增减值
+	 * @param date   时间
+	 * @param change 增减值
 	 * @return 结果
 	 */
-	public static Date changeDay(Date date, Integer changeDay) {
+	public static Date change(Date date, int calendarField, Integer change) {
 		Calendar c = Calendar.getInstance();
 		c.setTime(date);
-		c.add(Calendar.DATE, changeDay);
+		c.add(calendarField, change);
 		return c.getTime();
 	}
 
@@ -97,7 +97,7 @@ public class DateUtils {
 	/**
 	 * 时间转字符串
 	 * 
-	 * @param date 时间
+	 * @param date   时间
 	 * @param format 格式
 	 * @return 结果
 	 */
@@ -130,6 +130,14 @@ public class DateUtils {
 			}
 			if (MatchUtil.isMatcher(value.toString(), "\\d{8}")) {
 				value = new SimpleDateFormat("yyyyMMdd").parse(value.toString());
+				return (Date) value;
+			}
+			if (MatchUtil.isMatcher(value.toString(), "\\d{10}")) {
+				value = new SimpleDateFormat("yyyyMMddHH").parse(value.toString());
+				return (Date) value;
+			}
+			if (MatchUtil.isMatcher(value.toString(), "\\d{12}")) {
+				value = new SimpleDateFormat("yyyyMMddHHmm").parse(value.toString());
 				return (Date) value;
 			}
 			if (MatchUtil.isMatcher(value.toString(), "\\d{14}")) {

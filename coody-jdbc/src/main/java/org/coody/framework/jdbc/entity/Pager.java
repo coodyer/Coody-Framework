@@ -2,67 +2,42 @@ package org.coody.framework.jdbc.entity;
 
 import java.util.List;
 
-import org.coody.framework.core.entity.BaseModel;
+import org.coody.framework.core.model.BaseModel;
 
 @SuppressWarnings("serial")
 public class Pager extends BaseModel {
 
-	private Integer totalRows;
-	private Integer pageSize = 10;
-	private Integer currentPage;
-	private Integer totalPage=1;
-	private Integer startRow;
-	private Integer formNumber;
-	private Integer viewBegin=1;
-	private Integer viewEnd=1;
+	private Integer count;
+	private Integer size = 10;
+	private Integer current;
+	private Integer total=1;
 	private List<?> data;
 
 	
 	
-	public Integer getViewBegin() {
-		return viewBegin;
-	}
 
-
-	public void setViewBegin(Integer viewBegin) {
-		this.viewBegin = viewBegin;
-	}
-
-
-	public Integer getViewEnd() {
-		return viewEnd;
-	}
-
-
-	public void setViewEnd(Integer viewEnd) {
-		this.viewEnd = viewEnd;
-	}
-
-
-	public Pager(Integer pageSize) {
+	public Pager(Integer size) {
 		super();
-		this.currentPage = 1;
-		this.startRow = 0;
-		this.pageSize = pageSize;
+		this.current = 1;
+		this.size = size;
 	}
 
 
-	public Pager(Integer pageSize, Integer currentPage) {
+	public Pager(Integer size, Integer current) {
 		super();
-		if(currentPage==null||currentPage<1){
-			currentPage=1;
+		if(current==null||current<1){
+			current=1;
 		}
-		if(pageSize==null||pageSize>100){
-			pageSize=20;
+		if(size==null||size>100){
+			size=20;
 		}
-		this.pageSize = pageSize;
-		this.currentPage = currentPage;
+		this.size = size;
+		this.current = current;
 	}
 
 
 	public Pager() {
-		this.currentPage = 1;
-		this.startRow = 0;
+		this.current = 1;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -74,88 +49,62 @@ public class Pager extends BaseModel {
 		this.data = data;
 	}
 
-	public Integer getCurrentPage() {
-		return currentPage;
+	public Integer getCurrent() {
+		return current;
 	}
 
-	public void setCurrentPage(Integer currPage) {
+	public void setCurrent(Integer currPage) {
 		if(currPage==null||currPage<1){
 			currPage=1;
 		}
-		this.currentPage = currPage;
+		this.current = currPage;
 	}
 
-	public Integer getPageSize() {
-		return pageSize;
+	public Integer getSize() {
+		return size;
 	}
 
-	public void setPageSize(Integer pageSize) {
-		if(pageSize==null){
-			pageSize=20;
+	public void setSize(Integer size) {
+		if(size==null){
+			size=20;
 		}
-		if(pageSize>100){
-			pageSize=100;
+		if(size>100){
+			size=100;
 		}
-		this.pageSize = pageSize;
+		this.size = size;
 	}
 
-	public Integer getStartRow() {
-		return startRow != 0 ? startRow : (currentPage - 1) * pageSize;
+	public Integer getTotal() {
+		return total;
 	}
 
-	public void setStartRow(Integer startRow) {
-		this.startRow = startRow;
+	public void setTotal(Integer total) {
+		this.total = total;
 	}
 
-	public Integer getTotalPage() {
-		return totalPage;
+	public Integer getCount() {
+		return count;
 	}
 
-	public void setTotalPage(Integer totalPage) {
-		this.totalPage = totalPage;
-	}
-
-	public Integer getTotalRows() {
-		return totalRows;
-	}
-
-	public void setTotalRows(Integer totalRows) {
-		this.totalRows = totalRows;
+	public void setCount(Integer count) {
+		this.count = count;
 		try {
-			this.totalPage = totalRows / pageSize;
-			Integer mod = totalRows % pageSize;
+			this.total = count / size;
+			Integer mod = count % size;
 			if (mod > 0) {
-				this.totalPage++;
+				this.total++;
 			}
-			if (this.totalPage == 0) {
-				this.totalPage = 1;
+			if (this.total == 0) {
+				this.total = 1;
 			}
-			if (this.currentPage > totalPage) {
-				this.currentPage = totalPage;
+			if (this.current > total) {
+				this.current = total;
 			}
-			this.startRow = (currentPage - 1) * pageSize;
-			if (this.startRow < 0) {
-				startRow = 0;
-			}
-			if (this.currentPage == 0 || this.currentPage < 0) {
-				currentPage = 1;
+			if (this.current == 0 || this.current < 0) {
+				current = 1;
 			}
 		} catch (Exception e) {
 		}
-		if(currentPage>2){
-			viewBegin=currentPage-2;
-		}
-		viewEnd=totalPage;
-		if((totalPage-currentPage)>2){
-			viewEnd=currentPage+2;
-		}
 	}
 
-	public Integer getFormNumber() {
-		return formNumber;
-	}
-
-	public void setFormNumber(Integer formNumber) {
-		this.formNumber = formNumber;
-	}
 }

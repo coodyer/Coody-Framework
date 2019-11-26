@@ -61,10 +61,8 @@ public class StringUtil {
 	/**
 	 * 根据分割符将字符串分割成String数组
 	 * 
-	 * @param src
-	 *            源字符串
-	 * @param separator
-	 *            分隔�?
+	 * @param src       源字符串
+	 * @param separator 分隔�?
 	 * @return String数组
 	 */
 	public static String[] splitToStringArray(String src, String separator) {
@@ -88,10 +86,8 @@ public class StringUtil {
 	/**
 	 * 根据分割符将字符串分割成Integer数组
 	 * 
-	 * @param src
-	 *            源字符串
-	 * @param separator
-	 *            分隔�?
+	 * @param src       源字符串
+	 * @param separator 分隔�?
 	 * @return Integer数组
 	 */
 	public static Integer[] splitToIntgArray(String src, String separator) {
@@ -106,10 +102,8 @@ public class StringUtil {
 	/**
 	 * 根据分隔符将字符串分割成int数组
 	 * 
-	 * @param src
-	 *            源字符串
-	 * @param separator
-	 *            分隔�?
+	 * @param src       源字符串
+	 * @param separator 分隔�?
 	 * @return int数组
 	 */
 	public static int[] splitToIntArray(String src, String separator) {
@@ -375,6 +369,7 @@ public class StringUtil {
 		List<Object> objList = Arrays.asList(objs);
 		return collectionMosaic(objList, mosaicChr);
 	}
+
 	/**
 	 * 把一个数组按照分隔符拼接成字符串
 	 * 
@@ -416,7 +411,7 @@ public class StringUtil {
 	 */
 	public static String collectionMosaic(Collection<?> objs, String mosaicChr) {
 		if (objs == null || objs.isEmpty()) {
-			return null;
+			return "";
 		}
 		StringBuilder sb = new StringBuilder();
 		int i = 0;
@@ -455,10 +450,8 @@ public class StringUtil {
 	/**
 	 * 按照分隔符分割,得到字符串集合
 	 * 
-	 * @param text
-	 *            原字符串
-	 * @param mosaiChr
-	 *            分隔符
+	 * @param text     原字符串
+	 * @param mosaiChr 分隔符
 	 * @return list
 	 */
 	public static List<String> splitByMosaic(String text, String mosaiChr) {
@@ -479,10 +472,8 @@ public class StringUtil {
 	/**
 	 * 按照分隔符分割,得到字符串集合
 	 * 
-	 * @param text
-	 *            原字符串
-	 * @param mosaiChr
-	 *            分隔符
+	 * @param text     原字符串
+	 * @param mosaiChr 分隔符
 	 * @return list
 	 */
 	public static List<Integer> splitByMosaicInteger(String text, String mosaiChr) {
@@ -507,10 +498,8 @@ public class StringUtil {
 	/**
 	 * 按照分隔符分割,得到字符串集合
 	 * 
-	 * @param text
-	 *            原字符串
-	 * @param mosaiChr
-	 *            分隔符
+	 * @param text     原字符串
+	 * @param mosaiChr 分隔符
 	 * @return list
 	 */
 	public static Integer[] splitByMosaicIntegers(String text, String mosaiChr) {
@@ -540,7 +529,7 @@ public class StringUtil {
 			Matcher matcher = pattern.matcher(context);
 			String tmp = null;
 			while (matcher.find(index)) {
-				tmp = matcher.group(1);
+				tmp = matcher.group(0);
 				index = matcher.end();
 				if (StringUtil.isNullOrEmpty(tmp)) {
 					continue;
@@ -549,6 +538,7 @@ public class StringUtil {
 			}
 			return images;
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -671,10 +661,8 @@ public class StringUtil {
 	/**
 	 * 集合碰撞
 	 * 
-	 * @param needList
-	 *            需要的集合
-	 * @param actualList
-	 *            当前实际集合
+	 * @param needList   需要的集合
+	 * @param actualList 当前实际集合
 	 * @return 缺少的元素
 	 */
 	public static List<?> collisionList(List<?> needList, List<?> actualList) {
@@ -705,10 +693,8 @@ public class StringUtil {
 	/**
 	 * List碰撞取缺失
 	 * 
-	 * @param allList
-	 *            理论应该出现的List
-	 * @param conflictList
-	 *            实际出现的List
+	 * @param allList      理论应该出现的List
+	 * @param conflictList 实际出现的List
 	 * @return 丢失的List
 	 */
 	public static List<?> listConflict(List<?> allList, List<?> conflictList) {
@@ -761,8 +747,7 @@ public class StringUtil {
 	/**
 	 * 概率算法
 	 * 
-	 * @param chances
-	 *            各成员概率权重
+	 * @param chances 各成员概率权重
 	 * @return 权重下标
 	 */
 	public static Integer getBambooIndex(Integer... chances) {
@@ -861,7 +846,6 @@ public class StringUtil {
 		}
 		return path;
 	}
-
 
 	/**
 	 * 是否存在乱码

@@ -3,9 +3,9 @@ package org.coody.framework.web.entity;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import org.coody.framework.core.entity.BaseModel;
-import org.coody.framework.core.entity.BeanEntity;
-import org.coody.framework.web.adapt.iface.CoodyParamsAdapt;
+import org.coody.framework.core.model.BaseModel;
+import org.coody.framework.core.model.FieldEntity;
+import org.coody.framework.web.adapter.iface.CoodyParameterAdapter;
 
 @SuppressWarnings("serial")
 public class MvcMapping extends BaseModel {
@@ -16,15 +16,25 @@ public class MvcMapping extends BaseModel {
 
 	private Object bean;
 
-	private List<BeanEntity> paramTypes;
+	private List<FieldEntity> parameters;
 
-	private CoodyParamsAdapt paramsAdapt;
+	private CoodyParameterAdapter paramsAdapt;
 
-	public CoodyParamsAdapt getParamsAdapt() {
+	private Boolean isAntPath = false;
+
+	public Boolean getIsAntPath() {
+		return isAntPath;
+	}
+
+	public void setIsAntPath(Boolean isAntPath) {
+		this.isAntPath = isAntPath;
+	}
+
+	public CoodyParameterAdapter getParamsAdapt() {
 		return paramsAdapt;
 	}
 
-	public void setParamsAdapt(CoodyParamsAdapt paramsAdapt) {
+	public void setParamsAdapt(CoodyParameterAdapter paramsAdapt) {
 		this.paramsAdapt = paramsAdapt;
 	}
 
@@ -52,12 +62,13 @@ public class MvcMapping extends BaseModel {
 		this.bean = bean;
 	}
 
-	public List<BeanEntity> getParamTypes() {
-		return paramTypes;
+	public List<FieldEntity> getParameters() {
+		return parameters;
 	}
 
-	public void setParamTypes(List<BeanEntity> paramTypes) {
-		this.paramTypes = paramTypes;
+	public void setParameters(List<FieldEntity> parameters) {
+		this.parameters = parameters;
 	}
+
 
 }

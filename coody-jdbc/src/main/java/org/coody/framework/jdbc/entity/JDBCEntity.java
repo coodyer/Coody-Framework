@@ -5,11 +5,11 @@ public class JDBCEntity {
 
 	private String sql;
 	
-	private Object[]params;
+	private Object[]parameters;
 	
-	public JDBCEntity(String sql,Object[] params){
+	public JDBCEntity(String sql,Object[] parameters){
 		this.sql=sql;
-		this.params=params;
+		this.parameters=parameters;
 	}
 
 	public String getSql() {
@@ -19,12 +19,13 @@ public class JDBCEntity {
 	public void setSql(String sql) {
 		this.sql = sql;
 	}
-	public Object[] getParams() {
-		return params;
+
+	public Object[] getParameters() {
+		return parameters;
 	}
 
-	public void setParams(Object[] params) {
-		this.params = params;
+	public void setParameters(Object[] parameters) {
+		this.parameters = parameters;
 	}
 
 	

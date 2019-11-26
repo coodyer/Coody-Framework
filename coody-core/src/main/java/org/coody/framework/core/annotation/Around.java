@@ -38,5 +38,5 @@ public @interface Around {
      * 是否拦截自类调用
      * @return
      */
-    boolean masturbation() default true;
+    boolean ownIntercept() default true;
 }

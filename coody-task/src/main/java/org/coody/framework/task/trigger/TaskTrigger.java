@@ -14,7 +14,7 @@ import org.coody.framework.core.annotation.Around;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.bean.InitBeanFace;
 import org.coody.framework.core.container.BeanContainer;
-import org.coody.framework.core.entity.AspectPoint;
+import org.coody.framework.core.model.AspectPoint;
 import org.coody.framework.core.threadpool.ThreadBlockPool;
 import org.coody.framework.core.util.StringUtil;
 import org.coody.framework.task.annotation.CronTask;
