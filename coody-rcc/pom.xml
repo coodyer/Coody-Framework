@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.coody.framework</groupId>
 		<artifactId>coody</artifactId>
-		<version>alpha-1.2.5</version>
+		<version>alpha-1.2.6</version>
 	</parent>
 	<artifactId>coody-rcc</artifactId>
 	<packaging>jar</packaging>
