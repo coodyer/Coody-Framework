@@ -87,11 +87,6 @@ public class EmailSender {
 			builder.append(content);
 			builder.append("\r\n" + "." + "\r\n");
 			sendAndReadLine(builder.toString());
-			readLine();
-			readLine();
-			readLine();
-			readLine();
-
 		} catch (MailException e) {
 			throw e;
 		} catch (Exception e) {
@@ -112,7 +107,6 @@ public class EmailSender {
 	private String readLine() throws IOException {
 		String line = bufferedReader.readLine();
 		logger.info(line);
-		System.out.println(line);
 		if (StringUtil.isNullOrEmpty(line)) {
 			throw new MailException("连接邮件服务器失败");
 		}
