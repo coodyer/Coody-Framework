@@ -45,6 +45,8 @@ public class MinicatServletRequestImpl implements MinicatServletRequest {
 	private String queryString = "";
 
 	private Integer contextLength = 0;
+	
+	private String suffix;
 
 	public MultipartFile getFile(String paramName) {
 		if (params == null) {
@@ -199,6 +201,14 @@ public class MinicatServletRequestImpl implements MinicatServletRequest {
 
 	public String getBasePath() {
 		return basePath;
+	}
+
+	public String getSuffix() {
+		return suffix;
+	}
+
+	public void setSuffix(String suffix) {
+		this.suffix = suffix;
 	}
 
 	public void setBasePath(String basePath) {

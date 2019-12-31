@@ -12,6 +12,10 @@ public class ResourceServlet extends HttpServlet {
 	@Override
 	public void doService(MinicatServletRequestImpl request, MinicatServletResponseImpl response) throws IOException {
 		InputStream inputStream = Thread.class.getResourceAsStream(request.getRequestURI());
+		if (inputStream == null) {
+			response.setHttpCode(404);
+			return;
+		}
 		response.getOutputStream().write(FileUtils.input2byte(inputStream));
 	}
 

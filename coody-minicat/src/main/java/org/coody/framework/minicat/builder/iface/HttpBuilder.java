@@ -98,7 +98,17 @@ public abstract class HttpBuilder {
 		response.setHeader("Connection", "close");
 		response.setHeader("Server", "MiniCat/1.0 By Coody");
 		if (!response.containsHeader("Content-Type")) {
-			response.setHeader("Content-Type", "text/html");
+			switch (request.getSuffix()) {
+			case "js":
+				response.setHeader("Content-Type", "application/x-javascript");
+				break;
+			case "css":
+				response.setHeader("Content-Type", "text/css");
+				break;
+			default:
+				response.setHeader("Content-Type", "text/html");
+				break;
+			}
 		}
 		if (MiniCatConfig.openGzip) {
 			response.setHeader("Content-Encoding", "gzip");
@@ -137,6 +147,12 @@ public abstract class HttpBuilder {
 				return;
 			}
 			buildRequestHeader();
+			request.setSuffix("");
+			if (request.getRequestURI() != null && request.getRequestURI().contains(".")) {
+				request.setSuffix(request.getRequestURI()
+						.substring(request.getRequestURI().lastIndexOf(".") + 1, request.getRequestURI().length())
+						.toLowerCase());
+			}
 			this.response = new MinicatServletResponseImpl();
 			MinicatProcess.doService(this);
 			buildResponse();

@@ -19,7 +19,7 @@ import sun.misc.Unsafe;
  * @author Coody
  *
  */
-@SuppressWarnings({ "unchecked" })
+@SuppressWarnings({ "unchecked", "restriction" })
 public class UnsafeUtil {
 
 	private static Unsafe unsafe;
@@ -53,6 +53,11 @@ public class UnsafeUtil {
 
 	public static <T> T createInstance(Class<?> clazz) throws InstantiationException {
 		return (T) unsafe.allocateInstance(clazz);
+	}
+
+	public static void setFieldValue(Object target, Field field, Object value) {
+		Long fieldOffset = getFieldOffset(field);
+		setFieldValue(target, fieldOffset, value);
 	}
 
 	public static void setFieldValue(Object target, Long fieldOffset, Object value) {
