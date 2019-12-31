@@ -3,7 +3,6 @@ package org.coody.framework.web.adapter.dispat;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.coody.framework.core.util.UnsafeUtil;
 import org.coody.framework.web.adapter.iface.CoodyParameterAdapter;
 
 public class DispatAdapter {
@@ -14,7 +13,7 @@ public class DispatAdapter {
 		if (ADAPT_MAP.containsKey(clazz)) {
 			return ADAPT_MAP.get(clazz);
 		}
-		CoodyParameterAdapter adapt = (CoodyParameterAdapter) UnsafeUtil.createInstance(clazz);
+		CoodyParameterAdapter adapt = (CoodyParameterAdapter) clazz.newInstance();
 		ADAPT_MAP.put(clazz, adapt);
 		return adapt;
 	}

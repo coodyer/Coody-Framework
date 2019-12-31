@@ -19,7 +19,7 @@ import org.coody.framework.mail.exception.MailException;
 
 public class EmailSender {
 
-	static BaseLogger logger = BaseLogger.getLogger(EmailSender.class);
+	BaseLogger logger = BaseLogger.getLogger(this.getClass());
 
 	private EmailSendConfig emailSendConfig;
 

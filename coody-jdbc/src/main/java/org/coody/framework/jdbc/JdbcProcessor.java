@@ -44,7 +44,7 @@ import com.alibaba.fastjson.JSON;
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class JdbcProcessor {
 
-	static BaseLogger logger = BaseLogger.getLogger(BaseLogger.class);
+	BaseLogger logger = BaseLogger.getLogger(this.getClass());
 
 	public Boolean formatSql = true;
 

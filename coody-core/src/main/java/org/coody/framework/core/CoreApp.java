@@ -23,7 +23,6 @@ import org.coody.framework.core.logger.BaseLogger;
 import org.coody.framework.core.threadpool.ThreadBlockPool;
 import org.coody.framework.core.util.ClassUtil;
 import org.coody.framework.core.util.StringUtil;
-import org.coody.framework.core.util.UnsafeUtil;
 
 public class CoreApp {
 
@@ -97,7 +96,7 @@ public class CoreApp {
 						try {
 							logger.debug(loader.getName() + " >>开始加载");
 							long t0 = System.currentTimeMillis();
-							CoodyLoader icopLoader = (CoodyLoader) UnsafeUtil.createInstance(loader);
+							CoodyLoader icopLoader = (CoodyLoader) loader.newInstance();
 							icopLoader.doLoader();
 							long t1 = System.currentTimeMillis();
 							logger.info(loader.getName() + " >>加载耗时:" + (t1 - t0) + "ms");

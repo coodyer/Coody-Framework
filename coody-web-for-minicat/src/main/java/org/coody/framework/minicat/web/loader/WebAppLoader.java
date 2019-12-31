@@ -9,7 +9,6 @@ import org.coody.framework.core.util.ClassUtil;
 import org.coody.framework.core.util.MethodSignUtil;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
-import org.coody.framework.core.util.UnsafeUtil;
 import org.coody.framework.minicat.web.adapter.iface.CoodyParameterAdapter;
 import org.coody.framework.minicat.web.annotation.ParamsAdapt;
 import org.coody.framework.minicat.web.annotation.PathBinding;
@@ -26,7 +25,7 @@ import org.coody.framework.minicat.web.exception.MappingConflicException;
  */
 public class WebAppLoader implements CoodyLoader {
 
-	BaseLogger logger = BaseLogger.getLogger(BaseLogger.class);
+	BaseLogger logger = BaseLogger.getLogger(this.getClass());
 
 	@Override
 	public void doLoader() throws Exception {
@@ -68,9 +67,8 @@ public class WebAppLoader implements CoodyLoader {
 						MvcMapping mapping = new MvcMapping();
 						mapping.setBean(bean);
 						mapping.setPath(path);
-						mapping.setParamsAdapt(((CoodyParameterAdapter) UnsafeUtil.createInstance(adaptClass)));
+						mapping.setParamsAdapt(((CoodyParameterAdapter) adaptClass.newInstance()));
 						mapping.setMethod(method);
-						// 获取参数列表 to check
 						mapping.setParameters(PropertUtil.getMethodParameters(method));
 						MappingContainer.writeMapping(mapping);
 					}
