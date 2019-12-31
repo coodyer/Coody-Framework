@@ -3,6 +3,7 @@ package org.coody.framework.minicat.web.adapter.dispat;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.coody.framework.core.util.UnsafeUtil;
 import org.coody.framework.minicat.web.adapter.iface.CoodyParameterAdapter;
 
 
@@ -16,7 +17,7 @@ public class DispatAdapter {
 		if(ADAPT_MAP.containsKey(clazz)){
 			return ADAPT_MAP.get(clazz);
 		}
-		CoodyParameterAdapter adapt=(CoodyParameterAdapter) clazz.newInstance();
+		CoodyParameterAdapter adapt=(CoodyParameterAdapter)UnsafeUtil.createInstance(clazz);
 		ADAPT_MAP.put(clazz, adapt);
 		return adapt;
 	}

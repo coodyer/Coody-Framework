@@ -145,7 +145,7 @@ public class PropertUtil {
 		List<T> ls = new ArrayList<T>();
 		for (Object obj : list) {
 			try {
-				Object newObj = cla.newInstance();
+				Object newObj = UnsafeUtil.createInstance(cla);
 				newObj = copyPropertys(obj, newObj);
 				ls.add((T) newObj);
 			} catch (Exception e) {
@@ -163,7 +163,7 @@ public class PropertUtil {
 			return null;
 		}
 		try {
-			T value = (T) clazz.newInstance();
+			T value = (T) UnsafeUtil.createInstance(clazz);
 			List<FieldEntity> entitys = getBeanFields(clazz);
 			if (StringUtil.isNullOrEmpty(entitys)) {
 				return null;
@@ -554,7 +554,7 @@ public class PropertUtil {
 		}
 		Object beanTmp = currField.getFieldValue();
 		if (beanTmp == null) {
-			beanTmp = currField.getFieldType().newInstance();
+			beanTmp = UnsafeUtil.createInstance(currField.getFieldType());
 		}
 		fields.remove(0);
 		setProperties(beanTmp, StringUtil.collectionMosaic(fields, "."), value);

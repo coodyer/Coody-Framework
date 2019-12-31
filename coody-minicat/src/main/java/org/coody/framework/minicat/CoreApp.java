@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import org.coody.framework.core.builder.ConfigBuilder;
 import org.coody.framework.core.logger.BaseLogger;
 import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.UnsafeUtil;
 import org.coody.framework.minicat.annotation.Filter;
 import org.coody.framework.minicat.annotation.Servlet;
 import org.coody.framework.minicat.config.MiniCatConfig;
@@ -28,7 +29,7 @@ public class CoreApp {
 		ConfigBuilder.builder();
 		ConfigBuilder.flush(new MiniCatConfig(), MiniCatConfig.PREFIX);
 		// 框架启动
-		MiniCatService miniCatService = (MiniCatService) Class.forName(MiniCatConfig.engine).newInstance();
+		MiniCatService miniCatService = (MiniCatService) UnsafeUtil.createInstance(Class.forName(MiniCatConfig.engine));
 		logger.info("引用模式>>" + miniCatService.getClass().getName());
 		try {
 			if (StringUtil.isNullOrEmpty(clazzs)) {

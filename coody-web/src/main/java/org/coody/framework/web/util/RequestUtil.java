@@ -12,6 +12,7 @@ import org.coody.framework.core.model.BaseModel;
 import org.coody.framework.core.model.FieldEntity;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.UnsafeUtil;
 
 /**
  * @remark HTTP工具类。
@@ -63,7 +64,7 @@ public class RequestUtil {
 			String firstSuffix, Boolean isReplace, String[] paraArgs, boolean removeEmpty) {
 		try {
 			if (obj instanceof Class) {
-				obj = ((Class<?>) obj).newInstance();
+				obj = UnsafeUtil.createInstance((Class<?>) obj);
 			}
 			firstSuffix = StringUtil.isNullOrEmpty(firstSuffix) ? "" : (firstSuffix + ".");
 			isReplace = StringUtil.isNullOrEmpty(isReplace) ? false : isReplace;
@@ -104,7 +105,7 @@ public class RequestUtil {
 						}
 					}
 					if (BaseModel.class.isAssignableFrom(entity.getFieldType())) {
-						childObj = entity.getFieldType().newInstance();
+						childObj = UnsafeUtil.createInstance(entity.getFieldType());
 						childObj = getBean(request, childObj, null, paraName, firstSuffix, isReplace, paraArgs,
 								removeEmpty);
 						PropertUtil.setProperties(obj, entity.getFieldName(), childObj);

@@ -23,7 +23,7 @@ public class MethodSignUtil {
 			if (StringUtil.isNullOrEmpty(paraValue)) {
 				paraValue = "";
 			}
-			paraKey.append("_").append(JSONWriter.write(paraValue));
+			paraKey.append("_").append(JSON.toJSON(paraValue));
 		}
 		key = key + "_" + EncryptUtil.md5Code(paraKey.toString());
 		return key;

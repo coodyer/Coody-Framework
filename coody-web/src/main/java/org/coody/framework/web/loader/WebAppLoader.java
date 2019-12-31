@@ -9,6 +9,7 @@ import org.coody.framework.core.util.ClassUtil;
 import org.coody.framework.core.util.MethodSignUtil;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.UnsafeUtil;
 import org.coody.framework.web.adapter.iface.CoodyParameterAdapter;
 import org.coody.framework.web.annotation.ParamsAdapt;
 import org.coody.framework.web.annotation.PathBinding;
@@ -25,16 +26,17 @@ import org.coody.framework.web.exception.MappingConflicException;
  */
 public class WebAppLoader implements CoodyLoader {
 
-	BaseLogger logger=BaseLogger.getLogger(BaseLogger.class);
+	BaseLogger logger = BaseLogger.getLogger(BaseLogger.class);
+
 	@Override
 	public void doLoader() throws Exception {
-		for (Object bean:BeanContainer.getBeans()) {
+		for (Object bean : BeanContainer.getBeans()) {
 			if (StringUtil.isNullOrEmpty(bean)) {
 				continue;
 			}
-			Class<?> clazz=bean.getClass();
-			if(ClassUtil.isCglibProxyClassName(bean.getClass().getName())){
-				clazz=clazz.getSuperclass();
+			Class<?> clazz = bean.getClass();
+			if (ClassUtil.isCglibProxyClassName(bean.getClass().getName())) {
+				clazz = clazz.getSuperclass();
 			}
 			PathBinding classBindings = PropertUtil.getAnnotation(clazz, PathBinding.class);
 			if (StringUtil.isNullOrEmpty(classBindings)) {
@@ -62,13 +64,13 @@ public class WebAppLoader implements CoodyLoader {
 						} else {
 							adaptClass = methodParamsAdapt.value();
 						}
-						logger.debug("初始化Mapping地址 >>"+path+":"+MethodSignUtil.getMethodKey(clazz, method));
+						logger.debug("初始化Mapping地址 >>" + path + ":" + MethodSignUtil.getMethodKey(clazz, method));
 						MvcMapping mapping = new MvcMapping();
 						mapping.setBean(bean);
 						mapping.setPath(path);
-						mapping.setParamsAdapt(((CoodyParameterAdapter) adaptClass.newInstance()));
+						mapping.setParamsAdapt(((CoodyParameterAdapter) UnsafeUtil.createInstance(adaptClass)));
 						mapping.setMethod(method);
-						//获取参数列表  to check
+						// 获取参数列表 to check
 						mapping.setParameters(PropertUtil.getMethodParameters(method));
 						MappingContainer.writeMapping(mapping);
 					}

@@ -756,7 +756,7 @@ public class StringUtil {
 		}
 		Integer total = sumInteger(chances);
 		Integer random = getRanDom(1, total);
-		total = new Integer(0);
+		total = 0;
 		for (int i = 0; i < chances.length; i++) {
 			total += chances[i];
 			if (random <= total) {
