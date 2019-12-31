@@ -3,6 +3,7 @@ package org.coody.framework.minicat.util;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.TimeUnit;
@@ -10,24 +11,18 @@ import java.util.concurrent.TimeUnit;
 import org.coody.framework.core.util.StringUtil;
 import org.coody.framework.minicat.config.MiniCatConfig;
 
+@SuppressWarnings("unchecked")
 public class ByteUtils {
 
 	public static byte[] readLine(InputStream inputStream) throws IOException {
-		ByteArrayOutputStream swapStream = null;
+		ByteArrayOutputStream outputStream = null;
 		try {
-			swapStream = new ByteArrayOutputStream();
-			int chr = -1;
-			while ((chr = inputStream.read()) != -1) {
-				swapStream.write(chr);
-				if (chr == 10) {
-					break;
-				}
-			}
-			return swapStream.toByteArray();
+			outputStream = buildToOutputStream(inputStream);
+			return outputStream.toByteArray();
 		} catch (Exception e) {
 			return null;
 		} finally {
-			swapStream.close();
+			outputStream.close();
 		}
 	}
 
@@ -44,22 +39,17 @@ public class ByteUtils {
 		return null;
 	}
 
-	public static byte[] getBytes(InputStream ins) {
-		ByteArrayOutputStream swapStream = null;
+	public static byte[] getBytes(InputStream inputStream) {
+		ByteArrayOutputStream outputStream = null;
 		try {
-			swapStream = new ByteArrayOutputStream();
-			byte[] buff = new byte[1024];
-			int rc = 0;
-			while ((rc = ins.read(buff, 0, 1024)) > 0) {
-				swapStream.write(buff, 0, rc);
-			}
-			return swapStream.toByteArray();
+			outputStream = buildToOutputStream(inputStream);
+			return outputStream.toByteArray();
 		} catch (Exception e) {
 
 			return null;
 		} finally {
 			try {
-				swapStream.close();
+				outputStream.close();
 			} catch (IOException e) {
 
 			}
@@ -74,9 +64,9 @@ public class ByteUtils {
 		if (length < company) {
 			company = length;
 		}
-		ByteArrayOutputStream swapStream = null;
+		ByteArrayOutputStream outputStream = null;
 		try {
-			swapStream = new ByteArrayOutputStream();
+			outputStream = new ByteArrayOutputStream();
 			ByteBuffer buff = ByteBuffer.allocate(company);
 			int totalReadLength = 0;
 			while (totalReadLength < length) {
@@ -89,7 +79,7 @@ public class ByteUtils {
 					buff.flip();
 					byte[] data = new byte[buff.remaining()];
 					buff.get(data);
-					swapStream.write(data);
+					outputStream.write(data);
 				} catch (Exception e) {
 					e.printStackTrace();
 				} finally {
@@ -98,13 +88,13 @@ public class ByteUtils {
 				}
 
 			}
-			return swapStream.toByteArray();
+			return outputStream.toByteArray();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		} finally {
 			try {
-				swapStream.close();
+				outputStream.close();
 			} catch (IOException e) {
 			}
 		}
@@ -121,9 +111,9 @@ public class ByteUtils {
 		if (length < company) {
 			company = length;
 		}
-		ByteArrayOutputStream swapStream = null;
+		ByteArrayOutputStream outputStream = null;
 		try {
-			swapStream = new ByteArrayOutputStream();
+			outputStream = new ByteArrayOutputStream();
 			byte[] buff = new byte[company];
 			int totalReadLength = 0;
 			while (totalReadLength < length) {
@@ -133,21 +123,49 @@ public class ByteUtils {
 					break;
 				}
 				totalReadLength += rcLength;
-				swapStream.write(buff, 0, rcLength);
+				outputStream.write(buff, 0, rcLength);
 				if (rcLength < buff.length) {
 					break;
 				}
 			}
-			return swapStream.toByteArray();
+			return outputStream.toByteArray();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		} finally {
 			try {
-				swapStream.close();
+				outputStream.close();
 			} catch (IOException e) {
 			}
 		}
 	}
 
+	public static <T extends OutputStream> T buildToOutputStream(InputStream inputStream) {
+		OutputStream outputStream = new ByteArrayOutputStream();
+		try {
+			buildToOutputStream(inputStream, outputStream);
+			return (T) outputStream;
+		} catch (Exception e) {
+
+			return null;
+		}
+	}
+
+	public static <T extends OutputStream> T buildToOutputStream(InputStream inputStream, OutputStream outputStream) {
+		if (outputStream == null) {
+			outputStream = new ByteArrayOutputStream();
+		}
+		try {
+			outputStream = new ByteArrayOutputStream();
+			byte[] buff = new byte[1024];
+			int rc = 0;
+			while ((rc = inputStream.read(buff, 0, 1024)) > 0) {
+				outputStream.write(buff, 0, rc);
+			}
+			return (T) outputStream;
+		} catch (Exception e) {
+
+			return null;
+		}
+	}
 }

@@ -132,6 +132,10 @@ public abstract class HttpBuilder {
 	public void builder() {
 		try {
 			buildRequest();
+			if (!MiniCatConfig.method.contains(this.request.getMethod())) {
+				buildResponse(400, "400 bad request");
+				return;
+			}
 			buildRequestHeader();
 			this.response = new MinicatServletResponseImpl();
 			MinicatProcess.doService(this);

@@ -1,6 +1,7 @@
 package org.coody.framework.minicat.container;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.coody.framework.core.util.AntUtil;
@@ -10,7 +11,7 @@ public class ServletContainer {
 
 	private static final Map<String, HttpServlet> SERVLET_CONTAINER = new HashMap<String, HttpServlet>();
 
-	private static final Map<String, HttpServlet> SERVLET_ANT_CONTAINER = new HashMap<String, HttpServlet>();
+	private static final Map<String, HttpServlet> SERVLET_ANT_CONTAINER = new LinkedHashMap<String, HttpServlet>();
 
 	public static HttpServlet getServlet(String path) {
 		HttpServlet servlet = SERVLET_CONTAINER.get(path);

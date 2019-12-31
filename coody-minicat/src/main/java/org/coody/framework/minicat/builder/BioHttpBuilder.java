@@ -47,7 +47,7 @@ public class BioHttpBuilder extends HttpBuilder {
 		try {
 			byte[] data = ByteUtils.getBytes(socket.getInputStream(), MiniCatConfig.maxHeaderLength);
 			if (StringUtil.isNullOrEmpty(data)) {
-				return ;
+				return;
 			}
 			boolean isReadEnd = data.length < MiniCatConfig.maxHeaderLength;
 			String headerContext = new String(data, "iso-8859-1");
@@ -69,7 +69,7 @@ public class BioHttpBuilder extends HttpBuilder {
 			if (vanguards.length != 3) {
 				throw new BadRequestException("错误的请求报文");
 			}
-			request.setMethod(vanguards[0]);
+			request.setMethod(vanguards[0].toUpperCase());
 			String requestURI = vanguards[1];
 			if (requestURI.contains("?")) {
 				int index = requestURI.indexOf("?");

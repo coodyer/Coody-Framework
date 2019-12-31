@@ -3,10 +3,14 @@ package org.coody.framework.minicat.config;
 import org.coody.framework.core.model.BaseConfig;
 import org.coody.framework.minicat.socket.BioService;
 
-public class MiniCatConfig extends BaseConfig{
-	
-	
+public class MiniCatConfig extends BaseConfig {
+
 	public static final String PREFIX = "coody.minicat";
+
+	/**
+	 * 配置分隔符
+	 */
+	public static String split = ",";
 	/**
 	 * Session超时时间
 	 */
@@ -38,6 +42,11 @@ public class MiniCatConfig extends BaseConfig{
 	public static String sessionIdField = "COODYSESSID";
 
 	/**
+	 * 支持的Method
+	 */
+	public static String method = "POST,GET,PUT,OPTIONS";
+
+	/**
 	 * 全局编码
 	 */
 	public static String encode = "UTF-8";
@@ -46,6 +55,11 @@ public class MiniCatConfig extends BaseConfig{
 	 * 打开Gzip
 	 */
 	public static boolean openGzip = true;
+
+	/**
+	 * 静态资源目录
+	 */
+	public static String resources = null;
 
 	/**
 	 * 模式 1Bio 2Nio

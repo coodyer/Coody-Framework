@@ -8,12 +8,11 @@ import org.coody.framework.minicat.threadpool.MiniCatThreadPool;
 
 public class MinicatProcess {
 
+	public static void doService(HttpBuilder build) throws Exception {
+		HttpServlet servlet = ServletContainer.getServlet(build.getRequest().getRequestURI());
+		ApplicationFilterChain chain = new ApplicationFilterChain(servlet);
+		chain.doFilter(build.getRequest(), build.getResponse());
 
-	public static void doService(HttpBuilder build) throws 	Exception {
-			HttpServlet servlet = ServletContainer.getServlet(build.getRequest().getRequestURI());
-			ApplicationFilterChain chain=new ApplicationFilterChain(servlet);
-			chain.doFilter(build.getRequest(), build.getResponse());
-		
 	}
 
 	static {
