@@ -69,7 +69,13 @@
 
     2018-06-28： 发布Alpha至Maven中央仓库。nexus搜索"Coody"即可
 
-    2018-12-31： 新增分布式锁elock，并发行alpha-1.2.4版本
+    2018-12-31： 新增分布式锁elock，并发行alpha-1.2.5版本
+
+    2019-11-26： 新增邮件发送包mail，并发行alpha-1.2.4版本
+
+    2019-12-27： 新增minicat支持，并发行alpha-1.3.0版本
+
+    2019-12-31： 为minicat新增静态资源的支持，并发行alpha-1.2.6版本
 
      Coody Framework实战项目：https://gitee.com/coodyer/czone/
 
@@ -79,33 +85,33 @@
         <dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-core</artifactId>
-			<version>alpha-1.2.4</version>
+			<version>alpha-1.3.3</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-jdbc</artifactId>
-			<version>alpha-1.2.4</version>
+			<version>alpha-1.3.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-cache</artifactId>
-			<version>alpha-1.2.4</version>
+			<version>alpha-1.3.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-task</artifactId>
-			<version>alpha-1.2.4</version>
+			<version>alpha-1.3.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-web</artifactId>
-			<version>alpha-1.2.4</version>
+			<version>alpha-1.3.3</version>
 		</dependency>
                 <dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-elock</artifactId>
-			<version>alpha-1.2.4</version>
+			<version>alpha-1.3.3</version>
 		</dependency>
 ```
 
