@@ -77,7 +77,7 @@
 
     2019-12-31： 为minicat新增静态资源的支持，并发行alpha-1.2.6版本
 
-     Coody Framework实战项目：https://gitee.com/coodyer/czone/
+     Coody Framework+Minicat实战项目：https://gitee.com/coodyer/reduce/
 
 引用地址：
 
