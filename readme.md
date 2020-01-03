@@ -25,21 +25,23 @@
 
     Coody Framework框架包含以下模块
 
-        coody-core ：框架核心包，包括Ioc+Aop的实现，包括相关工具和超类。
+        coody-core    ：框架核心包，包括Ioc+Aop的实现，包括相关工具和超类。
 
-        coody-web  ：框架web-mvc的实现包，实现了mvc功能体系。
+        coody-web     ：框架web-mvc的实现包，实现了mvc功能体系。
 
-        coody-cache：框架缓存的实现，实现了基础缓存，切面缓存，并提供相关切面技术的支持。
+        coody-cache   ：框架缓存的实现，实现了基础缓存，切面缓存，并提供相关切面技术的支持。
 
-        coody-jdbc ：框架orm的实现，实现了基于mysql下基础操作的封装，实现了各种简易操作，拓展了切面事务。
+        coody-jdbc    ：框架orm的实现，实现了基于mysql下基础操作的封装，实现了各种简易操作，拓展了切面事务。
         
-        coody-task ：框架定时任务的实现，基于cron实现了定时任务，提供了注解定时任务的支持。
+        coody-task    ：框架定时任务的实现，基于cron实现了定时任务，提供了注解定时任务的支持。
 
-        coody-rcc  ：框架分布式的实现，提供注册中心、序列化、通信协议等接口。字节码创建子类的实现(分布式功能未完成)
+        coody-rcc     ：框架分布式的实现，提供注册中心、序列化、通信协议等接口。字节码创建子类的实现(分布式功能未完成)
 
-        coody-elock：框架分布式锁的实现，通过redis订阅实现的高性能分布式锁
+        coody-elock   ：框架分布式锁的实现，通过redis订阅实现的高性能分布式锁
 
-        coody-mail ：基于TCP的邮件发送工具
+        coody-mail    ：基于TCP的邮件发送工具
+        
+        coody-minicat ：基于TCP的Http服务器
 
 
 
@@ -77,7 +79,7 @@
 
     2019-12-31： 为minicat新增静态资源的支持，并发行alpha-1.2.6版本
 
-     Coody Framework+Minicat实战项目：https://gitee.com/coodyer/reduce/
+    Coody Framework+Minicat实战项目：https://gitee.com/coodyer/reduce/
 
 引用地址：
 
@@ -85,33 +87,43 @@
         <dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-core</artifactId>
-			<version>alpha-1.3.3</version>
+			<version>alpha-1.3.4</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-jdbc</artifactId>
-			<version>alpha-1.3.3</version>
+			<version>alpha-1.3.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-cache</artifactId>
-			<version>alpha-1.3.3</version>
+			<version>alpha-1.3.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-task</artifactId>
-			<version>alpha-1.3.3</version>
+			<version>alpha-1.3.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-web</artifactId>
-			<version>alpha-1.3.3</version>
+			<version>alpha-1.3.4</version>
 		</dependency>
-                <dependency>
+      <dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-elock</artifactId>
-			<version>alpha-1.3.3</version>
+			<version>alpha-1.3.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.coody.framework</groupId>
+			<artifactId>coody-minicat</artifactId>
+			<version>alpha-1.3.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.coody.framework</groupId>
+			<artifactId>coody-mail</artifactId>
+			<version>alpha-1.3.4</version>
 		</dependency>
 ```
 
