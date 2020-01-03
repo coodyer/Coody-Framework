@@ -95,7 +95,7 @@ public class AspectLoader implements CoodyLoader {
 						continue;
 					}
 					Boolean ownIntercept = (Boolean) annotationValueMap.get("ownIntercept");
-					logger.debug("初始化切面方法 >>" + MethodSignUtil.getMethodKey(clazz, method));
+					logger.debug("初始化切面方法 >>" + MethodSignUtil.getKeyByMethod(clazz, method));
 					AspectEntity aspectEntity = new AspectEntity();
 					// 装载切面控制方法
 					aspectEntity.setAnnotationClass(annotationClass);

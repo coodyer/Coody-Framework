@@ -9,22 +9,19 @@ import java.util.Date;
  */
 public class DateUtils {
 
-	/**
-	 * yyyy-MM-dd hh:mm:ss
-	 */
 	public static String DATETIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
 	public static String DATE_PATTERN = "yyyy-MM-dd";
 
 	public static String getWeek(Date date) {
-		final String dayNames[] = { "星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六" };
+		final String dayTags[] = { "星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六" };
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1;
 		if (dayOfWeek < 0) {
 			dayOfWeek = 0;
 		}
-		return dayNames[dayOfWeek];
+		return dayTags[dayOfWeek];
 	}
 
 	/**
@@ -57,41 +54,6 @@ public class DateUtils {
 		c.setTime(date);
 		c.add(calendarField, change);
 		return c.getTime();
-	}
-
-	/**
-	 * 获取某日开始时间
-	 * 
-	 * @return 结果
-	 */
-	public static Date getDayFirstTime(Date date) {
-		Calendar todayStart = Calendar.getInstance();
-		todayStart.setTime(date);
-		todayStart.set(Calendar.HOUR_OF_DAY, 0);
-		todayStart.set(Calendar.MINUTE, 0);
-		todayStart.set(Calendar.SECOND, 0);
-		todayStart.set(Calendar.MILLISECOND, 0);
-		return todayStart.getTime();
-	}
-
-	public static Date getDayFirstTime() {
-		return getDayFirstTime(new Date());
-	}
-
-	/**
-	 * 获取某日结束时间
-	 * 
-	 * @param date 时间
-	 * @return 结果
-	 */
-	public static Date getDayLastTime(Date date) {
-		Calendar todayEnd = Calendar.getInstance();
-		todayEnd.setTime(date);
-		todayEnd.set(Calendar.HOUR_OF_DAY, 23);
-		todayEnd.set(Calendar.MINUTE, 59);
-		todayEnd.set(Calendar.SECOND, 59);
-		todayEnd.set(Calendar.MILLISECOND, 999);
-		return todayEnd.getTime();
 	}
 
 	/**
@@ -164,18 +126,42 @@ public class DateUtils {
 	}
 
 	public static String getDayCode() {
-		return toString(getDayFirstTime(), DATE_PATTERN);
+		return toString(getDayBeginTime(), DATE_PATTERN);
+	}
+
+	public static Date getDayBeginTime(Date date) {
+		Calendar todayStart = Calendar.getInstance();
+		todayStart.setTime(date);
+		todayStart.set(Calendar.HOUR_OF_DAY, 0);
+		todayStart.set(Calendar.MINUTE, 0);
+		todayStart.set(Calendar.SECOND, 0);
+		todayStart.set(Calendar.MILLISECOND, 0);
+		return todayStart.getTime();
+	}
+
+	public static Date getDayBeginTime() {
+		return getDayBeginTime(new Date());
+	}
+
+	public static Date getDayEndTime(Date date) {
+		Calendar todayEnd = Calendar.getInstance();
+		todayEnd.setTime(date);
+		todayEnd.set(Calendar.HOUR_OF_DAY, 23);
+		todayEnd.set(Calendar.MINUTE, 59);
+		todayEnd.set(Calendar.SECOND, 59);
+		todayEnd.set(Calendar.MILLISECOND, 999);
+		return todayEnd.getTime();
 	}
 
 	public static String getWeekCode() {
-		return toString(getWeekFirstTime(), DATE_PATTERN);
+		return toString(getWeekBeginTime(), DATE_PATTERN);
 	}
 
-	public static Date getWeekFirstTime() {
-		return getWeekFirstTime(new Date());
+	public static Date getWeekBeginTime() {
+		return getWeekBeginTime(new Date());
 	}
 
-	public static Date getWeekFirstTime(Date date) {
+	public static Date getWeekBeginTime(Date date) {
 		Calendar currentDate = Calendar.getInstance();
 		currentDate.setTime(date);
 		currentDate.setFirstDayOfWeek(Calendar.MONDAY);
@@ -186,15 +172,15 @@ public class DateUtils {
 		return (Date) currentDate.getTime();
 	}
 
-	public static Date getMonthFirstTime() {
-		return getMonthFirstTime(new Date());
-	}
-
 	public static String getMonthCode() {
-		return toString(getMonthFirstTime(), DATE_PATTERN);
+		return toString(getMonthBeginTime(), DATE_PATTERN);
 	}
 
-	public static Date getMonthFirstTime(Date date) {
+	public static Date getMonthBeginTime() {
+		return getMonthBeginTime(new Date());
+	}
+
+	public static Date getMonthBeginTime(Date date) {
 		Calendar currentDate = Calendar.getInstance();
 		currentDate.setTime(date);
 		currentDate.set(Calendar.DAY_OF_MONTH, 1);

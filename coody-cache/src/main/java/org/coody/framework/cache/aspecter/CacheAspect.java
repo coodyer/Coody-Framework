@@ -47,17 +47,17 @@ public class CacheAspect {
 		String key = handle.key();
 		try {
 			if (StringUtil.isNullOrEmpty(key)) {
-				key = MethodSignUtil.getMethodKey(clazz, method);
+				key = this.getClass().getSimpleName() + ":" + MethodSignUtil.getKeyByMethod(clazz, method);
 			}
 			if (StringUtil.isNullOrEmpty(handle.fields())) {
-				String paraKey = MethodSignUtil.getBeanKey(paras);
+				String paraKey = MethodSignUtil.getKeyByParameters(paras);
 				if (!StringUtil.isNullOrEmpty(paraKey)) {
 					key += ":";
 					key += paraKey;
 				}
 			}
 			if (!StringUtil.isNullOrEmpty(handle.fields())) {
-				key = MethodSignUtil.getFieldKey(clazz, method, paras, key, handle.fields());
+				key = MethodSignUtil.getKeyByFields(clazz, method, paras, key, handle.fields());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -108,20 +108,27 @@ public class CacheAspect {
 		}
 
 		for (CacheWipe handle : handles) {
+			String key = handle.key();
 			try {
-				String key = handle.key();
-				if (StringUtil.isNullOrEmpty(handle.key())) {
-					key = (MethodSignUtil.getMethodKey(clazz, method));
+				if (StringUtil.isNullOrEmpty(key)) {
+					key = this.getClass().getSimpleName() + ":" + MethodSignUtil.getKeyByMethod(clazz, method);
+				}
+				if (StringUtil.isNullOrEmpty(handle.fields())) {
+					String paraKey = MethodSignUtil.getKeyByParameters(paras);
+					if (!StringUtil.isNullOrEmpty(paraKey)) {
+						key += ":";
+						key += paraKey;
+					}
 				}
 				if (!StringUtil.isNullOrEmpty(handle.fields())) {
-					key = MethodSignUtil.getFieldKey(clazz, method, paras, key, handle.fields());
+					key = MethodSignUtil.getKeyByFields(clazz, method, paras, key, handle.fields());
 				}
-				logger.debug("删除缓存 >>" + key);
-				CoodyCacheFace cacheable = getCacheable(handle.engine());
-				cacheable.delCache(key);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			logger.debug("删除缓存 >>" + key);
+			CoodyCacheFace cacheable = getCacheable(handle.engine());
+			cacheable.delCache(key);
 		}
 		return result;
 	}

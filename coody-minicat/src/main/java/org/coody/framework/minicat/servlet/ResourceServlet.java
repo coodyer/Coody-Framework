@@ -16,7 +16,7 @@ public class ResourceServlet extends HttpServlet {
 			response.setHttpCode(404);
 			return;
 		}
-		response.getOutputStream().write(FileUtils.input2byte(inputStream));
+		response.getOutputStream().write(FileUtils.inputStreamToBytes(inputStream));
 	}
 
 	@Override

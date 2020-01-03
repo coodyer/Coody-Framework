@@ -1,9 +1,11 @@
 package org.coody.framework.core.loader;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.coody.framework.core.assember.BeanAssember;
 import org.coody.framework.core.builder.ConfigBuilder;
@@ -11,6 +13,7 @@ import org.coody.framework.core.config.CoodyConfig;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.exception.BeanNotFoundException;
 import org.coody.framework.core.loader.iface.CoodyLoader;
+import org.coody.framework.core.threadpool.ThreadBlockPool;
 import org.coody.framework.core.util.MatchUtil;
 import org.coody.framework.core.util.StringUtil;
 
@@ -30,8 +33,8 @@ public class CustomBeanLoader implements CoodyLoader {
 			if (StringUtil.isNullOrEmpty(configValue)) {
 				continue;
 			}
-			if (MatchUtil.isParaMatch(key, CoodyConfig.BEAN_CONFIG_MAPPER)) {
-				Map<String, String> beanConfig = MatchUtil.matchParamMap(key, CoodyConfig.BEAN_CONFIG_MAPPER);
+			if (MatchUtil.isParameterMatch(key, CoodyConfig.BEAN_CONFIG_MAPPER)) {
+				Map<String, String> beanConfig = MatchUtil.exporeMatchedMap(key, CoodyConfig.BEAN_CONFIG_MAPPER);
 				if (StringUtil.isNullOrEmpty(beanConfig)) {
 					continue;
 				}
@@ -49,8 +52,8 @@ public class CustomBeanLoader implements CoodyLoader {
 			if (StringUtil.isNullOrEmpty(configValue)) {
 				continue;
 			}
-			if (MatchUtil.isParaMatch(key, CoodyConfig.BEAN_PARAMENT_MAPPER)) {
-				Map<String, String> beanConfig = MatchUtil.matchParamMap(key, CoodyConfig.BEAN_PARAMENT_MAPPER);
+			if (MatchUtil.isParameterMatch(key, CoodyConfig.BEAN_PARAMENT_MAPPER)) {
+				Map<String, String> beanConfig = MatchUtil.exporeMatchedMap(key, CoodyConfig.BEAN_PARAMENT_MAPPER);
 				if (StringUtil.isNullOrEmpty(beanConfig)) {
 					continue;
 				}
@@ -68,8 +71,8 @@ public class CustomBeanLoader implements CoodyLoader {
 			if (StringUtil.isNullOrEmpty(configValue)) {
 				continue;
 			}
-			if (MatchUtil.isParaMatch(key, CoodyConfig.BEAN_FIELD_MAPPER)) {
-				Map<String, String> beanConfig = MatchUtil.matchParamMap(key, CoodyConfig.BEAN_FIELD_MAPPER);
+			if (MatchUtil.isParameterMatch(key, CoodyConfig.BEAN_FIELD_MAPPER)) {
+				Map<String, String> beanConfig = MatchUtil.exporeMatchedMap(key, CoodyConfig.BEAN_FIELD_MAPPER);
 				if (StringUtil.isNullOrEmpty(beanConfig)) {
 					continue;
 				}
@@ -82,100 +85,143 @@ public class CustomBeanLoader implements CoodyLoader {
 			}
 		}
 		// 初始化所有Bean
-		List<String> originalBeans=doRelationOrder(PARAMENT_MAP, FIELD_MAP, CONFIG_MAP);
-		for (String key : originalBeans) {
+		Collection<List<String>> originalBeans = doRelationOrdered(PARAMENT_MAP, FIELD_MAP, CONFIG_MAP);
+		for (List<String> keys : originalBeans) {
+			ThreadBlockPool pool = new ThreadBlockPool(keys.size(), 60);
+			for (String key : keys) {
+				pool.pushTask(new Runnable() {
+					@Override
+					public void run() {
+						initBean(key);
+					}
+				});
+			}
+			pool.execute();
+		}
+	}
+
+	private void initBean(String key) {
+		try {
 			Map<String, String> beanConfig = PARAMENT_MAP.get(key);
 			String clazzName = CONFIG_MAP.get(key).get(CoodyConfig.CLASS_NAME);
 			Class<?> clazz = Class.forName(clazzName);
-			Map<String, Object> parameters=null;
-			if(PARAMENT_MAP.containsKey(key)){
+			Map<String, Object> parameters = null;
+			if (PARAMENT_MAP.containsKey(key)) {
 				parameters = builderParamenterMap(clazz, beanConfig);
 			}
 			Object bean = BeanAssember.initBean(clazz, key, parameters);
 			if (bean == null) {
-				continue;
+				return;
 			}
-			//初始化字段
+			// 初始化字段
 			Map<String, String> fieldConfig = FIELD_MAP.get(key);
-			if(StringUtil.isNullOrEmpty(fieldConfig)){
-				continue;
+			if (StringUtil.isNullOrEmpty(fieldConfig)) {
+				return;
 			}
 			Map<String, Object> fielders = builderParamenterMap(bean.getClass(), fieldConfig);
 			BeanAssember.initField(bean, fielders);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * 根据依赖关系排序
+	 * 
 	 * @param clazz
 	 * @param parameneterMap
 	 * @return
-	 * @throws ClassNotFoundException 
+	 * @throws ClassNotFoundException
 	 */
-	public List<String> doRelationOrder(HashMap<String, HashMap<String, String>> paramentMap,HashMap<String, HashMap<String, String>> fieldMap,HashMap<String, HashMap<String, String>> configMap) throws ClassNotFoundException{
-		//加载基础Bean
-		List<String> originalBeans=new ArrayList<String>();
-		configCheck:for (String key : configMap.keySet()) {
-			Map<String, String> propertyMap=new HashMap<String, String>();
-			if(fieldMap.containsKey(key)){
+	public Collection<List<String>> doRelationOrdered(HashMap<String, HashMap<String, String>> paramentMap,
+			HashMap<String, HashMap<String, String>> fieldMap, HashMap<String, HashMap<String, String>> configMap)
+			throws ClassNotFoundException {
+		// 加载基础Bean
+		Map<String, Integer> beanMap = new HashMap<String, Integer>();
+
+		List<String> group = new ArrayList<String>();
+		configCheck: for (String key : configMap.keySet()) {
+			Map<String, String> propertyMap = new HashMap<String, String>();
+			if (fieldMap.containsKey(key)) {
 				propertyMap.putAll(fieldMap.get(key));
 			}
-			if(paramentMap.containsKey(key)){
+			if (paramentMap.containsKey(key)) {
 				propertyMap.putAll(paramentMap.get(key));
 			}
-			if(StringUtil.isNullOrEmpty(propertyMap)){
-				originalBeans.add(key);
+			if (StringUtil.isNullOrEmpty(propertyMap)) {
+				group.add(key);
 			}
-			for(String poperty:propertyMap.keySet()){
-				String valueBeanName = MatchUtil.matchExportFirst(propertyMap.get(poperty), CoodyConfig.INPUT_BEAN_MAPPER);
-				if(!StringUtil.isNullOrEmpty(valueBeanName)){
-					if(!configMap.containsKey(valueBeanName)){
-						if(!configMap.get(key).containsKey(CoodyConfig.CLASS_NAME)){
-							continue configCheck; 
+			for (String poperty : propertyMap.keySet()) {
+				String fieldBeanName = MatchUtil.exporeMatchedFirstByRegular(propertyMap.get(poperty),
+						CoodyConfig.INPUT_BEAN_MAPPER);
+				if (!StringUtil.isNullOrEmpty(fieldBeanName)) {
+					if (!configMap.containsKey(fieldBeanName)) {
+						if (!configMap.get(key).containsKey(CoodyConfig.CLASS_NAME)) {
+							continue configCheck;
 						}
 						Class<?> clazz = Class.forName(configMap.get(key).get(CoodyConfig.CLASS_NAME));
-						throw new BeanNotFoundException(valueBeanName, clazz);
+						throw new BeanNotFoundException(fieldBeanName, clazz);
 					}
-					continue configCheck; 
+					continue configCheck;
 				}
 			}
-			originalBeans.add(key);
+			group.add(key);
 		}
-		while(originalBeans.size()<configMap.size()){
-			configCheck:for (String key : configMap.keySet()) {
-				if(originalBeans.contains(key)){
-					continue;
-				}
-				Map<String, String> propertyMap=new HashMap<String, String>();
-				if(fieldMap.containsKey(key)){
-					propertyMap.putAll(fieldMap.get(key));
-				}
-				if(paramentMap.containsKey(key)){
-					propertyMap.putAll(paramentMap.get(key));
-				}
-				for(String poperty:propertyMap.keySet()){
-					String valueBeanName = MatchUtil.matchExportFirst(propertyMap.get(poperty), CoodyConfig.INPUT_BEAN_MAPPER);
-					if(!StringUtil.isNullOrEmpty(valueBeanName)){
-						if(!originalBeans.contains(valueBeanName)){
-							continue configCheck; 
+		int index = beanMap.size();
+		for (String line : group) {
+			beanMap.put(line, index);
+		}
+		beanInstallWhile: while (beanMap.size() < configMap.size()) {
+			group = new ArrayList<String>();
+			try {
+				for (String key : configMap.keySet()) {
+					if (beanMap.containsKey(key)) {
+						continue;
+					}
+					Map<String, String> propertyMap = new HashMap<String, String>();
+					if (fieldMap.containsKey(key)) {
+						propertyMap.putAll(fieldMap.get(key));
+					}
+					if (paramentMap.containsKey(key)) {
+						propertyMap.putAll(paramentMap.get(key));
+					}
+					for (String poperty : propertyMap.keySet()) {
+						String valueBeanName = MatchUtil.exporeMatchedFirstByRegular(propertyMap.get(poperty),
+								CoodyConfig.INPUT_BEAN_MAPPER);
+						if (!StringUtil.isNullOrEmpty(valueBeanName)) {
+							if (!beanMap.containsKey(valueBeanName)) {
+								continue beanInstallWhile;
+							}
 						}
 					}
+					group.add(key);
 				}
-				originalBeans.add(key);
+			} finally {
+				index = beanMap.size();
+				for (String line : group) {
+					beanMap.put(line, index);
+				}
 			}
 		}
-		return originalBeans;
+		Map<Integer, List<String>> relationBeanMap = new TreeMap<Integer, List<String>>();
+		for (String key : beanMap.keySet()) {
+			if (!relationBeanMap.containsKey(beanMap.get(key))) {
+				relationBeanMap.put(beanMap.get(key), new ArrayList<String>());
+			}
+			relationBeanMap.get(beanMap.get(key)).add(key);
+		}
+		return relationBeanMap.values();
 	}
 
 	private Map<String, Object> builderParamenterMap(Class<?> clazz, Map<String, String> parameneterMap) {
 		Map<String, Object> paramenters = new HashMap<String, Object>();
 		for (String parameneter : parameneterMap.keySet()) {
 			String value = parameneterMap.get(parameneter);
-			if (!MatchUtil.isParaMatch(value, CoodyConfig.INPUT_BEAN_MAPPER)) {
+			if (!MatchUtil.isParameterMatch(value, CoodyConfig.INPUT_BEAN_MAPPER)) {
 				paramenters.put(parameneter, value);
 				continue;
 			}
-			String valueBeanName = MatchUtil.matchExportFirst(value, CoodyConfig.INPUT_BEAN_MAPPER);
+			String valueBeanName = MatchUtil.exporeMatchedFirstByRegular(value, CoodyConfig.INPUT_BEAN_MAPPER);
 			if (StringUtil.isNullOrEmpty(valueBeanName)) {
 				throw new BeanNotFoundException(valueBeanName, clazz);
 			}

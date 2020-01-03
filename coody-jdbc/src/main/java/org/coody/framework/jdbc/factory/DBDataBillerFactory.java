@@ -13,8 +13,8 @@ import org.coody.framework.core.util.magic.iface.DynamicContainer;
 import org.coody.framework.jdbc.annotation.DBColumn;
 import org.coody.framework.jdbc.annotation.DBTable;
 import org.coody.framework.jdbc.entity.DBDataBiller;
+import org.coody.framework.jdbc.entity.DBModel;
 import org.coody.framework.jdbc.exception.JdbcBuilderException;
-import org.coody.framework.jdbc.model.DBModel;
 
 /**
  * 

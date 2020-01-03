@@ -72,9 +72,9 @@ public class AnnotationLoader implements CoodyLoader {
 			if (!Modifier.isAbstract(method.getModifiers())) {
 				continue;
 			}
-			String methodKey = MethodSignUtil.getGeneralMethodKey(method);
+			String methodKey = MethodSignUtil.getGeneralKeyByMethod(method);
 			for (Method childMethod : childClazzMethods) {
-				String childMethodKey = MethodSignUtil.getGeneralMethodKey(childMethod);
+				String childMethodKey = MethodSignUtil.getGeneralKeyByMethod(childMethod);
 				if (!childMethodKey.equals(methodKey)) {
 					continue;
 				}

@@ -11,7 +11,21 @@ public final class EncryptUtil {
 		throw new Error("Utility classes should not instantiated!");
 	}
 
-	public static String md5Code(String pwd) {
+	public static String custom(String str) {
+		try {
+			str = md5(str);
+			str = textEncode(str, str);
+			str = str.substring(1, str.length() - 1);
+			str = URLEncoder.encode(str, "UTF-8").replace("%", "").toLowerCase();
+			str = md5(str);
+			return str;
+		} catch (Exception e) {
+			return "";
+		}
+
+	}
+
+	public static String md5(String pwd) {
 		try {
 			MessageDigest md = MessageDigest.getInstance("MD5");
 			md.update(pwd.getBytes(CHARSET));
@@ -38,60 +52,49 @@ public final class EncryptUtil {
 		return "";
 	}
 
-	private static String textCode(String s, String key) {
-		String str = "";
-		int ch;
+	private static String textEncode(String s, String key) {
+		String result = "";
+		int chr;
 		if (key.length() == 0) {
 			return s;
-		} else if (!s.equals(null)) {
-			for (int i = 0, j = 0; i < s.length(); i++, j++) {
-				if (j > key.length() - 1) {
-					j = j % key.length();
-				}
-				ch = s.codePointAt(i) + key.codePointAt(j);
-				if (ch > 65535) {
-					ch = ch % 65535;// ch - 33 = (ch - 33) % 95 ;
-				}
-				str += (char) ch;
-			}
 		}
-		return str;
+		if (s.equals(null)) {
+			return result;
+		}
+		for (int i = 0, j = 0; i < s.length(); i++, j++) {
+			if (j > key.length() - 1) {
+				j = j % key.length();
+			}
+			chr = s.codePointAt(i) + key.codePointAt(j);
+			if (chr > 65535) {
+				chr = chr % 65535;// ch - 33 = (ch - 33) % 95 ;
+			}
+			result += (char) chr;
+		}
+		return result;
 
 	}
 
 	@SuppressWarnings("unused")
-	private static String textDeCode(String s, String key) {
-		String str = "";
-		int ch;
+	private static String textDecode(String s, String key) {
+		String result = "";
+		int chr;
 		if (key.length() == 0) {
 			return s;
-		} else if (!s.equals(key)) {
-			for (int i = 0, j = 0; i < s.length(); i++, j++) {
-				if (j > key.length() - 1) {
-					j = j % key.length();
-				}
-				ch = (s.codePointAt(i) + 65535 - key.codePointAt(j));
-				if (ch > 65535) {
-					ch = ch % 65535;// ch - 33 = (ch - 33) % 95 ;
-				}
-				str += (char) ch;
+		}
+		if (s.equals(key)) {
+			return result;
+		}
+		for (int i = 0, j = 0; i < s.length(); i++, j++) {
+			if (j > key.length() - 1) {
+				j = j % key.length();
 			}
+			chr = (s.codePointAt(i) + 65535 - key.codePointAt(j));
+			if (chr > 65535) {
+				chr = chr % 65535;// ch - 33 = (ch - 33) % 95 ;
+			}
+			result += (char) chr;
 		}
-		return str;
+		return result;
 	}
-
-	public static String customEnCode(String str) {
-		try {
-			str = md5Code(str);
-			str = textCode(str, str);
-			str = str.substring(1, str.length() - 1);
-			str = URLEncoder.encode(str, "UTF-8").replace("%", "").toLowerCase();
-			str = md5Code(str);
-			return str;
-		} catch (Exception e) {
-			return "";
-		}
-
-	}
-
 }

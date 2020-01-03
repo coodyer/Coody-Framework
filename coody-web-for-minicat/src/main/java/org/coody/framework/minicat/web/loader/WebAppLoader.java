@@ -33,10 +33,7 @@ public class WebAppLoader implements CoodyLoader {
 			if (StringUtil.isNullOrEmpty(bean)) {
 				continue;
 			}
-			Class<?> clazz = bean.getClass();
-			if (ClassUtil.isCglibProxyClassName(bean.getClass().getName())) {
-				clazz = clazz.getSuperclass();
-			}
+			Class<?> clazz =ClassUtil.getSourceClass(bean.getClass());
 			PathBinding classBindings = PropertUtil.getAnnotation(clazz, PathBinding.class);
 			if (StringUtil.isNullOrEmpty(classBindings)) {
 				continue;
@@ -63,7 +60,7 @@ public class WebAppLoader implements CoodyLoader {
 						} else {
 							adaptClass = methodParamsAdapt.value();
 						}
-						logger.debug("初始化Mapping地址 >>" + path + ":" + MethodSignUtil.getMethodKey(clazz, method));
+						logger.debug("初始化Mapping地址 >>" + path + ":" + MethodSignUtil.getKeyByMethod(clazz, method));
 						MvcMapping mapping = new MvcMapping();
 						mapping.setBean(bean);
 						mapping.setPath(path);

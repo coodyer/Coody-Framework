@@ -57,7 +57,7 @@ public class BeanContainer {
 			return null;
 		}
 		if (map.size() > 1) {
-			throw new BeanConflictException(beanName+"存在多个实例,未明确指定");
+			throw new BeanConflictException(beanName + "存在多个实例,未明确指定");
 		}
 		for (String key : map.keySet()) {
 			return (T) map.get(key);
@@ -66,10 +66,7 @@ public class BeanContainer {
 	}
 
 	public static synchronized void setBean(String beanName, Object bean) {
-		Class<?> clazz = bean.getClass();
-		if (ClassUtil.isCglibProxyClassName(clazz.getName())) {
-			clazz = clazz.getSuperclass();
-		}
+		Class<?> clazz = ClassUtil.getSourceClass(bean.getClass());
 		String realBeanName = clazz.getName();
 		if (beanContainer.containsKey(beanName)) {
 			Map<String, Object> map = beanContainer.get(beanName);
@@ -104,9 +101,7 @@ public class BeanContainer {
 		if (!StringUtil.isNullOrEmpty(beanNames)) {
 			return beanNames;
 		}
-		if (ClassUtil.isCglibProxyClassName(clazz.getName())) {
-			clazz = clazz.getSuperclass();
-		}
+		clazz = ClassUtil.getSourceClass(clazz);
 		try {
 			beanNames = new HashSet<String>();
 			beanNames.add(clazz.getName());
@@ -137,19 +132,15 @@ public class BeanContainer {
 		if (InsideTypeConstant.isSystem(clazz)) {
 			return null;
 		}
-		if (ClassUtil.isCglibProxyClassName(clazz.getName())) {
-			clazz = clazz.getSuperclass();
-		}
+		clazz = ClassUtil.getSourceClass(clazz);
 		return clazz.getName();
 	}
 
 	public static Set<String> getOverallBeanName(Class<?> clazz) {
-		if(InsideTypeConstant.isSystem(clazz)){
+		if (InsideTypeConstant.isSystem(clazz)) {
 			return new HashSet<String>();
 		}
-		if (ClassUtil.isCglibProxyClassName(clazz.getName())) {
-			clazz = clazz.getSuperclass();
-		}
+		clazz = ClassUtil.getSourceClass(clazz);
 		Set<String> beanNames = new HashSet<String>(getDeclaredBeanNames(clazz));
 		Class<?>[] interfaces = clazz.getInterfaces();
 		if (!StringUtil.isNullOrEmpty(interfaces)) {
@@ -167,7 +158,7 @@ public class BeanContainer {
 				beanNames.addAll(superBeanNames);
 			}
 		}
-		
+
 		return beanNames;
 	}
 }

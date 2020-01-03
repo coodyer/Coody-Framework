@@ -67,7 +67,7 @@ public class TaskLoader implements CoodyLoader {
 					PrintException.printException(logger, new ErrorCronException(cron, method));
 					continue;
 				}
-				logger.debug("初始化定时任务 >>"+cron+":"+MethodSignUtil.getMethodKey(clazz, method));
+				logger.debug("初始化定时任务 >>"+cron+":"+MethodSignUtil.getKeyByMethod(clazz, method));
 				TaskContainer.setTaskEntity(clazz, method, cron);
 			}
 		}

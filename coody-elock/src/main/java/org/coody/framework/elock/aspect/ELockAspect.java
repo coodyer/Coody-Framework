@@ -36,11 +36,11 @@ public class ELockAspect {
 		ELock dlock = method.getAnnotation(ELock.class);
 		lockName = dlock.name();
 		if (StringUtil.isNullOrEmpty(lockName)) {
-			lockName = MethodSignUtil.getMethodKey(clazz, method);
+			lockName = MethodSignUtil.getKeyByMethod(clazz, method);
 		}
 		Object[] paras = point.getParams();
 		if (dlock.fields() != null && dlock.fields().length > 0) {
-			lockName = MethodSignUtil.getFieldKey(clazz, method, paras, lockName, dlock.fields());
+			lockName = MethodSignUtil.getKeyByFields(clazz, method, paras, lockName, dlock.fields());
 		}
 		try {
 			ELocker.lock(lockName, dlock.waitTime());
@@ -50,7 +50,7 @@ public class ELockAspect {
 				throw e;
 			}
 			return null;
-		}finally{
+		} finally {
 			ELocker.unLock(lockName);
 		}
 	}
@@ -74,11 +74,11 @@ public class ELockAspect {
 		ELock dlock = method.getAnnotation(ELock.class);
 		lockName = dlock.name();
 		if (StringUtil.isNullOrEmpty(lockName)) {
-			lockName = MethodSignUtil.getMethodKey(clazz, method);
+			lockName = MethodSignUtil.getKeyByMethod(clazz, method);
 		}
 		Object[] paras = pjp.getArgs();
 		if (dlock.fields() != null && dlock.fields().length > 0) {
-			lockName = MethodSignUtil.getFieldKey(clazz, method, paras, lockName, dlock.fields());
+			lockName = MethodSignUtil.getKeyByFields(clazz, method, paras, lockName, dlock.fields());
 		}
 		try {
 			ELocker.lock(lockName, dlock.waitTime());
@@ -88,7 +88,7 @@ public class ELockAspect {
 				throw e;
 			}
 			return null;
-		}finally{
+		} finally {
 			ELocker.unLock(lockName);
 		}
 	}

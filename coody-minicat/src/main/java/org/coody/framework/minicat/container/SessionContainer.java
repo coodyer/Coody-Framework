@@ -102,6 +102,6 @@ public class SessionContainer {
 			currentSessionIndex = sessionIndex;
 		}
 		String key = ServerInfo.startTime + currentSessionIndex.toString();
-		return EncryptUtil.md5Code(key);
+		return EncryptUtil.md5(key);
 	}
 }

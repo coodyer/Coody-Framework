@@ -29,6 +29,7 @@ import org.coody.framework.core.util.StringUtil;
 import org.coody.framework.jdbc.annotation.DBColumn;
 import org.coody.framework.jdbc.container.TransactedThreadContainer;
 import org.coody.framework.jdbc.entity.DBDataBiller;
+import org.coody.framework.jdbc.entity.DBModel;
 import org.coody.framework.jdbc.entity.JDBCEntity;
 import org.coody.framework.jdbc.entity.Pager;
 import org.coody.framework.jdbc.entity.Where;
@@ -36,7 +37,6 @@ import org.coody.framework.jdbc.exception.ExecSqlException;
 import org.coody.framework.jdbc.exception.FormatParamsException;
 import org.coody.framework.jdbc.exception.PrimaryKeyException;
 import org.coody.framework.jdbc.factory.DBDataBillerFactory;
-import org.coody.framework.jdbc.model.DBModel;
 import org.coody.framework.jdbc.util.JdbcUtil;
 
 import com.alibaba.fastjson.JSON;

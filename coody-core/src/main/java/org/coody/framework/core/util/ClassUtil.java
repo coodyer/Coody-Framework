@@ -12,7 +12,6 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-
 /**
  * Copy From Internate
  */
@@ -23,11 +22,23 @@ public class ClassUtil {
 	/**
 	 * Check whether the specified class name is a CGLIB-generated class.
 	 * 
-	 * @param className
-	 *            the class name to check
+	 * @param className the class name to check
 	 */
 	public static boolean isCglibProxyClassName(String className) {
 		return (className != null && className.contains(CGLIB_CLASS_SEPARATOR));
+	}
+
+	/**
+	 * Check whether the specified class name is a CGLIB-generated class.
+	 * 
+	 * @param className the class name to check
+	 */
+	public static Class<?> getSourceClass(Class<?> clazz) {
+		if (ClassUtil.isCglibProxyClassName(clazz.getName())) {
+			clazz = clazz.getSuperclass();
+			return getSourceClass(clazz);
+		}
+		return clazz;
 	}
 
 	/**
@@ -127,8 +138,8 @@ public class ClassUtil {
 	 * 
 	 * @param packageName 包名
 	 * @param packagePath 包路径
-	 * @param recursive 是否递归
-	 * @param classes 类
+	 * @param recursive   是否递归
+	 * @param classes     类
 	 */
 	public static void findAndAddClassesInPackageByFile(String packageName, String packagePath, final boolean recursive,
 			Set<Class<?>> classes) {

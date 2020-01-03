@@ -15,13 +15,13 @@ public class MatchUtil {
 		return m.matches();
 	}
 
-	public static Boolean isParaMatch(String val, String mateher) {
+	public static Boolean isParameterMatch(String val, String mateher) {
 		try {
 			if (StringUtil.isNullOrEmpty(val)) {
 				return false;
 			}
-			List<String> paraNames = getParams(mateher);
-			mateher = parseMatchContext(mateher, paraNames);
+			List<String> paraNames = getParameters(mateher);
+			mateher = formatMatchContext(mateher, paraNames);
 			return isMatcher(val, mateher);
 		} catch (Exception e) {
 
@@ -29,33 +29,33 @@ public class MatchUtil {
 		}
 	}
 
-	public static String parseMatchContext(String matchContext, List<String> paraNames) {
+	public static String formatMatchContext(String matchContext, List<String> parameterNames) {
 		String exportPat = "([A-Za-z0-9_]+)";
-		for (String para : paraNames) {
-			matchContext = matchContext.replace("${" + para + "}", exportPat);
+		for (String parameterName : parameterNames) {
+			matchContext = matchContext.replace("${" + parameterName + "}", exportPat);
 		}
 		return matchContext;
 	}
 
-	public static List<String> matchResults(String context, String matchContext) {
+	public static List<String> exporeMatcheds(String context, String matchContext) {
 		String exportPat = "([A-Za-z0-9_]+)";
 		String[] pattenTrunk = matchContext.split("\\(\\[A-Za-z0-9_\\]\\+\\)");
 		List<String> results = new ArrayList<String>();
-		String mapper="";
+		String mapper = "";
 		for (int i = 0; i < pattenTrunk.length; i++) {
-			mapper+= pattenTrunk[i];
+			mapper += pattenTrunk[i];
 			String patten = mapper + exportPat;
-			String value = matchExportFirst(context, patten);
-			mapper+=value;
+			String value = exporeMatchedFirstByRegular(context, patten);
+			mapper += value;
 			results.add(value);
 		}
 		return results;
 	}
 
-	public static Map<String, String> matchParamMap(String context, String matchContext) {
-		List<String> paraNames = getParams(matchContext);
-		matchContext = parseMatchContext(matchContext, paraNames);
-		List<String> results = matchResults(context, matchContext);
+	public static Map<String, String> exporeMatchedMap(String context, String matchContext) {
+		List<String> paraNames = getParameters(matchContext);
+		matchContext = formatMatchContext(matchContext, paraNames);
+		List<String> results = exporeMatcheds(context, matchContext);
 		HashMap<String, String> map = new HashMap<String, String>();
 		for (int i = 0; i < paraNames.size(); i++) {
 			try {
@@ -70,20 +70,20 @@ public class MatchUtil {
 		return map;
 	}
 
-	public static List<String> getParams(String context) {
+	public static List<String> getParameters(String context) {
 		String patten = "\\$\\{([A-Za-z0-9_]+)\\}";
-		return matchExport(context, patten);
+		return exporeMatchedsByRegular(context, patten);
 	}
 
-	public static String matchExportFirst(String context, String patten) {
-		List<String> results = matchExport(context, patten);
+	public static String exporeMatchedFirstByRegular(String context, String patten) {
+		List<String> results = exporeMatchedsByRegular(context, patten);
 		if (StringUtil.isNullOrEmpty(results)) {
 			return null;
 		}
 		return results.get(0);
 	}
 
-	public static List<String> matchExport(String context, String patten) {
+	public static List<String> exporeMatchedsByRegular(String context, String patten) {
 		try {
 			Integer index = 0;
 			Pattern pattern = Pattern.compile(patten, Pattern.DOTALL);
@@ -102,6 +102,5 @@ public class MatchUtil {
 			return null;
 		}
 	}
-
 
 }

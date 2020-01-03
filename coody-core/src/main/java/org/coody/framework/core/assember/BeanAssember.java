@@ -83,13 +83,14 @@ public class BeanAssember {
 				if (StringUtil.isNullOrEmpty(beanName)) {
 					beanName = field.getType().getName();
 				}
-				if (!BeanContainer.contains(beanName)) {
+				Object targetBean = BeanContainer.getBean(beanName);
+				if (targetBean == null) {
 					continue beanSearch;
 				}
 				field.setAccessible(true);
-				Object writeValue = BeanContainer.getBean(beanName);
+
 				logger.debug("注入字段 >>" + field.getName() + ":" + bean.getClass().getName());
-				field.set(bean, writeValue);
+				field.set(bean, targetBean);
 				continue fieldSet;
 			}
 			throw new BeanNotFoundException(JSON.toJSONString(beanNames), bean.getClass());
@@ -110,9 +111,7 @@ public class BeanAssember {
 	}
 
 	private static List<Field> loadFields(Class<?> clazz) {
-		if (ClassUtil.isCglibProxyClassName(clazz.getName())) {
-			clazz = clazz.getSuperclass();
-		}
+		clazz = ClassUtil.getSourceClass(clazz);
 		List<Field> fields = new ArrayList<Field>();
 		Field[] fieldArgs = clazz.getDeclaredFields();
 		for (Field f : fieldArgs) {

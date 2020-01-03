@@ -20,56 +20,15 @@ import org.coody.framework.core.logger.BaseLogger;
 
 @SuppressWarnings("deprecation")
 public class FileUtils {
-	
-	static BaseLogger logger=BaseLogger.getLogger(FileUtils.class);
-	/**
-	 * 追加文件：使用FileWriter
-	 * 
-	 * @param folderName 目录名
-	 * @param fileName 文件名
-	 * @param content 内容
-	 */
-	public static void writeFile(final String folderName,
-			final String fileName, final String content) {
-		if (content == null || content.isEmpty()) {
-			return;
-		}
-		FileWriter writer = null;
-		File file = null;
-		try {
-			file = new File(folderName);
-			if (!file.exists()) {
-				// 文件夹不存在，创建
-				file.mkdir();
-			}
-			file = new File(folderName +  File.separator + fileName);
-			if (!file.exists()) {
-				// 文件夹不存在，创建
-				file.createNewFile();
-			}
-			// 打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
-			writer = new FileWriter(folderName +  File.separator + fileName, true);
-			writer.write(content);
-		} catch (IOException e) {
-			PrintException.printException(logger, e);
-		} finally {
-			try {
-				if (writer != null) {
-					writer.close();
-				}
-			} catch (IOException e) {
-				PrintException.printException(logger, e);
-			}
-		}
 
+	static BaseLogger logger = BaseLogger.getLogger(FileUtils.class);
+
+
+	public static void writeString(String path, String context) {
+		writeString(path, context, "utf-8");
 	}
 
-	public static void write(String path, String context) {
-		write(path, context, "utf-8");
-	}
-
-
-	public static void write(String path, String context, String encode) {
+	public static void writeString(String path, String context, String encode) {
 		OutputStream pt = null;
 		try {
 			pt = new FileOutputStream(URLDecoder.decode(path));
@@ -85,15 +44,14 @@ public class FileUtils {
 		}
 	}
 
-	public static void writeAppend(String path, String context) {
-		writeAppend(path, context, "utf-8");
+	public static void writeStringAppend(String path, String context) {
+		writeStringAppend(path, context, "utf-8");
 	}
 
-	public static void writeAppend(String path, String context, String encode) {
+	public static void writeStringAppend(String path, String context, String encode) {
 		BufferedWriter out = null;
 		try {
-			out = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream(URLDecoder.decode(path), true)));
+			out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(URLDecoder.decode(path), true)));
 			out.write(context);
 		} catch (Exception e) {
 			PrintException.printException(logger, e);
@@ -108,26 +66,25 @@ public class FileUtils {
 		}
 	}
 
-	public static void writeAppendLine(String path, String context) {
-		writeAppendLine(path, context, "utf-8");
+	public static void writeStringAppendLine(String path, String context) {
+		writeStringAppendLine(path, context, "utf-8");
 	}
 
-	public static void writeAppendLine(String path, String context,
-			String encode) {
-		writeAppend(path, context + "\r\n", encode);
+	public static void writeStringAppendLine(String path, String context, String encode) {
+		writeStringAppend(path, context + "\r\n", encode);
 	}
 
-	public static String readFile(String path) {
-		return readFile(path, "utf-8");
+	public static String readString(String path) {
+		return readString(path, "utf-8");
 	}
 
-	public static String readFile(String path, String encode) {
+	public static String readString(String path, String encode) {
 		FileInputStream in = null;
 		try {
 			File file = new File(URLDecoder.decode(path));
 			if (file.isFile() && file.exists()) { // 判断文件是否存在
 				in = new FileInputStream(file);
-				return new String(input2byte(in),encode);
+				return new String(inputStreamToBytes(in), encode);
 			}
 		} catch (Exception e) {
 		} finally {
@@ -138,22 +95,23 @@ public class FileUtils {
 		}
 		return null;
 	}
-	public static final byte[] input2byte(InputStream inStream) throws IOException  
-	{  
-		ByteArrayOutputStream swapStream = new ByteArrayOutputStream();  
-		byte[] buff = new byte[100];  
-		int rc = 0;  
-		while ((rc = inStream.read(buff, 0, 100)) > 0) {  
-			swapStream.write(buff, 0, rc);  
-		}  
-		byte[] in2b = swapStream.toByteArray();  
-		return in2b;  
-	}  
+
+	public static final byte[] inputStreamToBytes(InputStream inStream) throws IOException {
+		ByteArrayOutputStream swapStream = new ByteArrayOutputStream();
+		byte[] buff = new byte[100];
+		int rc = 0;
+		while ((rc = inStream.read(buff, 0, 100)) > 0) {
+			swapStream.write(buff, 0, rc);
+		}
+		byte[] in2b = swapStream.toByteArray();
+		return in2b;
+	}
+
 	@SuppressWarnings("resource")
-	public static byte[] readFileByte(String path) {
+	public static byte[] readBytes(String path) {
 		try {
 			File file = new File(URLDecoder.decode(path));
-			if(!file.exists()){
+			if (!file.exists()) {
 				return null;
 			}
 			long fileSize = file.length();
@@ -164,15 +122,12 @@ public class FileUtils {
 			byte[] buffer = new byte[(int) fileSize];
 			int offset = 0;
 			int numRead = 0;
-			while (offset < buffer.length
-					&& (numRead = fi.read(buffer, offset, buffer.length
-							- offset)) >= 0) {
+			while (offset < buffer.length && (numRead = fi.read(buffer, offset, buffer.length - offset)) >= 0) {
 				offset += numRead;
 			}
 			// 确保所有数据均被读取
 			if (offset != buffer.length) {
-				throw new IOException("Could not completely read file "
-						+ file.getName());
+				throw new IOException("Could not completely read file " + file.getName());
 			}
 			fi.close();
 			return buffer;
@@ -189,14 +144,14 @@ public class FileUtils {
 	 * @param realpath 目录路径
 	 * @return 文件列表
 	 */
-	public static List<File> getFiles(String realpath) {
+	public static List<File> getSubFiles(String realpath) {
 		List<File> files = new ArrayList<File>();
 		File realFile = new File(URLDecoder.decode(realpath));
 		if (realFile.isDirectory()) {
 			File[] subfiles = realFile.listFiles();
 			for (File file : subfiles) {
 				if (file.isDirectory()) {
-					files.addAll(getFiles(file.getAbsolutePath()));
+					files.addAll(getSubFiles(file.getAbsolutePath()));
 					continue;
 				}
 				files.add(file);
@@ -205,7 +160,7 @@ public class FileUtils {
 		return files;
 	}
 
-	public static void rewrite(File file, String data) {
+	public static void rewriteString(File file, String data) {
 		BufferedWriter bw = null;
 		try {
 			bw = new BufferedWriter(new FileWriter(file));
@@ -223,7 +178,7 @@ public class FileUtils {
 		}
 	}
 
-	public static List<String> readList(File file) {
+	public static List<String> readStringLines(File file) {
 		BufferedReader br = null;
 		List<String> data = new ArrayList<String>();
 		try {
@@ -244,9 +199,9 @@ public class FileUtils {
 		}
 		return data;
 	}
-	public static void main(String[] args) {
-	}
-	public static void writeFile(String path, byte[] content) {
+
+
+	public static void writeBytes(String path, byte[] content) {
 		try {
 			FileOutputStream fos = new FileOutputStream(path);
 
@@ -256,19 +211,19 @@ public class FileUtils {
 		}
 
 	}
-	
-	public static void makeFileDir(String path){
+
+	public static void makeFileDir(String path) {
 		while (path.contains("\\")) {
 			path = path.replace("\\", "/");
 		}
 		while (path.contains("//")) {
 			path = path.replace("//", "/");
 		}
-		int lastTag=path.lastIndexOf('/');
-		if(lastTag==-1){
+		int lastTag = path.lastIndexOf('/');
+		if (lastTag == -1) {
 			return;
 		}
-		path=path.substring(0,lastTag);
+		path = path.substring(0, lastTag);
 		if (!new File(path).exists()) {
 			new File(path).mkdirs();
 		}
