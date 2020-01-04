@@ -33,12 +33,12 @@ public class ObjectSerializer extends AbstractSerializer<Object> {
 					|| ChronoLocalDateTime.class.isAssignableFrom(field.getFieldType())) {
 				CsonDateFormat format = field.getSourceField().getAnnotation(CsonDateFormat.class);
 				if (format != null && !format.value().trim().equals("")) {
-					Long timeMillis = Long.valueOf(serializer(value));
-					jsonBuilder.append(serializer(DateUtils.toString(new Date(timeMillis), format.value())));
+					Long timeMillis = Long.valueOf(serialize(value));
+					jsonBuilder.append(serialize(DateUtils.toString(new Date(timeMillis), format.value())));
 					continue;
 				}
 			}
-			jsonBuilder.append(serializer(value));
+			jsonBuilder.append(serialize(value));
 			continue;
 		}
 		jsonBuilder.append("}");

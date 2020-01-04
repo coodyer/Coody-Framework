@@ -18,7 +18,7 @@ public class ArraySerializer extends AbstractSerializer<Object[]> {
 				jsonBuilder.append(",").append("null");
 				continue;
 			}
-			jsonBuilder.append(",").append(AbstractSerializer.serializer(line));
+			jsonBuilder.append(",").append(AbstractSerializer.serialize(line));
 		}
 		jsonBuilder.append("]");
 		String json = jsonBuilder.toString();

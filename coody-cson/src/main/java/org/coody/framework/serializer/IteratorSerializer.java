@@ -22,7 +22,7 @@ public class IteratorSerializer extends AbstractSerializer<Iterator<?>> {
 				jsonBuilder.append(",").append("null");
 				continue;
 			}
-			jsonBuilder.append(",").append(AbstractSerializer.serializer(value));
+			jsonBuilder.append(",").append(AbstractSerializer.serialize(value));
 		}
 		jsonBuilder.append("]");
 		String json = jsonBuilder.toString();

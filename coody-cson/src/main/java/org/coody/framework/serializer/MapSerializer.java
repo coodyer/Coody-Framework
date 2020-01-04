@@ -20,7 +20,7 @@ public class MapSerializer extends AbstractSerializer<Map<?, ?>> {
 			if (value == null) {
 				continue;
 			}
-			jsonBuilder.append(",").append(serializer(key)).append(":").append(serializer(value));
+			jsonBuilder.append(",").append(serialize(key)).append(":").append(serialize(value));
 		}
 		jsonBuilder.append("}");
 		String json = jsonBuilder.toString();

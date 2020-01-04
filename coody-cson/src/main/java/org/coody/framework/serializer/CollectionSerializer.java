@@ -20,7 +20,7 @@ public class CollectionSerializer extends AbstractSerializer<Collection<?>> {
 				jsonBuilder.append(",").append("null");
 				continue;
 			}
-			jsonBuilder.append(",").append(AbstractSerializer.serializer(value));
+			jsonBuilder.append(",").append(AbstractSerializer.serialize(value));
 		}
 		jsonBuilder.append("]");
 		String json = jsonBuilder.toString();

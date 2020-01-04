@@ -80,7 +80,7 @@ public abstract class AbstractSerializer<T> {
 		}
 	};
 
-	public static String serializer(Object target) {
+	public static String serialize(Object target) {
 		if (target == null) {
 			return null;
 		}
