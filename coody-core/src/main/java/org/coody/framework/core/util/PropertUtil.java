@@ -229,22 +229,22 @@ public class PropertUtil {
 			return null;
 		}
 		Class<? extends Object> cla = getObjClass(obj);
-		List<FieldEntity> infos = getClassFields(cla);
-		if (StringUtil.isNullOrEmpty(infos)) {
-			return infos;
+		List<FieldEntity> fields = getClassFields(cla);
+		if (StringUtil.isNullOrEmpty(fields)) {
+			return fields;
 		}
 		if (obj instanceof java.lang.Class) {
-			return infos;
+			return fields;
 		}
-		for (FieldEntity info : infos) {
+		for (FieldEntity field : fields) {
 			try {
-				Object value = info.getSourceField().get(obj);
-				info.setFieldValue(value);
+				Object value = field.getSourceField().get(obj);
+				field.setFieldValue(value);
 			} catch (Exception e) {
 
 			}
 		}
-		return infos;
+		return fields;
 	}
 
 	/**
