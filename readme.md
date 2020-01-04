@@ -79,6 +79,8 @@
 
     2019-12-31： 为minicat新增静态资源的支持，并发行alpha-1.2.6版本
 
+    2020-01-04： 新增cson项目，为json序列化和反序列化提供支撑
+
     Coody Framework+Minicat实战项目：https://gitee.com/coodyer/reduce/
 
 引用地址：
