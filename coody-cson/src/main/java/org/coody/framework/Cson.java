@@ -7,4 +7,8 @@ public class Cson {
 	public static String toJson(Object object) {
 		return AbstractAdapter.serializer(object);
 	}
+
+	public static <T> T toObject(String json, Class<?> clazz) {
+		return null;
+	}
 }
