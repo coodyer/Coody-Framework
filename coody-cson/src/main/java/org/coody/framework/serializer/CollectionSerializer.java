@@ -1,10 +1,10 @@
-package org.coody.framework.serializer.adapter;
+package org.coody.framework.serializer;
 
 import java.util.Collection;
 
-import org.coody.framework.serializer.adapter.iface.AbstractAdapter;
+import org.coody.framework.serializer.iface.AbstractSerializer;
 
-public class CollectionAdapter extends AbstractAdapter<Collection<?>> {
+public class CollectionSerializer extends AbstractSerializer<Collection<?>> {
 
 	@Override
 	public String adapt(Collection<?> target) {
@@ -20,7 +20,7 @@ public class CollectionAdapter extends AbstractAdapter<Collection<?>> {
 				jsonBuilder.append(",").append("null");
 				continue;
 			}
-			jsonBuilder.append(",").append(AbstractAdapter.serializer(value));
+			jsonBuilder.append(",").append(AbstractSerializer.serializer(value));
 		}
 		jsonBuilder.append("]");
 		String json = jsonBuilder.toString();

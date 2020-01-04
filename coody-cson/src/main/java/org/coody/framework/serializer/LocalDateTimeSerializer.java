@@ -1,11 +1,11 @@
-package org.coody.framework.serializer.adapter;
+package org.coody.framework.serializer;
 
 import java.time.ZoneOffset;
 import java.time.chrono.ChronoLocalDateTime;
 
-import org.coody.framework.serializer.adapter.iface.AbstractAdapter;
+import org.coody.framework.serializer.iface.AbstractSerializer;
 
-public class LocalDateTimeAdapter extends AbstractAdapter<ChronoLocalDateTime<?>> {
+public class LocalDateTimeSerializer extends AbstractSerializer<ChronoLocalDateTime<?>> {
 
 	@Override
 	public String adapt(ChronoLocalDateTime<?> target) {

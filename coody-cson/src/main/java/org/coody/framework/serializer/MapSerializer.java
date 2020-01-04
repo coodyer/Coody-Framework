@@ -1,10 +1,10 @@
-package org.coody.framework.serializer.adapter;
+package org.coody.framework.serializer;
 
 import java.util.Map;
 
-import org.coody.framework.serializer.adapter.iface.AbstractAdapter;
+import org.coody.framework.serializer.iface.AbstractSerializer;
 
-public class MapAdapter extends AbstractAdapter<Map<?, ?>> {
+public class MapSerializer extends AbstractSerializer<Map<?, ?>> {
 
 	@Override
 	public String adapt(Map<?, ?> target) {

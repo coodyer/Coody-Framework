@@ -1,11 +1,11 @@
-package org.coody.framework.serializer.adapter;
+package org.coody.framework.serializer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import org.coody.framework.serializer.adapter.iface.AbstractAdapter;
+import org.coody.framework.serializer.iface.AbstractSerializer;
 
-public class ThrowableAdapter extends AbstractAdapter<Throwable> {
+public class ThrowableSerializer extends AbstractSerializer<Throwable> {
 
 	@Override
 	public String adapt(Throwable target) {

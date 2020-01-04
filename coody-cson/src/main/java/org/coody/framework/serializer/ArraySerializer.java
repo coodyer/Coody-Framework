@@ -1,8 +1,8 @@
-package org.coody.framework.serializer.adapter;
+package org.coody.framework.serializer;
 
-import org.coody.framework.serializer.adapter.iface.AbstractAdapter;
+import org.coody.framework.serializer.iface.AbstractSerializer;
 
-public class ArrayAdapter extends AbstractAdapter<Object[]> {
+public class ArraySerializer extends AbstractSerializer<Object[]> {
 
 	@Override
 	public String adapt(Object[] target) {
@@ -18,7 +18,7 @@ public class ArrayAdapter extends AbstractAdapter<Object[]> {
 				jsonBuilder.append(",").append("null");
 				continue;
 			}
-			jsonBuilder.append(",").append(AbstractAdapter.serializer(line));
+			jsonBuilder.append(",").append(AbstractSerializer.serializer(line));
 		}
 		jsonBuilder.append("]");
 		String json = jsonBuilder.toString();

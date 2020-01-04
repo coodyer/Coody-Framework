@@ -1,10 +1,10 @@
-package org.coody.framework.serializer.adapter;
+package org.coody.framework.serializer;
 
 import java.util.Iterator;
 
-import org.coody.framework.serializer.adapter.iface.AbstractAdapter;
+import org.coody.framework.serializer.iface.AbstractSerializer;
 
-public class IteratorAdapter extends AbstractAdapter<Iterator<?>> {
+public class IteratorSerializer extends AbstractSerializer<Iterator<?>> {
 
 	@Override
 	public String adapt(Iterator<?> target) {
@@ -22,7 +22,7 @@ public class IteratorAdapter extends AbstractAdapter<Iterator<?>> {
 				jsonBuilder.append(",").append("null");
 				continue;
 			}
-			jsonBuilder.append(",").append(AbstractAdapter.serializer(value));
+			jsonBuilder.append(",").append(AbstractSerializer.serializer(value));
 		}
 		jsonBuilder.append("]");
 		String json = jsonBuilder.toString();
