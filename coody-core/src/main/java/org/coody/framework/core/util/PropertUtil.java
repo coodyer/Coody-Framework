@@ -261,6 +261,9 @@ public class PropertUtil {
 				if (f.getName().equalsIgnoreCase("serialVersionUID")) {
 					continue;
 				}
+				if (f.getName().equalsIgnoreCase("$jacocodata")) {
+					continue;
+				}
 				f.setAccessible(true);
 				FieldEntity tmp = new FieldEntity();
 				tmp.setFieldOffset(UnsafeUtil.getFieldOffset(f));

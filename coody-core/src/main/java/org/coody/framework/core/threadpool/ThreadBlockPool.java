@@ -69,7 +69,7 @@ public class ThreadBlockPool {
 		}
 		exePool.shutdown();
 		try {
-			exePool.awaitTermination(timeOutSeconds * 1000 * 1000, TimeUnit.MICROSECONDS);
+			exePool.awaitTermination(timeOutSeconds * 1000 , TimeUnit.MILLISECONDS);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
