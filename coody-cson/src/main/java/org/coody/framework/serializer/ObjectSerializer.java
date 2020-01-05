@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.coody.framework.annotation.CsonDateFormat;
+import org.coody.framework.annotation.CsonIgnore;
 import org.coody.framework.core.model.FieldEntity;
 import org.coody.framework.core.util.DateUtils;
 import org.coody.framework.core.util.PropertUtil;
@@ -24,6 +25,10 @@ public class ObjectSerializer extends AbstractSerializer<Object> {
 		StringBuilder jsonBuilder = new StringBuilder();
 		for (int i = 0; i < fields.size(); i++) {
 			FieldEntity field = fields.get(i);
+			CsonIgnore ignore = field.getAnnotation(CsonIgnore.class);
+			if (ignore != null) {
+				continue;
+			}
 			Object value = field.getFieldValue();
 			if (value == null) {
 				continue;
