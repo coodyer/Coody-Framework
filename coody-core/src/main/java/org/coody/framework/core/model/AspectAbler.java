@@ -1,7 +1,10 @@
 package org.coody.framework.core.model;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.coody.framework.core.constant.AspectConstant;
 import org.coody.framework.core.container.ThreadContainer;
@@ -25,7 +28,9 @@ public class AspectAbler extends BaseModel implements Cloneable {
 	private Method aspectMethod;
 	// 切面bean
 	private Object aspectBean;
-
+	// 注解值
+	private Map<Class<? extends Annotation>, Object> annotationValueMap = new ConcurrentHashMap<Class<? extends Annotation>, Object>();
+	// 是否拦截自调用
 	private Boolean masturbation = true;
 
 	public Boolean getMasturbation() {
@@ -34,6 +39,14 @@ public class AspectAbler extends BaseModel implements Cloneable {
 
 	public void setMasturbation(Boolean masturbation) {
 		this.masturbation = masturbation;
+	}
+
+	public Map<Class<? extends Annotation>, Object> getAnnotationValueMap() {
+		return annotationValueMap;
+	}
+
+	public void setAnnotationValueMap(Map<Class<? extends Annotation>, Object> annotationValueMap) {
+		this.annotationValueMap = annotationValueMap;
 	}
 
 	public Object getBean() {
@@ -75,7 +88,6 @@ public class AspectAbler extends BaseModel implements Cloneable {
 	public void setAspectMethod(Method aspectMethod) {
 		this.aspectMethod = aspectMethod;
 	}
-
 
 	public AspectAbler getChildAbler() {
 		return childAbler;

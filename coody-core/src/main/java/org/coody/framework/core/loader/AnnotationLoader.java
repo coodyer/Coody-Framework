@@ -55,7 +55,7 @@ public class AnnotationLoader implements CoodyLoader {
 		pool.execute();
 	}
 
-	// 把父类注解，克隆到子类注解
+	// 把父类方法注解，克隆到子类注解
 	public void cloneSuperAnnotationToChilder(Class<?> clazz, Class<?> childClazz) {
 		if (clazz == null || clazz == Object.class) {
 			return;
@@ -116,7 +116,7 @@ public class AnnotationLoader implements CoodyLoader {
 				Set<ElementType> targeAnnotations = new HashSet<ElementType>(Arrays.asList(targe.value()));
 				if (targeAnnotations.contains(ElementType.FIELD)) {
 					FieldDeliver deliver = annotation.annotationType().getAnnotation(FieldDeliver.class);
-					if(deliver==null) {
+					if (deliver == null) {
 						continue;
 					}
 					fieldAnnotations.add(annotation);
@@ -124,7 +124,7 @@ public class AnnotationLoader implements CoodyLoader {
 				}
 				if (targeAnnotations.contains(ElementType.METHOD)) {
 					MethodDeliver deliver = annotation.annotationType().getAnnotation(MethodDeliver.class);
-					if(deliver==null) {
+					if (deliver == null) {
 						continue;
 					}
 					methodAnnotations.add(annotation);
@@ -153,5 +153,4 @@ public class AnnotationLoader implements CoodyLoader {
 			}
 		}
 	}
-
 }

@@ -7,6 +7,7 @@ import org.coody.framework.core.annotation.Around;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.annotation.LogFlag;
 import org.coody.framework.core.model.AspectPoint;
+import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
 
 @AutoBuild
@@ -49,7 +50,7 @@ public class LoggerAspect {
 	}
 
 	public static String getMethodFlag(Method method) {
-		LogFlag flag = method.getAnnotation(LogFlag.class);
+		LogFlag flag = PropertUtil.getAnnotation(method, LogFlag.class);
 		if (flag != null) {
 			return flag.value();
 		}
@@ -57,7 +58,7 @@ public class LoggerAspect {
 	}
 
 	public static String getClassFlag(Class<?> clazz) {
-		LogFlag flag = clazz.getAnnotation(LogFlag.class);
+		LogFlag flag = PropertUtil.getAnnotation(clazz, LogFlag.class);
 		if (flag != null) {
 			return flag.value();
 		}

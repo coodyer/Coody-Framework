@@ -3,28 +3,21 @@ package org.coody.framework.core.model;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({ "serial", "rawtypes" })
 public class AspectEntity extends BaseModel {
 
-	private Class<?>[] annotationClass;
+	private Class[] annotationClass;
 
 	private String methodMappath;
 
 	private String classMappath;
-	
-	private Method aspectInvokeMethod;
-	
-	private Boolean ownIntercept;
-	
-	private Class<?> aspectClazz;
-	
-	
-	
-	
 
-	
-	
-	
+	private Method aspectInvokeMethod;
+
+	private Boolean ownIntercept;
+
+	private Class<?> aspectClazz;
+
 	public Class<?> getAspectClazz() {
 		return aspectClazz;
 	}
@@ -32,7 +25,6 @@ public class AspectEntity extends BaseModel {
 	public void setAspectClazz(Class<?> aspectClazz) {
 		this.aspectClazz = aspectClazz;
 	}
-
 
 	public Boolean getOwnIntercept() {
 		return ownIntercept;
@@ -50,11 +42,11 @@ public class AspectEntity extends BaseModel {
 		this.aspectInvokeMethod = aspectInvokeMethod;
 	}
 
-	public Class<?>[] getAnnotationClass() {
+	public Class[] getAnnotationClass() {
 		return annotationClass;
 	}
 
-	public void setAnnotationClass(Class<?>[] annotationClass) {
+	public void setAnnotationClass(Class[] annotationClass) {
 		this.annotationClass = annotationClass;
 	}
 
@@ -80,5 +72,4 @@ public class AspectEntity extends BaseModel {
 				+ ", classMappath=" + classMappath + ", aspectInvokeMethod=" + aspectInvokeMethod + "]";
 	}
 
-	
 }
