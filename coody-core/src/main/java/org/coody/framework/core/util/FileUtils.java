@@ -16,13 +16,8 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.coody.framework.core.logger.BaseLogger;
-
 @SuppressWarnings("deprecation")
 public class FileUtils {
-
-	static BaseLogger logger = BaseLogger.getLogger(FileUtils.class);
-
 
 	public static void writeString(String path, String context) {
 		writeString(path, context, "utf-8");
@@ -34,12 +29,12 @@ public class FileUtils {
 			pt = new FileOutputStream(URLDecoder.decode(path));
 			pt.write(context.getBytes(encode));
 		} catch (Exception e) {
-			PrintException.printException(logger, e);
+			PrintException.printException(e);
 		} finally {
 			try {
 				pt.close();
 			} catch (IOException e) {
-				PrintException.printException(logger, e);
+				PrintException.printException(e);
 			}
 		}
 	}
@@ -54,14 +49,14 @@ public class FileUtils {
 			out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(URLDecoder.decode(path), true)));
 			out.write(context);
 		} catch (Exception e) {
-			PrintException.printException(logger, e);
+			PrintException.printException(e);
 		} finally {
 			try {
 				if (out != null) {
 					out.close();
 				}
 			} catch (IOException e) {
-				PrintException.printException(logger, e);
+				PrintException.printException(e);
 			}
 		}
 	}
@@ -132,7 +127,7 @@ public class FileUtils {
 			fi.close();
 			return buffer;
 		} catch (Exception e) {
-			PrintException.printException(logger, e);
+			PrintException.printException(e);
 			return null;
 		}
 	}
@@ -166,13 +161,13 @@ public class FileUtils {
 			bw = new BufferedWriter(new FileWriter(file));
 			bw.write(data);
 		} catch (IOException e) {
-			PrintException.printException(logger, e);
+			PrintException.printException(e);
 		} finally {
 			if (bw != null) {
 				try {
 					bw.close();
 				} catch (IOException e) {
-					PrintException.printException(logger, e);
+					PrintException.printException(e);
 				}
 			}
 		}
@@ -187,19 +182,18 @@ public class FileUtils {
 				data.add(str);
 			}
 		} catch (IOException e) {
-			PrintException.printException(logger, e);
+			PrintException.printException(e);
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					PrintException.printException(logger, e);
+					PrintException.printException(e);
 				}
 			}
 		}
 		return data;
 	}
-
 
 	public static void writeBytes(String path, byte[] content) {
 		try {

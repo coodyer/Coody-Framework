@@ -2,7 +2,6 @@ package org.coody.framework.cache.aspecter;
 
 import java.lang.reflect.Method;
 
-import org.apache.log4j.Logger;
 import org.coody.framework.cache.annotation.CacheWipe;
 import org.coody.framework.cache.annotation.CacheWipes;
 import org.coody.framework.cache.annotation.CacheWrite;
@@ -12,6 +11,7 @@ import org.coody.framework.core.annotation.Around;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.model.AspectPoint;
+import org.coody.framework.core.util.LogUtil;
 import org.coody.framework.core.util.MethodSignUtil;
 import org.coody.framework.core.util.StringUtil;
 
@@ -20,8 +20,6 @@ public class CacheAspect {
 
 	@AutoBuild
 	LocalCache localCache;
-
-	private final Logger logger = Logger.getLogger(this.getClass());
 
 	/**
 	 * 写缓存操作
@@ -67,7 +65,7 @@ public class CacheAspect {
 		// 获取缓存
 		try {
 			Object result = cacheable.getCache(key);
-			logger.debug("获取缓存 >>" + key + ",结果:" + result);
+			LogUtil.log.debug("获取缓存 >>" + key + ",结果:" + result);
 			if (!StringUtil.isNullOrEmpty(result)) {
 				return result;
 			}
@@ -78,7 +76,7 @@ public class CacheAspect {
 		if (result != null) {
 			try {
 				cacheable.setCache(key, result, cacheTimer);
-				logger.debug("设置缓存 >>" + key + ",结果:" + result + ",缓存时间:" + cacheTimer);
+				LogUtil.log.debug("设置缓存 >>" + key + ",结果:" + result + ",缓存时间:" + cacheTimer);
 			} catch (Exception e) {
 			}
 		}
@@ -126,7 +124,7 @@ public class CacheAspect {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			logger.debug("删除缓存 >>" + key);
+			LogUtil.log.debug("删除缓存 >>" + key);
 			CoodyCacheFace cacheable = getCacheable(handle.engine());
 			cacheable.delCache(key);
 		}

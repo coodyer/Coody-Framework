@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
 import org.coody.framework.core.annotation.Around;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.bean.InitBeanFace;
@@ -27,7 +26,6 @@ import org.coody.framework.task.threadpool.TaskThreadPool;
 public class TaskTrigger implements InitBeanFace {
 
 	private static Map<Method, ZonedDateTime> cronExpressionMap = new ConcurrentHashMap<Method, ZonedDateTime>();
-	static Logger logger = Logger.getLogger(TaskTrigger.class);
 
 	public static Method getTriggerMethod() {
 		Method[] methods = TaskTrigger.class.getDeclaredMethods();
@@ -86,13 +84,13 @@ public class TaskTrigger implements InitBeanFace {
 	}
 
 	public void init() {
-		if(StringUtil.isNullOrEmpty(TaskContainer.getTaskEntitys())){
+		if (StringUtil.isNullOrEmpty(TaskContainer.getTaskEntitys())) {
 			return;
 		}
-		ThreadBlockPool threadBlockPool=new ThreadBlockPool(TaskContainer.getTaskEntitys().size(),60);
+		ThreadBlockPool threadBlockPool = new ThreadBlockPool(TaskContainer.getTaskEntitys().size(), 60);
 		for (TaskEntity task : TaskContainer.getTaskEntitys()) {
 			Object bean = BeanContainer.getBean(task.getClazz());
-			Runnable runnable=new Runnable() {
+			Runnable runnable = new Runnable() {
 				@Override
 				public void run() {
 					TaskTrigger.trigger(bean, task.getMethod(), task.getCron(), null);

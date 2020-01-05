@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.coody.framework.core.annotation.Around;
 import org.coody.framework.core.annotation.Arounds;
 import org.coody.framework.core.annotation.AutoBuild;
@@ -17,6 +16,7 @@ import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.loader.iface.CoodyLoader;
 import org.coody.framework.core.model.AspectEntity;
 import org.coody.framework.core.threadpool.ThreadBlockPool;
+import org.coody.framework.core.util.LogUtil;
 import org.coody.framework.core.util.MethodSignUtil;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
@@ -28,8 +28,6 @@ import org.coody.framework.core.util.StringUtil;
  *
  */
 public class AspectLoader implements CoodyLoader {
-
-	private static final Logger logger = Logger.getLogger(AspectLoader.class);
 
 	@Override
 	public void doLoader() throws Exception {
@@ -95,7 +93,7 @@ public class AspectLoader implements CoodyLoader {
 						continue;
 					}
 					Boolean ownIntercept = (Boolean) annotationValueMap.get("ownIntercept");
-					logger.debug("初始化切面方法 >>" + MethodSignUtil.getKeyByMethod(clazz, method));
+					LogUtil.log.debug("初始化切面方法 >>" + MethodSignUtil.getKeyByMethod(clazz, method));
 					AspectEntity aspectEntity = new AspectEntity();
 					// 装载切面控制方法
 					aspectEntity.setAnnotationClass(annotationClass);

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 import org.coody.framework.core.builder.ConfigBuilder;
-import org.coody.framework.core.logger.BaseLogger;
+import org.coody.framework.core.util.LogUtil;
 import org.coody.framework.core.util.StringUtil;
 import org.coody.framework.minicat.annotation.Filter;
 import org.coody.framework.minicat.annotation.Servlet;
@@ -19,8 +19,6 @@ import org.coody.framework.minicat.socket.iface.MiniCatService;
 
 public class CoreApp {
 
-	static BaseLogger logger = BaseLogger.getLogger(CoreApp.class);
-
 	public static void init(Class<?>... clazzs) throws InstantiationException, IllegalAccessException,
 			ClassNotFoundException, IOException, URISyntaxException {
 		long startTime = System.currentTimeMillis();
@@ -29,7 +27,7 @@ public class CoreApp {
 		ConfigBuilder.flush(new MiniCatConfig(), MiniCatConfig.PREFIX);
 		// 框架启动
 		MiniCatService miniCatService = (MiniCatService) Class.forName(MiniCatConfig.engine).newInstance();
-		logger.info("引用模式>>" + miniCatService.getClass().getName());
+		LogUtil.log.info("引用模式>>" + miniCatService.getClass().getName());
 		try {
 			if (StringUtil.isNullOrEmpty(clazzs)) {
 				System.err.println("初始化Servlet为空");
@@ -38,7 +36,7 @@ public class CoreApp {
 			// 启动静态资源servlet
 			if (!StringUtil.isNullOrEmpty(MiniCatConfig.resources)) {
 				HttpServlet servlet = new ResourceServlet();
-				logger.info("注册Servlet>>" + ResourceServlet.class.getName() + ">>" + MiniCatConfig.resources);
+				LogUtil.log.info("注册Servlet>>" + ResourceServlet.class.getName() + ">>" + MiniCatConfig.resources);
 				String servletPath = MiniCatConfig.resources;
 				String[] mappings = servletPath.split(MiniCatConfig.split);
 				for (String mapping : mappings) {
@@ -53,7 +51,7 @@ public class CoreApp {
 				Servlet servletFlag = clazz.getAnnotation(Servlet.class);
 				if (servletFlag != null && !StringUtil.isNullOrEmpty(servletFlag.value())) {
 					HttpServlet servlet = (HttpServlet) clazz.getDeclaredConstructor().newInstance();
-					logger.info("注册Servlet>>" + clazz.getName() + ">>" + servletFlag.value());
+					LogUtil.log.info("注册Servlet>>" + clazz.getName() + ">>" + servletFlag.value());
 					String servletPath = servletFlag.value();
 					String[] mappings = servletPath.split(MiniCatConfig.split);
 					for (String mapping : mappings) {
@@ -65,14 +63,14 @@ public class CoreApp {
 				if (filterFlag != null && !StringUtil.isNullOrEmpty(filterFlag.value())) {
 					HttpFilter filter = (HttpFilter) clazz.getDeclaredConstructor().newInstance();
 					filter.setMapping(filterFlag.value());
-					logger.info("注册Filter>>" + clazz.getName() + ">>" + filterFlag.value());
+					LogUtil.log.info("注册Filter>>" + clazz.getName() + ">>" + filterFlag.value());
 					FilterContainer.pushFilter(filter);
 					filter.init();
 				}
 			}
 			// 打开端口
 			miniCatService.openPort(MiniCatConfig.port, MiniCatConfig.sessionTimeout);
-			logger.info(
+			LogUtil.log.info(
 					"MiniCat:" + MiniCatConfig.port + "启动完成,耗时>>" + (System.currentTimeMillis() - startTime) + "ms");
 			// 处理请求
 			miniCatService.doService();

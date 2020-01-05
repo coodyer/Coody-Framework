@@ -12,14 +12,12 @@ import java.util.List;
 
 import javax.net.ssl.SSLSocketFactory;
 
-import org.coody.framework.core.logger.BaseLogger;
+import org.coody.framework.core.util.LogUtil;
 import org.coody.framework.core.util.StringUtil;
 import org.coody.framework.mail.entity.EmailSendConfig;
 import org.coody.framework.mail.exception.MailException;
 
 public class EmailSender {
-
-	BaseLogger logger = BaseLogger.getLogger(this.getClass());
 
 	private EmailSendConfig emailSendConfig;
 
@@ -69,7 +67,7 @@ public class EmailSender {
 
 		try {
 			String temp = sendAndReadLine("MAIL FROM:<" + emailSendConfig.getEmail() + ">" + "\r\n");
-			logger.info(temp);
+			LogUtil.log.info(temp);
 			for (String email : targeEmail) {
 				sendAndReadLine("RCPT TO:<" + email + ">" + "\r\n");
 			}
@@ -106,7 +104,7 @@ public class EmailSender {
 
 	private String readLine() throws IOException {
 		String line = bufferedReader.readLine();
-		logger.info(line);
+		LogUtil.log.info(line);
 		if (StringUtil.isNullOrEmpty(line)) {
 			throw new MailException("连接邮件服务器失败");
 		}

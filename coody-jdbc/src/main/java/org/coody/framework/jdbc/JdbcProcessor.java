@@ -20,10 +20,10 @@ import java.util.TreeMap;
 
 import javax.sql.DataSource;
 
-import org.coody.framework.core.logger.BaseLogger;
 import org.coody.framework.core.model.BaseModel;
 import org.coody.framework.core.model.FieldEntity;
 import org.coody.framework.core.util.DateUtils;
+import org.coody.framework.core.util.LogUtil;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
 import org.coody.framework.jdbc.annotation.DBColumn;
@@ -43,8 +43,6 @@ import com.alibaba.fastjson.JSON;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class JdbcProcessor {
-
-	BaseLogger logger = BaseLogger.getLogger(this.getClass());
 
 	public Boolean formatSql = true;
 
@@ -111,7 +109,7 @@ public class JdbcProcessor {
 				if (formatSql) {
 					outSql = formatParameters(sql, parameters);
 				}
-				logger.debug("[线程ID:" + threadId + "][执行语句:" + outSql + "]");
+				LogUtil.log.debug("[线程ID:" + threadId + "][执行语句:" + outSql + "]");
 				if (!StringUtil.isNullOrEmpty(parameters)) {
 					for (int i = 0; i < parameters.length; i++) {
 						statement.setObject((i + 1), parameters[i]);

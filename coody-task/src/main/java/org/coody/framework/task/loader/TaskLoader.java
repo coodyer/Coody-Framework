@@ -4,11 +4,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import org.apache.log4j.Logger;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.annotation.Order;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.loader.iface.CoodyLoader;
+import org.coody.framework.core.util.LogUtil;
 import org.coody.framework.core.util.MethodSignUtil;
 import org.coody.framework.core.util.PrintException;
 import org.coody.framework.core.util.PropertUtil;
@@ -25,28 +25,23 @@ import org.coody.framework.task.exception.ErrorCronException;
  */
 @Order(4)
 public class TaskLoader implements CoodyLoader {
-	
-	
-
-	private static final Logger logger = Logger.getLogger(TaskLoader.class);
-
 
 	@Override
 	public void doLoader() throws Exception {
 		if (StringUtil.isNullOrEmpty(BeanContainer.getClazzContainer())) {
 			return;
 		}
-		for (Class<?> clazz:BeanContainer.getClazzContainer()) {
+		for (Class<?> clazz : BeanContainer.getClazzContainer()) {
 			if (clazz.isAnnotation()) {
 				continue;
 			}
 			if (clazz.isInterface()) {
 				continue;
 			}
-			if(Modifier.isAbstract(clazz.getModifiers())){
+			if (Modifier.isAbstract(clazz.getModifiers())) {
 				continue;
 			}
-			if(clazz.isEnum()){
+			if (clazz.isEnum()) {
 				continue;
 			}
 			Annotation initBean = PropertUtil.getAnnotation(clazz, AutoBuild.class);
@@ -59,15 +54,15 @@ public class TaskLoader implements CoodyLoader {
 			}
 			for (Method method : methods) {
 				Annotation cronTask = PropertUtil.getAnnotation(method, CronTask.class);
-				if(cronTask==null){
+				if (cronTask == null) {
 					continue;
 				}
-				String cron=PropertUtil.getAnnotationValue(cronTask, "value");
+				String cron = PropertUtil.getAnnotationValue(cronTask, "value");
 				if (StringUtil.isNullOrEmpty(cron)) {
-					PrintException.printException(logger, new ErrorCronException(cron, method));
+					PrintException.printException(new ErrorCronException(cron, method));
 					continue;
 				}
-				logger.debug("初始化定时任务 >>"+cron+":"+MethodSignUtil.getKeyByMethod(clazz, method));
+				LogUtil.log.debug("初始化定时任务 >>" + cron + ":" + MethodSignUtil.getKeyByMethod(clazz, method));
 				TaskContainer.setTaskEntity(clazz, method, cron);
 			}
 		}

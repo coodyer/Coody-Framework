@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.coody.framework.core.annotation.Around;
 import org.coody.framework.core.annotation.AutoBuild;
-import org.coody.framework.core.logger.BaseLogger;
 import org.coody.framework.core.model.AspectPoint;
+import org.coody.framework.core.util.LogUtil;
 import org.coody.framework.core.util.PrintException;
 import org.coody.framework.core.util.StringUtil;
 import org.coody.framework.jdbc.annotation.Transacted;
@@ -14,8 +14,6 @@ import org.coody.framework.jdbc.container.TransactedThreadContainer;
 
 @AutoBuild
 public class TransactedAspect {
-
-	BaseLogger logger = BaseLogger.getLogger(this.getClass());
 
 	/**
 	 * 事物控制
@@ -51,7 +49,7 @@ public class TransactedAspect {
 				try {
 					conn.rollback();
 				} catch (Exception ex) {
-					PrintException.printException(logger, e);
+					PrintException.printException(e);
 				}
 			}
 			throw e;

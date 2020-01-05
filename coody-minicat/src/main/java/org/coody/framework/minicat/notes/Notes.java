@@ -2,12 +2,10 @@ package org.coody.framework.minicat.notes;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.coody.framework.core.logger.BaseLogger;
+import org.coody.framework.core.util.LogUtil;
 import org.coody.framework.minicat.threadpool.MiniCatThreadPool;
 
 public class Notes {
-
-	static BaseLogger logger = BaseLogger.getLogger(Notes.class);
 
 	public static AtomicLong input = new AtomicLong(0l);
 
@@ -22,7 +20,7 @@ public class Notes {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					logger.debug("input:" + input + ",output:" + output);
+					LogUtil.log.debug("input:" + input + ",output:" + output);
 					input.set(0);
 					output.set(0);
 				}

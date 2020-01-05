@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.coody.framework.core.exception.base.CoodyException;
 import org.coody.framework.core.util.PrintException;
 import org.coody.framework.core.util.PropertUtil;
@@ -21,8 +20,6 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 public class ImplClassMaker {
-
-	static Logger logger = Logger.getLogger(ImplClassMaker.class);
 
 	@SuppressWarnings("serial")
 	private static final Map<Class<?>, String> RETURN_TYPE_MAPPING = new HashMap<Class<?>, String>() {
@@ -66,7 +63,7 @@ public class ImplClassMaker {
 				return Opcodes.V1_8;
 			}
 		} catch (Exception e) {
-			PrintException.printException(logger, e);
+			PrintException.printException(e);
 		}
 		return Opcodes.V1_8;
 	}
