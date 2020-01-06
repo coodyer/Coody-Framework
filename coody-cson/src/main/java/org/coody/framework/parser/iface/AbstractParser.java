@@ -2,14 +2,11 @@ package org.coody.framework.parser.iface;
 
 import org.coody.framework.entity.CsonArray;
 import org.coody.framework.entity.CsonObject;
-import org.coody.framework.parser.ValueParser;
 
 import com.alibaba.fastjson.JSON;
 
 public abstract class AbstractParser {
 	public abstract void parseValue(String json, Object object);
-
-	public static AbstractParser valueParser = new ValueParser();
 
 	public static CsonArray parseCsonArray(String json) throws InstantiationException, IllegalAccessException {
 		json = json.trim();
@@ -129,7 +126,7 @@ public abstract class AbstractParser {
 	}
 
 	public static void main(String[] args) throws InstantiationException, IllegalAccessException {
-		String json = "{\"localDateTime\":1578293989308,\"code\":0,\"id\":10086,\"email\":\"644556636@qq.com\",\"password\":\"123456\",\"resCode\":SUCCESS,\"status\":1,\"createTime\":1578293989308,\"attrs\":[null],\"list\":[\"123\",\"234\"],\"setting\":{\"id\":10011,\"keywords\":\"关键词\",\"description\":\"测试描述\"},\"isAllow\":true}";
+		String json = "{user:Coody}";
 		CsonObject object = AbstractParser.parseCson(json);
 		System.out.println("得到结果:" + JSON.toJSONString(object));
 	}
