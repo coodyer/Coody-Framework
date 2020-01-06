@@ -19,14 +19,12 @@ import org.coody.framework.core.loader.CustomBeanLoader;
 import org.coody.framework.core.loader.FieldLoader;
 import org.coody.framework.core.loader.InitRunLoader;
 import org.coody.framework.core.loader.iface.CoodyLoader;
-import org.coody.framework.core.logger.BaseLogger;
 import org.coody.framework.core.threadpool.ThreadBlockPool;
 import org.coody.framework.core.util.ClassUtil;
+import org.coody.framework.core.util.LogUtil;
 import org.coody.framework.core.util.StringUtil;
 
 public class CoreApp {
-
-	static BaseLogger logger = BaseLogger.getLogger(CoreApp.class);
 
 	@SuppressWarnings("serial")
 	static Map<Integer, List<Class<?>>> loadersMap = new TreeMap<Integer, List<Class<?>>>() {
@@ -94,12 +92,12 @@ public class CoreApp {
 					@Override
 					public void run() {
 						try {
-							logger.debug(loader.getName() + " >>开始加载");
+							LogUtil.log.debug(loader.getName() + " >>开始加载");
 							long t0 = System.currentTimeMillis();
 							CoodyLoader icopLoader = (CoodyLoader) loader.newInstance();
 							icopLoader.doLoader();
 							long t1 = System.currentTimeMillis();
-							logger.info(loader.getName() + " >>加载耗时:" + (t1 - t0) + "ms");
+							LogUtil.log.info(loader.getName() + " >>加载耗时:" + (t1 - t0) + "ms");
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -110,7 +108,7 @@ public class CoreApp {
 			pool.execute();
 		}
 		long tEnd = System.currentTimeMillis();
-		logger.info("Coody Framework >>加载耗时:" + (tEnd - tInit) + "ms");
+		LogUtil.log.info("Coody Framework >>加载耗时:" + (tEnd - tInit) + "ms");
 	}
 
 }

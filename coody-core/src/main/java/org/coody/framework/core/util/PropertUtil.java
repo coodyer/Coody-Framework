@@ -36,6 +36,7 @@ public class PropertUtil {
 	private static final Map<Method, Set<Method>> IFACE_METHODS = new ConcurrentHashMap<Method, Set<Method>>();
 	private static final Map<Method, Set<Class<?>>> IFACE_CLAZZS = new ConcurrentHashMap<Method, Set<Class<?>>>();
 	private static final Map<Class<?>, Set<Method>> CLAZZS_METHODS = new ConcurrentHashMap<Class<?>, Set<Method>>();
+	private static final Map<String, Annotation> ANNOTATION_MAP = new ConcurrentHashMap<String, Annotation>();
 
 	public static void reload() {
 		FIELD_MAP.clear();
@@ -259,6 +260,9 @@ public class PropertUtil {
 			List<FieldEntity> infos = new ArrayList<FieldEntity>();
 			for (Field f : fields) {
 				if (f.getName().equalsIgnoreCase("serialVersionUID")) {
+					continue;
+				}
+				if (f.getName().equalsIgnoreCase("$jacocodata")) {
 					continue;
 				}
 				f.setAccessible(true);
@@ -1155,17 +1159,20 @@ public class PropertUtil {
 	 * @throws IllegalAccessException
 	 * @throws IllegalArgumentException
 	 */
-	public static void setAnnotationValue(Annotation annotation, Map<String, Object> datas)
-			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-		InvocationHandler invocationHandler = Proxy.getInvocationHandler(annotation);
-		Field declaredField = invocationHandler.getClass().getDeclaredField("memberValues");
-		declaredField.setAccessible(true);
-		Map<String, Object> memberValues = (Map<String, Object>) declaredField.get(invocationHandler);
-		if (StringUtil.isNullOrEmpty(datas)) {
-			memberValues.clear();
-		}
-		for (String key : datas.keySet()) {
-			memberValues.put(key, datas.get(key));
+	public static void setAnnotationValue(Annotation annotation, Map<String, Object> datas) {
+		try {
+			InvocationHandler invocationHandler = Proxy.getInvocationHandler(annotation);
+			Field declaredField = invocationHandler.getClass().getDeclaredField("memberValues");
+			declaredField.setAccessible(true);
+			Map<String, Object> memberValues = (Map<String, Object>) declaredField.get(invocationHandler);
+			if (StringUtil.isNullOrEmpty(datas)) {
+				memberValues.clear();
+			}
+			for (String key : datas.keySet()) {
+				memberValues.put(key, datas.get(key));
+			}
+		} catch (Exception e) {
+			throw new CoodyException("设置注解值失败", e);
 		}
 
 	}
@@ -1178,37 +1185,93 @@ public class PropertUtil {
 	 * @throws IllegalAccessException
 	 * @throws IllegalArgumentException
 	 */
-	public static Map<String, Object> getAnnotationValueMap(Annotation annotation)
-			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-		InvocationHandler invocationHandler = Proxy.getInvocationHandler(annotation);
-		Field declaredField = invocationHandler.getClass().getDeclaredField("memberValues");
-		declaredField.setAccessible(true);
-		Map<String, Object> memberValues = (Map<String, Object>) declaredField.get(invocationHandler);
-		return memberValues;
+	public static Map<String, Object> getAnnotationValueMap(Annotation annotation) {
+		try {
+			InvocationHandler invocationHandler = Proxy.getInvocationHandler(annotation);
+			Field declaredField = invocationHandler.getClass().getDeclaredField("memberValues");
+			declaredField.setAccessible(true);
+			Map<String, Object> memberValues = (Map<String, Object>) declaredField.get(invocationHandler);
+			return memberValues;
+		} catch (Exception e) {
+			throw new CoodyException("设置注解值失败", e);
+		}
 	}
 
-	public static <T extends Annotation> T getAnnotation(AccessibleObject accessible, Class<T> annotationClass) {
+	public static <T extends Annotation> T getAnnotation(Field field, Class<T> annotationClass) {
 		if (!annotationClass.isAnnotation()) {
 			return null;
 		}
-		Annotation annotation = accessible.getAnnotation(annotationClass);
+		Annotation annotation = field.getAnnotation(annotationClass);
 		if (annotation != null) {
 			return (T) annotation;
 		}
-		Annotation[] annotations = accessible.getAnnotations();
+		annotation = ANNOTATION_MAP.get(field.getName() + annotationClass.getName());
+		if (annotation != null) {
+			return (T) annotation;
+		}
+		Annotation[] annotations = field.getAnnotations();
 		if (StringUtil.isNullOrEmpty(annotations)) {
 			return null;
 		}
 		for (Annotation annotationTemp : annotations) {
 			if (annotationTemp.annotationType().isAnnotationPresent(annotationClass)) {
-				return (T) annotationTemp;
+				annotation = getParentAnnotation(annotationTemp, annotationClass);
+				ANNOTATION_MAP.put(field.getName() + annotationClass.getName(), annotation);
+				return (T) annotation;
 			}
 		}
 		return null;
 	}
 
-	public static <T extends Annotation> List<Annotation> getAnnotations(AccessibleObject accessible,
-			Class<T> annotationClass) {
+	private static <T extends Annotation> T getParentAnnotation(Annotation annotation, Class<T> annotationClass) {
+		if (annotation.annotationType() == annotationClass) {
+			return (T) annotation;
+		}
+		Annotation[] annotationsForAnnotation = annotation.annotationType().getAnnotations();
+		if (StringUtil.isNullOrEmpty(annotationsForAnnotation)) {
+			return null;
+		}
+		for (Annotation annotationForAnnotation : annotationsForAnnotation) {
+			if (annotationClass == annotationForAnnotation.annotationType()) {
+				setAnnotationValue(annotationForAnnotation, getAnnotationValueMap(annotation));
+				return (T) annotationForAnnotation;
+			}
+			if (!annotationForAnnotation.annotationType().isAnnotationPresent(annotationClass)) {
+				continue;
+			}
+			setAnnotationValue(annotationForAnnotation, getAnnotationValueMap(annotation));
+			return getParentAnnotation(annotationForAnnotation, annotationClass);
+		}
+		return null;
+	}
+
+	public static <T extends Annotation> T getAnnotation(Method method, Class<T> annotationClass) {
+		if (!annotationClass.isAnnotation()) {
+			return null;
+		}
+		Annotation annotation = method.getAnnotation(annotationClass);
+		if (annotation != null) {
+			return (T) annotation;
+		}
+		annotation = ANNOTATION_MAP.get(method.getName() + annotationClass.getName());
+		if (annotation != null) {
+			return (T) annotation;
+		}
+		Annotation[] annotations = method.getAnnotations();
+		if (StringUtil.isNullOrEmpty(annotations)) {
+			return null;
+		}
+		for (Annotation annotationTemp : annotations) {
+			if (annotationTemp.annotationType().isAnnotationPresent(annotationClass)) {
+				annotation = getParentAnnotation(annotationTemp, annotationClass);
+				ANNOTATION_MAP.put(method.getName() + annotationClass.getName(), annotation);
+				return (T) annotation;
+			}
+		}
+		return null;
+	}
+
+	public static <T extends Annotation> List<T> getAnnotations(AccessibleObject accessible, Class<T> annotationClass) {
 		if (!annotationClass.isAnnotation()) {
 			return null;
 		}
@@ -1222,19 +1285,32 @@ public class PropertUtil {
 					&& !annotationTemp.annotationType().isAnnotationPresent(annotationClass)) {
 				continue;
 			}
-			list.add((T) annotationTemp);
+			if (annotationTemp.annotationType() == annotationClass) {
+				list.add((T) annotationTemp);
+				continue;
+			}
+			Annotation parentAnnotation = getParentAnnotation(annotationTemp, annotationClass);
+			if (parentAnnotation == null) {
+				continue;
+			}
+			list.add((T) parentAnnotation);
 		}
 		if (StringUtil.isNullOrEmpty(list)) {
 			return null;
 		}
-		return list;
+		return (List<T>) list;
 	}
 
 	public static <T extends Annotation> T getAnnotation(Class<?> clazz, Class<T> annotationClass) {
 		if (!annotationClass.isAnnotation()) {
 			return null;
 		}
+
 		Annotation annotation = clazz.getAnnotation(annotationClass);
+		if (annotation != null) {
+			return (T) annotation;
+		}
+		annotation = ANNOTATION_MAP.get(clazz.getName() + annotationClass.getName());
 		if (annotation != null) {
 			return (T) annotation;
 		}
@@ -1244,7 +1320,9 @@ public class PropertUtil {
 		}
 		for (Annotation annotationTemp : annotations) {
 			if (annotationTemp.annotationType().isAnnotationPresent(annotationClass)) {
-				return (T) annotationTemp;
+				annotation = getParentAnnotation(annotationTemp, annotationClass);
+				ANNOTATION_MAP.put(clazz.getName() + annotationClass.getName(), annotation);
+				return (T) annotation;
 			}
 		}
 		return null;
@@ -1264,7 +1342,11 @@ public class PropertUtil {
 					&& !annotationTemp.annotationType().isAnnotationPresent(annotationClass)) {
 				continue;
 			}
-			list.add((T) annotationTemp);
+			Annotation parentAnnotation = getParentAnnotation(annotationTemp, annotationClass);
+			if (parentAnnotation == null) {
+				continue;
+			}
+			list.add((T) parentAnnotation);
 		}
 		if (StringUtil.isNullOrEmpty(list)) {
 			return null;

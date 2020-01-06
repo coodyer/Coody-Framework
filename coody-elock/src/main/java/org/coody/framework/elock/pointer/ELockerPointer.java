@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
+import org.coody.framework.core.util.LogUtil;
 import org.coody.framework.elock.config.ClockConfigFactory;
 import org.coody.framework.elock.exception.JedisNotInitedException;
 import org.coody.framework.elock.exception.LockTimeOutException;
@@ -17,8 +17,6 @@ import org.coody.framework.elock.wrapper.ThreadWrapper;
 public class ELockerPointer {
 
 	private static ELockCache eLockCache;
-
-	static Logger logger = Logger.getLogger(ELockerPointer.class);
 
 	private static final Map<String, ConcurrentLinkedQueue<ThreadWrapper>> THREAD_CONTAINER = new ConcurrentHashMap<String, ConcurrentLinkedQueue<ThreadWrapper>>();
 
@@ -63,13 +61,13 @@ public class ELockerPointer {
 				throw new LockTimeOutException("等待锁超时>>" + key + ">>" + thread.getThread().getId());
 			}
 			THREAD_CONTAINER.get(key).add(thread);
-			logger.debug("线程入列>>" + thread.getThread().getId());
+			LogUtil.log.debug("线程入列>>" + thread.getThread().getId());
 			Thread.currentThread().suspend();
 		}
 		if (thread.isExpire()) {
 			throw new LockTimeOutException("等待锁超时>>" + key + ">>" + thread.getThread().getId());
 		}
-		logger.debug("线程执行>>" + thread.getThread().getId());
+		LogUtil.log.debug("线程执行>>" + thread.getThread().getId());
 	}
 
 	/**
@@ -83,7 +81,7 @@ public class ELockerPointer {
 			return;
 		}
 		ThreadWrapper thread = queue.poll();
-		logger.debug("线程出列>>" + thread);
+		LogUtil.log.debug("线程出列>>" + thread);
 		if (thread == null) {
 			return;
 		}
@@ -123,8 +121,5 @@ public class ELockerPointer {
 	public static void setELockCache(ELockCache eLockCache) {
 		ELockerPointer.eLockCache = eLockCache;
 	}
-	
-	
-	
-	
+
 }

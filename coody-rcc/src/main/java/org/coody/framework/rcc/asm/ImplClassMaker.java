@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.coody.framework.core.exception.base.CoodyException;
-import org.coody.framework.core.logger.BaseLogger;
 import org.coody.framework.core.util.PrintException;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
@@ -39,8 +38,6 @@ public class ImplClassMaker {
 
 	static SimpleClassLoader simpleClassLoader = new SimpleClassLoader();
 
-	static BaseLogger logger = BaseLogger.getLogger(ImplClassMaker.class);
-
 	private static String[] formatClazzs(Class<?>... clazzs) {
 		if (StringUtil.isNullOrEmpty(clazzs)) {
 			return null;
@@ -68,7 +65,7 @@ public class ImplClassMaker {
 				return Opcodes.V1_8;
 			}
 		} catch (Exception e) {
-			PrintException.printException(logger, e);
+			PrintException.printException(e);
 		}
 		return Opcodes.V1_8;
 	}
@@ -80,7 +77,7 @@ public class ImplClassMaker {
 		String[] interfaces = formatClazzs(interfaceClazzs);
 		cw.visit(getOpcodes(), Opcodes.ACC_PUBLIC, className, null, "java/lang/Object", interfaces);
 		// 生成切面所拦截的注解
-		String rccName="L"+RccInterface.class.getName().replace(".", "/")+";";
+		String rccName = "L" + RccInterface.class.getName().replace(".", "/") + ";";
 		AnnotationVisitor aVisitor = cw.visitAnnotation(rccName, true);
 		aVisitor.visitEnd();
 		MethodVisitor constructor = cw.visitMethod(Opcodes.ACC_PUBLIC, "<init>", "()V", null, null);
@@ -118,7 +115,7 @@ public class ImplClassMaker {
 		MethodVisitor mv = cw.visitMethod(Opcodes.ACC_PUBLIC, methodName, "(" + inputParaContext + ")" + returnDesc,
 				null, exceptions);
 		// 生成切面所拦截的注解
-		String rccName="L"+RccInterface.class.getName().replace(".", "/")+";";
+		String rccName = "L" + RccInterface.class.getName().replace(".", "/") + ";";
 		AnnotationVisitor av = mv.visitAnnotation(rccName, true);
 		av.visitEnd();
 		// copy抽象类方法持有注解

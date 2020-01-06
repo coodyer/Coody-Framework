@@ -7,15 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.exception.BeanInitException;
 import org.coody.framework.core.exception.BeanNameCreateException;
 import org.coody.framework.core.exception.BeanNotFoundException;
-import org.coody.framework.core.loader.BeanLoader;
 import org.coody.framework.core.proxy.CglibProxy;
 import org.coody.framework.core.util.ClassUtil;
+import org.coody.framework.core.util.LogUtil;
 import org.coody.framework.core.util.ParameterNameUtil;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
@@ -23,8 +22,6 @@ import org.coody.framework.core.util.StringUtil;
 import com.alibaba.fastjson.JSON;
 
 public class BeanAssember {
-
-	private static final Logger logger = Logger.getLogger(BeanLoader.class);
 
 	static CglibProxy proxy = new CglibProxy();
 
@@ -54,7 +51,7 @@ public class BeanAssember {
 			if (StringUtil.isNullOrEmpty(beanName)) {
 				continue;
 			}
-			logger.debug("初始化Bean >>" + beanName + ":" + cla.getName());
+			LogUtil.log.debug("初始化Bean >>" + beanName + ":" + cla.getName());
 			BeanContainer.setBean(beanName, bean);
 		}
 		if (StringUtil.isNullOrEmpty(parameterMap)) {
@@ -89,7 +86,7 @@ public class BeanAssember {
 				}
 				field.setAccessible(true);
 
-				logger.debug("注入字段 >>" + field.getName() + ":" + bean.getClass().getName());
+				LogUtil.log.debug("注入字段 >>" + field.getName() + ":" + bean.getClass().getName());
 				field.set(bean, targetBean);
 				continue fieldSet;
 			}

@@ -3,10 +3,10 @@ package org.coody.framework.minicat.web;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.log4j.Logger;
 import org.coody.framework.core.CoreApp;
 import org.coody.framework.core.builder.ConfigBuilder;
 import org.coody.framework.core.config.CoodyConfig;
+import org.coody.framework.core.util.LogUtil;
 import org.coody.framework.core.util.PrintException;
 import org.coody.framework.core.util.StringUtil;
 import org.coody.framework.minicat.http.MinicatServletRequestImpl;
@@ -23,12 +23,10 @@ import com.alibaba.fastjson.JSON;
 
 public class DispatServlet extends HttpServlet {
 
-	Logger logger = Logger.getLogger(DispatServlet.class);
-
 	@Override
 	public void doService(MinicatServletRequestImpl request, MinicatServletResponseImpl response) throws IOException {
 		String path = request.getRequestURI();
-		logger.debug("收到请求 >>" + path);
+		LogUtil.log.debug("收到请求 >>" + path);
 		MvcMapping mapping = MappingContainer.getMapping(path);
 		if (mapping == null) {
 			response.getOutputStream().print("page not found");
@@ -67,11 +65,11 @@ public class DispatServlet extends HttpServlet {
 			response.setHttpCode(404);
 			return;
 		} catch (InvocationTargetException e) {
-			PrintException.printException(logger, e.getTargetException());
+			PrintException.printException(e.getTargetException());
 			response.setHttpCode(500);
 			response.getOutputStream().print("page error");
 		} catch (Exception e) {
-			PrintException.printException(logger, e);
+			PrintException.printException(e);
 			response.setHttpCode(500);
 			response.getOutputStream().print("page error");
 		}

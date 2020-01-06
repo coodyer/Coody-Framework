@@ -4,8 +4,8 @@ import java.lang.reflect.Method;
 
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.loader.iface.CoodyLoader;
-import org.coody.framework.core.logger.BaseLogger;
 import org.coody.framework.core.util.ClassUtil;
+import org.coody.framework.core.util.LogUtil;
 import org.coody.framework.core.util.MethodSignUtil;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
@@ -25,15 +25,13 @@ import org.coody.framework.web.exception.MappingConflicException;
  */
 public class WebAppLoader implements CoodyLoader {
 
-	BaseLogger logger = BaseLogger.getLogger(this.getClass());
-
 	@Override
 	public void doLoader() throws Exception {
 		for (Object bean : BeanContainer.getBeans()) {
 			if (StringUtil.isNullOrEmpty(bean)) {
 				continue;
 			}
-			Class<?> clazz =ClassUtil.getSourceClass(bean.getClass());
+			Class<?> clazz = ClassUtil.getSourceClass(bean.getClass());
 			PathBinding classBindings = PropertUtil.getAnnotation(clazz, PathBinding.class);
 			if (StringUtil.isNullOrEmpty(classBindings)) {
 				continue;
@@ -60,7 +58,8 @@ public class WebAppLoader implements CoodyLoader {
 						} else {
 							adaptClass = methodParamsAdapt.value();
 						}
-						logger.debug("初始化Mapping地址 >>" + path + ":" + MethodSignUtil.getKeyByMethod(clazz, method));
+						LogUtil.log
+								.debug("初始化Mapping地址 >>" + path + ":" + MethodSignUtil.getKeyByMethod(clazz, method));
 						MvcMapping mapping = new MvcMapping();
 						mapping.setBean(bean);
 						mapping.setPath(path);

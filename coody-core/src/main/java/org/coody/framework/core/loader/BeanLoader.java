@@ -1,7 +1,5 @@
 package org.coody.framework.core.loader;
 
-import java.lang.annotation.Annotation;
-
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.assember.BeanAssember;
 import org.coody.framework.core.container.BeanContainer;
@@ -34,7 +32,7 @@ public class BeanLoader implements CoodyLoader {
 			pool.pushTask(new Runnable() {
 				@Override
 				public void run() {
-					Annotation autoBuild = PropertUtil.getAnnotation(clazz, AutoBuild.class);
+					AutoBuild autoBuild = PropertUtil.getAnnotation(clazz, AutoBuild.class);
 					if (StringUtil.isNullOrEmpty(autoBuild)) {
 						return;
 					}

@@ -109,7 +109,7 @@ public class CglibProxy implements MethodInterceptor {
 			Object[] parameterValues = new Object[defParameters.size()];
 			for (int i = 0; i < defParameters.size(); i++) {
 				Object value = parameterMap.get(defParameters.get(i));
-				parameterValues[i] =PropertUtil.parseValue(value,mappedConstructor.getTypes()[i]);
+				parameterValues[i] = PropertUtil.parseValue(value, mappedConstructor.getTypes()[i]);
 			}
 			mappedConstructor.setParameters(parameterValues);
 			return mappedConstructor;
@@ -144,6 +144,7 @@ public class CglibProxy implements MethodInterceptor {
 		return needProxy;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private boolean needProxy(Class<?> clazz, AspectEntity aspectEntity, Method method) {
 		/**
 		 * 判断类名是否满足条件
@@ -173,13 +174,14 @@ public class CglibProxy implements MethodInterceptor {
 			for (Annotation annotation : annotations) {
 				annotationClazzs.add(annotation.annotationType());
 			}
-			for (Class<?> aspectAnnotationClazz : aspectEntity.getAnnotationClass()) {
-				if (!annotationClazzs.contains(aspectAnnotationClazz)) {
-					return false;
+			for (Class aspectAnnotationClazz : aspectEntity.getAnnotationClass()) {
+				Annotation annotation = PropertUtil.getAnnotation(method, aspectAnnotationClazz);
+				if (annotation != null) {
+					return true;
 				}
 			}
 		}
-		return true;
+		return false;
 	}
 
 	// 拦截父类所有方法的调用
@@ -227,6 +229,7 @@ public class CglibProxy implements MethodInterceptor {
 		return turboPoint;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private AspectAbler parseAspect(AspectAbler basePoint, List<AspectEntity> invokeAspects) {
 		if (StringUtil.isNullOrEmpty(invokeAspects)) {
 			return null;
@@ -243,6 +246,15 @@ public class CglibProxy implements MethodInterceptor {
 		abler.setMethod(basePoint.getMethod());
 		abler.setProxy(basePoint.getProxy());
 		abler.setMasturbation(aspectEntity.getOwnIntercept());
+		if (aspectEntity.getAspectClazz() != null) {
+			for (Class clazz : aspectEntity.getAnnotationClass()) {
+				Annotation annotation = PropertUtil.getAnnotation(basePoint.getMethod(), clazz);
+				if (annotation == null) {
+					continue;
+				}
+				abler.getAnnotationValueMap().put(clazz, annotation);
+			}
+		}
 		AspectAbler childAbler = parseAspect(basePoint, invokeAspects);
 		if (childAbler != null) {
 			abler.setChildAbler(childAbler);

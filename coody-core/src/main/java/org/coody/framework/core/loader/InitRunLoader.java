@@ -3,11 +3,11 @@ package org.coody.framework.core.loader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.coody.framework.core.bean.InitBeanFace;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.loader.iface.CoodyLoader;
 import org.coody.framework.core.threadpool.ThreadBlockPool;
+import org.coody.framework.core.util.LogUtil;
 import org.coody.framework.core.util.PrintException;
 import org.coody.framework.core.util.StringUtil;
 
@@ -19,8 +19,6 @@ import org.coody.framework.core.util.StringUtil;
  */
 public class InitRunLoader implements CoodyLoader {
 
-	private static final Logger logger = Logger.getLogger(InitRunLoader.class);
-
 	@Override
 	public void doLoader() throws Exception {
 		List<Runnable> inits = new ArrayList<Runnable>();
@@ -28,7 +26,7 @@ public class InitRunLoader implements CoodyLoader {
 			if (bean instanceof InitBeanFace) {
 				// 初始化运行
 				try {
-					logger.debug("初始化执行 >>"+bean.getClass().getName());
+					LogUtil.log.debug("初始化执行 >>" + bean.getClass().getName());
 					InitBeanFace face = (InitBeanFace) bean;
 					inits.add(new Runnable() {
 						@Override
@@ -36,12 +34,12 @@ public class InitRunLoader implements CoodyLoader {
 							try {
 								face.init();
 							} catch (Exception e) {
-								PrintException.printException(logger, e);
+								PrintException.printException(e);
 							}
 						}
 					});
 				} catch (Exception e) {
-					PrintException.printException(logger, e);
+					PrintException.printException(e);
 				}
 			}
 		}

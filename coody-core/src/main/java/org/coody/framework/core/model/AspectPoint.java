@@ -6,7 +6,6 @@ public class AspectPoint extends BaseModel{
 	private AspectAbler abler;
 	
 	private Object[] params;
-
 	
 	
 	
