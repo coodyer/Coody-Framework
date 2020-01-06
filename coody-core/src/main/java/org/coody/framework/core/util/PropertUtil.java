@@ -193,7 +193,7 @@ public class PropertUtil {
 		if (StringUtil.isNullOrEmpty(obj)) {
 			return null;
 		}
-		if (obj instanceof Class) {
+		if (obj.getClass().getName().equals(Class.class.getName())) {
 			return (Class<?>) obj;
 		}
 		return obj.getClass();
@@ -234,7 +234,7 @@ public class PropertUtil {
 		if (StringUtil.isNullOrEmpty(fields)) {
 			return fields;
 		}
-		if (obj instanceof java.lang.Class) {
+		if (obj.getClass().getName().equals(Class.class.getName())) {
 			return fields;
 		}
 		for (FieldEntity field : fields) {
