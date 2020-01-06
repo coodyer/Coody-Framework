@@ -6,7 +6,7 @@ public class EnumSerializer extends AbstractSerializer<Enum<?>> {
 
 	@Override
 	public String adapt(Enum<?> target) {
-		return target.name();
+		return "\"" + target.name() + "\"";
 	}
 
 }

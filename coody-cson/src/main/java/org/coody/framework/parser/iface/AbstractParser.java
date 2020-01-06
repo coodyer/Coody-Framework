@@ -3,12 +3,10 @@ package org.coody.framework.parser.iface;
 import org.coody.framework.entity.CsonArray;
 import org.coody.framework.entity.CsonObject;
 
-import com.alibaba.fastjson.JSON;
-
 public abstract class AbstractParser {
 	public abstract void parseValue(String json, Object object);
 
-	public static CsonArray parseCsonArray(String json) throws InstantiationException, IllegalAccessException {
+	public static CsonArray parseCsonArray(String json) {
 		json = json.trim();
 		char output = getOutputSymbol(json.charAt(0));
 		StringBuilder sbBuilder = new StringBuilder();
@@ -31,7 +29,7 @@ public abstract class AbstractParser {
 					continue;
 				}
 				if (chr == '{') {
-					CsonObject child = parseCson(json.substring(i, json.length()));
+					CsonObject child = parseCsonObject(json.substring(i, json.length()));
 					cson.add(child);
 					i += child.getOffset();
 					continue;
@@ -58,7 +56,7 @@ public abstract class AbstractParser {
 		return cson;
 	}
 
-	public static CsonObject parseCson(String json) throws InstantiationException, IllegalAccessException {
+	public static CsonObject parseCsonObject(String json) {
 		json = json.trim();
 		char output = getOutputSymbol(json.charAt(0));
 		StringBuilder sbBuilder = new StringBuilder();
@@ -83,7 +81,7 @@ public abstract class AbstractParser {
 					continue;
 				}
 				if (chr == '{') {
-					CsonObject child = parseCson(json.substring(i, json.length()));
+					CsonObject child = parseCsonObject(json.substring(i, json.length()));
 					cson.put(field, child);
 					i += child.getOffset();
 					field = null;
@@ -123,12 +121,6 @@ public abstract class AbstractParser {
 			return ']';
 		}
 		return null;
-	}
-
-	public static void main(String[] args) throws InstantiationException, IllegalAccessException {
-		String json = "{user:Coody}";
-		CsonObject object = AbstractParser.parseCson(json);
-		System.out.println("得到结果:" + JSON.toJSONString(object));
 	}
 
 }

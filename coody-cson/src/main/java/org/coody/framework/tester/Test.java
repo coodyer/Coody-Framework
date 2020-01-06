@@ -19,21 +19,23 @@ public class Test {
 		user.setStatus(1);
 		user.setResCode(ResCodeEnum.SUCCESS);
 		user.setLocalDateTime(LocalDateTime.now());
-		user.setAttrs(new String[] { null });
+		user.setAttrs(new String[] { "111" });
 		user.setList(Arrays.asList(new String[] { "123", "234" }));
 		user.setCreateTime(new Date());
 		user.setIsAllow(true);
-		Long start = System.currentTimeMillis();
+
 		SettingInfo setting = new SettingInfo();
 		setting.setDescription("测试描述");
 		setting.setId(10011);
 		setting.setKeywords("关键词");
 		user.setSetting(setting);
+		System.out.println("Fastjson:" + JSON.toJSONString(user));
+		Long start = System.currentTimeMillis();
 		for (int i = 0; i < 100000; i++) {
 			JSON.toJSONString(user);
 		}
 		System.out.println("fastjson:" + (System.currentTimeMillis() - start));
-		System.out.println(Cson.toJson(user));
+		System.out.println("Cson:" + Cson.toJson(user));
 		start = System.currentTimeMillis();
 		for (int i = 0; i < 100000; i++) {
 			Cson.toJson(user);
