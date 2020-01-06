@@ -2,6 +2,7 @@ package org.coody.framework;
 
 import org.coody.framework.serializer.iface.AbstractSerializer;
 
+@SuppressWarnings("serial")
 public class Cson {
 
 	public static String toJson(Object object) {
