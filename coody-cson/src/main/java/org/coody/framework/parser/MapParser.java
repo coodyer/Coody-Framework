@@ -17,10 +17,10 @@ public class MapParser extends AbstractParser {
 
 		boolean inContent = false;
 
-		String field = null;
-		
+		Object field = null;
+
 		Map<Object, Object> map = type.newInstance();
-		
+
 		ObjectWrapper<T> wrapper = new ObjectWrapper<T>();
 
 		for (int i = 1; i < json.length(); i++) {
@@ -34,37 +34,49 @@ public class MapParser extends AbstractParser {
 				if (chr == '[') {
 					ObjectWrapper<T> childWrapper = parser(json.substring(i, json.length()), type.getActuals().get(1));
 					if (childWrapper.getObject() != null) {
-						map.put(field, childWrapper.getObject());
+						if (field == null) {
+							field = childWrapper.getObject();
+						} else {
+							map.put(field, childWrapper.getObject());
+							field = null;
+						}
 					}
 					i += childWrapper.getOffset();
-					field = null;
 					continue;
 				}
 				if (chr == '{') {
 					ObjectWrapper<T> childWrapper = parser(json.substring(i, json.length()), type.getActuals().get(1));
 					if (childWrapper.getObject() != null) {
-						map.put(field, childWrapper.getObject());
+						if (field == null) {
+							field = childWrapper.getObject();
+						} else {
+							map.put(field, childWrapper.getObject());
+							field = null;
+						}
 					}
 					i += childWrapper.getOffset();
-					field = null;
 					continue;
 				}
 				// 出栈
 				if (chr == output) {
 					if (field != null) {
 						map.put(field, sbBuilder.toString());
+						field = null;
 					}
 					break;
 				}
 				if (chr == ',') {
 					if (field != null) {
 						map.put(field, sbBuilder.toString());
+						field = null;
 					}
 					sbBuilder = new StringBuilder();
 					continue;
 				}
 				if (chr == ':') {
-					field = sbBuilder.toString();
+					if (field == null) {
+						field = sbBuilder.toString();
+					}
 					sbBuilder = new StringBuilder();
 					continue;
 				}
