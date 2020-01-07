@@ -6,7 +6,6 @@ import java.util.List;
 import org.coody.framework.core.annotation.Around;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.model.AspectPoint;
-import org.coody.framework.core.util.LogUtil;
 import org.coody.framework.core.util.PrintException;
 import org.coody.framework.core.util.StringUtil;
 import org.coody.framework.jdbc.annotation.Transacted;

@@ -54,6 +54,7 @@ public abstract class AbstractSerializer<T> {
 		}
 		AbstractSerializer serializer = getSerializer(target.getClass());
 		return serializer.adapt(target);
+
 	}
 
 	public static synchronized void addSerializer(Class<?> clazz, AbstractSerializer<?> serializer) {

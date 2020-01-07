@@ -2,6 +2,7 @@ package org.coody.framework.serializer;
 
 import java.util.Iterator;
 
+import org.coody.framework.container.ThreadSetContainer;
 import org.coody.framework.serializer.iface.AbstractSerializer;
 
 public class IteratorSerializer extends AbstractSerializer<Iterator<?>> {
@@ -12,6 +13,9 @@ public class IteratorSerializer extends AbstractSerializer<Iterator<?>> {
 			return null;
 		}
 		if (!target.hasNext()) {
+			return "[]";
+		}
+		if (!ThreadSetContainer.add(target)) {
 			return "[]";
 		}
 		StringBuilder jsonBuilder = new StringBuilder("");

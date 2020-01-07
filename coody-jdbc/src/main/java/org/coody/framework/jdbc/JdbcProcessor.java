@@ -20,6 +20,7 @@ import java.util.TreeMap;
 
 import javax.sql.DataSource;
 
+import org.coody.framework.Cson;
 import org.coody.framework.core.model.BaseModel;
 import org.coody.framework.core.model.FieldEntity;
 import org.coody.framework.core.util.DateUtils;
@@ -38,8 +39,6 @@ import org.coody.framework.jdbc.exception.FormatParamsException;
 import org.coody.framework.jdbc.exception.PrimaryKeyException;
 import org.coody.framework.jdbc.factory.DBDataBillerFactory;
 import org.coody.framework.jdbc.util.JdbcUtil;
-
-import com.alibaba.fastjson.JSON;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class JdbcProcessor {
@@ -120,7 +119,7 @@ public class JdbcProcessor {
 				return JdbcUtil.formatToContainer(resultSet);
 			}
 		} catch (Exception e) {
-			throw new ExecSqlException("语句执行异常>>sql:" + sql + ",parameters:" + JSON.toJSONString(parameters), e);
+			throw new ExecSqlException("语句执行异常>>sql:" + sql + ",parameters:" + Cson.toJson(parameters), e);
 		} finally {
 			if (conn != null) {
 				try {
@@ -169,7 +168,7 @@ public class JdbcProcessor {
 				return code.longValue();
 			}
 		} catch (Exception e) {
-			throw new ExecSqlException("语句执行异常>>sql:" + sql + ",parameters:" + JSON.toJSONString(parameters), e);
+			throw new ExecSqlException("语句执行异常>>sql:" + sql + ",parameters:" + Cson.toJson(parameters), e);
 		} finally {
 			if (!TransactedThreadContainer.hasTransacted()) {
 				if (conn != null) {
@@ -774,7 +773,7 @@ public class JdbcProcessor {
 			}
 			return baseUpdate(sql.toString(), parameters.values().toArray());
 		} catch (Exception e) {
-			throw new ExecSqlException("语句执行异常>>sql:" + sql + ",priKeyNames:" + JSON.toJSONString(priKeys), e);
+			throw new ExecSqlException("语句执行异常>>sql:" + sql + ",priKeyNames:" + Cson.toJson(priKeys), e);
 		}
 	}
 

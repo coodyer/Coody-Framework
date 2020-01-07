@@ -4,6 +4,7 @@ import java.time.chrono.ChronoLocalDateTime;
 import java.util.Date;
 import java.util.List;
 
+import org.coody.framework.container.ThreadSetContainer;
 import org.coody.framework.entity.JsonFieldEntity;
 import org.coody.framework.serializer.iface.AbstractSerializer;
 import org.coody.framework.util.DateFormatUtils;
@@ -16,9 +17,12 @@ public class ObjectSerializer extends AbstractSerializer<Object> {
 		if (target == null) {
 			return null;
 		}
+		if (!ThreadSetContainer.add(target)) {
+			return "{}";
+		}
 		List<JsonFieldEntity> fields = FieldUtil.getDeclaredFields(target.getClass());
 		if (fields == null || fields.isEmpty()) {
-			return "";
+			return "{}";
 		}
 		StringBuilder jsonBuilder = new StringBuilder();
 		for (int i = 0; i < fields.size(); i++) {

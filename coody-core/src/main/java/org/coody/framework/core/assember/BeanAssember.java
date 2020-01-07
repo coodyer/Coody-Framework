@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.coody.framework.Cson;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.exception.BeanInitException;
@@ -18,8 +19,6 @@ import org.coody.framework.core.util.LogUtil;
 import org.coody.framework.core.util.ParameterNameUtil;
 import org.coody.framework.core.util.PropertUtil;
 import org.coody.framework.core.util.StringUtil;
-
-import com.alibaba.fastjson.JSON;
 
 public class BeanAssember {
 
@@ -90,7 +89,7 @@ public class BeanAssember {
 				field.set(bean, targetBean);
 				continue fieldSet;
 			}
-			throw new BeanNotFoundException(JSON.toJSONString(beanNames), bean.getClass());
+			throw new BeanNotFoundException(Cson.toJson(beanNames), bean.getClass());
 		}
 		if (StringUtil.isNullOrEmpty(parameterMap)) {
 			return;
