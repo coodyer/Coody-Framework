@@ -2,7 +2,8 @@ package org.coody.framework;
 
 import org.coody.framework.entity.CsonArray;
 import org.coody.framework.entity.CsonObject;
-import org.coody.framework.parser.iface.AbstractParser;
+import org.coody.framework.entity.ObjectWrapper;
+import org.coody.framework.parser.JsonParser;
 import org.coody.framework.serializer.iface.AbstractSerializer;
 
 public class Cson {
@@ -11,15 +12,17 @@ public class Cson {
 		return AbstractSerializer.serialize(object);
 	}
 
+	@SuppressWarnings("unchecked")
 	public static <T> T toObject(String json, Class<?> clazz) {
-		return null;
+		ObjectWrapper wrapper = JsonParser.parseObject(json, clazz);
+		return (T) wrapper.getObject();
 	}
 
 	public static CsonObject toCsonObject(String json) {
-		return AbstractParser.parseCsonObject(json);
+		return JsonParser.parseCsonObject(json);
 	}
 
 	public static CsonArray toCsonArray(String json) {
-		return AbstractParser.parseCsonArray(json);
+		return JsonParser.parseCsonArray(json);
 	}
 }

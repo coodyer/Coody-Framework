@@ -44,4 +44,10 @@ public class SettingInfo {
 	public SettingInfo() {
 	}
 
+	@Override
+	public String toString() {
+		return "SettingInfo [id=" + id + ", siteName=" + siteName + ", keywords=" + keywords + ", description="
+				+ description + "]";
+	}
+
 }

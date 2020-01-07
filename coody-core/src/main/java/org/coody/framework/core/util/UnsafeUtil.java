@@ -74,7 +74,4 @@ public class UnsafeUtil {
 		return (T) unsafe.getObject(target, fieldOffset);
 	}
 
-	public static void main(String[] args) throws NoSuchFieldException, SecurityException {
-
-	}
 }

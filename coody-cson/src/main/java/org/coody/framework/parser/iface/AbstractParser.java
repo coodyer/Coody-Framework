@@ -1,119 +1,85 @@
 package org.coody.framework.parser.iface;
 
-import org.coody.framework.entity.CsonArray;
-import org.coody.framework.entity.CsonObject;
+import java.util.Map;
 
+import org.coody.framework.adapter.TypeAdapter;
+import org.coody.framework.entity.JsonFieldEntity;
+import org.coody.framework.entity.ObjectWrapper;
+import org.coody.framework.entity.TypeEntity;
+import org.coody.framework.exception.BadFormatException;
+import org.coody.framework.exception.CsonException;
+import org.coody.framework.parser.ArrayParser;
+import org.coody.framework.parser.CollectionParser;
+import org.coody.framework.parser.MapParser;
+import org.coody.framework.parser.ObjectParser;
+import org.coody.framework.util.FieldUtil;
+import org.coody.framework.util.TypeUtil;
+
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public abstract class AbstractParser {
-	public abstract void parseValue(String json, Object object);
 
-	public static CsonArray parseCsonArray(String json) {
-		json = json.trim();
-		char output = getOutputSymbol(json.charAt(0));
-		StringBuilder sbBuilder = new StringBuilder();
+	protected static AbstractParser arrayParser = new ArrayParser();
 
-		boolean inContent = false;
+	protected static AbstractParser collectionParser = new CollectionParser();
 
-		CsonArray cson = new CsonArray();
-		for (int i = 1; i < json.length(); i++) {
-			cson.setOffset(i);
-			char chr = json.charAt(i);
-			if (chr == '"') {
-				inContent = inContent ? false : true;
-				continue;
-			}
-			if (!inContent) {
-				if (chr == '[') {
-					CsonArray child = parseCsonArray(json.substring(i, json.length()));
-					cson.add(child);
-					i += child.getOffset();
-					continue;
-				}
-				if (chr == '{') {
-					CsonObject child = parseCsonObject(json.substring(i, json.length()));
-					cson.add(child);
-					i += child.getOffset();
-					continue;
-				}
-				// 出栈
-				if (chr == output) {
-					// 完成解析
-					cson.add(sbBuilder);
-					break;
-				}
-				if (chr == ',') {
-					cson.add(sbBuilder);
-					sbBuilder = new StringBuilder();
-					continue;
-				}
-				if (chr == ':') {
-					sbBuilder = new StringBuilder();
-					continue;
-				}
-			}
-			// 读取内容
-			sbBuilder.append(chr);
-		}
-		return cson;
+	protected static AbstractParser mapParser = new MapParser();
+
+	protected static AbstractParser objectParser = new ObjectParser();
+
+	public static <T> ObjectWrapper<T> parser(String json, TypeAdapter<T> Adapter) {
+		return parser(json, TypeUtil.getTypeEntityByType(Adapter.getType()));
 	}
 
-	public static CsonObject parseCsonObject(String json) {
+	public static <T> ObjectWrapper parser(String json, TypeEntity type) {
 		json = json.trim();
-		char output = getOutputSymbol(json.charAt(0));
-		StringBuilder sbBuilder = new StringBuilder();
-
-		boolean inContent = false;
-
-		String field = null;
-		CsonObject cson = new CsonObject();
-		for (int i = 1; i < json.length(); i++) {
-			cson.setOffset(i);
-			char chr = json.charAt(i);
-			if (chr == '"') {
-				inContent = inContent ? false : true;
-				continue;
-			}
-			if (!inContent) {
-				if (chr == '[') {
-					CsonArray child = parseCsonArray(json.substring(i, json.length()));
-					cson.put(field, child);
-					i += child.getOffset();
-					field = null;
-					continue;
-				}
-				if (chr == '{') {
-					CsonObject child = parseCsonObject(json.substring(i, json.length()));
-					cson.put(field, child);
-					i += child.getOffset();
-					field = null;
-					continue;
-				}
-				// 出栈
-				if (chr == output) {
-					if (field != null) {
-						cson.put(field, sbBuilder);
-					}
-					break;
-				}
-				if (chr == ',') {
-					if (field != null) {
-						cson.put(field, sbBuilder);
-					}
-					sbBuilder = new StringBuilder();
-					continue;
-				}
-				if (chr == ':') {
-					field = sbBuilder.toString();
-					sbBuilder = new StringBuilder();
-					continue;
-				}
-			}
-			// 读取内容
-			sbBuilder.append(chr);
+		Character output = getOutputSymbol(json.charAt(0));
+		if (output == null) {
+			throw new BadFormatException("错误的Json格式");
 		}
-		return cson;
+		if (output == ']') {
+			if (type.getCurrent().isArray()) {
+				return arrayParser.doParser(json, type);
+			}
+			return collectionParser.doParser(json, type);
+		}
+		if (output == '}') {
+			if (Map.class.isAssignableFrom(type.getCurrent())) {
+				return mapParser.doParser(json, type);
+			}
+			return objectParser.doParser(json, type);
+		}
+		return null;
 	}
 
-	private static Character getOutputSymbol(char chr) {
+	public abstract <T> ObjectWrapper<T> doParser(String json, TypeEntity type);
+
+	protected static void setFieldValue(Object object, String field, Object value) {
+		try {
+			if (value == null) {
+				return;
+			}
+			JsonFieldEntity jsonFieldEntity = FieldUtil.getDeclaredField(object.getClass(), field);
+			setFieldValue(object, jsonFieldEntity, value);
+		} catch (Exception e) {
+			throw new CsonException("字段赋值失败>>" + field);
+		}
+	}
+
+	protected static void setFieldValue(Object object, JsonFieldEntity field, Object value) {
+		try {
+			if (field == null) {
+				return;
+			}
+			if (value == null) {
+				return;
+			}
+			field.getField().set(object, FieldUtil.parseValue(value, field.getField().getType()));
+		} catch (Exception e) {
+			throw new CsonException("字段赋值失败>>" + field.getField().getName(), e);
+		}
+	}
+
+	protected static Character getOutputSymbol(char chr) {
 		if (chr == '{') {
 			return '}';
 		}
@@ -122,5 +88,4 @@ public abstract class AbstractParser {
 		}
 		return null;
 	}
-
 }

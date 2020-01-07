@@ -3,6 +3,8 @@ package org.coody.framework.tester;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.coody.framework.Cson;
 
@@ -25,10 +27,17 @@ public class Test {
 		user.setIsAllow(true);
 
 		SettingInfo setting = new SettingInfo();
+		setting.setSiteName("测试标题");
 		setting.setDescription("测试描述");
 		setting.setId(10011);
 		setting.setKeywords("关键词");
 		user.setSetting(setting);
+
+		Map<Object, Object> map = new HashMap<Object, Object>();
+		map.put("key1", "value1");
+		map.put("key2", "value2");
+		user.setMap(map);
+
 		System.out.println("Fastjson:" + JSON.toJSONString(user));
 		Long start = System.currentTimeMillis();
 		for (int i = 0; i < 100000; i++) {

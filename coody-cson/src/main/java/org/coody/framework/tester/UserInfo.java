@@ -1,6 +1,7 @@
 package org.coody.framework.tester;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,26 @@ public class UserInfo {
 	private Map<Object, Object> map;
 
 	private Boolean isAllow;
+
+	private Double doubleTest;
+
+	private Float floatTest;
+
+	public Double getDoubleTest() {
+		return doubleTest;
+	}
+
+	public void setDoubleTest(Double doubleTest) {
+		this.doubleTest = doubleTest;
+	}
+
+	public Float getFloatTest() {
+		return floatTest;
+	}
+
+	public void setFloatTest(Float floatTest) {
+		this.floatTest = floatTest;
+	}
 
 	public Boolean getIsAllow() {
 		return isAllow;
@@ -134,6 +155,14 @@ public class UserInfo {
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+
+	@Override
+	public String toString() {
+		return "UserInfo [localDateTime=" + localDateTime + ", code=" + code + ", id=" + id + ", email=" + email
+				+ ", password=" + password + ", resCode=" + resCode + ", status=" + status + ", createTime="
+				+ createTime + ", attrs=" + Arrays.toString(attrs) + ", list=" + list + ", setting=" + setting
+				+ ", map=" + map + ", isAllow=" + isAllow + "]";
 	}
 
 }

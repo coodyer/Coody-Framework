@@ -6,7 +6,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.coody.framework.core.util.LogUtil;
+import org.apache.log4j.Logger;
 
 /**
  * 阻塞模式线程池
@@ -15,6 +15,7 @@ import org.coody.framework.core.util.LogUtil;
  *
  */
 public class ThreadBlockPool {
+	private static final Logger logger = Logger.getLogger(ThreadBlockPool.class);
 	ExecutorService exePool;
 	private List<Runnable> runnables = new ArrayList<Runnable>();
 	private boolean isActivity = true;
@@ -51,7 +52,7 @@ public class ThreadBlockPool {
 
 	public void execute() {
 		if (!isActivity) {
-			LogUtil.log.error("ThreadBlockPool >>线程池已销毁");
+			logger.error("ThreadBlockPool >>线程池已销毁");
 		}
 		isActivity = false;
 		if (runnables == null || runnables.isEmpty()) {
@@ -62,7 +63,7 @@ public class ThreadBlockPool {
 			currThread = maxThread;
 		}
 		exePool = Executors.newFixedThreadPool(maxThread);
-		LogUtil.log.debug("ThreadBlockPool >>[" + maxThread + "]执行中");
+		logger.debug("ThreadBlockPool >>[" + maxThread + "]执行中");
 		for (Runnable runnable : runnables) {
 			exePool.execute(runnable);
 		}
@@ -72,12 +73,12 @@ public class ThreadBlockPool {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		LogUtil.log.debug("ThreadBlockPool:[" + maxThread + "]执行完毕");
+		logger.debug("ThreadBlockPool:[" + maxThread + "]执行完毕");
 	}
 
 	public boolean pushTask(List<Runnable> runnables) {
 		if (!isActivity) {
-			LogUtil.log.error("ThreadBlockPool >>线程池已销毁");
+			logger.error("ThreadBlockPool >>线程池已销毁");
 		}
 		this.runnables.addAll(runnables);
 		return isActivity;
@@ -85,12 +86,10 @@ public class ThreadBlockPool {
 
 	public boolean pushTask(Runnable runnable) {
 		if (!isActivity) {
-			LogUtil.log.error("ThreadBlockPool >>线程池已销毁");
+			logger.error("ThreadBlockPool >>线程池已销毁");
 		}
 		runnables.add(runnable);
 		return isActivity;
 	}
 
-	public static void main(String[] args) {
-	}
 }

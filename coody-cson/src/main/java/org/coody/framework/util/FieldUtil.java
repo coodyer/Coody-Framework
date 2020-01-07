@@ -3,6 +3,10 @@ package org.coody.framework.util;
 import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,6 +44,7 @@ public class FieldUtil {
 	 * @return
 	 * @throws ParseException
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static Object parseValue(Object value, Class<?> clazz) {
 		try {
 			if (value == null) {
@@ -100,6 +105,19 @@ public class FieldUtil {
 			}
 			if (Boolean.class.isAssignableFrom(clazz) || boolean.class.isAssignableFrom(clazz)) {
 				value = ("true".equals(value.toString()) || "1".equals(value.toString())) ? true : false;
+				return value;
+			}
+			if (ChronoLocalDateTime.class.isAssignableFrom(clazz)) {
+				return LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.valueOf(value.toString())),
+						ZoneId.systemDefault());
+			}
+			if (Enum.class.isAssignableFrom(clazz)) {
+				if (value.getClass().isEnum()) {
+					return value;
+				}
+				return Enum.valueOf((Class<Enum>) clazz, value.toString());
+			}
+			if (clazz.isAssignableFrom(value.getClass())) {
 				return value;
 			}
 			if (String.class.isAssignableFrom(clazz)) {
