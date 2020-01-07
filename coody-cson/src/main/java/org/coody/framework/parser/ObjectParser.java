@@ -5,6 +5,7 @@ import org.coody.framework.entity.ObjectWrapper;
 import org.coody.framework.entity.TypeEntity;
 import org.coody.framework.parser.iface.AbstractParser;
 import org.coody.framework.util.FieldUtil;
+import org.coody.framework.util.TypeUtil;
 
 @SuppressWarnings("unchecked")
 public class ObjectParser extends AbstractParser {
@@ -31,7 +32,7 @@ public class ObjectParser extends AbstractParser {
 					JsonFieldEntity jsonFieldEntity = FieldUtil.getDeclaredField(object.getClass(), field);
 					if (jsonFieldEntity != null) {
 						ObjectWrapper<?> childWrapper = parser(json.substring(i, json.length()),
-								new TypeEntity(jsonFieldEntity.getField().getType()));
+								 TypeUtil.getTypeEntityByType(jsonFieldEntity.getField().getGenericType()));
 						setFieldValue(object, jsonFieldEntity, childWrapper.getObject());
 						i += childWrapper.getOffset();
 					}

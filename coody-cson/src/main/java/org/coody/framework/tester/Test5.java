@@ -13,6 +13,9 @@ import org.coody.framework.adapter.TypeAdapter;
 import org.coody.framework.entity.ObjectWrapper;
 import org.coody.framework.parser.iface.AbstractParser;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
+
 public class Test5 {
 
 	public static void main(String[] args) {
@@ -34,9 +37,17 @@ public class Test5 {
 		ObjectWrapper<List<Map<String, Object>>> wrapper = AbstractParser.parser(json,
 				new TypeAdapter<List<Map<String, Object>>>() {
 				});
-		List<Map<String, Object>> result = wrapper.getObject();
+		List<Map<String, Object>> result = JSON.parseObject(json, new TypeReference<List<Map<String, Object>>>() {
+		});
 		System.out.println(Cson.toJson(result));
 
+		UserInfo userInfo = getUserInfo();
+		String userJson = Cson.toJson(userInfo);
+		System.out.println(userJson);
+		ObjectWrapper<UserInfo> userWrapper = AbstractParser.parser(userJson, new TypeAdapter<UserInfo>() {
+		});
+		UserInfo newUser = userWrapper.getObject();
+		System.out.println(Cson.toJson(newUser));
 	}
 
 	private static UserInfo getUserInfo() {
@@ -61,10 +72,13 @@ public class Test5 {
 		setting.setId(10011);
 		setting.setKeywords("关键词");
 		user.setSetting(setting);
-
 		Map<Object, Object> map = new HashMap<Object, Object>();
 		map.put("key1", "value1");
 		map.put("key2", "value2");
+		Map<String, Object> map2 = new HashMap<String, Object>();
+		map2.put("map2_k1", "map2_value1");
+		map2.put("map2_k2", "map2_value2");
+		map.put("嵌套MAP", map2);
 		user.setMap(map);
 		return user;
 	}

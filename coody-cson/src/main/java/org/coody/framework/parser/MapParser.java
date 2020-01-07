@@ -1,6 +1,5 @@
 package org.coody.framework.parser;
 
-import java.util.List;
 import java.util.Map;
 
 import org.coody.framework.entity.ObjectWrapper;
@@ -19,8 +18,9 @@ public class MapParser extends AbstractParser {
 		boolean inContent = false;
 
 		String field = null;
-
+		
 		Map<Object, Object> map = type.newInstance();
+		
 		ObjectWrapper<T> wrapper = new ObjectWrapper<T>();
 
 		for (int i = 1; i < json.length(); i++) {
@@ -32,8 +32,7 @@ public class MapParser extends AbstractParser {
 			}
 			if (!inContent) {
 				if (chr == '[') {
-					ObjectWrapper<T> childWrapper = parser(json.substring(i, json.length()),
-							new TypeEntity(List.class));
+					ObjectWrapper<T> childWrapper = parser(json.substring(i, json.length()), type.getActuals().get(1));
 					if (childWrapper.getObject() != null) {
 						map.put(field, childWrapper.getObject());
 					}
@@ -42,7 +41,7 @@ public class MapParser extends AbstractParser {
 					continue;
 				}
 				if (chr == '{') {
-					ObjectWrapper<T> childWrapper = parser(json.substring(i, json.length()), type);
+					ObjectWrapper<T> childWrapper = parser(json.substring(i, json.length()), type.getActuals().get(1));
 					if (childWrapper.getObject() != null) {
 						map.put(field, childWrapper.getObject());
 					}

@@ -53,4 +53,7 @@ public class TypeUtil {
 		}
 	}
 
+	public static void main(String[] args) {
+	}
+
 }

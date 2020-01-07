@@ -50,7 +50,7 @@ public class CollectionParser extends AbstractParser {
 					}
 					break;
 				}
-				if (chr == ',') {
+				if (chr == ',') {	
 					if (sbBuilder != null) {
 						object.add(FieldUtil.parseValue(sbBuilder.toString(), type.getCurrent()));
 						sbBuilder = null;

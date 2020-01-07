@@ -1,5 +1,7 @@
 package org.coody.framework.parser.iface;
 
+import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Map;
 
 import org.coody.framework.adapter.TypeAdapter;
@@ -26,8 +28,12 @@ public abstract class AbstractParser {
 
 	protected static AbstractParser objectParser = new ObjectParser();
 
-	public static <T> ObjectWrapper<T> parser(String json, TypeAdapter<T> Adapter) {
-		return parser(json, TypeUtil.getTypeEntityByType(Adapter.getType()));
+	public static <T> ObjectWrapper<T> parser(String json, Class<?> clazz) {
+		return parser(json, TypeUtil.getTypeEntityByType((Type) clazz));
+	}
+
+	public static <T> ObjectWrapper<T> parser(String json, TypeAdapter<T> adapter) {
+		return parser(json, TypeUtil.getTypeEntityByType(adapter.getType()));
 	}
 
 	public static <T> ObjectWrapper parser(String json, TypeEntity type) {
@@ -40,10 +46,17 @@ public abstract class AbstractParser {
 			if (type.getCurrent().isArray()) {
 				return arrayParser.doParser(json, type);
 			}
+			type = TypeUtil.getTypeEntityByType(new TypeAdapter<List<Object>>() {
+			}.getType());
 			return collectionParser.doParser(json, type);
 		}
 		if (output == '}') {
 			if (Map.class.isAssignableFrom(type.getCurrent())) {
+				return mapParser.doParser(json, type);
+			}
+			if (type.getCurrent() == Object.class) {
+				type = TypeUtil.getTypeEntityByType(new TypeAdapter<Map<Object, Object>>() {
+				}.getType());
 				return mapParser.doParser(json, type);
 			}
 			return objectParser.doParser(json, type);
