@@ -43,6 +43,7 @@
         
         coody-minicat ：基于TCP的Http服务器
 
+        coody-cson    ：JSON序列化 & 反序列化插件
 
 
 #### 更新记录：
