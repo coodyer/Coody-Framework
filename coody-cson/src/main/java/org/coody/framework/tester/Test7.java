@@ -10,8 +10,8 @@ import java.util.Map;
 
 import org.coody.framework.Cson;
 import org.coody.framework.adapter.TypeAdapter;
-import org.coody.framework.entity.ObjectWrapper;
-import org.coody.framework.parser.iface.AbstractParser;
+import org.nico.noson.Noson;
+import org.nico.noson.entity.NoType;
 
 public class Test7 {
 
@@ -21,6 +21,7 @@ public class Test7 {
 		map1.put("map1_k1", "map1_value1");
 		map1.put("map1_k2", "map1_value2");
 		map1.put("map1_k3", "map1_value3");
+		map1.put("double_test", 1111111.111D);
 
 		Map<Object, Object> map2 = new HashMap<Object, Object>();
 		map2.put("map2_k1", "map2_value1");
@@ -28,15 +29,19 @@ public class Test7 {
 		map2.put(getUserInfo(), "map2_value3");
 		list.add(map2);
 
-		String json = Cson.toJson(list);
+		String nosonJson = Noson.reversal(list);
 
-		System.out.println(json);
+		System.out.println("nosonJson>>" + nosonJson);
 
-		ObjectWrapper<List<Map<String, Object>>> wrapper = AbstractParser.parser(json,
-				new TypeAdapter<List<Map<String, Object>>>() {
-				});
-		List<Map<String, Object>> result = wrapper.getObject();
-		System.out.println(Cson.toJson(result));
+		List<Map<Object, Object>> noson = Noson.convert(nosonJson, new NoType<List<Map<Object, Object>>>() {
+		});
+		System.out.println("noson>>" + Noson.reversal(noson));
+		System.out.println();
+		String csonJson = Cson.toJson(list);
+		System.out.println("csonJson>>" + csonJson);
+		List<Map<Object, Object>> cson = Cson.toObject(csonJson, new TypeAdapter<List<Map<Object, Object>>>() {
+		});
+		System.out.println("cson>>" + Cson.toJson(cson));
 
 	}
 

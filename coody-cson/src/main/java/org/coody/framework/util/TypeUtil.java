@@ -15,11 +15,6 @@ public class TypeUtil {
 	 * 缓存容器
 	 */
 	public static Map<Type, TypeEntity> TYPEENTITY_CACHE = new ConcurrentHashMap<Type, TypeEntity>();
-	public static Map<Class<?>, TypeEntity> CLASS_TYPEENTITY_CACHE = new ConcurrentHashMap<Class<?>, TypeEntity>();
-	/**
-	 * 对象指纹
-	 */
-	public static final String MODEL_FINGERPRINT = "MODEL_FINGERPRINT";
 
 	public static TypeEntity getTypeEntityByType(Type type) {
 		TypeEntity typeEntity = TYPEENTITY_CACHE.get(type);
