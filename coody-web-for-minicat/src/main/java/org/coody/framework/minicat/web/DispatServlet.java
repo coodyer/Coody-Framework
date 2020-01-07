@@ -3,6 +3,7 @@ package org.coody.framework.minicat.web;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
+import org.coody.framework.Cson;
 import org.coody.framework.core.CoreApp;
 import org.coody.framework.core.builder.ConfigBuilder;
 import org.coody.framework.core.config.CoodyConfig;
@@ -18,8 +19,6 @@ import org.coody.framework.minicat.web.annotation.TextOut;
 import org.coody.framework.minicat.web.container.HttpContainer;
 import org.coody.framework.minicat.web.container.MappingContainer;
 import org.coody.framework.minicat.web.entity.MvcMapping;
-
-import com.alibaba.fastjson.JSON;
 
 public class DispatServlet extends HttpServlet {
 
@@ -46,7 +45,7 @@ public class DispatServlet extends HttpServlet {
 			JsonOut jsonSerialize = mapping.getMethod().getAnnotation(JsonOut.class);
 			if (jsonSerialize != null) {
 				response.setHeader("Content-type", "application/Json");
-				String json = JSON.toJSONString(result);
+				String json = Cson.toJson(result);
 				response.getOutputStream().print(json);
 				return;
 			}

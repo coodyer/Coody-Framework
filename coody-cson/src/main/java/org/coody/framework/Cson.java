@@ -1,6 +1,7 @@
 package org.coody.framework;
 
 import org.coody.framework.adapter.TypeAdapter;
+import org.coody.framework.container.ThreadSetContainer;
 import org.coody.framework.entity.ObjectWrapper;
 import org.coody.framework.parser.iface.AbstractParser;
 import org.coody.framework.serializer.iface.AbstractSerializer;
@@ -8,7 +9,11 @@ import org.coody.framework.serializer.iface.AbstractSerializer;
 public class Cson {
 
 	public static String toJson(Object object) {
-		return AbstractSerializer.serialize(object);
+		try {
+			return AbstractSerializer.serialize(object);
+		} finally {
+			ThreadSetContainer.clear();
+		}
 	}
 
 	public static <T> T toObject(String json, Class<T> clazz) {

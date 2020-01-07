@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.coody.framework.Cson;
 import org.coody.framework.core.CoreApp;
 import org.coody.framework.core.builder.ConfigBuilder;
 import org.coody.framework.core.config.CoodyConfig;
@@ -19,8 +20,6 @@ import org.coody.framework.web.annotation.TextOut;
 import org.coody.framework.web.container.HttpContainer;
 import org.coody.framework.web.container.MappingContainer;
 import org.coody.framework.web.entity.MvcMapping;
-
-import com.alibaba.fastjson.JSON;
 
 @SuppressWarnings("serial")
 public class DispatServlet extends HttpServlet {
@@ -48,7 +47,7 @@ public class DispatServlet extends HttpServlet {
 			JsonOut jsonSerialize = mapping.getMethod().getAnnotation(JsonOut.class);
 			if (jsonSerialize != null) {
 				response.setHeader("Content-type", "application/Json");
-				String json = JSON.toJSONString(result);
+				String json = Cson.toJson(result);
 				response.getOutputStream().print(json);
 				return;
 			}

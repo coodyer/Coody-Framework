@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.coody.framework.container.ThreadSetContainer;
 import org.coody.framework.serializer.ArraySerializer;
 import org.coody.framework.serializer.BooleanSerializer;
 import org.coody.framework.serializer.CollectionSerializer;
@@ -52,8 +53,13 @@ public abstract class AbstractSerializer<T> {
 		if (target == null) {
 			return null;
 		}
+
+		if (!ThreadSetContainer.add(target)) {
+			return "${duplicate objects}";
+		}
 		AbstractSerializer serializer = getSerializer(target.getClass());
 		return serializer.adapt(target);
+
 	}
 
 	public static synchronized void addSerializer(Class<?> clazz, AbstractSerializer<?> serializer) {

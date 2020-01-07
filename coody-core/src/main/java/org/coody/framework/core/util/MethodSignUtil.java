@@ -5,10 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.coody.framework.Cson;
 import org.coody.framework.core.model.BaseModel;
 import org.coody.framework.core.model.FieldEntity;
-
-import com.alibaba.fastjson.JSON;
 
 public class MethodSignUtil {
 
@@ -23,7 +22,7 @@ public class MethodSignUtil {
 			if (StringUtil.isNullOrEmpty(paraValue)) {
 				paraValue = "";
 			}
-			paraKey.append("_").append(JSON.toJSON(paraValue));
+			paraKey.append("_").append(Cson.toJson(paraValue));
 		}
 		key = key + ":" + EncryptUtil.md5(paraKey.toString());
 		return key;
@@ -41,7 +40,7 @@ public class MethodSignUtil {
 				continue;
 			}
 			if (BaseModel.class.isAssignableFrom(line.getClass())) {
-				content.append(JSON.toJSONString(line)).append("-");
+				content.append(Cson.toJson(line)).append("-");
 				continue;
 			}
 			content.append(line.toString()).append("-");

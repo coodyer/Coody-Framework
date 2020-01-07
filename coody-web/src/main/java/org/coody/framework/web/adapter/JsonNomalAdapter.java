@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.coody.framework.Cson;
+import org.coody.framework.adapter.TypeAdapter;
 import org.coody.framework.core.constant.InsideTypeConstant;
 import org.coody.framework.core.model.BaseModel;
 import org.coody.framework.core.model.FieldEntity;
@@ -15,9 +17,6 @@ import org.coody.framework.web.adapter.iface.CoodyParameterAdapter;
 import org.coody.framework.web.annotation.ParamName;
 import org.coody.framework.web.entity.MvcMapping;
 import org.coody.framework.web.util.RequestUtil;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
 
 /**
  * json装载到多个bean,以beanname为准
@@ -57,18 +56,18 @@ public class JsonNomalAdapter extends CoodyParameterAdapter {
 					paraName = paramName.value();
 				}
 				if (StringUtil.isNullOrEmpty(paraName)) {
-					params[i] = JSON.parseObject(context, beanEntity.getFieldType());
+					params[i] = Cson.toObject(context, beanEntity.getFieldType());
 					continue;
 				}
 				if (paraMap == null) {
-					paraMap = JSON.parseObject(context, new TypeReference<HashMap<String, Object>>() {
+					paraMap = Cson.toObject(context, new TypeAdapter<HashMap<String, Object>>() {
 					});
 					if (paraMap == null) {
 						paraMap = new HashMap<String, Object>();
 					}
 				}
 				String json = StringUtil.toString(paraMap.get(paraName));
-				params[i] = JSON.parseObject(json, beanEntity.getFieldType());
+				params[i] = Cson.toObject(json, beanEntity.getFieldType());
 				continue;
 			}
 			if (beanEntity.getFieldType().isPrimitive()
@@ -79,7 +78,7 @@ public class JsonNomalAdapter extends CoodyParameterAdapter {
 					paraName = paramNameAnnotion.value();
 				}
 				if (paraMap == null) {
-					paraMap = JSON.parseObject(context, new TypeReference<HashMap<String, Object>>() {
+					paraMap = Cson.toObject(context, new TypeAdapter<HashMap<String, Object>>() {
 					});
 					if (paraMap == null) {
 						paraMap = new HashMap<String, Object>();

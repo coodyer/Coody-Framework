@@ -26,6 +26,11 @@
 			<artifactId>coody-minicat</artifactId>
 			<version>${coody.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.coody.framework</groupId>
+			<artifactId>coody-core</artifactId>
+			<version>${coody.version}</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -33,7 +38,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 			</plugin>
-			
+
 		</plugins>
 	</build>
 	<distributionManagement>
