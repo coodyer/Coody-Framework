@@ -11,3 +11,14 @@
 ### 如何使用
     1、在一个bean方法上添加CronTask注解即可
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/0815/181345_e71cce03_1200611.png "task.png")
+
+
+### 版权说明：
+
+在本项目源代码中，已有测试demo，包括mvc、切面等示例
+
+作者：Coody
+    
+版权：©2014-2020 Test404 All right reserved. 版权所有
+
+反馈邮箱：644556636@qq.com

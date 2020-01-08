@@ -86,6 +86,9 @@ public abstract class AbstractParser {
 			if (value == null) {
 				return;
 			}
+			if (field.getIsIgonre()) {
+				return;
+			}
 			field.getField().set(object, FieldUtil.parseValue(value, field.getField().getType()));
 		} catch (Exception e) {
 			throw new CsonException("字段赋值失败>>" + field.getField().getName(), e);

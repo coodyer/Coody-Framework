@@ -222,4 +222,12 @@ saveOrUpdateAuto(userInfo,"account");
 当userInfo字段的主键(唯一索引)为空或在数据库中不存在，则执行insert操作。当主键(唯一索引)存在时则根据主键(唯一索引)更新其他字段，account字段在原基础上增加传入的值(account=account+传入的account值)。执行成功返回影响行数，执行报错返回-1
 
 
+### 版权说明：
 
+在本项目源代码中，已有测试demo，包括mvc、切面等示例
+
+作者：Coody
+    
+版权：©2014-2020 Test404 All right reserved. 版权所有
+
+反馈邮箱：644556636@qq.com
