@@ -17,7 +17,7 @@ import org.coody.framework.minicat.servlet.MiniCatHttpPart;
 import org.coody.framework.minicat.servlet.ResourceServlet;
 import org.coody.framework.minicat.socket.iface.MiniCatService;
 
-public class CoreApp {
+public class MinicatApp {
 
 	public static void init(Class<?>... clazzs) throws InstantiationException, IllegalAccessException,
 			ClassNotFoundException, IOException, URISyntaxException {
