@@ -40,11 +40,15 @@
 ### 性能测试
 
 	关于性能问题，笔者暂时不做深入优化，因为不同的实现方案在对于不同的数据类型各有优劣。以下提供几个简单的测试。
+
+    ![输入图片说明](https://images.gitee.com/uploads/images/2020/0108/105822_730f1507_1200611.png "序列化对象.png")
+
+    ![输入图片说明](https://images.gitee.com/uploads/images/2020/0108/105830_33bcaca7_1200611.png "反序列化对象.png")
 	
 	
 ### 序列化复杂容器
 
-	
+	![输入图片说明](https://images.gitee.com/uploads/images/2020/0108/105837_6f8d64d4_1200611.png "反序列化对象.png")
 	
 	
 ### 版权说明：
