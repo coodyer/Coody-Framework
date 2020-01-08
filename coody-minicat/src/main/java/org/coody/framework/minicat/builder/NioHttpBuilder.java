@@ -38,7 +38,9 @@ public class NioHttpBuilder extends HttpBuilder {
 		if (StringUtil.isNullOrEmpty(data)) {
 			return;
 		}
-		channel.write(ByteBuffer.wrap(data));
+		if(channel.isConnected()) {
+			channel.write(ByteBuffer.wrap(data));
+		}
 	}
 
 	@Override
