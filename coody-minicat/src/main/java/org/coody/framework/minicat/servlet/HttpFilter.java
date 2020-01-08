@@ -18,7 +18,6 @@ public abstract class HttpFilter extends MiniCatHttpPart {
 		this.mapping = mapping;
 	}
 
-	public abstract void init() throws Exception;
 
 	public abstract void doFilter(MinicatServletRequestImpl request, MinicatServletResponseImpl response,
 			ApplicationFilterChain chain) throws IOException;

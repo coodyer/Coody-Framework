@@ -10,5 +10,4 @@ public abstract class HttpServlet extends MiniCatHttpPart {
 	public abstract void doService(MinicatServletRequestImpl request, MinicatServletResponseImpl response)
 			throws IOException;
 
-	public abstract void init() throws Exception;
 }

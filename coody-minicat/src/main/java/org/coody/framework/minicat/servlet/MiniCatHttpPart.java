@@ -1,5 +1,6 @@
 package org.coody.framework.minicat.servlet;
 
-public class MiniCatHttpPart {
+public abstract class MiniCatHttpPart {
 
+	public abstract void init() throws Exception;
 }

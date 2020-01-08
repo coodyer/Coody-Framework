@@ -2,6 +2,7 @@ package org.coody.framework.core;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -60,9 +61,12 @@ public class CoreApp {
 	}
 
 	public static Set<Class<?>> initScanner(String packager) {
+		long startTime = System.currentTimeMillis();
 		// 加载扫描包列表
-		String[] packets = packager.split(",");
-		Set<Class<?>> clazzs = ClassUtil.getClasses("org.coody.framework");
+		List<String> packets = new ArrayList<String>();
+		packets.add("org.coody.framework");
+		packets.addAll(Arrays.asList(packager.split(",")));
+		Set<Class<?>> clazzs = new HashSet<Class<?>>();
 		for (String packet : packets) {
 			Set<Class<?>> clazzsTemp = ClassUtil.getClasses(packet);
 			clazzs.addAll(clazzsTemp);
@@ -70,10 +74,12 @@ public class CoreApp {
 		if (StringUtil.isNullOrEmpty(clazzs)) {
 			throw new InitException("扫描类为空");
 		}
+		LogUtil.log.info("扫描类>>数量:" + clazzs.size() + ",耗时:" + (System.currentTimeMillis() - startTime));
 		return clazzs;
 	}
 
 	public static void init(CoodyConfig config) throws Exception {
+
 		// 初始化组建加载器
 		initLoader(config.assember);
 		// 初始化扫描类
@@ -86,7 +92,7 @@ public class CoreApp {
 			if (StringUtil.isNullOrEmpty(loadersMap.get(seq))) {
 				continue;
 			}
-			ThreadBlockPool pool = new ThreadBlockPool(loadersMap.get(seq).size(), 60);
+			ThreadBlockPool pool = new ThreadBlockPool(loadersMap.get(seq).size(), 7200);
 			for (Class<?> loader : loadersMap.get(seq)) {
 				pool.pushTask(new Runnable() {
 					@Override

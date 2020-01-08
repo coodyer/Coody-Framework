@@ -33,6 +33,9 @@ public class ConfigBuilder {
 	}
 
 	public static void builder() throws IOException, URISyntaxException {
+		if (!config.isEmpty()) {
+			return;
+		}
 		InputStream ins = ConfigBuilder.class.getClassLoader().getResourceAsStream("coody.properties");
 		if (ins == null) {
 			throw new CoodyException("coody.properties不存在");
