@@ -11,9 +11,9 @@ import org.coody.framework.core.annotation.Around;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.model.AspectPoint;
-import org.coody.framework.core.util.LogUtil;
-import org.coody.framework.core.util.MethodSignUtil;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.log.LogUtil;
+import org.coody.framework.core.util.reflex.MethodSignUtil;
+import org.coody.framework.core.util.CommonUtil;
 
 @AutoBuild
 public class CacheAspect {
@@ -44,17 +44,17 @@ public class CacheAspect {
 		Object[] paras = point.getParams();
 		String key = handle.key();
 		try {
-			if (StringUtil.isNullOrEmpty(key)) {
+			if (CommonUtil.isNullOrEmpty(key)) {
 				key = this.getClass().getSimpleName() + ":" + MethodSignUtil.getKeyByMethod(clazz, method);
 			}
-			if (StringUtil.isNullOrEmpty(handle.fields())) {
+			if (CommonUtil.isNullOrEmpty(handle.fields())) {
 				String paraKey = MethodSignUtil.getKeyByParameters(paras);
-				if (!StringUtil.isNullOrEmpty(paraKey)) {
+				if (!CommonUtil.isNullOrEmpty(paraKey)) {
 					key += ":";
 					key += paraKey;
 				}
 			}
-			if (!StringUtil.isNullOrEmpty(handle.fields())) {
+			if (!CommonUtil.isNullOrEmpty(handle.fields())) {
 				key = MethodSignUtil.getKeyByFields(clazz, method, paras, key, handle.fields());
 			}
 		} catch (Exception e) {
@@ -66,7 +66,7 @@ public class CacheAspect {
 		try {
 			Object result = cacheable.getCache(key);
 			LogUtil.log.debug("获取缓存 >>" + key + ",结果:" + result);
-			if (!StringUtil.isNullOrEmpty(result)) {
+			if (!CommonUtil.isNullOrEmpty(result)) {
 				return result;
 			}
 		} catch (Exception e) {
@@ -101,24 +101,24 @@ public class CacheAspect {
 		Object[] paras = able.getParams();
 		Object result = able.invoke();
 		CacheWipe[] handles = method.getAnnotationsByType(CacheWipe.class);
-		if (StringUtil.isNullOrEmpty(handles)) {
+		if (CommonUtil.isNullOrEmpty(handles)) {
 			return result;
 		}
 
 		for (CacheWipe handle : handles) {
 			String key = handle.key();
 			try {
-				if (StringUtil.isNullOrEmpty(key)) {
+				if (CommonUtil.isNullOrEmpty(key)) {
 					key = this.getClass().getSimpleName() + ":" + MethodSignUtil.getKeyByMethod(clazz, method);
 				}
-				if (StringUtil.isNullOrEmpty(handle.fields())) {
+				if (CommonUtil.isNullOrEmpty(handle.fields())) {
 					String paraKey = MethodSignUtil.getKeyByParameters(paras);
-					if (!StringUtil.isNullOrEmpty(paraKey)) {
+					if (!CommonUtil.isNullOrEmpty(paraKey)) {
 						key += ":";
 						key += paraKey;
 					}
 				}
-				if (!StringUtil.isNullOrEmpty(handle.fields())) {
+				if (!CommonUtil.isNullOrEmpty(handle.fields())) {
 					key = MethodSignUtil.getKeyByFields(clazz, method, paras, key, handle.fields());
 				}
 			} catch (Exception e) {

@@ -21,11 +21,11 @@ import org.coody.framework.core.model.AspectAbler;
 import org.coody.framework.core.model.AspectEntity;
 import org.coody.framework.core.model.AspectPoint;
 import org.coody.framework.core.model.BaseModel;
-import org.coody.framework.core.util.AntUtil;
-import org.coody.framework.core.util.MethodSignUtil;
-import org.coody.framework.core.util.ParameterNameUtil;
-import org.coody.framework.core.util.PropertUtil;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.ant.AntUtil;
+import org.coody.framework.core.util.reflex.MethodSignUtil;
+import org.coody.framework.core.util.reflex.ParameterNameUtil;
+import org.coody.framework.core.util.reflex.PropertUtil;
+import org.coody.framework.core.util.CommonUtil;
 
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
@@ -57,7 +57,7 @@ public class CglibProxy implements MethodInterceptor {
 			Enhancer enhancer = new Enhancer();
 			enhancer.setSuperclass(clazz);
 			enhancer.setCallback(this);
-			if (StringUtil.isNullOrEmpty(mappedConstructor.getTypes())) {
+			if (CommonUtil.isNullOrEmpty(mappedConstructor.getTypes())) {
 				return enhancer.create();
 			}
 			return enhancer.create(mappedConstructor.getTypes(), mappedConstructor.getParameters());
@@ -68,7 +68,7 @@ public class CglibProxy implements MethodInterceptor {
 	}
 
 	public MappedConstructor getConstructor(Class<?> clazz, Map<String, Object> parameterMap) {
-		if (StringUtil.isNullOrEmpty(parameterMap)) {
+		if (CommonUtil.isNullOrEmpty(parameterMap)) {
 			MappedConstructor mappedConstructor = new MappedConstructor();
 			for (Constructor<?> constructor : clazz.getConstructors()) {
 				if (constructor.getParameterCount() > 0) {
@@ -82,7 +82,7 @@ public class CglibProxy implements MethodInterceptor {
 			return mappedConstructor;
 		}
 		Map<Executable, List<String>> executableParameters = ParameterNameUtil.getExecutableParameters(clazz);
-		if (StringUtil.isNullOrEmpty(executableParameters)) {
+		if (CommonUtil.isNullOrEmpty(executableParameters)) {
 			throw new MappedExecutableException(clazz, parameterMap.keySet());
 		}
 		List<String> inputParameters = new ArrayList<String>(parameterMap.keySet());
@@ -119,7 +119,7 @@ public class CglibProxy implements MethodInterceptor {
 
 	private boolean hasProxy(Class<?> clazz) {
 		Set<Method> methods = PropertUtil.getMethods(clazz);
-		if (StringUtil.isNullOrEmpty(methods)) {
+		if (CommonUtil.isNullOrEmpty(methods)) {
 			return false;
 		}
 		boolean needProxy = false;
@@ -149,7 +149,7 @@ public class CglibProxy implements MethodInterceptor {
 		/**
 		 * 判断类名是否满足条件
 		 */
-		if (!StringUtil.isNullOrEmpty(aspectEntity.getClassMappath())) {
+		if (!CommonUtil.isNullOrEmpty(aspectEntity.getClassMappath())) {
 			if (!AntUtil.isAntMatch(clazz.getName(), aspectEntity.getClassMappath())) {
 				return false;
 			}
@@ -157,7 +157,7 @@ public class CglibProxy implements MethodInterceptor {
 		/**
 		 * 判断方法名是否满足条件
 		 */
-		if (!StringUtil.isNullOrEmpty(aspectEntity.getMethodMappath())) {
+		if (!CommonUtil.isNullOrEmpty(aspectEntity.getMethodMappath())) {
 			if (!AntUtil.isAntMatch(MethodSignUtil.getMethodUnionKey(method), aspectEntity.getMethodMappath())) {
 				return false;
 			}
@@ -165,9 +165,9 @@ public class CglibProxy implements MethodInterceptor {
 		/**
 		 * 判断注解是否满足条件
 		 */
-		if (!StringUtil.isNullOrEmpty(aspectEntity.getAnnotationClass())) {
+		if (!CommonUtil.isNullOrEmpty(aspectEntity.getAnnotationClass())) {
 			Annotation[] annotations = method.getAnnotations();
-			if (StringUtil.isNullOrEmpty(annotations)) {
+			if (CommonUtil.isNullOrEmpty(annotations)) {
 				return false;
 			}
 			List<Class<?>> annotationClazzs = new ArrayList<Class<?>>();
@@ -231,7 +231,7 @@ public class CglibProxy implements MethodInterceptor {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private AspectAbler parseAspect(AspectAbler basePoint, List<AspectEntity> invokeAspects) {
-		if (StringUtil.isNullOrEmpty(invokeAspects)) {
+		if (CommonUtil.isNullOrEmpty(invokeAspects)) {
 			return null;
 		}
 		AspectEntity aspectEntity = invokeAspects.get(0);

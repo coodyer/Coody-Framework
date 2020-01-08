@@ -11,8 +11,9 @@ import org.coody.framework.adapter.TypeAdapter;
 import org.coody.framework.core.constant.InsideTypeConstant;
 import org.coody.framework.core.model.BaseModel;
 import org.coody.framework.core.model.FieldEntity;
-import org.coody.framework.core.util.PropertUtil;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.convert.ConvertUtil;
+import org.coody.framework.core.util.reflex.PropertUtil;
 import org.coody.framework.web.adapter.iface.CoodyParameterAdapter;
 import org.coody.framework.web.annotation.ParamName;
 import org.coody.framework.web.entity.MvcMapping;
@@ -29,7 +30,7 @@ public class JsonNomalAdapter extends CoodyParameterAdapter {
 	@Override
 	public Object[] adapt(MvcMapping mapping, HttpServletRequest request, HttpServletResponse response,
 			HttpSession session) {
-		if (StringUtil.isNullOrEmpty(mapping.getParameters())) {
+		if (CommonUtil.isNullOrEmpty(mapping.getParameters())) {
 			return null;
 		}
 		Object[] params = new Object[mapping.getParameters().size()];
@@ -55,7 +56,7 @@ public class JsonNomalAdapter extends CoodyParameterAdapter {
 				if (paramName != null) {
 					paraName = paramName.value();
 				}
-				if (StringUtil.isNullOrEmpty(paraName)) {
+				if (CommonUtil.isNullOrEmpty(paraName)) {
 					params[i] = Cson.toObject(context, beanEntity.getFieldType());
 					continue;
 				}
@@ -66,7 +67,7 @@ public class JsonNomalAdapter extends CoodyParameterAdapter {
 						paraMap = new HashMap<String, Object>();
 					}
 				}
-				String json = StringUtil.toString(paraMap.get(paraName));
+				String json = ConvertUtil.toString(paraMap.get(paraName));
 				params[i] = Cson.toObject(json, beanEntity.getFieldType());
 				continue;
 			}

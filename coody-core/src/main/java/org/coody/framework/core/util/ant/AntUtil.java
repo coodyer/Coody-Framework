@@ -1,4 +1,4 @@
-package org.coody.framework.core.util;
+package org.coody.framework.core.util.ant;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,6 +17,8 @@ import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.coody.framework.core.util.CommonUtil;
 
 /**
  * @author Alef Arendsen
@@ -623,7 +625,7 @@ public class AntUtil {
 
 	public static Boolean isAntPatten(String mateher) {
 		try {
-			if (StringUtil.isNullOrEmpty(mateher)) {
+			if (CommonUtil.isNullOrEmpty(mateher)) {
 				return false;
 			}
 			return matcher.isPattern(mateher);
@@ -635,7 +637,7 @@ public class AntUtil {
 
 	public static Boolean isAntMatch(String val, String mateher) {
 		try {
-			if (StringUtil.isNullOrEmpty(val)) {
+			if (CommonUtil.isNullOrEmpty(val)) {
 				return false;
 			}
 			return matcher.match(mateher, val);

@@ -11,9 +11,10 @@ import org.coody.framework.Cson;
 import org.coody.framework.core.CoreApp;
 import org.coody.framework.core.builder.ConfigBuilder;
 import org.coody.framework.core.config.CoodyConfig;
-import org.coody.framework.core.util.LogUtil;
-import org.coody.framework.core.util.PrintException;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.abnormal.PrintException;
+import org.coody.framework.core.util.convert.ConvertUtil;
+import org.coody.framework.core.util.log.LogUtil;
 import org.coody.framework.web.adapter.iface.CoodyParameterAdapter;
 import org.coody.framework.web.annotation.JsonOut;
 import org.coody.framework.web.annotation.TextOut;
@@ -56,8 +57,8 @@ public class DispatServlet extends HttpServlet {
 				response.getOutputStream().print(result.toString());
 				return;
 			}
-			String viewFileName = StringUtil.toString(result);
-			if (StringUtil.isNullOrEmpty(viewFileName)) {
+			String viewFileName = ConvertUtil.toString(result);
+			if (CommonUtil.isNullOrEmpty(viewFileName)) {
 				response.getOutputStream().print("page not found");
 				response.setStatus(404);
 				return;

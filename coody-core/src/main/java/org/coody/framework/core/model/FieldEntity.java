@@ -3,7 +3,7 @@ package org.coody.framework.core.model;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.CommonUtil;
 
 @SuppressWarnings("serial")
 public class FieldEntity extends BaseModel {
@@ -20,7 +20,7 @@ public class FieldEntity extends BaseModel {
 
 	@SuppressWarnings("unchecked")
 	public <T extends Annotation> T getAnnotation(Class<?> clazz) {
-		if (StringUtil.isNullOrEmpty(fieldAnnotations)) {
+		if (CommonUtil.isNullOrEmpty(fieldAnnotations)) {
 			return null;
 		}
 		for (Annotation annotation : fieldAnnotations) {

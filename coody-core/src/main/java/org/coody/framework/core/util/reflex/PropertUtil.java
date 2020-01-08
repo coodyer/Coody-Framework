@@ -1,4 +1,4 @@
-package org.coody.framework.core.util;
+package org.coody.framework.core.util.reflex;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
@@ -26,6 +26,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.coody.framework.core.exception.base.CoodyException;
 import org.coody.framework.core.model.FieldEntity;
+import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.date.DateUtils;
+import org.coody.framework.core.util.unsafe.UnsafeUtil;
 
 @SuppressWarnings("unchecked")
 public class PropertUtil {
@@ -51,14 +54,14 @@ public class PropertUtil {
 	 * @return
 	 */
 	public static List<Object> getFieldValues(Object obj, String... fieldNames) {
-		if (StringUtil.isNullOrEmpty(obj)) {
+		if (CommonUtil.isNullOrEmpty(obj)) {
 			return null;
 		}
 		List<Object> values = new ArrayList<Object>(fieldNames.length * 2);
 		for (String fieldName : fieldNames) {
 			values.add(getFieldValue(obj, fieldName));
 		}
-		if (StringUtil.isNullOrEmpty(values)) {
+		if (CommonUtil.isNullOrEmpty(values)) {
 			return null;
 		}
 		return values;
@@ -94,10 +97,10 @@ public class PropertUtil {
 			return false;
 		}
 		Class<?>[] clas = method.getParameterTypes();
-		if (StringUtil.isNullOrEmpty(clas) && StringUtil.isNullOrEmpty(paraTypes)) {
+		if (CommonUtil.isNullOrEmpty(clas) && CommonUtil.isNullOrEmpty(paraTypes)) {
 			return true;
 		}
-		if (StringUtil.isNullOrEmpty(clas) || StringUtil.isNullOrEmpty(paraTypes)) {
+		if (CommonUtil.isNullOrEmpty(clas) || CommonUtil.isNullOrEmpty(paraTypes)) {
 			return false;
 		}
 		if (clas.length != paraTypes.length) {
@@ -115,11 +118,11 @@ public class PropertUtil {
 	}
 
 	public static <T> T copyPropertys(Object source, Object targe) {
-		if (StringUtil.isNullOrEmpty(source)) {
+		if (CommonUtil.isNullOrEmpty(source)) {
 			return (T) targe;
 		}
 		List<FieldEntity> entitys = getBeanFields(source);
-		if (StringUtil.isNullOrEmpty(entitys)) {
+		if (CommonUtil.isNullOrEmpty(entitys)) {
 			return (T) targe;
 		}
 		for (FieldEntity entity : entitys) {
@@ -140,7 +143,7 @@ public class PropertUtil {
 	 */
 	@SuppressWarnings({ "rawtypes" })
 	public static <T> List<T> getNewList(List list, Class cla) {
-		if (StringUtil.findNull(list, cla) > -1) {
+		if (CommonUtil.hasNullOrEmpty(list, cla)) {
 			return null;
 		}
 		List<T> ls = new ArrayList<T>();
@@ -160,13 +163,13 @@ public class PropertUtil {
 	 */
 	@SuppressWarnings({ "rawtypes" })
 	public static <T> T mapToModel(Map map, Class<?> clazz) {
-		if (StringUtil.isNullOrEmpty(map)) {
+		if (CommonUtil.isNullOrEmpty(map)) {
 			return null;
 		}
 		try {
 			T value = (T) UnsafeUtil.createInstance(clazz);
 			List<FieldEntity> entitys = getBeanFields(clazz);
-			if (StringUtil.isNullOrEmpty(entitys)) {
+			if (CommonUtil.isNullOrEmpty(entitys)) {
 				return null;
 			}
 			for (FieldEntity entity : entitys) {
@@ -190,7 +193,7 @@ public class PropertUtil {
 	 * @return
 	 */
 	public static Class<? extends Object> getObjClass(Object obj) {
-		if (StringUtil.isNullOrEmpty(obj)) {
+		if (CommonUtil.isNullOrEmpty(obj)) {
 			return null;
 		}
 		if (obj.getClass().getName().equals(Class.class.getName())) {
@@ -208,7 +211,7 @@ public class PropertUtil {
 	 */
 	public static Field getField(Class<?> clazz, String fieldName) {
 		List<Field> fields = loadFields(clazz);
-		if (StringUtil.isNullOrEmpty(fields)) {
+		if (CommonUtil.isNullOrEmpty(fields)) {
 			return null;
 		}
 		for (Field f : fields) {
@@ -226,12 +229,12 @@ public class PropertUtil {
 	 * @return
 	 */
 	public static List<FieldEntity> getBeanFields(Object obj) {
-		if (StringUtil.isNullOrEmpty(obj)) {
+		if (CommonUtil.isNullOrEmpty(obj)) {
 			return null;
 		}
 		Class<? extends Object> cla = getObjClass(obj);
 		List<FieldEntity> fields = getClassFields(cla);
-		if (StringUtil.isNullOrEmpty(fields)) {
+		if (CommonUtil.isNullOrEmpty(fields)) {
 			return fields;
 		}
 		if (obj.getClass().getName().equals(Class.class.getName())) {
@@ -291,11 +294,11 @@ public class PropertUtil {
 	 */
 	@SuppressWarnings({ "rawtypes" })
 	public static <T> Collection<T> getGroup(List<?> objs, String fieldName, Object fieldValue) {
-		if (StringUtil.isNullOrEmpty(objs)) {
+		if (CommonUtil.isNullOrEmpty(objs)) {
 			return null;
 		}
 		Map<Object, Collection> map = PropertUtil.listToMaps(objs, fieldName);
-		if (StringUtil.isNullOrEmpty(map)) {
+		if (CommonUtil.isNullOrEmpty(map)) {
 			return null;
 		}
 		return map.get(fieldValue);
@@ -311,11 +314,11 @@ public class PropertUtil {
 	 */
 	@SuppressWarnings({ "rawtypes" })
 	public static <T> T getByList(List<?> objs, String fieldName, Object fieldValue) {
-		if (StringUtil.findNull(objs, fieldName, fieldValue) > -1) {
+		if (CommonUtil.hasNullOrEmpty(objs, fieldName, fieldValue)) {
 			return null;
 		}
 		Map map = PropertUtil.listToMap(objs, fieldName);
-		if (StringUtil.isNullOrEmpty(map)) {
+		if (CommonUtil.isNullOrEmpty(map)) {
 			return null;
 		}
 		return (T) map.get(fieldValue);
@@ -329,11 +332,11 @@ public class PropertUtil {
 	 * @return
 	 */
 	private static <T> T getFieldValueCurr(Object obj, String fieldName) {
-		if (StringUtil.isNullOrEmpty(obj)) {
+		if (CommonUtil.isNullOrEmpty(obj)) {
 			return null;
 		}
 		Field f = getField(obj.getClass(), fieldName);
-		if (StringUtil.isNullOrEmpty(f)) {
+		if (CommonUtil.isNullOrEmpty(f)) {
 			return null;
 		}
 		f.setAccessible(true);
@@ -353,7 +356,7 @@ public class PropertUtil {
 	 * @return
 	 */
 	public static <T> T getAnnotationValue(Annotation annotation, String paraName) {
-		if (StringUtil.hasNull(annotation, paraName)) {
+		if (CommonUtil.hasNullOrEmpty(annotation, paraName)) {
 			return null;
 		}
 		try {
@@ -376,11 +379,11 @@ public class PropertUtil {
 	 * @return
 	 */
 	public static <T> T getFieldValue(Object bean, String paraName) {
-		if (StringUtil.isNullOrEmpty(bean)) {
+		if (CommonUtil.isNullOrEmpty(bean)) {
 			return null;
 		}
 		List<FieldEntity> beanEntitys = PropertUtil.getBeanFields(bean);
-		if (StringUtil.isNullOrEmpty(beanEntitys)) {
+		if (CommonUtil.isNullOrEmpty(beanEntitys)) {
 			return null;
 		}
 		if (!paraName.contains(".")) {
@@ -389,7 +392,7 @@ public class PropertUtil {
 		List<String> fields = new ArrayList<String>(Arrays.asList(paraName.split("\\.")));
 		Object beanTmp = PropertUtil.getFieldValue(bean, fields.get(0));
 		fields.remove(0);
-		return getFieldValue(beanTmp, StringUtil.collectionMosaic(fields, "."));
+		return getFieldValue(beanTmp, CommonUtil.splicing(fields, "."));
 	}
 
 	/**
@@ -411,7 +414,7 @@ public class PropertUtil {
 	 * @return
 	 */
 	public static <T> List<T> getFieldValues(List<?> objs, String fieldName) {
-		if (StringUtil.isNullOrEmpty(objs)) {
+		if (CommonUtil.isNullOrEmpty(objs)) {
 			return null;
 		}
 		List<Object> list = new ArrayList<Object>();
@@ -420,7 +423,7 @@ public class PropertUtil {
 			value = getFieldValue(obj, fieldName);
 			list.add(value);
 		}
-		if (StringUtil.isNullOrEmpty(objs)) {
+		if (CommonUtil.isNullOrEmpty(objs)) {
 			return null;
 		}
 		return (List<T>) list;
@@ -453,7 +456,7 @@ public class PropertUtil {
 	 */
 	public static void setFieldValue(Object object, String propertyName, Object value) throws CoodyException {
 		Field field = getField(object.getClass(), propertyName);
-		if (StringUtil.isNullOrEmpty(field)) {
+		if (CommonUtil.isNullOrEmpty(field)) {
 
 			return;
 		}
@@ -493,12 +496,12 @@ public class PropertUtil {
 					field.set(object, obj);
 				} catch (IllegalAccessException e) {
 
-					if (!StringUtil.isNullOrEmpty(PropertUtil.getFieldValue(field, "fieldAccessor"))) {
+					if (!CommonUtil.isNullOrEmpty(PropertUtil.getFieldValue(field, "fieldAccessor"))) {
 						setProperties(field, "fieldAccessor.isReadOnly", false);
 						setProperties(field, "fieldAccessor.isFinal", false);
 						setProperties(field, "fieldAccessor.field", field);
 					}
-					if (!StringUtil.isNullOrEmpty(PropertUtil.getFieldValue(field, "overrideFieldAccessor"))) {
+					if (!CommonUtil.isNullOrEmpty(PropertUtil.getFieldValue(field, "overrideFieldAccessor"))) {
 						setProperties(field, "overrideFieldAccessor.isReadOnly", false);
 						setProperties(field, "overrideFieldAccessor.isFinal", false);
 						setProperties(field, "overrideFieldAccessor.field", field);
@@ -539,11 +542,11 @@ public class PropertUtil {
 	 */
 	public static void setProperties(Object object, String propertyName, Object value)
 			throws IllegalArgumentException, IllegalAccessException, InstantiationException {
-		if (StringUtil.isNullOrEmpty(object)) {
+		if (CommonUtil.isNullOrEmpty(object)) {
 			return;
 		}
 		List<FieldEntity> beanEntitys = PropertUtil.getBeanFields(object);
-		if (StringUtil.isNullOrEmpty(beanEntitys)) {
+		if (CommonUtil.isNullOrEmpty(beanEntitys)) {
 			return;
 		}
 		if (!propertyName.contains(".")) {
@@ -561,7 +564,7 @@ public class PropertUtil {
 			beanTmp = UnsafeUtil.createInstance(currField.getFieldType());
 		}
 		fields.remove(0);
-		setProperties(beanTmp, StringUtil.collectionMosaic(fields, "."), value);
+		setProperties(beanTmp, CommonUtil.splicing(fields, "."), value);
 		setProperties(object, fieldName, beanTmp);
 	}
 
@@ -574,13 +577,13 @@ public class PropertUtil {
 	 * @return
 	 */
 	public static List<?> setFieldValues(List<?> objs, String fieldName, Object fieldsValue) {
-		if (StringUtil.isNullOrEmpty(objs)) {
+		if (CommonUtil.isNullOrEmpty(objs)) {
 			return null;
 		}
 		try {
 			for (Object obj : objs) {
 				try {
-					if (StringUtil.isNullOrEmpty(obj)) {
+					if (CommonUtil.isNullOrEmpty(obj)) {
 						continue;
 					}
 					setProperties(obj, fieldName, fieldsValue);
@@ -603,11 +606,11 @@ public class PropertUtil {
 	 */
 	@SuppressWarnings({ "rawtypes" })
 	public static <T> List<T> doSeq(Collection<?> objs, String fieldName) {
-		if (StringUtil.isNullOrEmpty(objs)) {
+		if (CommonUtil.isNullOrEmpty(objs)) {
 			return null;
 		}
 		Map<Object, Collection> maps = listToMaps(objs, fieldName);
-		if (StringUtil.isNullOrEmpty(maps)) {
+		if (CommonUtil.isNullOrEmpty(maps)) {
 			return null;
 		}
 		List list = new ArrayList();
@@ -631,7 +634,7 @@ public class PropertUtil {
 	 */
 	public static <T> List<T> doSeqDesc(List<?> objs, String fieldName) {
 		List<T> list = doSeq(objs, fieldName);
-		if (StringUtil.isNullOrEmpty(list)) {
+		if (CommonUtil.isNullOrEmpty(list)) {
 			return null;
 		}
 		Collections.reverse(list);
@@ -647,7 +650,7 @@ public class PropertUtil {
 	 */
 	@SuppressWarnings({ "rawtypes" })
 	public static Map<Object, Collection> listToMaps(Collection<?> objs, String fieldName) {
-		if (StringUtil.isNullOrEmpty(objs)) {
+		if (CommonUtil.isNullOrEmpty(objs)) {
 			return null;
 		}
 		Map<Object, Collection> map = new TreeMap<Object, Collection>();
@@ -666,7 +669,7 @@ public class PropertUtil {
 
 			}
 		}
-		if (StringUtil.isNullOrEmpty(map)) {
+		if (CommonUtil.isNullOrEmpty(map)) {
 			return null;
 		}
 		return map;
@@ -680,18 +683,18 @@ public class PropertUtil {
 	 * @return
 	 */
 	public static Map<String, Object> beanToMap(Object obj) {
-		if (StringUtil.isNullOrEmpty(obj)) {
+		if (CommonUtil.isNullOrEmpty(obj)) {
 			return null;
 		}
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<FieldEntity> entitys = PropertUtil.getBeanFields(obj);
 		for (FieldEntity entity : entitys) {
-			if (StringUtil.isNullOrEmpty(entity.getFieldValue())) {
+			if (CommonUtil.isNullOrEmpty(entity.getFieldValue())) {
 				continue;
 			}
 			map.put(entity.getFieldName(), entity.getFieldValue());
 		}
-		if (StringUtil.isNullOrEmpty(map)) {
+		if (CommonUtil.isNullOrEmpty(map)) {
 			return null;
 		}
 		return map;
@@ -705,7 +708,7 @@ public class PropertUtil {
 	 * @return
 	 */
 	public static Map<?, ?> listToMap(List<?> objs, String fieldName) {
-		if (StringUtil.isNullOrEmpty(objs)) {
+		if (CommonUtil.isNullOrEmpty(objs)) {
 			return null;
 		}
 		Map<Object, Object> map = new TreeMap<Object, Object>();
@@ -717,7 +720,7 @@ public class PropertUtil {
 
 			}
 		}
-		if (StringUtil.isNullOrEmpty(map)) {
+		if (CommonUtil.isNullOrEmpty(map)) {
 			return null;
 		}
 		return map;
@@ -725,11 +728,11 @@ public class PropertUtil {
 
 	public static List<Method> loadMethods(Class<?> clazz) {
 		List<Method> methods = METHOD_MAP.get(clazz);
-		if (!StringUtil.isNullOrEmpty(methods)) {
+		if (!CommonUtil.isNullOrEmpty(methods)) {
 			return methods;
 		}
 		methods = new ArrayList<Method>(Arrays.<Method>asList(clazz.getDeclaredMethods()));
-		if (!StringUtil.isNullOrEmpty(clazz.getSuperclass())) {
+		if (!CommonUtil.isNullOrEmpty(clazz.getSuperclass())) {
 			methods.addAll(loadMethods(clazz.getSuperclass()));
 		}
 		METHOD_MAP.put(clazz, methods);
@@ -765,13 +768,13 @@ public class PropertUtil {
 		if (!clazz.isEnum()) {
 			throw new InvalidParameterException();
 		}
-		if (StringUtil.hasNull(fieldName, newFieldName)) {
+		if (CommonUtil.hasNullOrEmpty(fieldName, newFieldName)) {
 			return;
 		}
 		try {
 			Object[] enumConstants = clazz.getEnumConstants();
 			Field[] fields = clazz.getDeclaredFields();
-			if (StringUtil.isNullOrEmpty(fields)) {
+			if (CommonUtil.isNullOrEmpty(fields)) {
 				return;
 			}
 			List<Field> fieldList = new ArrayList<Field>();
@@ -784,7 +787,7 @@ public class PropertUtil {
 				} catch (Exception e) {
 				}
 			}
-			if (StringUtil.isNullOrEmpty(fieldList)) {
+			if (CommonUtil.isNullOrEmpty(fieldList)) {
 				return;
 			}
 			for (Object ec : enumConstants) {
@@ -804,13 +807,13 @@ public class PropertUtil {
 		if (!clazz.isEnum()) {
 			throw new InvalidParameterException();
 		}
-		if (StringUtil.isNullOrEmpty(valueMaps)) {
+		if (CommonUtil.isNullOrEmpty(valueMaps)) {
 			return;
 		}
 		try {
 			Object[] enumConstants = clazz.getEnumConstants();
 			Field[] fields = clazz.getDeclaredFields();
-			if (StringUtil.isNullOrEmpty(fields)) {
+			if (CommonUtil.isNullOrEmpty(fields)) {
 				return;
 			}
 			List<Field> fieldList = new ArrayList<Field>();
@@ -823,7 +826,7 @@ public class PropertUtil {
 				} catch (Exception e) {
 				}
 			}
-			if (StringUtil.isNullOrEmpty(fieldList)) {
+			if (CommonUtil.isNullOrEmpty(fieldList)) {
 				return;
 			}
 			for (Object ec : enumConstants) {
@@ -854,7 +857,7 @@ public class PropertUtil {
 	 */
 	public static List<Field> loadFields(Class<?> clazz) {
 		List<Field> fields = FIELD_MAP.get(clazz);
-		if (!StringUtil.isNullOrEmpty(fields)) {
+		if (!CommonUtil.isNullOrEmpty(fields)) {
 			return fields;
 		}
 		fields = new ArrayList<Field>();
@@ -877,7 +880,7 @@ public class PropertUtil {
 	 * @param fieldNames
 	 */
 	public static void removeFields(Object obj, String... fieldNames) {
-		if (StringUtil.isNullOrEmpty(obj)) {
+		if (CommonUtil.isNullOrEmpty(obj)) {
 			return;
 		}
 		List<FieldEntity> fields = PropertUtil.getBeanFields(obj);
@@ -902,7 +905,7 @@ public class PropertUtil {
 	 * @param fieldNames
 	 */
 	public static void accepFields(Object obj, String... fieldNames) {
-		if (StringUtil.isNullOrEmpty(obj)) {
+		if (CommonUtil.isNullOrEmpty(obj)) {
 			return;
 		}
 		List<FieldEntity> fields = PropertUtil.getBeanFields(obj);
@@ -1017,11 +1020,11 @@ public class PropertUtil {
 				return PARAM_MAP.get(method);
 			}
 			Class<?>[] types = method.getParameterTypes();
-			if (StringUtil.isNullOrEmpty(types)) {
+			if (CommonUtil.isNullOrEmpty(types)) {
 				return null;
 			}
 			List<String> paraNames = getMethodParaNames(method);
-			if (StringUtil.isNullOrEmpty(paraNames)) {
+			if (CommonUtil.isNullOrEmpty(paraNames)) {
 				return null;
 			}
 			Annotation[][] paraAnnotations = method.getParameterAnnotations();
@@ -1060,7 +1063,7 @@ public class PropertUtil {
 		}
 		Class<?> clazz = getClass(method);
 		Set<Class<?>> infaceClazzs = getIfaceClass(clazz);
-		if (StringUtil.isNullOrEmpty(infaceClazzs)) {
+		if (CommonUtil.isNullOrEmpty(infaceClazzs)) {
 			return null;
 		}
 		Set<Method> methods = new HashSet<Method>();
@@ -1084,7 +1087,7 @@ public class PropertUtil {
 		Set<Annotation> annotations = new HashSet<Annotation>();
 		for (Method methodTemp : methods) {
 			Annotation[] methodAnnotations = methodTemp.getAnnotations();
-			if (StringUtil.isNullOrEmpty(methodAnnotations)) {
+			if (CommonUtil.isNullOrEmpty(methodAnnotations)) {
 				continue;
 			}
 			annotations.addAll(Arrays.asList(methodAnnotations));
@@ -1098,13 +1101,13 @@ public class PropertUtil {
 			return IFACE_CLAZZS.get(clazz);
 		}
 		Class<?>[] infaceClazzs = clazz.getInterfaces();
-		if (StringUtil.isNullOrEmpty(infaceClazzs)) {
+		if (CommonUtil.isNullOrEmpty(infaceClazzs)) {
 			return null;
 		}
 		Set<Class<?>> infaceClazzList = new HashSet<Class<?>>(Arrays.asList(infaceClazzs));
 		for (Class<?> clazzTemp : infaceClazzList) {
 			Set<Class<?>> parentClazzs = getIfaceClass(clazzTemp);
-			if (StringUtil.isNullOrEmpty(parentClazzs)) {
+			if (CommonUtil.isNullOrEmpty(parentClazzs)) {
 				continue;
 			}
 			infaceClazzList.addAll(parentClazzs);
@@ -1118,13 +1121,13 @@ public class PropertUtil {
 		}
 		Set<Method> methods = new HashSet<Method>();
 		Method[] clazzMethods = clazz.getDeclaredMethods();
-		if (!StringUtil.isNullOrEmpty(clazzMethods)) {
+		if (!CommonUtil.isNullOrEmpty(clazzMethods)) {
 			methods.addAll(Arrays.asList(clazzMethods));
 		}
 		Class<?> superClass = clazz.getSuperclass();
 		if (superClass != null && superClass != Object.class) {
 			Set<Method> superMethods = getMethods(superClass);
-			if (!StringUtil.isNullOrEmpty(superMethods)) {
+			if (!CommonUtil.isNullOrEmpty(superMethods)) {
 				methods.addAll(superMethods);
 			}
 		}
@@ -1165,7 +1168,7 @@ public class PropertUtil {
 			Field declaredField = invocationHandler.getClass().getDeclaredField("memberValues");
 			declaredField.setAccessible(true);
 			Map<String, Object> memberValues = (Map<String, Object>) declaredField.get(invocationHandler);
-			if (StringUtil.isNullOrEmpty(datas)) {
+			if (CommonUtil.isNullOrEmpty(datas)) {
 				memberValues.clear();
 			}
 			for (String key : datas.keySet()) {
@@ -1210,7 +1213,7 @@ public class PropertUtil {
 			return (T) annotation;
 		}
 		Annotation[] annotations = field.getAnnotations();
-		if (StringUtil.isNullOrEmpty(annotations)) {
+		if (CommonUtil.isNullOrEmpty(annotations)) {
 			return null;
 		}
 		for (Annotation annotationTemp : annotations) {
@@ -1228,7 +1231,7 @@ public class PropertUtil {
 			return (T) annotation;
 		}
 		Annotation[] annotationsForAnnotation = annotation.annotationType().getAnnotations();
-		if (StringUtil.isNullOrEmpty(annotationsForAnnotation)) {
+		if (CommonUtil.isNullOrEmpty(annotationsForAnnotation)) {
 			return null;
 		}
 		for (Annotation annotationForAnnotation : annotationsForAnnotation) {
@@ -1258,7 +1261,7 @@ public class PropertUtil {
 			return (T) annotation;
 		}
 		Annotation[] annotations = method.getAnnotations();
-		if (StringUtil.isNullOrEmpty(annotations)) {
+		if (CommonUtil.isNullOrEmpty(annotations)) {
 			return null;
 		}
 		for (Annotation annotationTemp : annotations) {
@@ -1276,7 +1279,7 @@ public class PropertUtil {
 			return null;
 		}
 		Annotation[] annotations = accessible.getAnnotations();
-		if (StringUtil.isNullOrEmpty(annotations)) {
+		if (CommonUtil.isNullOrEmpty(annotations)) {
 			return null;
 		}
 		List<Annotation> list = new ArrayList<Annotation>();
@@ -1295,7 +1298,7 @@ public class PropertUtil {
 			}
 			list.add((T) parentAnnotation);
 		}
-		if (StringUtil.isNullOrEmpty(list)) {
+		if (CommonUtil.isNullOrEmpty(list)) {
 			return null;
 		}
 		return (List<T>) list;
@@ -1315,7 +1318,7 @@ public class PropertUtil {
 			return (T) annotation;
 		}
 		Annotation[] annotations = clazz.getAnnotations();
-		if (StringUtil.isNullOrEmpty(annotations)) {
+		if (CommonUtil.isNullOrEmpty(annotations)) {
 			return null;
 		}
 		for (Annotation annotationTemp : annotations) {
@@ -1333,7 +1336,7 @@ public class PropertUtil {
 			return null;
 		}
 		Annotation[] annotations = clazz.getAnnotations();
-		if (StringUtil.isNullOrEmpty(annotations)) {
+		if (CommonUtil.isNullOrEmpty(annotations)) {
 			return null;
 		}
 		List<Annotation> list = new ArrayList<Annotation>();
@@ -1348,7 +1351,7 @@ public class PropertUtil {
 			}
 			list.add((T) parentAnnotation);
 		}
-		if (StringUtil.isNullOrEmpty(list)) {
+		if (CommonUtil.isNullOrEmpty(list)) {
 			return null;
 		}
 		return list;
@@ -1363,7 +1366,7 @@ public class PropertUtil {
 	 */
 	public static void addAnnotations(AccessibleObject accessible, Annotation... annotations) throws Exception {
 		synchronized (accessible) {
-			if (StringUtil.hasNull(accessible, annotations)) {
+			if (CommonUtil.hasNullOrEmpty(accessible, annotations)) {
 				throw new CoodyException("accessible or annotations is empty");
 			}
 			accessible.getAnnotations();

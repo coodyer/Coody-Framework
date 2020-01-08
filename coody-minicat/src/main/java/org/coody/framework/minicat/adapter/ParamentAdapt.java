@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.CommonUtil;
 import org.coody.framework.minicat.config.MiniCatConfig;
 import org.coody.framework.minicat.http.MultipartFile;
 import org.coody.framework.minicat.util.ByteUtils;
@@ -22,7 +22,7 @@ public class ParamentAdapt {
 	 * @return
 	 */
 	public static Map<String, List<Object>> buildGeneralParams(String queryString) {
-		if (StringUtil.isNullOrEmpty(queryString)) {
+		if (CommonUtil.isNullOrEmpty(queryString)) {
 			return new HashMap<String, List<Object>>();
 		}
 		String[] lines = queryString.split("&");
@@ -56,7 +56,7 @@ public class ParamentAdapt {
 	 * @throws IOException
 	 */
 	public static Map<String, List<Object>> buildMultipartParams(byte[] data, String boundary) {
-		if (StringUtil.isNullOrEmpty(data)) {
+		if (CommonUtil.isNullOrEmpty(data)) {
 			return new HashMap<String, List<Object>>();
 		}
 		Map<String, List<Object>> resultMap = new HashMap<String, List<Object>>();
@@ -66,7 +66,7 @@ public class ParamentAdapt {
 			String[] paramContexts = context.split(boundaryTag);
 			for (String paramContext : paramContexts) {
 				MultipartFile multipartFile=buildMultipartFile(paramContext);
-				if(StringUtil.isNullOrEmpty(multipartFile)){
+				if(CommonUtil.isNullOrEmpty(multipartFile)){
 					continue;
 				}
 				if (!resultMap.containsKey(multipartFile.getParamName())) {
@@ -82,7 +82,7 @@ public class ParamentAdapt {
 	}
 
 	private static MultipartFile buildMultipartFile(String paramContext){
-		if (StringUtil.isNullOrEmpty(paramContext)) {
+		if (CommonUtil.isNullOrEmpty(paramContext)) {
 			return null;
 		}
 		ByteArrayInputStream inputStream = null;
@@ -91,18 +91,18 @@ public class ParamentAdapt {
 			String line = ByteUtils.readLineString(inputStream).trim();
 			String contextType = "text/plain";
 			Map<String, String> buildMap = buildParaMap(line);
-			if (StringUtil.isNullOrEmpty(buildMap)) {
+			if (CommonUtil.isNullOrEmpty(buildMap)) {
 				return null;
 			}
 			String paramName=buildMap.get("name");
-			if (StringUtil.isNullOrEmpty(paramName)) {
+			if (CommonUtil.isNullOrEmpty(paramName)) {
 				return null;
 			}
 			line = ByteUtils.readLineString(inputStream).trim();
 			if (line.contains("Content-Type")) {
 				contextType = line.substring(line.indexOf(":") + 1).trim();
 			}
-			while (!StringUtil.isNullOrEmpty(line)) {
+			while (!CommonUtil.isNullOrEmpty(line)) {
 				line = ByteUtils.readLineString(inputStream).trim();
 			}
 			byte[] value = ByteUtils.getBytes(inputStream);
@@ -137,12 +137,12 @@ public class ParamentAdapt {
 			}
 			String name = line.substring(0, line.indexOf("=")).trim();
 			String value = line.substring(line.indexOf("=") + 1).replace("\"", "").trim();
-			if (StringUtil.hasNull(name, value)) {
+			if (CommonUtil.hasNullOrEmpty(name, value)) {
 				continue;
 			}
 			paraMap.put(name, value);
 		}
-		if (StringUtil.isNullOrEmpty(paraMap)) {
+		if (CommonUtil.isNullOrEmpty(paraMap)) {
 			return null;
 		}
 		return paraMap;

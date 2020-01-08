@@ -15,7 +15,7 @@ import org.coody.framework.core.bean.InitBeanFace;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.model.AspectPoint;
 import org.coody.framework.core.threadpool.ThreadBlockPool;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.CommonUtil;
 import org.coody.framework.task.annotation.CronTask;
 import org.coody.framework.task.container.TaskContainer;
 import org.coody.framework.task.container.TaskContainer.TaskEntity;
@@ -29,7 +29,7 @@ public class TaskTrigger implements InitBeanFace {
 
 	public static Method getTriggerMethod() {
 		Method[] methods = TaskTrigger.class.getDeclaredMethods();
-		if (StringUtil.isNullOrEmpty(methods)) {
+		if (CommonUtil.isNullOrEmpty(methods)) {
 			return null;
 		}
 		for (Method method : methods) {
@@ -84,7 +84,7 @@ public class TaskTrigger implements InitBeanFace {
 	}
 
 	public void init() {
-		if (StringUtil.isNullOrEmpty(TaskContainer.getTaskEntitys())) {
+		if (CommonUtil.isNullOrEmpty(TaskContainer.getTaskEntitys())) {
 			return;
 		}
 		ThreadBlockPool threadBlockPool = new ThreadBlockPool(TaskContainer.getTaskEntitys().size(), 60);

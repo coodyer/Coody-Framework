@@ -5,7 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.CommonUtil;
 import org.coody.framework.minicat.builder.iface.HttpBuilder;
 import org.coody.framework.minicat.config.MiniCatConfig;
 import org.coody.framework.minicat.exception.BadRequestException;
@@ -34,7 +34,7 @@ public class BioHttpBuilder extends HttpBuilder {
 	@Override
 	protected void flush() throws IOException {
 		byte[] data = response.getOutputStream().toByteArray();
-		if (StringUtil.isNullOrEmpty(data)) {
+		if (CommonUtil.isNullOrEmpty(data)) {
 			return;
 		}
 		if(socket.isClosed()) {
@@ -48,7 +48,7 @@ public class BioHttpBuilder extends HttpBuilder {
 		}
 		try {
 			byte[] data = ByteUtils.getBytes(socket.getInputStream(), MiniCatConfig.maxHeaderLength);
-			if (StringUtil.isNullOrEmpty(data)) {
+			if (CommonUtil.isNullOrEmpty(data)) {
 				return;
 			}
 			boolean isReadEnd = data.length < MiniCatConfig.maxHeaderLength;
@@ -90,7 +90,7 @@ public class BioHttpBuilder extends HttpBuilder {
 				}
 				String name = header.substring(0, index).trim();
 				String value = header.substring(index + 1).trim();
-				if (StringUtil.hasNull(name, value)) {
+				if (CommonUtil.hasNullOrEmpty(name, value)) {
 					continue;
 				}
 				request.setHeader(name, value);
@@ -112,7 +112,7 @@ public class BioHttpBuilder extends HttpBuilder {
 			}
 			try {
 				if (isReadEnd || request.getContextLength() < 1) {
-					if (!StringUtil.isNullOrEmpty(bodyContext)) {
+					if (!CommonUtil.isNullOrEmpty(bodyContext)) {
 						request.setInputStream(new ByteArrayInputStream(bodyContext.getBytes("iso-8859-1")));
 					}
 					return;

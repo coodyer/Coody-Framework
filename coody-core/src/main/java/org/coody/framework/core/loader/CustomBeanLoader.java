@@ -14,8 +14,8 @@ import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.exception.BeanNotFoundException;
 import org.coody.framework.core.loader.iface.CoodyLoader;
 import org.coody.framework.core.threadpool.ThreadBlockPool;
-import org.coody.framework.core.util.MatchUtil;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.match.MatchUtil;
 
 public class CustomBeanLoader implements CoodyLoader {
 
@@ -30,12 +30,12 @@ public class CustomBeanLoader implements CoodyLoader {
 		// 加载基础Bean配置
 		for (String key : ConfigBuilder.propertyKeySet()) {
 			String configValue = ConfigBuilder.getProperty(key);
-			if (StringUtil.isNullOrEmpty(configValue)) {
+			if (CommonUtil.isNullOrEmpty(configValue)) {
 				continue;
 			}
 			if (MatchUtil.isParameterMatch(key, CoodyConfig.BEAN_CONFIG_MAPPER)) {
 				Map<String, String> beanConfig = MatchUtil.exporeMatchedMap(key, CoodyConfig.BEAN_CONFIG_MAPPER);
-				if (StringUtil.isNullOrEmpty(beanConfig)) {
+				if (CommonUtil.isNullOrEmpty(beanConfig)) {
 					continue;
 				}
 				String beanName = beanConfig.get(CoodyConfig.BEAN_NAME);
@@ -49,12 +49,12 @@ public class CustomBeanLoader implements CoodyLoader {
 		// 加载构造函数属性名
 		for (String key : ConfigBuilder.propertyKeySet()) {
 			String configValue = ConfigBuilder.getProperty(key);
-			if (StringUtil.isNullOrEmpty(configValue)) {
+			if (CommonUtil.isNullOrEmpty(configValue)) {
 				continue;
 			}
 			if (MatchUtil.isParameterMatch(key, CoodyConfig.BEAN_PARAMENT_MAPPER)) {
 				Map<String, String> beanConfig = MatchUtil.exporeMatchedMap(key, CoodyConfig.BEAN_PARAMENT_MAPPER);
-				if (StringUtil.isNullOrEmpty(beanConfig)) {
+				if (CommonUtil.isNullOrEmpty(beanConfig)) {
 					continue;
 				}
 				String beanName = beanConfig.get(CoodyConfig.BEAN_NAME);
@@ -68,12 +68,12 @@ public class CustomBeanLoader implements CoodyLoader {
 		// 加载Bean字段名
 		for (String key : ConfigBuilder.propertyKeySet()) {
 			String configValue = ConfigBuilder.getProperty(key);
-			if (StringUtil.isNullOrEmpty(configValue)) {
+			if (CommonUtil.isNullOrEmpty(configValue)) {
 				continue;
 			}
 			if (MatchUtil.isParameterMatch(key, CoodyConfig.BEAN_FIELD_MAPPER)) {
 				Map<String, String> beanConfig = MatchUtil.exporeMatchedMap(key, CoodyConfig.BEAN_FIELD_MAPPER);
-				if (StringUtil.isNullOrEmpty(beanConfig)) {
+				if (CommonUtil.isNullOrEmpty(beanConfig)) {
 					continue;
 				}
 				String beanName = beanConfig.get(CoodyConfig.BEAN_NAME);
@@ -115,7 +115,7 @@ public class CustomBeanLoader implements CoodyLoader {
 			}
 			// 初始化字段
 			Map<String, String> fieldConfig = FIELD_MAP.get(key);
-			if (StringUtil.isNullOrEmpty(fieldConfig)) {
+			if (CommonUtil.isNullOrEmpty(fieldConfig)) {
 				return;
 			}
 			Map<String, Object> fielders = builderParamenterMap(bean.getClass(), fieldConfig);
@@ -148,13 +148,13 @@ public class CustomBeanLoader implements CoodyLoader {
 			if (paramentMap.containsKey(key)) {
 				propertyMap.putAll(paramentMap.get(key));
 			}
-			if (StringUtil.isNullOrEmpty(propertyMap)) {
+			if (CommonUtil.isNullOrEmpty(propertyMap)) {
 				group.add(key);
 			}
 			for (String poperty : propertyMap.keySet()) {
 				String fieldBeanName = MatchUtil.exporeMatchedFirstByRegular(propertyMap.get(poperty),
 						CoodyConfig.INPUT_BEAN_MAPPER);
-				if (!StringUtil.isNullOrEmpty(fieldBeanName)) {
+				if (!CommonUtil.isNullOrEmpty(fieldBeanName)) {
 					if (!configMap.containsKey(fieldBeanName)) {
 						if (!configMap.get(key).containsKey(CoodyConfig.CLASS_NAME)) {
 							continue configCheck;
@@ -188,7 +188,7 @@ public class CustomBeanLoader implements CoodyLoader {
 					for (String poperty : propertyMap.keySet()) {
 						String valueBeanName = MatchUtil.exporeMatchedFirstByRegular(propertyMap.get(poperty),
 								CoodyConfig.INPUT_BEAN_MAPPER);
-						if (!StringUtil.isNullOrEmpty(valueBeanName)) {
+						if (!CommonUtil.isNullOrEmpty(valueBeanName)) {
 							if (!beanMap.containsKey(valueBeanName)) {
 								continue beanInstallWhile;
 							}
@@ -222,7 +222,7 @@ public class CustomBeanLoader implements CoodyLoader {
 				continue;
 			}
 			String valueBeanName = MatchUtil.exporeMatchedFirstByRegular(value, CoodyConfig.INPUT_BEAN_MAPPER);
-			if (StringUtil.isNullOrEmpty(valueBeanName)) {
+			if (CommonUtil.isNullOrEmpty(valueBeanName)) {
 				throw new BeanNotFoundException(valueBeanName, clazz);
 			}
 			Object inputBean = BeanContainer.getBean(valueBeanName);

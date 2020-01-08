@@ -13,8 +13,9 @@ import java.util.Set;
 
 import org.coody.framework.core.exception.base.CoodyException;
 import org.coody.framework.core.model.BaseConfig;
-import org.coody.framework.core.util.PropertUtil;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.convert.ConvertUtil;
+import org.coody.framework.core.util.reflex.PropertUtil;
 
 public class ConfigBuilder {
 
@@ -29,7 +30,7 @@ public class ConfigBuilder {
 	}
 
 	public static Integer getPropertyInteger(String key) {
-		return StringUtil.toInteger(config.get(key));
+		return ConvertUtil.toInteger(config.get(key));
 	}
 
 	public static void builder() throws IOException, URISyntaxException {
@@ -50,7 +51,7 @@ public class ConfigBuilder {
 		while (keys.hasMoreElements()) {
 			String key = (String) keys.nextElement();
 			String value = prop.getProperty(key);
-			if (StringUtil.hasNull(key, value)) {
+			if (CommonUtil.hasNullOrEmpty(key, value)) {
 				value = "";
 			}
 			config.put(key, value.trim());
@@ -68,7 +69,7 @@ public class ConfigBuilder {
 			}
 			String configField = prefix + "." + field.getName();
 			Object configValue = ConfigBuilder.getProperty(configField);
-			if (StringUtil.isNullOrEmpty(configValue)) {
+			if (CommonUtil.isNullOrEmpty(configValue)) {
 				continue;
 			}
 			configValue = PropertUtil.parseValue(configValue, field.getType());

@@ -6,8 +6,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.coody.framework.core.builder.ConfigBuilder;
 import org.coody.framework.core.threadpool.SysThreadPool;
-import org.coody.framework.core.util.LogUtil;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.log.LogUtil;
 import org.coody.framework.minicat.annotation.Filter;
 import org.coody.framework.minicat.annotation.Servlet;
 import org.coody.framework.minicat.config.MiniCatConfig;
@@ -27,7 +27,7 @@ public class MinicatApp {
 
 	public static void init(Class<?>... clazzs) throws InstantiationException, IllegalAccessException,
 			ClassNotFoundException, IOException, URISyntaxException {
-		if (StringUtil.isNullOrEmpty(clazzs)) {
+		if (CommonUtil.isNullOrEmpty(clazzs)) {
 			LogUtil.log.error("初始化Servlet为空");
 			return;
 		}
@@ -59,7 +59,7 @@ public class MinicatApp {
 
 	private static void initMinicatService(MiniCatService miniCatService, Class<?>... clazzs) throws Exception {
 		// 启动静态资源servlet
-		if (!StringUtil.isNullOrEmpty(MiniCatConfig.resources)) {
+		if (!CommonUtil.isNullOrEmpty(MiniCatConfig.resources)) {
 			HttpServlet servlet = new ResourceServlet();
 			LogUtil.log.info("注册Servlet>>" + ResourceServlet.class.getName() + ">>" + MiniCatConfig.resources);
 			String servletPath = MiniCatConfig.resources;
@@ -74,7 +74,7 @@ public class MinicatApp {
 				continue;
 			}
 			Servlet servletFlag = clazz.getAnnotation(Servlet.class);
-			if (servletFlag != null && !StringUtil.isNullOrEmpty(servletFlag.value())) {
+			if (servletFlag != null && !CommonUtil.isNullOrEmpty(servletFlag.value())) {
 				HttpServlet servlet = (HttpServlet) clazz.getDeclaredConstructor().newInstance();
 				LogUtil.log.info("注册Servlet>>" + clazz.getName() + ">>" + servletFlag.value());
 				String servletPath = servletFlag.value();
@@ -85,7 +85,7 @@ public class MinicatApp {
 				initMiniCatHttpPart(servlet);
 			}
 			Filter filterFlag = clazz.getAnnotation(Filter.class);
-			if (filterFlag != null && !StringUtil.isNullOrEmpty(filterFlag.value())) {
+			if (filterFlag != null && !CommonUtil.isNullOrEmpty(filterFlag.value())) {
 				HttpFilter filter = (HttpFilter) clazz.getDeclaredConstructor().newInstance();
 				filter.setMapping(filterFlag.value());
 				LogUtil.log.info("注册Filter>>" + clazz.getName() + ">>" + filterFlag.value());

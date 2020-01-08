@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.coody.framework.core.model.FieldEntity;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.CommonUtil;
 import org.coody.framework.web.adapter.iface.CoodyParameterAdapter;
 import org.coody.framework.web.entity.MvcMapping;
 
@@ -20,7 +20,7 @@ public class GeneralAdapter extends CoodyParameterAdapter {
 	@Override
 	public Object[] adapt(MvcMapping mapping, HttpServletRequest request, HttpServletResponse response,
 			HttpSession session) {
-		if (StringUtil.isNullOrEmpty(mapping.getParameters())) {
+		if (CommonUtil.isNullOrEmpty(mapping.getParameters())) {
 			return null;
 		}
 		Object[] params = new Object[mapping.getParameters().size()];

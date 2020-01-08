@@ -4,8 +4,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.coody.framework.core.util.AntUtil;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.ant.AntUtil;
+import org.coody.framework.core.util.string.StringUtil;
 import org.coody.framework.minicat.web.entity.MvcMapping;
 
 public class MappingContainer {
@@ -32,8 +33,8 @@ public class MappingContainer {
 			mappinger.setIsAntPath(true);
 			String path = mappinger.getPath();
 			if (path.contains("{")) {
-				List<String> attrs = StringUtil.textCutCenters(path, "{", "}");
-				if (!StringUtil.isNullOrEmpty(attrs)) {
+				List<String> attrs = StringUtil.stringCutCenters(path, "{", "}");
+				if (!CommonUtil.isNullOrEmpty(attrs)) {
 					for (String attr : attrs) {
 						path = path.replace("{" + attr + "}", "*");
 					}
@@ -51,6 +52,5 @@ public class MappingContainer {
 		}
 		return MVC_ANT_MAP.containsKey(path);
 	}
-	
 
 }

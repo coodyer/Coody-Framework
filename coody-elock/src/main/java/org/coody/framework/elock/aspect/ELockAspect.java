@@ -7,8 +7,8 @@ import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.coody.framework.core.annotation.Around;
 import org.coody.framework.core.model.AspectPoint;
-import org.coody.framework.core.util.MethodSignUtil;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.reflex.MethodSignUtil;
 import org.coody.framework.elock.ELocker;
 import org.coody.framework.elock.annotation.ELock;
 
@@ -35,7 +35,7 @@ public class ELockAspect {
 
 		ELock dlock = method.getAnnotation(ELock.class);
 		lockName = dlock.name();
-		if (StringUtil.isNullOrEmpty(lockName)) {
+		if (CommonUtil.isNullOrEmpty(lockName)) {
 			lockName = MethodSignUtil.getKeyByMethod(clazz, method);
 		}
 		Object[] paras = point.getParams();
@@ -73,7 +73,7 @@ public class ELockAspect {
 
 		ELock dlock = method.getAnnotation(ELock.class);
 		lockName = dlock.name();
-		if (StringUtil.isNullOrEmpty(lockName)) {
+		if (CommonUtil.isNullOrEmpty(lockName)) {
 			lockName = MethodSignUtil.getKeyByMethod(clazz, method);
 		}
 		Object[] paras = pjp.getArgs();

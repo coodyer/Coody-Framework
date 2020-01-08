@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.CommonUtil;
 import org.coody.framework.minicat.adapter.ParamentAdapt;
 import org.coody.framework.minicat.config.MiniCatConfig;
 import org.coody.framework.minicat.container.SessionContainer;
@@ -53,7 +53,7 @@ public class MinicatServletRequestImpl implements MinicatServletRequest {
 			initParams();
 		}
 		List<Object> paramValues = params.get(paramName);
-		if (StringUtil.isNullOrEmpty(paramValues)) {
+		if (CommonUtil.isNullOrEmpty(paramValues)) {
 			return null;
 		}
 		Object value = paramValues.get(0);
@@ -68,7 +68,7 @@ public class MinicatServletRequestImpl implements MinicatServletRequest {
 			initParams();
 		}
 		List<Object> paramValues = params.get(paramName);
-		if (StringUtil.isNullOrEmpty(paramValues)) {
+		if (CommonUtil.isNullOrEmpty(paramValues)) {
 			return null;
 		}
 		Object value = paramValues.get(0);
@@ -84,7 +84,7 @@ public class MinicatServletRequestImpl implements MinicatServletRequest {
 	}
 
 	public Map<String, List<Object>> getParams() {
-		if (StringUtil.isNullOrEmpty(params)) {
+		if (CommonUtil.isNullOrEmpty(params)) {
 			initParams();
 		}
 		return params;
@@ -116,7 +116,7 @@ public class MinicatServletRequestImpl implements MinicatServletRequest {
 			params = mergeParaMap(params, paramMap);
 		} else {
 			String postContext = getPostContext();
-			if (!StringUtil.isNullOrEmpty(postContext)) {
+			if (!CommonUtil.isNullOrEmpty(postContext)) {
 				Map<String, List<Object>> paramMap = ParamentAdapt.buildGeneralParams(postContext);
 				params = mergeParaMap(params, paramMap);
 			}
@@ -126,10 +126,10 @@ public class MinicatServletRequestImpl implements MinicatServletRequest {
 	private Map<String, List<Object>> mergeParaMap(Map<String, List<Object>> paraMap1,
 			Map<String, List<Object>> paraMap2) {
 
-		if (StringUtil.isNullOrEmpty(paraMap1)) {
+		if (CommonUtil.isNullOrEmpty(paraMap1)) {
 			return paraMap2;
 		}
-		if (StringUtil.isNullOrEmpty(paraMap2)) {
+		if (CommonUtil.isNullOrEmpty(paraMap2)) {
 			return paraMap1;
 		}
 		for (String key : paraMap1.keySet()) {
@@ -161,7 +161,7 @@ public class MinicatServletRequestImpl implements MinicatServletRequest {
 	public MinicatHttpSession getSession() {
 		sessionId = getSessionId();
 		MinicatSessionImpl session = SessionContainer.getSession(sessionId);
-		if (!StringUtil.isNullOrEmpty(session)) {
+		if (!CommonUtil.isNullOrEmpty(session)) {
 			return session;
 		}
 		isSessionCread = true;
@@ -171,14 +171,14 @@ public class MinicatServletRequestImpl implements MinicatServletRequest {
 	}
 
 	public String getSessionId() {
-		if (!StringUtil.isNullOrEmpty(sessionId)) {
+		if (!CommonUtil.isNullOrEmpty(sessionId)) {
 			return sessionId;
 		}
-		if (StringUtil.isNullOrEmpty(header)) {
+		if (CommonUtil.isNullOrEmpty(header)) {
 			return null;
 		}
 		String cookie = header.get("Cookie");
-		if (StringUtil.isNullOrEmpty(cookie)) {
+		if (CommonUtil.isNullOrEmpty(cookie)) {
 			return null;
 		}
 		if (!cookie.contains(MiniCatConfig.sessionIdField)) {

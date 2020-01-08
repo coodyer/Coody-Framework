@@ -10,9 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.coody.framework.core.model.BaseModel;
 import org.coody.framework.core.model.FieldEntity;
-import org.coody.framework.core.util.PropertUtil;
-import org.coody.framework.core.util.StringUtil;
-import org.coody.framework.core.util.UnsafeUtil;
+import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.reflex.PropertUtil;
+import org.coody.framework.core.util.unsafe.UnsafeUtil;
 
 /**
  * @remark HTTP工具类。
@@ -66,14 +66,14 @@ public class RequestUtil {
 			if (obj instanceof Class) {
 				obj = UnsafeUtil.createInstance((Class<?>) obj);
 			}
-			firstSuffix = StringUtil.isNullOrEmpty(firstSuffix) ? "" : (firstSuffix + ".");
-			isReplace = StringUtil.isNullOrEmpty(isReplace) ? false : isReplace;
-			baseName = StringUtil.isNullOrEmpty(baseName) ? "" : (baseName + ".");
+			firstSuffix = CommonUtil.isNullOrEmpty(firstSuffix) ? "" : (firstSuffix + ".");
+			isReplace = CommonUtil.isNullOrEmpty(isReplace) ? false : isReplace;
+			baseName = CommonUtil.isNullOrEmpty(baseName) ? "" : (baseName + ".");
 			List<String> paras = null;
-			if (!StringUtil.isNullOrEmpty(paraArgs)) {
+			if (!CommonUtil.isNullOrEmpty(paraArgs)) {
 				paras = new ArrayList<String>();
 				for (String tmp : paraArgs) {
-					if (StringUtil.isNullOrEmpty(tmp)) {
+					if (CommonUtil.isNullOrEmpty(tmp)) {
 						continue;
 					}
 					String[] tab = tmp.split("\\.");
@@ -82,7 +82,7 @@ public class RequestUtil {
 					}
 				}
 			}
-			if (StringUtil.isNullOrEmpty(fields)) {
+			if (CommonUtil.isNullOrEmpty(fields)) {
 				// 获取对象字段属性
 				fields = PropertUtil.getBeanFields(obj);
 			}
@@ -92,7 +92,7 @@ public class RequestUtil {
 			for (FieldEntity entity : fields) {
 				try {
 					paraName = firstSuffix + baseName + entity.getFieldName();
-					if (!StringUtil.isNullOrEmpty(paras)) {
+					if (!CommonUtil.isNullOrEmpty(paras)) {
 						if (isReplace) {
 							if (paras.contains(paraName)) {
 								continue;
@@ -115,7 +115,7 @@ public class RequestUtil {
 					if (paraValue == null) {
 						continue;
 					}
-					if (removeEmpty && StringUtil.isNullOrEmpty(paraValue)) {
+					if (removeEmpty && CommonUtil.isNullOrEmpty(paraValue)) {
 						continue;
 					}
 					PropertUtil.setProperties(obj, entity.getFieldName(), paraValue);

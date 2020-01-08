@@ -14,11 +14,11 @@ import org.coody.framework.core.exception.BeanInitException;
 import org.coody.framework.core.exception.BeanNameCreateException;
 import org.coody.framework.core.exception.BeanNotFoundException;
 import org.coody.framework.core.proxy.CglibProxy;
-import org.coody.framework.core.util.ClassUtil;
-import org.coody.framework.core.util.LogUtil;
-import org.coody.framework.core.util.ParameterNameUtil;
-import org.coody.framework.core.util.PropertUtil;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.clazz.ClassUtil;
+import org.coody.framework.core.util.log.LogUtil;
+import org.coody.framework.core.util.reflex.ParameterNameUtil;
+import org.coody.framework.core.util.reflex.PropertUtil;
+import org.coody.framework.core.util.CommonUtil;
 
 public class BeanAssember {
 
@@ -36,10 +36,10 @@ public class BeanAssember {
 	public static <T> T initBean(Class<?> cla, String additionBeanName, Map<String, Object> parameterMap) {
 
 		Set<String> names = BeanContainer.getOverallBeanName(cla);
-		if (!StringUtil.isNullOrEmpty(additionBeanName)) {
+		if (!CommonUtil.isNullOrEmpty(additionBeanName)) {
 			names.add(additionBeanName);
 		}
-		if (StringUtil.isNullOrEmpty(names)) {
+		if (CommonUtil.isNullOrEmpty(names)) {
 			throw new BeanNameCreateException(cla);
 		}
 		Object bean = proxy.getProxy(cla, parameterMap);
@@ -47,13 +47,13 @@ public class BeanAssember {
 			throw new BeanInitException(cla);
 		}
 		for (String beanName : names) {
-			if (StringUtil.isNullOrEmpty(beanName)) {
+			if (CommonUtil.isNullOrEmpty(beanName)) {
 				continue;
 			}
 			LogUtil.log.debug("初始化Bean >>" + beanName + ":" + cla.getName());
 			BeanContainer.setBean(beanName, bean);
 		}
-		if (StringUtil.isNullOrEmpty(parameterMap)) {
+		if (CommonUtil.isNullOrEmpty(parameterMap)) {
 			// 启动字节码加速
 			ParameterNameUtil.doExecutable(cla);
 		}
@@ -63,20 +63,20 @@ public class BeanAssember {
 	public static void initField(Object bean, Map<String, Object> parameterMap)
 			throws IllegalArgumentException, IllegalAccessException {
 		List<Field> fields = loadFields(bean.getClass());
-		if (StringUtil.isNullOrEmpty(fields)) {
+		if (CommonUtil.isNullOrEmpty(fields)) {
 			return;
 		}
 		fieldSet: for (Field field : fields) {
-			if (StringUtil.isNullOrEmpty(field.getAnnotations())) {
+			if (CommonUtil.isNullOrEmpty(field.getAnnotations())) {
 				continue;
 			}
 			Annotation autoBuild = PropertUtil.getAnnotation(field, AutoBuild.class);
-			if (StringUtil.isNullOrEmpty(autoBuild)) {
+			if (CommonUtil.isNullOrEmpty(autoBuild)) {
 				continue;
 			}
 			String[] beanNames = PropertUtil.getAnnotationValue(autoBuild, "value");
 			beanSearch: for (String beanName : beanNames) {
-				if (StringUtil.isNullOrEmpty(beanName)) {
+				if (CommonUtil.isNullOrEmpty(beanName)) {
 					beanName = field.getType().getName();
 				}
 				Object targetBean = BeanContainer.getBean(beanName);
@@ -91,7 +91,7 @@ public class BeanAssember {
 			}
 			throw new BeanNotFoundException(Cson.toJson(beanNames), bean.getClass());
 		}
-		if (StringUtil.isNullOrEmpty(parameterMap)) {
+		if (CommonUtil.isNullOrEmpty(parameterMap)) {
 			return;
 		}
 		for (Field field : fields) {
@@ -118,7 +118,7 @@ public class BeanAssember {
 			return fields;
 		}
 		List<Field> childFields = loadFields(superClass);
-		if (StringUtil.isNullOrEmpty(childFields)) {
+		if (CommonUtil.isNullOrEmpty(childFields)) {
 			return fields;
 		}
 		fields.addAll(childFields);

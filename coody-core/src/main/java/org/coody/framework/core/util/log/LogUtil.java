@@ -1,4 +1,4 @@
-package org.coody.framework.core.util;
+package org.coody.framework.core.util.log;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;

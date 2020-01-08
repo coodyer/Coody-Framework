@@ -7,10 +7,10 @@ import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.annotation.Order;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.loader.iface.CoodyLoader;
-import org.coody.framework.core.util.LogUtil;
-import org.coody.framework.core.util.MethodSignUtil;
-import org.coody.framework.core.util.PropertUtil;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.log.LogUtil;
+import org.coody.framework.core.util.reflex.MethodSignUtil;
+import org.coody.framework.core.util.reflex.PropertUtil;
+import org.coody.framework.core.util.CommonUtil;
 import org.coody.framework.task.annotation.CronTask;
 import org.coody.framework.task.container.TaskContainer;
 
@@ -25,7 +25,7 @@ public class TaskLoader implements CoodyLoader {
 
 	@Override
 	public void doLoader() throws Exception {
-		if (StringUtil.isNullOrEmpty(BeanContainer.getClazzContainer())) {
+		if (CommonUtil.isNullOrEmpty(BeanContainer.getClazzContainer())) {
 			return;
 		}
 		for (Class<?> clazz : BeanContainer.getClazzContainer()) {
@@ -42,11 +42,11 @@ public class TaskLoader implements CoodyLoader {
 				continue;
 			}
 			AutoBuild initBean = PropertUtil.getAnnotation(clazz, AutoBuild.class);
-			if (StringUtil.isNullOrEmpty(initBean)) {
+			if (CommonUtil.isNullOrEmpty(initBean)) {
 				continue;
 			}
 			Method[] methods = clazz.getDeclaredMethods();
-			if (StringUtil.isNullOrEmpty(methods)) {
+			if (CommonUtil.isNullOrEmpty(methods)) {
 				continue;
 			}
 			for (Method method : methods) {

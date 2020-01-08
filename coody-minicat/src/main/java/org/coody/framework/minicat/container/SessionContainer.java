@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-import org.coody.framework.core.util.EncryptUtil;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.encrypt.EncryptUtil;
 import org.coody.framework.minicat.config.MiniCatConfig;
 import org.coody.framework.minicat.constant.ServerInfo;
 import org.coody.framework.minicat.http.MinicatSessionImpl;
@@ -38,7 +38,7 @@ public class SessionContainer {
 	private static void sessionGuard(){
 		while(true){
 			try {
-				if(StringUtil.isNullOrEmpty(SYSTEM_SESSION_CONTAINER)){
+				if(CommonUtil.isNullOrEmpty(SYSTEM_SESSION_CONTAINER)){
 					return;
 				}
 				List<String> willCleanSessionIds=new ArrayList<String>();
@@ -68,7 +68,7 @@ public class SessionContainer {
 	}
 
 	public static MinicatSessionImpl getSession(String sessionId) {
-		if(StringUtil.isNullOrEmpty(sessionId)){
+		if(CommonUtil.isNullOrEmpty(sessionId)){
 			return null;
 		}
 		MinicatSessionImpl session=SYSTEM_SESSION_CONTAINER.get(sessionId);

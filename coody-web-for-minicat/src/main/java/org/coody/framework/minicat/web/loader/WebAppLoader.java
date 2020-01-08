@@ -4,11 +4,11 @@ import java.lang.reflect.Method;
 
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.loader.iface.CoodyLoader;
-import org.coody.framework.core.util.ClassUtil;
-import org.coody.framework.core.util.LogUtil;
-import org.coody.framework.core.util.MethodSignUtil;
-import org.coody.framework.core.util.PropertUtil;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.clazz.ClassUtil;
+import org.coody.framework.core.util.log.LogUtil;
+import org.coody.framework.core.util.reflex.MethodSignUtil;
+import org.coody.framework.core.util.reflex.PropertUtil;
+import org.coody.framework.core.util.CommonUtil;
 import org.coody.framework.minicat.web.adapter.iface.CoodyParameterAdapter;
 import org.coody.framework.minicat.web.annotation.ParamsAdapt;
 import org.coody.framework.minicat.web.annotation.PathBinding;
@@ -28,12 +28,12 @@ public class WebAppLoader implements CoodyLoader {
 	@Override
 	public void doLoader() throws Exception {
 		for (Object bean : BeanContainer.getBeans()) {
-			if (StringUtil.isNullOrEmpty(bean)) {
+			if (CommonUtil.isNullOrEmpty(bean)) {
 				continue;
 			}
 			Class<?> clazz = ClassUtil.getSourceClass(bean.getClass());
 			PathBinding classBindings = PropertUtil.getAnnotation(clazz, PathBinding.class);
-			if (StringUtil.isNullOrEmpty(classBindings)) {
+			if (CommonUtil.isNullOrEmpty(classBindings)) {
 				continue;
 			}
 			Method[] methods = clazz.getDeclaredMethods();
@@ -41,11 +41,11 @@ public class WebAppLoader implements CoodyLoader {
 			for (String clazzBinding : classBindings.value()) {
 				for (Method method : methods) {
 					PathBinding methodBinding = PropertUtil.getAnnotation(method, PathBinding.class);
-					if (StringUtil.isNullOrEmpty(methodBinding)) {
+					if (CommonUtil.isNullOrEmpty(methodBinding)) {
 						continue;
 					}
 					for (String bindingPath : methodBinding.value()) {
-						String path = StringUtil.formatPath(clazzBinding + "/" + bindingPath);
+						String path = CommonUtil.formatPath(clazzBinding + "/" + bindingPath);
 						if (MappingContainer.containsPath(path)) {
 							throw new MappingConflicException(path);
 						}

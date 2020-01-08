@@ -8,7 +8,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.CommonUtil;
 
 
 @SuppressWarnings({  "unchecked" })
@@ -40,7 +40,7 @@ public class TransactedThreadContainer {
 	public static boolean hasTransacted(){
 		
 		Map<String, Object> threadContainer=THREAD_TRANSACTED_CONTAINER.get();
-		if(StringUtil.isNullOrEmpty(threadContainer)){
+		if(CommonUtil.isNullOrEmpty(threadContainer)){
 			return false;
 		}
 		Boolean needTransacteder=(Boolean) threadContainer.get(NEED_TRANSACTED);
@@ -52,7 +52,7 @@ public class TransactedThreadContainer {
 	
 	public static void writeHasTransacted(){
 		Map<String, Object> threadContainer=THREAD_TRANSACTED_CONTAINER.get();
-		if(StringUtil.isNullOrEmpty(threadContainer)){
+		if(CommonUtil.isNullOrEmpty(threadContainer)){
 			threadContainer=new HashMap<String, Object>();
 		}
 		threadContainer.put(NEED_TRANSACTED, true);
@@ -61,11 +61,11 @@ public class TransactedThreadContainer {
 	
 	public static void writeDataSource(DataSource source,Connection connection){
 		Map<String, Object> threadContainer=THREAD_TRANSACTED_CONTAINER.get();
-		if(StringUtil.isNullOrEmpty(threadContainer)){
+		if(CommonUtil.isNullOrEmpty(threadContainer)){
 			threadContainer=new HashMap<String, Object>();
 		}
 		Map<DataSource, Connection> connectionMap=(Map<DataSource, Connection>) threadContainer.get(CONNECTION_CONTAINER);
-		if(StringUtil.isNullOrEmpty(connectionMap)){
+		if(CommonUtil.isNullOrEmpty(connectionMap)){
 			connectionMap=new HashMap<DataSource, Connection>();
 		}
 		connectionMap.put(source, connection);
@@ -80,11 +80,11 @@ public class TransactedThreadContainer {
 	 */
 	public static Connection getConnection(DataSource source){
 		Map<String, Object> threadContainer=THREAD_TRANSACTED_CONTAINER.get();
-		if(StringUtil.isNullOrEmpty(threadContainer)){
+		if(CommonUtil.isNullOrEmpty(threadContainer)){
 			return null;
 		}
 		Map<DataSource, Connection> connectionMap=(Map<DataSource, Connection>) threadContainer.get(CONNECTION_CONTAINER);
-		if(StringUtil.isNullOrEmpty(connectionMap)){
+		if(CommonUtil.isNullOrEmpty(connectionMap)){
 			connectionMap=new HashMap<DataSource, Connection>();
 		}
 		return connectionMap.get(source);
@@ -97,11 +97,11 @@ public class TransactedThreadContainer {
 	 */
 	public static List<Connection> getConnections(){
 		Map<String, Object> threadContainer=THREAD_TRANSACTED_CONTAINER.get();
-		if(StringUtil.isNullOrEmpty(threadContainer)){
+		if(CommonUtil.isNullOrEmpty(threadContainer)){
 			return null;
 		}
 		Map<DataSource, Connection> connectionMap=(Map<DataSource, Connection>) threadContainer.get(CONNECTION_CONTAINER);
-		if(StringUtil.isNullOrEmpty(connectionMap)){
+		if(CommonUtil.isNullOrEmpty(connectionMap)){
 			connectionMap=new HashMap<DataSource, Connection>();
 		}
 		return new ArrayList<Connection>(connectionMap.values());

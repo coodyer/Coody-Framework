@@ -5,8 +5,8 @@ import org.coody.framework.core.assember.BeanAssember;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.loader.iface.CoodyLoader;
 import org.coody.framework.core.threadpool.ThreadBlockPool;
-import org.coody.framework.core.util.PropertUtil;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.reflex.PropertUtil;
 
 /**
  * Bean加载器
@@ -18,7 +18,7 @@ public class BeanLoader implements CoodyLoader {
 
 	@Override
 	public void doLoader() throws Exception {
-		if (StringUtil.isNullOrEmpty(BeanContainer.getClazzContainer())) {
+		if (CommonUtil.isNullOrEmpty(BeanContainer.getClazzContainer())) {
 			return;
 		}
 		ThreadBlockPool pool = new ThreadBlockPool(100, 60);
@@ -26,14 +26,14 @@ public class BeanLoader implements CoodyLoader {
 			if (clazz.isAnnotation()) {
 				continue;
 			}
-			if (StringUtil.isNullOrEmpty(clazz.getAnnotations())) {
+			if (CommonUtil.isNullOrEmpty(clazz.getAnnotations())) {
 				continue;
 			}
 			pool.pushTask(new Runnable() {
 				@Override
 				public void run() {
 					AutoBuild autoBuild = PropertUtil.getAnnotation(clazz, AutoBuild.class);
-					if (StringUtil.isNullOrEmpty(autoBuild)) {
+					if (CommonUtil.isNullOrEmpty(autoBuild)) {
 						return;
 					}
 					BeanAssember.initBean(clazz);

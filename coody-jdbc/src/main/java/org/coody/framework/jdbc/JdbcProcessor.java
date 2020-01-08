@@ -23,10 +23,10 @@ import javax.sql.DataSource;
 import org.coody.framework.Cson;
 import org.coody.framework.core.model.BaseModel;
 import org.coody.framework.core.model.FieldEntity;
-import org.coody.framework.core.util.DateUtils;
-import org.coody.framework.core.util.LogUtil;
-import org.coody.framework.core.util.PropertUtil;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.log.LogUtil;
+import org.coody.framework.core.util.reflex.PropertUtil;
+import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.date.DateUtils;
 import org.coody.framework.jdbc.annotation.DBColumn;
 import org.coody.framework.jdbc.container.TransactedThreadContainer;
 import org.coody.framework.jdbc.entity.DBDataBiller;
@@ -71,7 +71,7 @@ public class JdbcProcessor {
 	 * @throws SQLException
 	 */
 	public List<String> getPrimaryKeys(String tableName) throws SQLException {
-		if (StringUtil.isNullOrEmpty(tableName)) {
+		if (CommonUtil.isNullOrEmpty(tableName)) {
 			return null;
 		}
 		Connection conn = null;
@@ -109,7 +109,7 @@ public class JdbcProcessor {
 					outSql = formatParameters(sql, parameters);
 				}
 				LogUtil.log.debug("[线程ID:" + threadId + "][执行语句:" + outSql + "]");
-				if (!StringUtil.isNullOrEmpty(parameters)) {
+				if (!CommonUtil.isNullOrEmpty(parameters)) {
 					for (int i = 0; i < parameters.length; i++) {
 						statement.setObject((i + 1), parameters[i]);
 					}
@@ -148,7 +148,7 @@ public class JdbcProcessor {
 			if (conn != null) {
 				// statement用来执行SQL语句
 				statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-				if (!StringUtil.isNullOrEmpty(parameters)) {
+				if (!CommonUtil.isNullOrEmpty(parameters)) {
 					for (int i = 0; i < parameters.length; i++) {
 						statement.setObject((i + 1), parameters[i]);
 					}
@@ -229,7 +229,7 @@ public class JdbcProcessor {
 			sql = sql + " limit 1";
 		}
 		List<Map<String, Object>> list = query(sql, parameters);
-		if (StringUtil.isNullOrEmpty(list)) {
+		if (CommonUtil.isNullOrEmpty(list)) {
 			return null;
 		}
 		return list.get(0);
@@ -245,7 +245,7 @@ public class JdbcProcessor {
 	 */
 	public <T> T queryFirst(Class<?> clazz, String sql, Object... parameters) {
 		List<T> list = query(clazz, sql, parameters);
-		if (StringUtil.isNullOrEmpty(list)) {
+		if (CommonUtil.isNullOrEmpty(list)) {
 			return null;
 		}
 		return list.get(0);
@@ -261,14 +261,14 @@ public class JdbcProcessor {
 	 */
 	public <T> List<T> query(Class<?> clazz, String sql, Object... parameters) {
 		List<Map<String, Object>> records = query(sql, parameters);
-		if (StringUtil.isNullOrEmpty(records)) {
+		if (CommonUtil.isNullOrEmpty(records)) {
 			return null;
 		}
 		if (BaseModel.class.isAssignableFrom(clazz)) {
 			List<T> list = new ArrayList<T>();
 			for (Map<String, Object> line : records) {
 				T t = PropertUtil.mapToModel(line, clazz);
-				if (!StringUtil.isNullOrEmpty(t)) {
+				if (!CommonUtil.isNullOrEmpty(t)) {
 					list.add(t);
 				}
 			}
@@ -277,11 +277,11 @@ public class JdbcProcessor {
 		sql = formatSql(sql);
 		List list = new ArrayList();
 		for (Map<String, Object> line : records) {
-			if (StringUtil.isNullOrEmpty(line)) {
+			if (CommonUtil.isNullOrEmpty(line)) {
 				continue;
 			}
 			Object value = PropertUtil.parseValue(new ArrayList<Object>(line.values()).get(0), clazz);
-			if (StringUtil.isNullOrEmpty(value)) {
+			if (CommonUtil.isNullOrEmpty(value)) {
 				if (sql.contains("select count(") || sql.contains("select sum(") || sql.contains("select avg(")) {
 					list.add(PropertUtil.parseValue(0, clazz));
 				}
@@ -294,17 +294,17 @@ public class JdbcProcessor {
 
 	public List<?> queryField(Class<?> fieldType, String sql, Object... parameters) {
 		List<Map<String, Object>> records = query(sql, parameters);
-		if (StringUtil.isNullOrEmpty(records)) {
+		if (CommonUtil.isNullOrEmpty(records)) {
 			return null;
 		}
 		List<Object> list = new ArrayList<Object>();
 		for (Map<String, Object> rec : records) {
-			if (StringUtil.isNullOrEmpty(rec)) {
+			if (CommonUtil.isNullOrEmpty(rec)) {
 				continue;
 			}
 			for (String key : rec.keySet()) {
 				Object value = rec.get(key);
-				if (!StringUtil.isNullOrEmpty(value)) {
+				if (!CommonUtil.isNullOrEmpty(value)) {
 					value = PropertUtil.parseValue(value, fieldType);
 					list.add(value);
 				}
@@ -460,7 +460,7 @@ public class JdbcProcessor {
 	public <T> T findBeanFirst(Class<? extends DBModel> modelClazz, String fieldName, Object fieldValue,
 			String orderField, Boolean isDesc) {
 		List<Object> list = (List<Object>) findBean(modelClazz, fieldName, fieldValue, orderField, isDesc);
-		if (StringUtil.isNullOrEmpty(list)) {
+		if (CommonUtil.isNullOrEmpty(list)) {
 			return null;
 		}
 		return (T) list.get(0);
@@ -490,7 +490,7 @@ public class JdbcProcessor {
 	 */
 	public <T> T findBeanFirst(Object modelOrClass, Where where, String orderField, Boolean isDesc) {
 		List<Map<String, Object>> list = findRecord(modelOrClass, where, null, orderField, isDesc);
-		if (StringUtil.isNullOrEmpty(list)) {
+		if (CommonUtil.isNullOrEmpty(list)) {
 			return null;
 		}
 		return JdbcUtil.buildModel(JdbcUtil.getModelClass(modelOrClass), list.get(0));
@@ -555,7 +555,7 @@ public class JdbcProcessor {
 			String orderField, Boolean isDesc) {
 		Where where = new Where();
 		List<FieldEntity> entitys = PropertUtil.getBeanFields(modelClazz);
-		if (StringUtil.isNullOrEmpty(parameterMap)) {
+		if (CommonUtil.isNullOrEmpty(parameterMap)) {
 			JDBCEntity jDBCEntity = JdbcUtil.buildSelectSql(modelClazz, where, null, orderField, isDesc);
 			return baseQuery(jDBCEntity.getSql(), jDBCEntity.getParameters());
 		}
@@ -566,7 +566,7 @@ public class JdbcProcessor {
 			if (column != null) {
 				key = column.value();
 			}
-			if (StringUtil.isNullOrEmpty(value)) {
+			if (CommonUtil.isNullOrEmpty(value)) {
 				where.set(key, "is null", new Object[] {});
 				continue;
 			}
@@ -600,7 +600,7 @@ public class JdbcProcessor {
 	public Map<String, Object> findRecordFirst(Class<? extends DBModel> modelClazz, Map<String, Object> parameterMap,
 			String orderField, Boolean isDesc) {
 		List<Map<String, Object>> list = findRecord(modelClazz, parameterMap, orderField, isDesc);
-		if (StringUtil.isNullOrEmpty(list)) {
+		if (CommonUtil.isNullOrEmpty(list)) {
 			return null;
 		}
 		return list.get(0);
@@ -748,7 +748,7 @@ public class JdbcProcessor {
 					continue;
 				}
 				Object value = field.getSourceField().get(model);
-				if (StringUtil.isNullOrEmpty(value)) {
+				if (CommonUtil.isNullOrEmpty(value)) {
 					continue;
 				}
 				sql.append(columnName).append("=?").append(",");
@@ -761,7 +761,7 @@ public class JdbcProcessor {
 			sql.append(" where ");
 			for (int i = 0; i < priKeys.length; i++) {
 				Object fieldValue = PropertUtil.getFieldValue(model, priKeys[i]);
-				if (StringUtil.isNullOrEmpty(fieldValue)) {
+				if (CommonUtil.isNullOrEmpty(fieldValue)) {
 					sql.append(MessageFormat.format(" {0} is null  ", priKeys[i]));
 				} else {
 					sql.append(MessageFormat.format(" {0}=? ", priKeys[i]));
@@ -852,7 +852,7 @@ public class JdbcProcessor {
 				MessageFormat.format("insert into {0} set ", beanDataBiller.getTable()));
 		List<Object> paras = new ArrayList<Object>();
 		String diySql = JdbcUtil.buildModelSetSql(beanDataBiller, model, paras);
-		if (StringUtil.isNullOrEmpty(diySql)) {
+		if (CommonUtil.isNullOrEmpty(diySql)) {
 			return -1L;
 		}
 		sqlBuilder.append(diySql);
@@ -930,7 +930,7 @@ public class JdbcProcessor {
 			if (i != sqlRanks.length - 1) {
 				try {
 					Object value = parameters[i];
-					if (!StringUtil.isNullOrEmpty(value)) {
+					if (!CommonUtil.isNullOrEmpty(value)) {
 						if (Date.class.isAssignableFrom(value.getClass())) {
 							value = DateUtils.toString((Date) value, "yyyy-MM-dd HH:mm:ss");
 						}

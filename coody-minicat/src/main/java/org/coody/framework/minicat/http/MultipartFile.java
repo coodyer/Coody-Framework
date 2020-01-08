@@ -2,7 +2,7 @@ package org.coody.framework.minicat.http;
 
 import java.util.Arrays;
 
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.CommonUtil;
 
 public class MultipartFile {
 
@@ -63,7 +63,7 @@ public class MultipartFile {
 	}
 	
 	private String getSuffix(String fileName) {
-		if (StringUtil.isNullOrEmpty(fileName)) {
+		if (CommonUtil.isNullOrEmpty(fileName)) {
 			return null;
 		}
 		String[] strs = fileName.split("\\.");

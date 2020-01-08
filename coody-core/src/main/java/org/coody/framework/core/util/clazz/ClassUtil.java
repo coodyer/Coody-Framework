@@ -1,4 +1,4 @@
-package org.coody.framework.core.util;
+package org.coody.framework.core.util.clazz;
 
 import java.io.File;
 import java.io.FileFilter;

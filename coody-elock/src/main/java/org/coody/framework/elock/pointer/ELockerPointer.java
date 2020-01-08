@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
-import org.coody.framework.core.util.LogUtil;
+import org.coody.framework.core.util.log.LogUtil;
 import org.coody.framework.elock.config.ClockConfigFactory;
 import org.coody.framework.elock.exception.JedisNotInitedException;
 import org.coody.framework.elock.exception.LockTimeOutException;

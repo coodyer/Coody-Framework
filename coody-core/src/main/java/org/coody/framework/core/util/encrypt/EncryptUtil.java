@@ -1,4 +1,4 @@
-package org.coody.framework.core.util;
+package org.coody.framework.core.util.encrypt;
 
 import java.net.URLEncoder;
 import java.security.MessageDigest;

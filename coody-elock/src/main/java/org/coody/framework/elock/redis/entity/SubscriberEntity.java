@@ -1,6 +1,6 @@
 package org.coody.framework.elock.redis.entity;
 
-import org.coody.framework.core.util.LogUtil;
+import org.coody.framework.core.util.log.LogUtil;
 import org.coody.framework.elock.pointer.ELockerPointer;
 
 import redis.clients.jedis.JedisPubSub;

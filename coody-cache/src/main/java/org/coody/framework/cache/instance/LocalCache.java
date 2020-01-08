@@ -11,8 +11,8 @@ import java.util.concurrent.TimeUnit;
 import org.coody.framework.cache.instance.iface.CoodyCacheFace;
 import org.coody.framework.cache.threadpool.CacheThreadPool;
 import org.coody.framework.core.annotation.AutoBuild;
-import org.coody.framework.core.util.AntUtil;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.ant.AntUtil;
 
 /**
  * 内存缓存工具类
@@ -62,7 +62,7 @@ public class LocalCache implements CoodyCacheFace {
 				list.add(key);
 			}
 		}
-		if (StringUtil.isNullOrEmpty(list)) {
+		if (CommonUtil.isNullOrEmpty(list)) {
 			return null;
 		}
 		return list;

@@ -15,9 +15,9 @@ import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.loader.iface.CoodyLoader;
 import org.coody.framework.core.model.AspectEntity;
 import org.coody.framework.core.threadpool.ThreadBlockPool;
-import org.coody.framework.core.util.MethodSignUtil;
-import org.coody.framework.core.util.PropertUtil;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.reflex.MethodSignUtil;
+import org.coody.framework.core.util.reflex.PropertUtil;
+import org.coody.framework.core.util.CommonUtil;
 
 /**
  * 
@@ -28,7 +28,7 @@ public class AspectLoader implements CoodyLoader {
 
 	@Override
 	public void doLoader() throws Exception {
-		if (StringUtil.isNullOrEmpty(BeanContainer.getClazzContainer())) {
+		if (CommonUtil.isNullOrEmpty(BeanContainer.getClazzContainer())) {
 			return;
 		}
 		ThreadBlockPool pool = new ThreadBlockPool(100, 60);
@@ -36,7 +36,7 @@ public class AspectLoader implements CoodyLoader {
 			if (clazz.isAnnotation()) {
 				continue;
 			}
-			if (StringUtil.isNullOrEmpty(clazz.getAnnotations())) {
+			if (CommonUtil.isNullOrEmpty(clazz.getAnnotations())) {
 				continue;
 			}
 			Annotation initBean = PropertUtil.getAnnotation(clazz, AutoBuild.class);
@@ -55,20 +55,20 @@ public class AspectLoader implements CoodyLoader {
 
 	private void loaderClazz(Class<?> clazz) {
 		Method[] methods = clazz.getDeclaredMethods();
-		if (StringUtil.isNullOrEmpty(methods)) {
+		if (CommonUtil.isNullOrEmpty(methods)) {
 			return;
 		}
 		for (Method method : methods) {
 			if (Modifier.isStatic(method.getModifiers()) || Modifier.isAbstract(method.getModifiers())) {
 				continue;
 			}
-			if (StringUtil.isNullOrEmpty(method.getAnnotations())) {
+			if (CommonUtil.isNullOrEmpty(method.getAnnotations())) {
 				continue;
 			}
 			List<Around> around = PropertUtil.getAnnotations(method, Around.class);
-			if (StringUtil.isNullOrEmpty(around)) {
+			if (CommonUtil.isNullOrEmpty(around)) {
 				List<Arounds> aroundParents = PropertUtil.getAnnotations(method, Arounds.class);
-				if (StringUtil.isNullOrEmpty(aroundParents)) {
+				if (CommonUtil.isNullOrEmpty(aroundParents)) {
 					continue;
 				}
 				around = new ArrayList<Around>();

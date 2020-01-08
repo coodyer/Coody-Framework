@@ -1,4 +1,4 @@
-package org.coody.framework.core.util;
+package org.coody.framework.core.util.uuid;
 
 import java.util.UUID;
 

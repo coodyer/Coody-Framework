@@ -15,9 +15,9 @@ import org.coody.framework.core.annotation.MethodDeliver;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.loader.iface.CoodyLoader;
 import org.coody.framework.core.threadpool.ThreadBlockPool;
-import org.coody.framework.core.util.MethodSignUtil;
-import org.coody.framework.core.util.PropertUtil;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.reflex.MethodSignUtil;
+import org.coody.framework.core.util.reflex.PropertUtil;
+import org.coody.framework.core.util.CommonUtil;
 
 /**
  * 切面加载器
@@ -29,7 +29,7 @@ public class AnnotationLoader implements CoodyLoader {
 
 	@Override
 	public void doLoader() throws Exception {
-		if (StringUtil.isNullOrEmpty(BeanContainer.getClazzContainer())) {
+		if (CommonUtil.isNullOrEmpty(BeanContainer.getClazzContainer())) {
 			return;
 		}
 		ThreadBlockPool pool = new ThreadBlockPool(100, 60);
@@ -37,7 +37,7 @@ public class AnnotationLoader implements CoodyLoader {
 			if (clazz.isAnnotation()) {
 				continue;
 			}
-			if (StringUtil.isNullOrEmpty(clazz.getAnnotations())) {
+			if (CommonUtil.isNullOrEmpty(clazz.getAnnotations())) {
 				continue;
 			}
 			pool.pushTask(new Runnable() {
@@ -65,7 +65,7 @@ public class AnnotationLoader implements CoodyLoader {
 		}
 		Method[] clazzMethods = clazz.getDeclaredMethods();
 		Method[] childClazzMethods = childClazz.getDeclaredMethods();
-		if (StringUtil.hasNull(clazzMethods, childClazzMethods)) {
+		if (CommonUtil.hasNullOrEmpty(clazzMethods, childClazzMethods)) {
 			return;
 		}
 		for (Method method : clazzMethods) {
@@ -79,7 +79,7 @@ public class AnnotationLoader implements CoodyLoader {
 					continue;
 				}
 				Annotation[] annotations = method.getAnnotations();
-				if (StringUtil.isNullOrEmpty(annotations)) {
+				if (CommonUtil.isNullOrEmpty(annotations)) {
 					continue;
 				}
 				try {
@@ -105,7 +105,7 @@ public class AnnotationLoader implements CoodyLoader {
 			}
 		}
 		Annotation[] annotations = clazz.getAnnotations();
-		if (!StringUtil.isNullOrEmpty(annotations)) {
+		if (!CommonUtil.isNullOrEmpty(annotations)) {
 			Set<Annotation> fieldAnnotations = new HashSet<Annotation>();
 			Set<Annotation> methodAnnotations = new HashSet<Annotation>();
 			for (Annotation annotation : annotations) {
@@ -131,13 +131,13 @@ public class AnnotationLoader implements CoodyLoader {
 					continue;
 				}
 			}
-			if (!StringUtil.isNullOrEmpty(fieldAnnotations)) {
+			if (!CommonUtil.isNullOrEmpty(fieldAnnotations)) {
 				// 字段注解克隆
 				for (Field field : clazz.getDeclaredFields()) {
 					PropertUtil.addAnnotations(field, fieldAnnotations.toArray(new Annotation[] {}));
 				}
 			}
-			if (!StringUtil.isNullOrEmpty(methodAnnotations)) {
+			if (!CommonUtil.isNullOrEmpty(methodAnnotations)) {
 				// 方法注解克隆
 				for (Method method : clazz.getDeclaredMethods()) {
 					PropertUtil.addAnnotations(method, methodAnnotations.toArray(new Annotation[] {}));

@@ -3,9 +3,9 @@ package org.coody.framework.minicat.web.adapter.iface;
 import java.util.Map;
 
 import org.coody.framework.core.model.FieldEntity;
-import org.coody.framework.core.util.AntUtil;
-import org.coody.framework.core.util.PropertUtil;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.ant.AntUtil;
+import org.coody.framework.core.util.reflex.PropertUtil;
+import org.coody.framework.core.util.CommonUtil;
 import org.coody.framework.minicat.http.iface.MinicatHttpSession;
 import org.coody.framework.minicat.http.iface.MinicatServletRequest;
 import org.coody.framework.minicat.http.iface.MinicatServletResponse;
@@ -34,12 +34,12 @@ public abstract class CoodyParameterAdapter {
 		Object[] parameters = adapt(mapping, request, response, session);
 		// 装在URL参数
 		if (mapping.getIsAntPath()) {
-			if (StringUtil.isNullOrEmpty(mapping.getParameters())) {
+			if (CommonUtil.isNullOrEmpty(mapping.getParameters())) {
 				return parameters;
 			}
 			Map<String, String> extractTemplateVariables = AntUtil.extractTemplateVariables(mapping.getPath(),
 					request.getRequestURI());
-			if (StringUtil.isNullOrEmpty(extractTemplateVariables)) {
+			if (CommonUtil.isNullOrEmpty(extractTemplateVariables)) {
 				return parameters;
 			}
 			for (int i = 0; i < mapping.getParameters().size(); i++) {

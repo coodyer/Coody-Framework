@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.coody.framework.core.exception.base.CoodyException;
-import org.coody.framework.core.util.PrintException;
-import org.coody.framework.core.util.PropertUtil;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.reflex.PropertUtil;
+import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.abnormal.PrintException;
 import org.coody.framework.rcc.annotation.RccInterface;
 import org.coody.framework.rcc.asm.classloader.SimpleClassLoader;
 import org.coody.framework.rcc.exception.NoMethodException;
@@ -39,7 +39,7 @@ public class ImplClassMaker {
 	static SimpleClassLoader simpleClassLoader = new SimpleClassLoader();
 
 	private static String[] formatClazzs(Class<?>... clazzs) {
-		if (StringUtil.isNullOrEmpty(clazzs)) {
+		if (CommonUtil.isNullOrEmpty(clazzs)) {
 			return null;
 		}
 		List<String> classNames = new ArrayList<String>(clazzs.length);
@@ -103,7 +103,7 @@ public class ImplClassMaker {
 		// 解析入参类型
 		String[] inputParaClassNames = formatClazzs(paramtypes);
 		String inputParaContext = "";
-		if (!StringUtil.isNullOrEmpty(inputParaClassNames)) {
+		if (!CommonUtil.isNullOrEmpty(inputParaClassNames)) {
 			StringBuilder sbContext = new StringBuilder();
 			for (String paraClassName : inputParaClassNames) {
 				sbContext.append("L");
@@ -119,13 +119,13 @@ public class ImplClassMaker {
 		AnnotationVisitor av = mv.visitAnnotation(rccName, true);
 		av.visitEnd();
 		// copy抽象类方法持有注解
-		if (!StringUtil.isNullOrEmpty(annotations)) {
+		if (!CommonUtil.isNullOrEmpty(annotations)) {
 			try {
 				for (Annotation annotation : annotations) {
 					String annotationName = "L" + annotation.annotationType().getName().replace('.', '/') + ";";
 					AnnotationVisitor avTemp = mv.visitAnnotation(annotationName, true);
 					Map<String, Object> annotationData = PropertUtil.getAnnotationValueMap(annotation);
-					if (!StringUtil.isNullOrEmpty(annotationData)) {
+					if (!CommonUtil.isNullOrEmpty(annotationData)) {
 						for (String key : annotationData.keySet()) {
 							avTemp.visit(key, annotationData.get(key));
 						}
@@ -159,7 +159,7 @@ public class ImplClassMaker {
 	 */
 	public static Class<?> createInterfaceImpl(Class<?> clazz) {
 		Method[] methods = clazz.getMethods();
-		if (StringUtil.isNullOrEmpty(methods)) {
+		if (CommonUtil.isNullOrEmpty(methods)) {
 			throw new NoMethodException(clazz);
 		}
 		// 创建实现类

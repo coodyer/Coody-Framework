@@ -1,4 +1,4 @@
-package org.coody.framework.core.util;
+package org.coody.framework.core.util.reflex;
 
 import java.lang.reflect.Method;
 import java.util.HashSet;
@@ -8,18 +8,20 @@ import java.util.Set;
 import org.coody.framework.Cson;
 import org.coody.framework.core.model.BaseModel;
 import org.coody.framework.core.model.FieldEntity;
+import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.encrypt.EncryptUtil;
 
 public class MethodSignUtil {
 
 	public static String getKeyByFields(Class<?> clazz, Method method, Object[] parameters, String key,
 			String[] fields) {
-		if (StringUtil.isNullOrEmpty(key)) {
+		if (CommonUtil.isNullOrEmpty(key)) {
 			key = getKeyByMethod(clazz, method);
 		}
 		StringBuilder paraKey = new StringBuilder();
 		for (String field : fields) {
 			Object paraValue = MethodSignUtil.getMethodParameterValue(method, field, parameters);
-			if (StringUtil.isNullOrEmpty(paraValue)) {
+			if (CommonUtil.isNullOrEmpty(paraValue)) {
 				paraValue = "";
 			}
 			paraKey.append("_").append(Cson.toJson(paraValue));
@@ -30,12 +32,12 @@ public class MethodSignUtil {
 
 	// 将对象内所有字段名、字段值拼接成字符串，用于缓存Key
 	public static String getKeyByParameters(Object... parameters) {
-		if (StringUtil.isNullOrEmpty(parameters)) {
+		if (CommonUtil.isNullOrEmpty(parameters)) {
 			return "";
 		}
 		StringBuilder content = new StringBuilder();
 		for (Object line : parameters) {
-			if (StringUtil.isNullOrEmpty(line)) {
+			if (CommonUtil.isNullOrEmpty(line)) {
 				content.append("null").append("-");
 				continue;
 			}
@@ -55,13 +57,13 @@ public class MethodSignUtil {
 	public static String getMethodUnionKey(Method method) {
 		String paraKey = "";
 		List<FieldEntity> entitys = PropertUtil.getMethodParameters(method);
-		if (!StringUtil.isNullOrEmpty(entitys)) {
+		if (!CommonUtil.isNullOrEmpty(entitys)) {
 			Set<String> methodParas = new HashSet<String>();
 			for (FieldEntity entity : entitys) {
 				String methodParaLine = entity.getFieldType().getName() + " " + entity.getFieldName();
 				methodParas.add(methodParaLine);
 			}
-			paraKey = StringUtil.collectionMosaic(methodParas, ",");
+			paraKey = CommonUtil.splicing(methodParas, ",");
 		}
 		Class<?> clazz = PropertUtil.getClass(method);
 		String methodKey = clazz.getName() + "." + method.getName() + "(" + paraKey + ")";
@@ -78,7 +80,7 @@ public class MethodSignUtil {
 		sb.append("=").append(method.getName());
 		Class<?>[] paraTypes = method.getParameterTypes();
 		sb.append("(");
-		if (!StringUtil.isNullOrEmpty(paraTypes)) {
+		if (!CommonUtil.isNullOrEmpty(paraTypes)) {
 			for (int i = 0; i < paraTypes.length; i++) {
 				sb.append(paraTypes[i].getName());
 				if (i < paraTypes.length - 1) {
@@ -95,7 +97,7 @@ public class MethodSignUtil {
 		sb.append(clazz.getName()).append(".").append(method.getName());
 		Class<?>[] paraTypes = method.getParameterTypes();
 		sb.append("(");
-		if (!StringUtil.isNullOrEmpty(paraTypes)) {
+		if (!CommonUtil.isNullOrEmpty(paraTypes)) {
 			for (int i = 0; i < paraTypes.length; i++) {
 				sb.append(paraTypes[i].getSimpleName());
 				if (i < paraTypes.length - 1) {
@@ -109,12 +111,12 @@ public class MethodSignUtil {
 
 	public static Object getMethodParameterValue(Method method, String fieldName, Object[] parameters) {
 		List<FieldEntity> entitys = PropertUtil.getMethodParameters(method);
-		if (StringUtil.isNullOrEmpty(entitys)) {
+		if (CommonUtil.isNullOrEmpty(entitys)) {
 			return "";
 		}
 		String[] fields = fieldName.split("\\.");
 		FieldEntity entity = (FieldEntity) PropertUtil.getByList(entitys, "fieldName", fields[0]);
-		if (StringUtil.isNullOrEmpty(entity)) {
+		if (CommonUtil.isNullOrEmpty(entity)) {
 			return "";
 		}
 		Object para = parameters[entitys.indexOf(entity)];

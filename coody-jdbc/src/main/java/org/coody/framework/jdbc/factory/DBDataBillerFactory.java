@@ -7,9 +7,9 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.coody.framework.core.model.FieldEntity;
-import org.coody.framework.core.util.PropertUtil;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.CommonUtil;
 import org.coody.framework.core.util.magic.iface.DynamicContainer;
+import org.coody.framework.core.util.reflex.PropertUtil;
 import org.coody.framework.jdbc.annotation.DBColumn;
 import org.coody.framework.jdbc.annotation.DBTable;
 import org.coody.framework.jdbc.entity.DBDataBiller;
@@ -42,11 +42,11 @@ public class DBDataBillerFactory {
 
 	public static DBDataBiller getBiller(Class<?> clazz) {
 
-		if (StringUtil.isNullOrEmpty(clazz)) {
+		if (CommonUtil.isNullOrEmpty(clazz)) {
 			throw new JdbcBuilderException("传入class为空");
 		}
 		DBDataBiller biller = BEANDATABILLER_CONTAINER.get(clazz);
-		if (!StringUtil.isNullOrEmpty(biller)) {
+		if (!CommonUtil.isNullOrEmpty(biller)) {
 			return biller;
 		}
 		biller = createBiller(clazz);
@@ -55,17 +55,17 @@ public class DBDataBillerFactory {
 	}
 
 	private static DBDataBiller createBiller(Class<?> clazz) {
-		if (StringUtil.isNullOrEmpty(clazz)) {
+		if (CommonUtil.isNullOrEmpty(clazz)) {
 			throw new JdbcBuilderException("传入class为空");
 		}
 		DBDataBiller biller = new DBDataBiller();
 
 		DBTable table = clazz.getAnnotation(DBTable.class);
 		String tableName = "";
-		if (!StringUtil.isNullOrEmpty(table)) {
+		if (!CommonUtil.isNullOrEmpty(table)) {
 			tableName = table.value();
 		}
-		if (StringUtil.isNullOrEmpty(tableName)) {
+		if (CommonUtil.isNullOrEmpty(tableName)) {
 			tableName = getTableName(clazz.getSimpleName());
 		}
 		biller.setTable(tableName);
@@ -152,7 +152,7 @@ public class DBDataBillerFactory {
 	 */
 	private static String getColumnName(FieldEntity field) {
 		DBColumn column = field.getSourceField().getAnnotation(DBColumn.class);
-		if (StringUtil.isNullOrEmpty(column)) {
+		if (CommonUtil.isNullOrEmpty(column)) {
 			return getColumnName(field.getFieldName());
 		}
 		if (!IGNORE_CASE) {

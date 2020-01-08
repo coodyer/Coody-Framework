@@ -2,8 +2,8 @@ package org.coody.framework.elock.redis;
 
 import java.util.Map;
 
-import org.coody.framework.core.util.PropertUtil;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.reflex.PropertUtil;
 import org.coody.framework.elock.config.ClockConfigFactory;
 import org.coody.framework.elock.pointer.ELockerPointer;
 import org.coody.framework.elock.redis.entity.SubscriberEntity;
@@ -63,7 +63,7 @@ public class ELockCache {
 
 	public synchronized static ELockCache initJedisPool(String host, Integer port, String secretKey, Integer timeOut,
 			JedisPoolConfig jedisPoolConfig) {
-		if (StringUtil.isNullOrEmpty(secretKey)) {
+		if (CommonUtil.isNullOrEmpty(secretKey)) {
 			secretKey = null;
 		}
 		JedisPool inJediPool = new JedisPool(jedisPoolConfig, host, port, 10000, secretKey);
@@ -91,7 +91,7 @@ public class ELockCache {
 			setParams.ex(expireSecond);
 			setParams.nx();
 			String result = jedis.set(key, String.valueOf(Thread.currentThread().getId()), setParams);
-			if (StringUtil.isNullOrEmpty(result)) {
+			if (CommonUtil.isNullOrEmpty(result)) {
 				return false;
 			}
 			if (REDIS_SUCCESS_FLAG.equals(result)) {

@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import org.coody.framework.core.annotation.Around;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.model.AspectPoint;
-import org.coody.framework.core.util.MethodSignUtil;
+import org.coody.framework.core.util.reflex.MethodSignUtil;
 import org.coody.framework.rcc.annotation.RccInterface;
 import org.coody.framework.rcc.caller.RccSendCaller;
 import org.coody.framework.rcc.serialer.iface.RccSerialer;

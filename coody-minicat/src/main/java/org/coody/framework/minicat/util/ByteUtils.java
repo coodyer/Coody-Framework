@@ -8,7 +8,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.TimeUnit;
 
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.CommonUtil;
 import org.coody.framework.minicat.config.MiniCatConfig;
 
 @SuppressWarnings("unchecked")
@@ -29,7 +29,7 @@ public class ByteUtils {
 	public static String readLineString(InputStream inputStream) {
 		try {
 			byte[] data = readLine(inputStream);
-			if (StringUtil.isNullOrEmpty(data)) {
+			if (CommonUtil.isNullOrEmpty(data)) {
 				return null;
 			}
 			return new String(data, MiniCatConfig.encode);

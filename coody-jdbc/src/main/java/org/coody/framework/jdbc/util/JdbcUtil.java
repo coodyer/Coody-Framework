@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.coody.framework.core.model.FieldEntity;
-import org.coody.framework.core.util.PropertUtil;
-import org.coody.framework.core.util.StringUtil;
-import org.coody.framework.core.util.UnsafeUtil;
+import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.reflex.PropertUtil;
+import org.coody.framework.core.util.unsafe.UnsafeUtil;
 import org.coody.framework.jdbc.annotation.DBVague;
 import org.coody.framework.jdbc.entity.DBDataBiller;
 import org.coody.framework.jdbc.entity.DBModel;
@@ -42,16 +42,16 @@ public class JdbcUtil {
 	 */
 	public static <T> List<T> buildModels(Class<? extends DBModel> clazz, List<Map<String, Object>> maps) {
 		try {
-			if (StringUtil.isNullOrEmpty(maps)) {
+			if (CommonUtil.isNullOrEmpty(maps)) {
 				return null;
 			}
 			DBDataBiller beanDataBiller = DBDataBillerFactory.getBiller(clazz);
-			if (StringUtil.isNullOrEmpty(beanDataBiller.getFields())) {
+			if (CommonUtil.isNullOrEmpty(beanDataBiller.getFields())) {
 				return null;
 			}
 			List<T> results = new ArrayList<T>();
 			for (Map<String, Object> map : maps) {
-				if (StringUtil.isNullOrEmpty(map)) {
+				if (CommonUtil.isNullOrEmpty(map)) {
 					continue;
 				}
 				T model = UnsafeUtil.createInstance(clazz);
@@ -79,14 +79,14 @@ public class JdbcUtil {
 	 */
 	public static <T> T buildModel(Class<? extends DBModel> clazz, Map<String, Object> map) {
 		try {
-			if (StringUtil.isNullOrEmpty(map)) {
+			if (CommonUtil.isNullOrEmpty(map)) {
 				return null;
 			}
 			DBDataBiller beanDataBiller = DBDataBillerFactory.getBiller(clazz);
-			if (StringUtil.isNullOrEmpty(beanDataBiller.getFields())) {
+			if (CommonUtil.isNullOrEmpty(beanDataBiller.getFields())) {
 				return null;
 			}
-			if (StringUtil.isNullOrEmpty(map)) {
+			if (CommonUtil.isNullOrEmpty(map)) {
 				return null;
 			}
 			T model = UnsafeUtil.createInstance(clazz);
@@ -106,10 +106,10 @@ public class JdbcUtil {
 
 	public static String buildPagerSQL(Pager pager) {
 		// 封装分页条件
-		if (StringUtil.isNullOrEmpty(pager.getCurrent())) {
+		if (CommonUtil.isNullOrEmpty(pager.getCurrent())) {
 			pager.setCurrent(1);
 		}
-		if (StringUtil.isNullOrEmpty(pager.getSize())) {
+		if (CommonUtil.isNullOrEmpty(pager.getSize())) {
 			pager.setSize(10);
 		}
 		Integer startRows = (pager.getCurrent() - 1) * pager.getSize();
@@ -124,14 +124,14 @@ public class JdbcUtil {
 			String... addFields) {
 
 		List<String> addFieldList = new ArrayList<String>();
-		if (!StringUtil.isNullOrEmpty(addFields)) {
+		if (!CommonUtil.isNullOrEmpty(addFields)) {
 			addFieldList = Arrays.asList(addFields);
 		}
 		StringBuilder sqlBuilder = new StringBuilder();
 		for (FieldEntity field : beanDataBiller.getFields().keySet()) {
 			try {
 				String columnName = beanDataBiller.getFields().get(field);
-				if (StringUtil.isNullOrEmpty(columnName)) {
+				if (CommonUtil.isNullOrEmpty(columnName)) {
 					continue;
 				}
 				Object fieldValue = field.getSourceField().get(model);
@@ -178,7 +178,7 @@ public class JdbcUtil {
 			for (FieldEntity field : beanDataBiller.getFields().keySet()) {
 				try {
 					Object value = field.getSourceField().get(modelOrClass);
-					if (StringUtil.isNullOrEmpty(value)) {
+					if (CommonUtil.isNullOrEmpty(value)) {
 						continue;
 					}
 					if (!String.class.isAssignableFrom(field.getFieldType())) {
@@ -187,7 +187,7 @@ public class JdbcUtil {
 						continue;
 					}
 					DBVague vague = field.getSourceField().getAnnotation(DBVague.class);
-					if (vague == null || StringUtil.isNullOrEmpty(vague.value())) {
+					if (vague == null || CommonUtil.isNullOrEmpty(vague.value())) {
 						sb.append(MessageFormat.format(" and {0}=? ", beanDataBiller.getFields().get(field)));
 						parameters.add(value);
 						continue;
@@ -204,7 +204,7 @@ public class JdbcUtil {
 
 		}
 		// 封装where条件
-		if (!StringUtil.isNullOrEmpty(where) && !StringUtil.isNullOrEmpty(where.getWheres())) {
+		if (!CommonUtil.isNullOrEmpty(where) && !CommonUtil.isNullOrEmpty(where.getWheres())) {
 			List<Where.WhereFace> wheres = where.getWheres();
 			for (Where.WhereFace childWhere : wheres) {
 				if (childWhere == null) {
@@ -212,16 +212,16 @@ public class JdbcUtil {
 				}
 				if (Where.OrWhere.class.isAssignableFrom(childWhere.getClass())) {
 					Where.OrWhere orWheres = (OrWhere) childWhere;
-					if (StringUtil.isNullOrEmpty(orWheres.getWheres())) {
+					if (CommonUtil.isNullOrEmpty(orWheres.getWheres())) {
 						continue;
 					}
 					sb.append(" and (1=2");
 					for (Where.ThisWhere orWhere : orWheres.getWheres()) {
 						sb.append(MessageFormat.format(" or {0} {1} ", orWhere.getFieldName(), orWhere.getSymbol()));
-						if (StringUtil.isNullOrEmpty(orWhere.getFieldValues())) {
+						if (CommonUtil.isNullOrEmpty(orWhere.getFieldValues())) {
 							continue;
 						}
-						String inParaSql = StringUtil.getInPara(orWhere.getFieldValues().size());
+						String inParaSql = CommonUtil.createString("?", ",", orWhere.getFieldValues().size());
 						sb.append(MessageFormat.format(" ({0})  ", inParaSql));
 						for (Object value : orWhere.getFieldValues()) {
 							parameters.add(value);
@@ -233,10 +233,10 @@ public class JdbcUtil {
 				if (Where.ThisWhere.class.isAssignableFrom(childWhere.getClass())) {
 					Where.ThisWhere thisWhere = (ThisWhere) childWhere;
 					sb.append(MessageFormat.format(" and {0} {1} ", thisWhere.getFieldName(), thisWhere.getSymbol()));
-					if (StringUtil.isNullOrEmpty(thisWhere.getFieldValues())) {
+					if (CommonUtil.isNullOrEmpty(thisWhere.getFieldValues())) {
 						continue;
 					}
-					String inParaSql = StringUtil.getInPara(thisWhere.getFieldValues().size());
+					String inParaSql = CommonUtil.createString("?", ",", thisWhere.getFieldValues().size());
 					sb.append(MessageFormat.format(" ({0})  ", inParaSql));
 					for (Object value : thisWhere.getFieldValues()) {
 						parameters.add(value);
@@ -246,14 +246,14 @@ public class JdbcUtil {
 			}
 		}
 		// 封装排序条件
-		if (!StringUtil.isNullOrEmpty(orderField)) {
+		if (!CommonUtil.isNullOrEmpty(orderField)) {
 			sb.append(MessageFormat.format(" order by {0}", orderField));
 			if (isDesc != null && isDesc) {
 				sb.append(" desc ");
 			}
 		}
 		// 封装分页条件
-		if (!StringUtil.isNullOrEmpty(pager)) {
+		if (!CommonUtil.isNullOrEmpty(pager)) {
 			sb.append(buildPagerSQL(pager));
 		}
 		return new JDBCEntity(sb.toString(), parameters.toArray());
@@ -269,7 +269,7 @@ public class JdbcUtil {
 				Map<String, Object> record = new HashMap<String, Object>();
 				for (int i = 1; i <= data.getColumnCount(); i++) {
 					columnName = data.getColumnName(i);
-					if (StringUtil.isNullOrEmpty(columnName)) {
+					if (CommonUtil.isNullOrEmpty(columnName)) {
 						continue;
 					}
 					// 获得列值

@@ -21,9 +21,9 @@ import org.coody.framework.core.loader.FieldLoader;
 import org.coody.framework.core.loader.InitRunLoader;
 import org.coody.framework.core.loader.iface.CoodyLoader;
 import org.coody.framework.core.threadpool.ThreadBlockPool;
-import org.coody.framework.core.util.ClassUtil;
-import org.coody.framework.core.util.LogUtil;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.clazz.ClassUtil;
+import org.coody.framework.core.util.log.LogUtil;
 
 public class CoreApp {
 
@@ -41,7 +41,7 @@ public class CoreApp {
 	public static void initLoader(String assember) throws ClassNotFoundException {
 		String[] loaders = assember.split(",");
 		for (String loader : loaders) {
-			if (StringUtil.isNullOrEmpty(loader)) {
+			if (CommonUtil.isNullOrEmpty(loader)) {
 				continue;
 			}
 			Class<?> loaderClazz = Class.forName(loader.trim());
@@ -71,7 +71,7 @@ public class CoreApp {
 			Set<Class<?>> clazzsTemp = ClassUtil.getClasses(packet);
 			clazzs.addAll(clazzsTemp);
 		}
-		if (StringUtil.isNullOrEmpty(clazzs)) {
+		if (CommonUtil.isNullOrEmpty(clazzs)) {
 			throw new InitException("扫描类为空");
 		}
 		LogUtil.log.info("扫描类>>数量:" + clazzs.size() + ",耗时:" + (System.currentTimeMillis() - startTime));
@@ -89,7 +89,7 @@ public class CoreApp {
 		// 进行加载操作
 		long tInit = System.currentTimeMillis();
 		for (Integer seq : loadersMap.keySet()) {
-			if (StringUtil.isNullOrEmpty(loadersMap.get(seq))) {
+			if (CommonUtil.isNullOrEmpty(loadersMap.get(seq))) {
 				continue;
 			}
 			ThreadBlockPool pool = new ThreadBlockPool(loadersMap.get(seq).size(), 7200);

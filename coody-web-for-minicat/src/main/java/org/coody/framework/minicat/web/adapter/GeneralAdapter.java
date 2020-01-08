@@ -1,7 +1,7 @@
 package org.coody.framework.minicat.web.adapter;
 
 import org.coody.framework.core.model.FieldEntity;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.CommonUtil;
 import org.coody.framework.minicat.http.iface.MinicatServletRequest;
 import org.coody.framework.minicat.http.iface.MinicatServletResponse;
 import org.coody.framework.minicat.http.iface.MinicatHttpSession;
@@ -19,7 +19,7 @@ public class GeneralAdapter extends CoodyParameterAdapter {
 	@Override
 	public Object[] adapt(MvcMapping mapping, MinicatServletRequest request, MinicatServletResponse response,
 			MinicatHttpSession session) {
-		if (StringUtil.isNullOrEmpty(mapping.getParameters())) {
+		if (CommonUtil.isNullOrEmpty(mapping.getParameters())) {
 			return null;
 		}
 		Object[] params = new Object[mapping.getParameters().size()];

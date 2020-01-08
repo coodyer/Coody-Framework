@@ -2,7 +2,7 @@ package org.coody.framework.minicat.notes;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.coody.framework.core.util.LogUtil;
+import org.coody.framework.core.util.log.LogUtil;
 import org.coody.framework.minicat.threadpool.MiniCatThreadPool;
 
 public class Notes {

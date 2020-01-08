@@ -21,7 +21,11 @@ public class ObjectWrapper<T> {
 		this.offset = offset;
 	}
 
+	@SuppressWarnings("unchecked")
 	public T getObject() {
+		if (object != null && object instanceof String) {
+			object = (T) object.toString().replace("\\r", "\r").replace("\\n", "\n");
+		}
 		return object;
 	}
 

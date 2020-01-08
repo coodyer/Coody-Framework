@@ -1,7 +1,9 @@
-package org.coody.framework.core.util;
+package org.coody.framework.core.util.abnormal;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+
+import org.coody.framework.core.util.log.LogUtil;
 
 public class PrintException {
 

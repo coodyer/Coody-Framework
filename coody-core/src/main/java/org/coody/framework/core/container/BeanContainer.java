@@ -11,9 +11,9 @@ import java.util.Set;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.constant.InsideTypeConstant;
 import org.coody.framework.core.exception.BeanConflictException;
-import org.coody.framework.core.util.ClassUtil;
-import org.coody.framework.core.util.PropertUtil;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.clazz.ClassUtil;
+import org.coody.framework.core.util.reflex.PropertUtil;
 
 /**
  * 
@@ -34,7 +34,7 @@ public class BeanContainer {
 
 	public static <T> T getBean(Class<?> cla) {
 		String beanName = getGeneralBeanName(cla);
-		if (StringUtil.isNullOrEmpty(beanName)) {
+		if (CommonUtil.isNullOrEmpty(beanName)) {
 			return null;
 		}
 		return getBean(beanName);
@@ -49,11 +49,11 @@ public class BeanContainer {
 	}
 
 	public static <T> T getBean(String beanName) {
-		if (StringUtil.isNullOrEmpty(beanName)) {
+		if (CommonUtil.isNullOrEmpty(beanName)) {
 			return null;
 		}
 		Map<String, Object> map = beanContainer.get(beanName);
-		if (StringUtil.isNullOrEmpty(map)) {
+		if (CommonUtil.isNullOrEmpty(map)) {
 			return null;
 		}
 		if (map.size() > 1) {
@@ -86,7 +86,7 @@ public class BeanContainer {
 		HashSet<Object> beans = new HashSet<Object>();
 		for (String key : beanContainer.keySet()) {
 			Map<String, Object> map = beanContainer.get(key);
-			if (StringUtil.isNullOrEmpty(map)) {
+			if (CommonUtil.isNullOrEmpty(map)) {
 				continue;
 			}
 			for (String realKey : map.keySet()) {
@@ -98,26 +98,26 @@ public class BeanContainer {
 
 	private static Set<String> getDeclaredBeanNames(Class<?> clazz) {
 		Set<String> beanNames = beanNameContainer.get(clazz);
-		if (!StringUtil.isNullOrEmpty(beanNames)) {
+		if (!CommonUtil.isNullOrEmpty(beanNames)) {
 			return beanNames;
 		}
 		clazz = ClassUtil.getSourceClass(clazz);
 		try {
 			beanNames = new HashSet<String>();
 			beanNames.add(clazz.getName());
-			if (StringUtil.isNullOrEmpty(clazz.getAnnotations())) {
+			if (CommonUtil.isNullOrEmpty(clazz.getAnnotations())) {
 				return beanNames;
 			}
 			List<Annotation> initBeans = PropertUtil.getAnnotations(clazz, AutoBuild.class);
-			if (StringUtil.isNullOrEmpty(initBeans)) {
+			if (CommonUtil.isNullOrEmpty(initBeans)) {
 				return beanNames;
 			}
 			for (Annotation annotation : initBeans) {
-				if (StringUtil.isNullOrEmpty(annotation)) {
+				if (CommonUtil.isNullOrEmpty(annotation)) {
 					continue;
 				}
 				String[] values = PropertUtil.getAnnotationValue(annotation, "value");
-				if (StringUtil.isNullOrEmpty(values)) {
+				if (CommonUtil.isNullOrEmpty(values)) {
 					continue;
 				}
 				beanNames.addAll(Arrays.asList(values));
@@ -143,18 +143,18 @@ public class BeanContainer {
 		clazz = ClassUtil.getSourceClass(clazz);
 		Set<String> beanNames = new HashSet<String>(getDeclaredBeanNames(clazz));
 		Class<?>[] interfaces = clazz.getInterfaces();
-		if (!StringUtil.isNullOrEmpty(interfaces)) {
+		if (!CommonUtil.isNullOrEmpty(interfaces)) {
 			for (Class<?> interfacer : interfaces) {
 				Set<String> interfaceBeanNames = getOverallBeanName(interfacer);
-				if (!StringUtil.isNullOrEmpty(interfaceBeanNames)) {
+				if (!CommonUtil.isNullOrEmpty(interfaceBeanNames)) {
 					beanNames.addAll(interfaceBeanNames);
 				}
 			}
 		}
 		Class<?> superer = clazz.getSuperclass();
-		if (!StringUtil.isNullOrEmpty(superer)) {
+		if (!CommonUtil.isNullOrEmpty(superer)) {
 			Set<String> superBeanNames = getOverallBeanName(superer);
-			if (!StringUtil.isNullOrEmpty(superBeanNames)) {
+			if (!CommonUtil.isNullOrEmpty(superBeanNames)) {
 				beanNames.addAll(superBeanNames);
 			}
 		}

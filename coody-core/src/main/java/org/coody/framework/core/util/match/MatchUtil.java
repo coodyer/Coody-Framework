@@ -1,4 +1,4 @@
-package org.coody.framework.core.util;
+package org.coody.framework.core.util.match;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,7 +7,53 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.coody.framework.core.util.CommonUtil;
+
 public class MatchUtil {
+
+	private static final String MOBILE_PATTEN = "^((13[0-9])|(15[^4,\\D])|(17[^4,\\D])|(18[0,5-9]))\\d{8}$";
+
+	private static final String LEGAL_PATTEN = "[A-Za-z0-9_]{3,16}";
+
+	private static final String EMAIL_PATTEN = "^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$";
+
+	private static final String MD5_PATTEN = "[A-Za-z0-9_]{16,40}";
+
+	public static boolean isMobile(String mobile) {
+		if (CommonUtil.isNullOrEmpty(mobile)) {
+			return false;
+		}
+		Pattern p = Pattern.compile(MOBILE_PATTEN);
+		Matcher m = p.matcher(mobile);
+		return m.matches();
+	}
+
+	public static boolean isLegal(String str) {
+		if (CommonUtil.isNullOrEmpty(str)) {
+			return false;
+		}
+		Pattern p = Pattern.compile(LEGAL_PATTEN);
+		Matcher m = p.matcher(str);
+		return m.matches();
+	}
+
+	public static boolean isEmail(String email) {
+		if (CommonUtil.isNullOrEmpty(email)) {
+			return false;
+		}
+		Pattern p = Pattern.compile(EMAIL_PATTEN);
+		Matcher m = p.matcher(email);
+		return m.matches();
+	}
+
+	public static boolean isMd5(String md5) {
+		if (CommonUtil.isNullOrEmpty(md5)) {
+			return false;
+		}
+		Pattern p = Pattern.compile(MD5_PATTEN);
+		Matcher m = p.matcher(md5);
+		return m.matches();
+	}
 
 	public static Boolean isMatcher(String val, String matcher) {
 		Pattern p = Pattern.compile(matcher);
@@ -15,9 +61,32 @@ public class MatchUtil {
 		return m.matches();
 	}
 
+	public static boolean isMessyCode(String string) {
+		for (int i = 0; i < string.length(); i++) {
+			char c = string.charAt(i);
+			if ((int) c == 0xfffd) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// 判断是否为数字
+	public static Boolean isNumber(String str) {
+		if (CommonUtil.isNullOrEmpty(str)) {
+			return false;
+		}
+		try {
+			Integer.valueOf(str);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
 	public static Boolean isParameterMatch(String val, String mateher) {
 		try {
-			if (StringUtil.isNullOrEmpty(val)) {
+			if (CommonUtil.isNullOrEmpty(val)) {
 				return false;
 			}
 			List<String> paraNames = getParameters(mateher);
@@ -77,7 +146,7 @@ public class MatchUtil {
 
 	public static String exporeMatchedFirstByRegular(String context, String patten) {
 		List<String> results = exporeMatchedsByRegular(context, patten);
-		if (StringUtil.isNullOrEmpty(results)) {
+		if (CommonUtil.isNullOrEmpty(results)) {
 			return null;
 		}
 		return results.get(0);
@@ -92,7 +161,7 @@ public class MatchUtil {
 			while (matcher.find(index)) {
 				String tmp = matcher.group(1);
 				index = matcher.end();
-				if (StringUtil.isNullOrEmpty(tmp)) {
+				if (CommonUtil.isNullOrEmpty(tmp)) {
 					continue;
 				}
 				results.add(tmp);

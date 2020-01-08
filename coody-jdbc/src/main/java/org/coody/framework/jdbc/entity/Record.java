@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.coody.framework.core.util.PropertUtil;
+import org.coody.framework.core.util.reflex.PropertUtil;
 
 public class Record implements Map<String, Object> {
 	private Map<String, Object> map = new HashMap<String, Object>();

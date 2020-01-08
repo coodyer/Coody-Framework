@@ -3,7 +3,7 @@ package org.coody.framework.minicat.builder.iface;
 import java.io.IOException;
 import java.text.MessageFormat;
 
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.CommonUtil;
 import org.coody.framework.minicat.config.MiniCatConfig;
 import org.coody.framework.minicat.exception.BadRequestException;
 import org.coody.framework.minicat.exception.PageNotFoundException;
@@ -86,7 +86,7 @@ public abstract class HttpBuilder {
 		responseHeader.append("\r\n");
 		response.getOutputStream().reset();
 		response.getOutputStream().write(responseHeader.toString().getBytes(MiniCatConfig.encode));
-		if (!StringUtil.isNullOrEmpty(data)) {
+		if (!CommonUtil.isNullOrEmpty(data)) {
 			response.getOutputStream().write(data);
 		}
 	}

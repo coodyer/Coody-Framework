@@ -3,7 +3,7 @@ package org.coody.framework.minicat.servlet;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.coody.framework.core.util.FileUtils;
+import org.coody.framework.core.util.file.FileUtils;
 import org.coody.framework.minicat.http.MinicatServletRequestImpl;
 import org.coody.framework.minicat.http.MinicatServletResponseImpl;
 

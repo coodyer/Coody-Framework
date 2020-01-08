@@ -7,8 +7,8 @@ import org.coody.framework.core.annotation.Around;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.annotation.LogFlag;
 import org.coody.framework.core.model.AspectPoint;
-import org.coody.framework.core.util.PropertUtil;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.reflex.PropertUtil;
 
 @AutoBuild
 public class LoggerAspect {
@@ -23,21 +23,21 @@ public class LoggerAspect {
 			if (module == null) {
 				module = "";
 			}
-			if (!StringUtil.isNullOrEmpty(module)) {
+			if (!CommonUtil.isNullOrEmpty(module)) {
 				if (module.endsWith("]")) {
 					module = module.substring(0, module.length() - 1);
 				}
 				module += ".";
 			}
 			String classLog = getClassFlag(clazz);
-			if (!StringUtil.isNullOrEmpty(classLog)) {
+			if (!CommonUtil.isNullOrEmpty(classLog)) {
 				module += classLog;
 			}
-			if (!StringUtil.isNullOrEmpty(classLog)) {
+			if (!CommonUtil.isNullOrEmpty(classLog)) {
 				module += ".";
 			}
 			String methodLog = getMethodFlag(method);
-			if (!StringUtil.isNullOrEmpty(methodLog)) {
+			if (!CommonUtil.isNullOrEmpty(methodLog)) {
 				module += methodLog;
 			} else {
 				module += method.getName();
@@ -91,7 +91,7 @@ public class LoggerAspect {
 		}
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < tabs.length - 1; i++) {
-			if (!StringUtil.isNullOrEmpty(sb)) {
+			if (!CommonUtil.isNullOrEmpty(sb)) {
 				sb.append(">");
 			}
 			sb.append(tabs[i]);

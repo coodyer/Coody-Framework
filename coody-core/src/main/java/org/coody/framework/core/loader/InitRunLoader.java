@@ -7,9 +7,9 @@ import org.coody.framework.core.bean.InitBeanFace;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.loader.iface.CoodyLoader;
 import org.coody.framework.core.threadpool.ThreadBlockPool;
-import org.coody.framework.core.util.LogUtil;
-import org.coody.framework.core.util.PrintException;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.log.LogUtil;
+import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.abnormal.PrintException;
 
 /**
  * 切面加载器
@@ -43,7 +43,7 @@ public class InitRunLoader implements CoodyLoader {
 				}
 			}
 		}
-		if (!StringUtil.isNullOrEmpty(inits)) {
+		if (!CommonUtil.isNullOrEmpty(inits)) {
 			new ThreadBlockPool().execute(inits);
 		}
 	}

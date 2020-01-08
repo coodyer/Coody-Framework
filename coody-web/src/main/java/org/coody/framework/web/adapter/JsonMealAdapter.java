@@ -11,8 +11,8 @@ import org.coody.framework.adapter.TypeAdapter;
 import org.coody.framework.core.constant.InsideTypeConstant;
 import org.coody.framework.core.model.BaseModel;
 import org.coody.framework.core.model.FieldEntity;
-import org.coody.framework.core.util.PropertUtil;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.reflex.PropertUtil;
 import org.coody.framework.web.adapter.iface.CoodyParameterAdapter;
 import org.coody.framework.web.annotation.ParamName;
 import org.coody.framework.web.entity.MvcMapping;
@@ -29,7 +29,7 @@ public class JsonMealAdapter extends CoodyParameterAdapter {
 	@Override
 	public Object[] adapt(MvcMapping mapping, HttpServletRequest request, HttpServletResponse response,
 			HttpSession session) {
-		if (StringUtil.isNullOrEmpty(mapping.getParameters())) {
+		if (CommonUtil.isNullOrEmpty(mapping.getParameters())) {
 			return null;
 		}
 		Object[] params = new Object[mapping.getParameters().size()];

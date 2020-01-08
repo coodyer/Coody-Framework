@@ -12,8 +12,9 @@ import java.util.List;
 
 import javax.net.ssl.SSLSocketFactory;
 
-import org.coody.framework.core.util.LogUtil;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.log.LogUtil;
+import org.coody.framework.core.util.string.StringUtil;
 import org.coody.framework.mail.entity.EmailSendConfig;
 import org.coody.framework.mail.exception.MailException;
 
@@ -47,7 +48,7 @@ public class EmailSender {
 			if (!line.startsWith("220")) {
 				throw new MailException("邮件服务器初始化失败:" + line);
 			}
-			String esmtp = StringUtil.textCutCenter(line, " ", " ");
+			String esmtp = StringUtil.stringCutCenter(line, " ", " ");
 			sendAndReadLine("HELO " + esmtp + "\r\n");
 			sendAndReadLine("AUTH LOGIN " + "\r\n");
 			sendAndReadLine(Base64.getEncoder().encodeToString(emailSendConfig.getEmail().getBytes()) + "\r\n");
@@ -105,7 +106,7 @@ public class EmailSender {
 	private String readLine() throws IOException {
 		String line = bufferedReader.readLine();
 		LogUtil.log.info(line);
-		if (StringUtil.isNullOrEmpty(line)) {
+		if (CommonUtil.isNullOrEmpty(line)) {
 			throw new MailException("连接邮件服务器失败");
 		}
 		if (!line.startsWith("2") && !line.startsWith("3")) {

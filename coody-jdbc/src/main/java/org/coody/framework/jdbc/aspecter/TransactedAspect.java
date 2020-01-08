@@ -6,8 +6,8 @@ import java.util.List;
 import org.coody.framework.core.annotation.Around;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.model.AspectPoint;
-import org.coody.framework.core.util.PrintException;
-import org.coody.framework.core.util.StringUtil;
+import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.abnormal.PrintException;
 import org.coody.framework.jdbc.annotation.Transacted;
 import org.coody.framework.jdbc.container.TransactedThreadContainer;
 
@@ -31,7 +31,7 @@ public class TransactedAspect {
 			Object result = point.invoke();
 			// 提交事物
 			List<Connection> connections = TransactedThreadContainer.getConnections();
-			if (StringUtil.isNullOrEmpty(connections)) {
+			if (CommonUtil.isNullOrEmpty(connections)) {
 				return result;
 			}
 			for (Connection conn : connections) {
@@ -41,7 +41,7 @@ public class TransactedAspect {
 		} catch (Exception e) {
 			// 回滚事物
 			List<Connection> connections = TransactedThreadContainer.getConnections();
-			if (StringUtil.isNullOrEmpty(connections)) {
+			if (CommonUtil.isNullOrEmpty(connections)) {
 				throw e;
 			}
 			for (Connection conn : connections) {
@@ -56,7 +56,7 @@ public class TransactedAspect {
 			// 关闭连接
 			List<Connection> connections = TransactedThreadContainer.getConnections();
 			TransactedThreadContainer.clear();
-			if (StringUtil.isNullOrEmpty(connections)) {
+			if (CommonUtil.isNullOrEmpty(connections)) {
 				for (Connection conn : connections) {
 					try {
 						conn.close();
