@@ -37,7 +37,9 @@ public class BioHttpBuilder extends HttpBuilder {
 		if (StringUtil.isNullOrEmpty(data)) {
 			return;
 		}
-		socket.getOutputStream().write(data);
+		if(socket.isClosed()) {
+			socket.getOutputStream().write(data);
+		}
 	}
 
 	public void buildRequestHeader() {
