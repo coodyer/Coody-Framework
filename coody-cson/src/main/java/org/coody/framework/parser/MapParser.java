@@ -2,6 +2,7 @@ package org.coody.framework.parser;
 
 import java.util.Map;
 
+import org.coody.framework.convert.ValueConvert;
 import org.coody.framework.entity.ObjectWrapper;
 import org.coody.framework.entity.TypeEntity;
 import org.coody.framework.parser.iface.AbstractParser;
@@ -17,6 +18,10 @@ public class MapParser extends AbstractParser {
 
 		boolean inContent = false;
 
+		boolean isString = true;
+
+		char lastChr = '0';
+
 		Object field = null;
 
 		Map<Object, Object> map = type.newInstance();
@@ -27,8 +32,11 @@ public class MapParser extends AbstractParser {
 			wrapper.setOffset(i);
 			char chr = json.charAt(i);
 			if (chr == '"') {
-				inContent = inContent ? false : true;
-				continue;
+				if (lastChr != '\\') {
+					inContent = inContent ? false : true;
+					isString = true;
+					continue;
+				}
 			}
 			if (!inContent) {
 				if (chr == '[') {
@@ -37,7 +45,7 @@ public class MapParser extends AbstractParser {
 						if (field == null) {
 							field = childWrapper.getObject();
 						} else {
-							map.put(field, childWrapper.getObject());
+							map.put(ValueConvert.convert(field, isString), childWrapper.getObject());
 							field = null;
 						}
 					}
@@ -50,7 +58,7 @@ public class MapParser extends AbstractParser {
 						if (field == null) {
 							field = childWrapper.getObject();
 						} else {
-							map.put(field, childWrapper.getObject());
+							map.put(ValueConvert.convert(field, isString), childWrapper.getObject());
 							field = null;
 						}
 					}
@@ -60,27 +68,31 @@ public class MapParser extends AbstractParser {
 				// 出栈
 				if (chr == output) {
 					if (field != null) {
-						map.put(field, sbBuilder.toString());
+						map.put(field, ValueConvert.convert(sbBuilder, isString));
 						field = null;
 					}
+					isString = false;
 					break;
 				}
 				if (chr == ',') {
 					if (field != null) {
-						map.put(field, sbBuilder.toString());
+						map.put(field, ValueConvert.convert(sbBuilder, isString));
 						field = null;
 					}
+					isString = false;
 					sbBuilder = new StringBuilder();
 					continue;
 				}
 				if (chr == ':') {
 					if (field == null) {
-						field = sbBuilder.toString();
+						field = ValueConvert.convert(sbBuilder, isString);
 					}
 					sbBuilder = new StringBuilder();
+					isString = false;
 					continue;
 				}
 			}
+			lastChr = chr;
 			// 读取内容
 			sbBuilder.append(chr);
 		}

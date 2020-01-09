@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 import org.coody.framework.annotation.CsonDateFormat;
 import org.coody.framework.annotation.CsonIgnore;
 import org.coody.framework.entity.JsonFieldEntity;
+import org.coody.framework.exception.CsonException;
 
 public class FieldUtil {
 
@@ -45,93 +46,92 @@ public class FieldUtil {
 	 * @throws ParseException
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static Object parseValue(Object value, Class<?> clazz) {
+	public static <T> T parseValue(Object value, Class<?> clazz) {
 		try {
 			if (value == null) {
 				if (clazz.isPrimitive()) {
 					if (boolean.class.isAssignableFrom(clazz)) {
-						return false;
+						return (T) Boolean.FALSE;
 					}
 					if (byte.class.isAssignableFrom(clazz)) {
-						return 0;
+						return (T) new Byte((byte) 0);
 					}
 					if (char.class.isAssignableFrom(clazz)) {
-						return 0;
+						return (T) new Character((char) 0);
 					}
 					if (short.class.isAssignableFrom(clazz)) {
-						return 0;
+						return (T) new Short((short) 0);
 					}
 					if (int.class.isAssignableFrom(clazz)) {
-						return 0;
+						return (T) new Integer(0);
 					}
 					if (float.class.isAssignableFrom(clazz)) {
-						return 0f;
+						return (T) new Float(0f);
 					}
 					if (long.class.isAssignableFrom(clazz)) {
-						return 0L;
+						return (T) new Long(0l);
 					}
 					if (double.class.isAssignableFrom(clazz)) {
-						return 0d;
+						return (T) new Double(0d);
 					}
 				}
-				return value;
+				return (T) value;
 			}
 			if (clazz.isAssignableFrom(value.getClass())) {
-				return value;
+				return (T) value;
 			}
 			if (Integer.class.isAssignableFrom(clazz) || int.class.isAssignableFrom(clazz)) {
 				value = Integer.valueOf(value.toString());
-				return value;
+				return (T) value;
 			}
 			if (Float.class.isAssignableFrom(clazz) || float.class.isAssignableFrom(clazz)) {
 				value = Float.valueOf(value.toString());
-				return value;
+				return (T) value;
 			}
 			if (Long.class.isAssignableFrom(clazz) || long.class.isAssignableFrom(clazz)) {
 				value = Long.valueOf(value.toString());
-				return value;
+				return (T) value;
 			}
 			if (Double.class.isAssignableFrom(clazz) || double.class.isAssignableFrom(clazz)) {
 				value = Double.valueOf(value.toString());
-				return value;
+				return (T) value;
 			}
 			if (Short.class.isAssignableFrom(clazz) || short.class.isAssignableFrom(clazz)) {
 				value = Short.valueOf(value.toString());
-				return value;
+				return (T) value;
 			}
 			if (Byte.class.isAssignableFrom(clazz) || byte.class.isAssignableFrom(clazz)) {
 				value = Byte.valueOf(value.toString());
-				return value;
+				return (T) value;
 			}
 			if (Boolean.class.isAssignableFrom(clazz) || boolean.class.isAssignableFrom(clazz)) {
 				value = ("true".equals(value.toString()) || "1".equals(value.toString())) ? true : false;
-				return value;
+				return (T) value;
 			}
 			if (ChronoLocalDateTime.class.isAssignableFrom(clazz)) {
-				return LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.valueOf(value.toString())),
+				return (T) LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.valueOf(value.toString())),
 						ZoneId.systemDefault());
 			}
 			if (Enum.class.isAssignableFrom(clazz)) {
 				if (value.getClass().isEnum()) {
-					return value;
+					return (T) value;
 				}
-				return Enum.valueOf((Class<Enum>) clazz, value.toString());
+				return (T) Enum.valueOf((Class<Enum>) clazz, value.toString());
 			}
 			if (clazz.isAssignableFrom(value.getClass())) {
-				return value;
+				return (T) value;
 			}
 			if (String.class.isAssignableFrom(clazz)) {
 				value = value.toString();
-				return value;
+				return (T) value;
 			}
 			if (Date.class.isAssignableFrom(clazz)) {
 				value = parseDate(value);
-				return value;
+				return (T) value;
 			}
-			return value;
+			return (T) value;
 		} catch (Exception e) {
-
-			return null;
+			throw new CsonException("类型转换错误", e);
 		}
 	}
 
@@ -187,6 +187,7 @@ public class FieldUtil {
 			}
 			return (Date) value;
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}

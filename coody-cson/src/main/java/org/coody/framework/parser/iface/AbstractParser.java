@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.coody.framework.adapter.TypeAdapter;
+import org.coody.framework.convert.ValueConvert;
 import org.coody.framework.entity.JsonFieldEntity;
 import org.coody.framework.entity.ObjectWrapper;
 import org.coody.framework.entity.TypeEntity;
@@ -89,7 +90,7 @@ public abstract class AbstractParser {
 			if (field.getIsIgonre()) {
 				return;
 			}
-			field.getField().set(object, FieldUtil.parseValue(value, field.getField().getType()));
+			field.getField().set(object, ValueConvert.convert(value, field.getField().getType()));
 		} catch (Exception e) {
 			throw new CsonException("字段赋值失败>>" + field.getField().getName(), e);
 		}

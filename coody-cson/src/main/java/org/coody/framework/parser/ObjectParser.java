@@ -17,6 +17,7 @@ public class ObjectParser extends AbstractParser {
 		StringBuilder sbBuilder = new StringBuilder();
 
 		boolean inContent = false;
+		char lastChr = '0';
 		String field = null;
 		Object object = type.newInstance();
 		ObjectWrapper<T> wrapper = new ObjectWrapper<T>();
@@ -24,15 +25,17 @@ public class ObjectParser extends AbstractParser {
 			wrapper.setOffset(i);
 			char chr = json.charAt(i);
 			if (chr == '"') {
-				inContent = inContent ? false : true;
-				continue;
+				if (lastChr != '\\') {
+					inContent = inContent ? false : true;
+					continue;
+				}
 			}
 			if (!inContent) {
 				if (chr == '{' || chr == '[') {
 					JsonFieldEntity jsonFieldEntity = FieldUtil.getDeclaredField(object.getClass(), field);
 					if (jsonFieldEntity != null) {
 						ObjectWrapper<?> childWrapper = parser(json.substring(i, json.length()),
-								 TypeUtil.getTypeEntityByType(jsonFieldEntity.getField().getGenericType()));
+								TypeUtil.getTypeEntityByType(jsonFieldEntity.getField().getGenericType()));
 						setFieldValue(object, jsonFieldEntity, childWrapper.getObject());
 						i += childWrapper.getOffset();
 					}
@@ -65,6 +68,7 @@ public class ObjectParser extends AbstractParser {
 					continue;
 				}
 			}
+			lastChr = chr;
 			// 读取内容
 			sbBuilder.append(chr);
 		}

@@ -6,7 +6,7 @@ public class StringSerializer extends AbstractSerializer<String> {
 
 	@Override
 	public String adapt(String target) {
-		return "\"" + target.replace("\"", "\\\"").replace("\r", "\\r").replace("\n", "\\n") + "\"";
+		return "\"" + target.replace("\r", "\\r").replace("\n", "\\n").replace("\t", "\\t").replace("\0", "\\0").replace("\"", "\\\"") + "\"";
 	}
 
 }
