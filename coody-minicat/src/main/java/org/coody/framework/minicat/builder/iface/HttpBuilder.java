@@ -99,13 +99,13 @@ public abstract class HttpBuilder {
 		if (!response.containsHeader("Content-Type")) {
 			switch (request.getSuffix()) {
 			case "js":
-				response.setHeader("Content-Type", "application/x-javascript");
+				response.setHeader("Content-Type", "application/x-javascript;charset=" + MiniCatConfig.encode);
 				break;
 			case "css":
-				response.setHeader("Content-Type", "text/css");
+				response.setHeader("Content-Type", "text/css;charset=" + MiniCatConfig.encode);
 				break;
 			default:
-				response.setHeader("Content-Type", "text/html");
+				response.setHeader("Content-Type", "text/html;charset=" + MiniCatConfig.encode);
 				break;
 			}
 		}
