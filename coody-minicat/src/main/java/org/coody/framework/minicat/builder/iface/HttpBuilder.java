@@ -64,7 +64,6 @@ public abstract class HttpBuilder {
 		}
 		buildResponseHeader();
 		if (MiniCatConfig.openGzip) {
-			response.setHeader("Content-Encoding", "gzip");
 			// 压缩数据
 			data = GZIPUtils.compress(data);
 		}
