@@ -18,7 +18,7 @@ public class MapParser extends AbstractParser {
 
 		boolean inContent = false;
 
-		boolean isString = true;
+		boolean isString = false;
 
 		char lastChr = '0';
 
