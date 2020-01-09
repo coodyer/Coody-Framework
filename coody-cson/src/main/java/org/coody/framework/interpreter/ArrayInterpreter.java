@@ -1,19 +1,21 @@
-package org.coody.framework.parser;
+package org.coody.framework.interpreter;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
 
 import org.coody.framework.entity.ObjectWrapper;
 import org.coody.framework.entity.TypeEntity;
-import org.coody.framework.parser.iface.AbstractParser;
+import org.coody.framework.interpreter.iface.AbstractInterpreter;
 import org.coody.framework.util.FieldUtil;
 
-@SuppressWarnings("unchecked")
-public class ArrayParser extends AbstractParser {
+public class ArrayInterpreter extends AbstractInterpreter {
 
+	CollectionInterpreter collectionInterpreter = new CollectionInterpreter();
+
+	@SuppressWarnings("unchecked")
 	@Override
-	public <T> ObjectWrapper<T> doParser(String json, TypeEntity type) {
-		ObjectWrapper<T> wrapper = collectionParser.doParser(json, type);
+	public <T> ObjectWrapper<T> doInterpreter(String json, TypeEntity type, int offset) {
+		ObjectWrapper<T> wrapper = collectionInterpreter.doInterpreter(json, type, offset);
 		if (wrapper.getObject() == null) {
 			return wrapper;
 		}

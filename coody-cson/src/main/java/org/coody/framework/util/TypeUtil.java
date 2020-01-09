@@ -17,6 +17,9 @@ public class TypeUtil {
 	public static Map<Type, TypeEntity> TYPEENTITY_CACHE = new ConcurrentHashMap<Type, TypeEntity>();
 
 	public static TypeEntity getTypeEntityByType(Type type) {
+		if (type == null) {
+			return null;
+		}
 		TypeEntity typeEntity = TYPEENTITY_CACHE.get(type);
 		if (typeEntity != null) {
 			return typeEntity;

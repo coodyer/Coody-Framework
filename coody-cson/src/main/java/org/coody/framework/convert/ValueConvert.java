@@ -24,7 +24,7 @@ public class ValueConvert {
 			if (value.toString().contains(".")) {
 				return convert(value, Double.class);
 			}
-			return convert(value, Integer.class);
+			return convert(value, Long.class);
 		} catch (Exception e) {
 			return (T) value.toString();
 		}
@@ -33,8 +33,8 @@ public class ValueConvert {
 	@SuppressWarnings("unchecked")
 	public static <T> T convert(Object value, Class<?> clazz) {
 		if (clazz.getName().equals(String.class.getName())) {
-			value = value.toString().replace("\\t", "\t").replace("\\n", "\n")
-					.replace("\\r", "\r").replace("\\0", "\0").replace("\\\"", "\"");
+			value = value.toString().replace("\\t", "\t").replace("\\n", "\n").replace("\\r", "\r").replace("\\0", "\0")
+					.replace("\\\"", "\"");
 			return (T) value;
 		}
 		return FieldUtil.parseValue(value, clazz);

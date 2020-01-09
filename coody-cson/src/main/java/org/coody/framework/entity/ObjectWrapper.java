@@ -4,7 +4,7 @@ public class ObjectWrapper<T> {
 
 	private T object;
 
-	private int offset;
+	private int length;
 
 	public ObjectWrapper() {
 		super();
@@ -15,10 +15,10 @@ public class ObjectWrapper<T> {
 		this.object = object;
 	}
 
-	public ObjectWrapper(T object, int offset) {
+	public ObjectWrapper(T object, int length) {
 		super();
 		this.object = object;
-		this.offset = offset;
+		this.length = length;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -33,12 +33,12 @@ public class ObjectWrapper<T> {
 		this.object = object;
 	}
 
-	public int getOffset() {
-		return offset;
+	public int getLength() {
+		return length;
 	}
 
-	public void setOffset(int offset) {
-		this.offset = offset;
+	public void setLength(int length) {
+		this.length = length;
 	}
 
 }

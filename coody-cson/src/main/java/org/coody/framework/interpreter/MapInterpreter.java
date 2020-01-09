@@ -1,20 +1,25 @@
-package org.coody.framework.parser;
+package org.coody.framework.interpreter;
 
 import java.util.Map;
 
 import org.coody.framework.convert.ValueConvert;
 import org.coody.framework.entity.ObjectWrapper;
 import org.coody.framework.entity.TypeEntity;
-import org.coody.framework.parser.iface.AbstractParser;
+import org.coody.framework.exception.BadFormatException;
+import org.coody.framework.interpreter.iface.AbstractInterpreter;
 
-@SuppressWarnings("unchecked")
-public class MapParser extends AbstractParser {
+public class MapInterpreter extends AbstractInterpreter {
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public <T> ObjectWrapper<T> doParser(String json, TypeEntity type) {
-		json = json.trim();
-		char output = getOutputSymbol(json.charAt(0));
-		StringBuilder sbBuilder = new StringBuilder();
+	public <T> ObjectWrapper<T> doInterpreter(String json, TypeEntity type, int offset) {
+
+		OutputSymbolWrapper output = getOutputSymbol(json, offset);
+		if (output == null) {
+			throw new BadFormatException("错误的Json格式");
+		}
+
+		StringBuilder temp = new StringBuilder();
 
 		boolean inContent = false;
 
@@ -28,8 +33,10 @@ public class MapParser extends AbstractParser {
 
 		ObjectWrapper<T> wrapper = new ObjectWrapper<T>();
 
-		for (int i = 1; i < json.length(); i++) {
-			wrapper.setOffset(i);
+		int length = 0;
+
+		for (int i = offset + output.getLength(); i < json.length(); i++) {
+			length++;
 			char chr = json.charAt(i);
 			if (chr == '"') {
 				if (lastChr != '\\') {
@@ -40,7 +47,7 @@ public class MapParser extends AbstractParser {
 			}
 			if (!inContent) {
 				if (chr == '[') {
-					ObjectWrapper<T> childWrapper = parser(json.substring(i, json.length()), type.getActuals().get(1));
+					ObjectWrapper<T> childWrapper = interpreter(json, type.getActuals().get(1), i);
 					if (childWrapper.getObject() != null) {
 						if (field == null) {
 							field = childWrapper.getObject();
@@ -49,26 +56,28 @@ public class MapParser extends AbstractParser {
 							field = null;
 						}
 					}
-					i += childWrapper.getOffset();
+					i += childWrapper.getLength();
+					length += childWrapper.getLength();
 					continue;
 				}
 				if (chr == '{') {
-					ObjectWrapper<T> childWrapper = parser(json.substring(i, json.length()), type.getActuals().get(1));
+					ObjectWrapper<T> childWrapper = interpreter(json, type.getActuals().get(1), i);
 					if (childWrapper.getObject() != null) {
 						if (field == null) {
 							field = childWrapper.getObject();
 						} else {
-							map.put(ValueConvert.convert(field, isString), childWrapper.getObject());
+							map.put(field, childWrapper.getObject());
 							field = null;
 						}
 					}
-					i += childWrapper.getOffset();
+					i += childWrapper.getLength();
+					length += childWrapper.getLength();
 					continue;
 				}
 				// 出栈
-				if (chr == output) {
+				if (chr == output.getOutputSymbol()) {
 					if (field != null) {
-						map.put(field, ValueConvert.convert(sbBuilder, isString));
+						map.put(field, ValueConvert.convert(temp, isString));
 						field = null;
 					}
 					isString = false;
@@ -76,29 +85,32 @@ public class MapParser extends AbstractParser {
 				}
 				if (chr == ',') {
 					if (field != null) {
-						map.put(field, ValueConvert.convert(sbBuilder, isString));
+						map.put(field, ValueConvert.convert(temp, isString));
 						field = null;
 					}
 					isString = false;
-					sbBuilder = new StringBuilder();
+					temp = new StringBuilder();
 					continue;
 				}
 				if (chr == ':') {
 					if (field == null) {
-						field = ValueConvert.convert(sbBuilder, isString);
+						field = ValueConvert.convert(temp, isString);
 					}
-					sbBuilder = new StringBuilder();
+					temp = new StringBuilder();
 					isString = false;
 					continue;
 				}
 			}
 			lastChr = chr;
+			if (!isString && chr == ' ') {
+				continue;
+			}
 			// 读取内容
-			sbBuilder.append(chr);
+			temp.append(chr);
+
 		}
-		if (!map.isEmpty()) {
-			wrapper.setObject((T) map);
-		}
+		wrapper.setObject((T) map);
+		wrapper.setLength(length);
 		return wrapper;
 	}
 
