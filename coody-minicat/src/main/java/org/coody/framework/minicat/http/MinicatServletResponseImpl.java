@@ -50,10 +50,8 @@ public class MinicatServletResponseImpl implements MinicatServletResponse {
 			header = new ConcurrentHashMap<String, List<String>>();
 		}
 		if (!header.containsKey(name)) {
-			List<String> headers = new ArrayList<String>();
-			header.put(name, headers);
+			header.put(name, new ArrayList<String>());
 		}
-		header.get(name).clear();
 		header.get(name).add(headerLine);
 		return;
 	}
@@ -74,6 +72,11 @@ public class MinicatServletResponseImpl implements MinicatServletResponse {
 	public void sendRedirect(String location) {
 		setHttpCode(302);
 		setHeader("Location", location);
+	}
+
+	@Override
+	public void setCookie(String name, String line) {
+		setHeader("Set-Cookie", name + "=" + line + "; path=/ ; HttpOnly");
 	}
 
 }

@@ -38,7 +38,7 @@ public class NioHttpBuilder extends HttpBuilder {
 		if (CommonUtil.isNullOrEmpty(data)) {
 			return;
 		}
-		if(channel.isConnected()) {
+		if (channel.isConnected()) {
 			channel.write(ByteBuffer.wrap(data));
 		}
 	}
@@ -106,6 +106,11 @@ public class NioHttpBuilder extends HttpBuilder {
 				if (name.equalsIgnoreCase("Content-Encoding")) {
 					if (value.contains("gzip")) {
 						request.setGzip(true);
+					}
+				}
+				if (name.equalsIgnoreCase("Cookie")) {
+					if (value != null && value.contains(MiniCatConfig.sessionIdField)) {
+						request.setSessionCread(true);
 					}
 				}
 				if (name.equalsIgnoreCase("Host")) {

@@ -42,9 +42,10 @@ public interface MinicatServletRequest {
 
 	String getRequestURL();
 
-
 	Map<String, String> getHeader();
 
 	InputStream getInputStream();
+	
+	String getCookie(String name);
 
 }

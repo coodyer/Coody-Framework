@@ -11,8 +11,8 @@ import org.coody.framework.core.util.CommonUtil;
 import org.coody.framework.minicat.adapter.ParamentAdapt;
 import org.coody.framework.minicat.config.MiniCatConfig;
 import org.coody.framework.minicat.container.SessionContainer;
-import org.coody.framework.minicat.http.iface.MinicatServletRequest;
 import org.coody.framework.minicat.http.iface.MinicatHttpSession;
+import org.coody.framework.minicat.http.iface.MinicatServletRequest;
 import org.coody.framework.minicat.util.ByteUtils;
 import org.coody.framework.minicat.util.GZIPUtils;
 
@@ -45,7 +45,7 @@ public class MinicatServletRequestImpl implements MinicatServletRequest {
 	private String queryString = "";
 
 	private Integer contextLength = 0;
-	
+
 	private String suffix;
 
 	public MultipartFile getFile(String paramName) {
@@ -323,4 +323,23 @@ public class MinicatServletRequestImpl implements MinicatServletRequest {
 		this.inputStream = inputStream;
 	}
 
+	@Override
+	public String getCookie(String name) {
+		String cookie = header.get("Cookie");
+		if (CommonUtil.isNullOrEmpty(cookie)) {
+			return null;
+		}
+		String[] cookies = cookie.split(";");
+		for (String line : cookies) {
+			int index = line.indexOf("=");
+			if (index < 1) {
+				continue;
+			}
+			String cookieName = line.substring(0, index);
+			if (cookieName.trim().equals(name)) {
+				return line.substring(index + 1, line.length()).trim();
+			}
+		}
+		return null;
+	}
 }

@@ -15,11 +15,14 @@ public interface MinicatServletResponse {
 
 	Map<String, List<String>> getHeaders();
 
-	void setHeader(String name, String headerLine);
+	void setHeader(String name, String line);
 
 	void setHeaders(Map<String, List<String>> header);
 
 	MiniCatOutputStream getOutputStream();
 
 	void sendRedirect(String location);
+
+	void setCookie(String name, String line);
+
 }

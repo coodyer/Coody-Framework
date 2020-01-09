@@ -113,8 +113,8 @@ public abstract class HttpBuilder {
 		if (MiniCatConfig.openGzip) {
 			response.setHeader("Content-Encoding", "gzip");
 		}
-		if (request != null && request.isSessionCread()) {
-			String cookie = MessageFormat.format("{0}={1}; HttpOnly", MiniCatConfig.sessionIdField,
+		if (request != null && !request.isSessionCread()) {
+			String cookie = MessageFormat.format("{0}={1}; path=/ ; HttpOnly", MiniCatConfig.sessionIdField,
 					request.getSessionId());
 			response.setHeader("Set-Cookie", cookie);
 		}

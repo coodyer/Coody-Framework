@@ -108,4 +108,9 @@ public class CoodyRequestWrapper implements MinicatServletRequest {
 		return HttpContainer.getRequest().getBasePath();
 	}
 
+	@Override
+	public String getCookie(String name) {
+		return HttpContainer.getRequest().getCookie(name);
+	}
+
 }

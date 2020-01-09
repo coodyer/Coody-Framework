@@ -51,4 +51,9 @@ public class CoodyResponseWrapper implements MinicatServletResponse {
 		HttpContainer.getResponse().sendRedirect(location);
 	}
 
+	@Override
+	public void setCookie(String name, String line) {
+		HttpContainer.getResponse().setCookie(name, line);
+	}
+
 }
