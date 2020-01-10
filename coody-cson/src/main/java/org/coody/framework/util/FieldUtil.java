@@ -77,6 +77,13 @@ public class FieldUtil {
 				}
 				return (T) value;
 			}
+			if (String.class.isAssignableFrom(clazz)) {
+				value = value.toString();
+				return (T) value;
+			}
+			if (GeneralUtil.isNullOrEmpty(value)) {
+				return null;
+			}
 			if (clazz.isAssignableFrom(value.getClass())) {
 				return (T) value;
 			}
@@ -119,10 +126,6 @@ public class FieldUtil {
 				return (T) Enum.valueOf((Class<Enum>) clazz, value.toString());
 			}
 			if (clazz.isAssignableFrom(value.getClass())) {
-				return (T) value;
-			}
-			if (String.class.isAssignableFrom(clazz)) {
-				value = value.toString();
 				return (T) value;
 			}
 			if (Date.class.isAssignableFrom(clazz)) {
