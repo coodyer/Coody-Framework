@@ -82,6 +82,8 @@
 
     2020-01-04： 新增cson项目，为json序列化和反序列化提供支撑
 
+    2020-01-14： 剔除cglib依赖，改为纯asm实现动态代理
+
     Coody Framework+Minicat实战项目：https://gitee.com/coodyer/reduce/
 
 引用地址：
