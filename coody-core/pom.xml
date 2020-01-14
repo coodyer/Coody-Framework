@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.coody.framework</groupId>
 		<artifactId>coody</artifactId>
-		<version>alpha-1.4.6</version>
+		<version>alpha-1.5.0</version>
 	</parent>
 	<artifactId>coody-core</artifactId>
 	<packaging>jar</packaging>
@@ -18,10 +18,6 @@
 	</properties>
 	<dependencies>
 		<dependency>
-			<groupId>cglib</groupId>
-			<artifactId>cglib</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 		</dependency>
@@ -29,6 +25,12 @@
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-cson</artifactId>
 			<version>${coody.version}</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.ow2.asm/asm -->
+		<dependency>
+			<groupId>org.ow2.asm</groupId>
+			<artifactId>asm</artifactId>
+			<version>7.3.1</version>
 		</dependency>
 
 	</dependencies>

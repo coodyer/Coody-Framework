@@ -13,16 +13,17 @@ import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.exception.BeanInitException;
 import org.coody.framework.core.exception.BeanNameCreateException;
 import org.coody.framework.core.exception.BeanNotFoundException;
-import org.coody.framework.core.proxy.CglibProxy;
+import org.coody.framework.core.proxy.ProxyCreater;
+import org.coody.framework.core.proxy.iface.Proxy;
+import org.coody.framework.core.util.CommonUtil;
 import org.coody.framework.core.util.clazz.ClassUtil;
 import org.coody.framework.core.util.log.LogUtil;
 import org.coody.framework.core.util.reflex.ParameterNameUtil;
 import org.coody.framework.core.util.reflex.PropertUtil;
-import org.coody.framework.core.util.CommonUtil;
 
 public class BeanAssember {
 
-	static CglibProxy proxy = new CglibProxy();
+	static ProxyCreater proxy = new ProxyCreater();
 
 	public static <T> T initBean(Class<?> cla) {
 		return initBean(cla, null);
@@ -62,6 +63,10 @@ public class BeanAssember {
 
 	public static void initField(Object bean, Map<String, Object> parameterMap)
 			throws IllegalArgumentException, IllegalAccessException {
+
+		if (bean instanceof Proxy) {
+			bean = ((Proxy) bean).getTargetObject();
+		}
 		List<Field> fields = loadFields(bean.getClass());
 		if (CommonUtil.isNullOrEmpty(fields)) {
 			return;
@@ -83,9 +88,8 @@ public class BeanAssember {
 				if (targetBean == null) {
 					continue beanSearch;
 				}
-				field.setAccessible(true);
-
 				LogUtil.log.debug("注入字段 >>" + field.getName() + ":" + bean.getClass().getName());
+				field.setAccessible(true);
 				field.set(bean, targetBean);
 				continue fieldSet;
 			}

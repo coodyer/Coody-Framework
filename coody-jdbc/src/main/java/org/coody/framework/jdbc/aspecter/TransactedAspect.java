@@ -35,6 +35,9 @@ public class TransactedAspect {
 				return result;
 			}
 			for (Connection conn : connections) {
+				if (conn.isClosed()) {
+					continue;
+				}
 				conn.commit();
 			}
 			return result;

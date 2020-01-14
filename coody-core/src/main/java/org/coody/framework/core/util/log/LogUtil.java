@@ -189,9 +189,4 @@ public class LogUtil {
 		}
 	}
 
-	public static void main(String[] args) {
-		Long start = System.currentTimeMillis();
-		new LoggerWrapper(LogUtil.class.getName());
-		System.out.println(System.currentTimeMillis() - start);
-	}
 }

@@ -40,9 +40,4 @@ public class ValueConvert {
 		return FieldUtil.parseValue(value, clazz);
 	}
 
-	public static void main(String[] args) {
-		System.out.println("a\0a");
-		System.out.println("644556636_\"n611065");
-		System.out.println("644556636_\\n611065".replace("\\\\", "\\"));
-	}
 }

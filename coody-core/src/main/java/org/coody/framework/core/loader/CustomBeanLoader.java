@@ -123,6 +123,7 @@ public class CustomBeanLoader implements CoodyLoader {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 	}
 
 	/**

@@ -20,7 +20,7 @@ import org.coody.framework.core.threadpool.ThreadBlockPool;
  */
 public class ClassUtil {
 
-	public static final String CGLIB_CLASS_SEPARATOR = "$$";
+	public static final String CGLIB_CLASS_SEPARATOR = "$";
 
 	public static boolean isCglibProxyClassName(String className) {
 		return (className != null && className.contains(CGLIB_CLASS_SEPARATOR));
@@ -151,10 +151,4 @@ public class ClassUtil {
 		}
 	}
 
-	public static void main(String[] args) {
-		long start = System.currentTimeMillis();
-		Set<Class<?>> set = getClasses("org.coody.framework");
-		System.out.println(set.size());
-		System.out.println(System.currentTimeMillis() - start);
-	}
 }

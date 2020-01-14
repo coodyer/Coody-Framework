@@ -9,8 +9,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.coody.framework.core.constant.AspectConstant;
 import org.coody.framework.core.container.ThreadContainer;
 
-import net.sf.cglib.proxy.MethodProxy;
-
 @SuppressWarnings("serial")
 public class AspectAbler extends BaseModel implements Cloneable {
 
@@ -18,8 +16,6 @@ public class AspectAbler extends BaseModel implements Cloneable {
 	private Object bean;
 	// 业务方法
 	private Method method;
-	// 代理
-	private MethodProxy proxy;
 	// 业务所在class
 	private Class<?> clazz;
 	// 子切面
@@ -32,6 +28,10 @@ public class AspectAbler extends BaseModel implements Cloneable {
 	private Map<Class<? extends Annotation>, Object> annotationValueMap = new ConcurrentHashMap<Class<? extends Annotation>, Object>();
 	// 是否拦截自调用
 	private Boolean masturbation = true;
+
+	public void setBean(Object bean) {
+		this.bean = bean;
+	}
 
 	public Boolean getMasturbation() {
 		return masturbation;
@@ -53,24 +53,12 @@ public class AspectAbler extends BaseModel implements Cloneable {
 		return bean;
 	}
 
-	public void setBean(Object bean) {
-		this.bean = bean;
-	}
-
 	public Method getMethod() {
 		return method;
 	}
 
 	public void setMethod(Method method) {
 		this.method = method;
-	}
-
-	public MethodProxy getProxy() {
-		return proxy;
-	}
-
-	public void setProxy(MethodProxy proxy) {
-		this.proxy = proxy;
 	}
 
 	public Class<?> getClazz() {
@@ -109,7 +97,7 @@ public class AspectAbler extends BaseModel implements Cloneable {
 
 		if (masturbation) {
 			if (childAbler == null) {
-				return proxy.invokeSuper(bean, params);
+				return method.invoke(bean, params);
 			}
 			point.setAbler(childAbler);
 			return childAbler.getAspectMethod().invoke(childAbler.getAspectBean(), point);
@@ -117,7 +105,7 @@ public class AspectAbler extends BaseModel implements Cloneable {
 		String aspectFlag = AspectConstant.THREAD_ENCRYPT_FLAG + "_" + clazz.getName();
 		try {
 			if (childAbler == null) {
-				return proxy.invokeSuper(bean, params);
+				return method.invoke(bean, params);
 			}
 			point.setAbler(childAbler);
 			if (ThreadContainer.get(aspectFlag) != null) {

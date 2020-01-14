@@ -13,25 +13,20 @@ import java.util.Map;
 import java.util.Set;
 
 import org.coody.framework.core.constant.FrameworkConstant;
-import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.container.InterceptContainer;
 import org.coody.framework.core.exception.BeanInitException;
 import org.coody.framework.core.exception.MappedExecutableException;
-import org.coody.framework.core.model.AspectAbler;
 import org.coody.framework.core.model.AspectEntity;
-import org.coody.framework.core.model.AspectPoint;
 import org.coody.framework.core.model.BaseModel;
+import org.coody.framework.core.proxy.handler.CoodyInvocationHandler;
+import org.coody.framework.core.proxy.handler.iface.InvocationHandler;
+import org.coody.framework.core.util.CommonUtil;
 import org.coody.framework.core.util.ant.AntUtil;
 import org.coody.framework.core.util.reflex.MethodSignUtil;
 import org.coody.framework.core.util.reflex.ParameterNameUtil;
 import org.coody.framework.core.util.reflex.PropertUtil;
-import org.coody.framework.core.util.CommonUtil;
 
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.MethodInterceptor;
-import net.sf.cglib.proxy.MethodProxy;
-
-public class CglibProxy implements MethodInterceptor {
+public class ProxyCreater {
 
 	public Object getProxy(Class<?> clazz) {
 		return getProxy(clazz, null);
@@ -46,21 +41,24 @@ public class CglibProxy implements MethodInterceptor {
 			if (Modifier.isInterface(modifier)) {
 				return null;
 			}
+
 			MappedConstructor mappedConstructor = getConstructor(clazz, parameterMap);
 			if (!hasProxy(clazz)) {
 				try {
+					if (CommonUtil.isNullOrEmpty(parameterMap)) {
+						return clazz.newInstance();
+					}
 					return mappedConstructor.getConstructor().newInstance(mappedConstructor.getParameters());
 				} catch (Exception e) {
 					throw new BeanInitException(clazz, e);
 				}
 			}
-			Enhancer enhancer = new Enhancer();
-			enhancer.setSuperclass(clazz);
-			enhancer.setCallback(this);
-			if (CommonUtil.isNullOrEmpty(mappedConstructor.getTypes())) {
-				return enhancer.create();
+			InvocationHandler invocationHandler = new CoodyInvocationHandler();
+			if (CommonUtil.isNullOrEmpty(parameterMap)) {
+				return AsmProxy.newProxyInstance(clazz, invocationHandler);
 			}
-			return enhancer.create(mappedConstructor.getTypes(), mappedConstructor.getParameters());
+			return AsmProxy.newProxyInstance(clazz, mappedConstructor.getConstructor(), invocationHandler,
+					mappedConstructor.getParameters());
 		} catch (Exception e) {
 			throw new BeanInitException(clazz, e);
 		}
@@ -122,7 +120,7 @@ public class CglibProxy implements MethodInterceptor {
 		if (CommonUtil.isNullOrEmpty(methods)) {
 			return false;
 		}
-		boolean needProxy = false;
+
 		for (Method method : methods) {
 			for (List<AspectEntity> aspectEntitys : FrameworkConstant.ASPECT_MAP.values()) {
 				for (AspectEntity aspectEntity : aspectEntitys) {
@@ -131,17 +129,16 @@ public class CglibProxy implements MethodInterceptor {
 					}
 					if (InterceptContainer.INTERCEPT_MAP.containsKey(method)) {
 						InterceptContainer.INTERCEPT_MAP.get(method).add(aspectEntity);
-						needProxy = true;
-						continue;
+						return true;
 					}
 					Set<AspectEntity> aspectMethods = new HashSet<AspectEntity>();
 					aspectMethods.add(aspectEntity);
 					InterceptContainer.INTERCEPT_MAP.put(method, aspectMethods);
+					return true;
 				}
-				needProxy = true;
 			}
 		}
-		return needProxy;
+		return false;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -184,85 +181,6 @@ public class CglibProxy implements MethodInterceptor {
 		return false;
 	}
 
-	// 拦截父类所有方法的调用
-	@Override
-	public Object intercept(Object bean, Method method, Object[] params, MethodProxy proxy) throws Throwable {
-		if (!InterceptContainer.INTERCEPT_MAP.containsKey(method)) {
-			// 该方法不存在AOP拦截
-			return proxy.invokeSuper(bean, params);
-		}
-		// 获取拦截该方法的切面
-		AspectAbler point = getPoint(bean, method, proxy);
-		if (point == null) {
-			// 该方法不存在AOP拦截
-			return proxy.invokeSuper(bean, params);
-		}
-		AspectPoint aspectAble = new AspectPoint(point, params);
-		return aspectAble.invoke();
-	}
-
-	private AspectAbler getPoint(Object bean, Method method, MethodProxy proxy) {
-		if (InterceptContainer.METHOD_INTERCEPT_MAP.containsKey(method)) {
-			return InterceptContainer.METHOD_INTERCEPT_MAP.get(method);
-		}
-		List<AspectEntity> invokeMethods = new ArrayList<AspectEntity>(InterceptContainer.INTERCEPT_MAP.get(method));
-		AspectEntity aspectEntity = invokeMethods.get(0);
-		invokeMethods.remove(0);
-		Object aspectBean = BeanContainer.getBean(aspectEntity.getAspectClazz());
-		AspectAbler abler = new AspectAbler();
-		abler.setAspectBean(aspectBean);
-		abler.setAspectMethod(aspectEntity.getAspectInvokeMethod());
-		abler.setBean(bean);
-		abler.setClazz(bean.getClass());
-		abler.setMethod(method);
-		abler.setProxy(proxy);
-		abler.setMasturbation(aspectEntity.getOwnIntercept());
-		AspectAbler childAbler = parseAspect(abler, invokeMethods);
-		if (childAbler != null) {
-			abler.setChildAbler(childAbler);
-		}
-		AspectAbler turboPoint = new AspectAbler();
-		turboPoint.setChildAbler(abler);
-		turboPoint.setMasturbation(abler.getMasturbation());
-		turboPoint.setClazz(bean.getClass());
-		InterceptContainer.METHOD_INTERCEPT_MAP.put(method, turboPoint);
-		return turboPoint;
-	}
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private AspectAbler parseAspect(AspectAbler basePoint, List<AspectEntity> invokeAspects) {
-		if (CommonUtil.isNullOrEmpty(invokeAspects)) {
-			return null;
-		}
-		AspectEntity aspectEntity = invokeAspects.get(0);
-		invokeAspects.remove(0);
-		Object aspectBean = BeanContainer.getBean(aspectEntity.getAspectClazz());
-
-		AspectAbler abler = new AspectAbler();
-		abler.setAspectBean(aspectBean);
-		abler.setAspectMethod(aspectEntity.getAspectInvokeMethod());
-		abler.setBean(basePoint.getBean());
-		abler.setClazz(basePoint.getBean().getClass());
-		abler.setMethod(basePoint.getMethod());
-		abler.setProxy(basePoint.getProxy());
-		abler.setMasturbation(aspectEntity.getOwnIntercept());
-		if (aspectEntity.getAspectClazz() != null) {
-			for (Class clazz : aspectEntity.getAnnotationClass()) {
-				Annotation annotation = PropertUtil.getAnnotation(basePoint.getMethod(), clazz);
-				if (annotation == null) {
-					continue;
-				}
-				abler.getAnnotationValueMap().put(clazz, annotation);
-			}
-		}
-		AspectAbler childAbler = parseAspect(basePoint, invokeAspects);
-		if (childAbler != null) {
-			abler.setChildAbler(childAbler);
-			return abler;
-		}
-		return abler;
-	}
-
 	@SuppressWarnings("serial")
 	public static class MappedConstructor extends BaseModel {
 
@@ -295,7 +213,6 @@ public class CglibProxy implements MethodInterceptor {
 		public void setParameters(Object[] parameters) {
 			this.parameters = parameters;
 		}
-
 	}
 
 }

@@ -1,6 +1,5 @@
 package org.coody.framework.serializer.iface;
 
-import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDateTime;
 import java.util.Collection;
 import java.util.Date;
@@ -83,10 +82,6 @@ public abstract class AbstractSerializer<T> {
 		} finally {
 			SERIALIZER_CONTAINER.put(clazz, serializer);
 		}
-	}
-
-	public static void main(String[] args) {
-		System.out.println(getSerializer(LocalDateTime.now().getClass()).getClass().getName());
 	}
 
 	protected abstract String adapt(T target);
