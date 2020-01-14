@@ -14,8 +14,6 @@ public class AspectEntity extends BaseModel {
 
 	private Method aspectInvokeMethod;
 
-	private Boolean ownIntercept;
-
 	private Class<?> aspectClazz;
 
 	public Class<?> getAspectClazz() {
@@ -24,14 +22,6 @@ public class AspectEntity extends BaseModel {
 
 	public void setAspectClazz(Class<?> aspectClazz) {
 		this.aspectClazz = aspectClazz;
-	}
-
-	public Boolean getOwnIntercept() {
-		return ownIntercept;
-	}
-
-	public void setOwnIntercept(Boolean ownIntercept) {
-		this.ownIntercept = ownIntercept;
 	}
 
 	public Method getAspectInvokeMethod() {

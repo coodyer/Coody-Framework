@@ -26,19 +26,9 @@ public class AspectAbler extends BaseModel implements Cloneable {
 	private Object aspectBean;
 	// 注解值
 	private Map<Class<? extends Annotation>, Object> annotationValueMap = new ConcurrentHashMap<Class<? extends Annotation>, Object>();
-	// 是否拦截自调用
-	private Boolean masturbation = true;
 
 	public void setBean(Object bean) {
 		this.bean = bean;
-	}
-
-	public Boolean getMasturbation() {
-		return masturbation;
-	}
-
-	public void setMasturbation(Boolean masturbation) {
-		this.masturbation = masturbation;
 	}
 
 	public Map<Class<? extends Annotation>, Object> getAnnotationValueMap() {
@@ -95,13 +85,6 @@ public class AspectAbler extends BaseModel implements Cloneable {
 
 	public Object invoke(AspectPoint point, Object[] params) throws Throwable {
 
-		if (masturbation) {
-			if (childAbler == null) {
-				return method.invoke(bean, params);
-			}
-			point.setAbler(childAbler);
-			return childAbler.getAspectMethod().invoke(childAbler.getAspectBean(), point);
-		}
 		String aspectFlag = AspectConstant.THREAD_ENCRYPT_FLAG + "_" + clazz.getName();
 		try {
 			if (childAbler == null) {

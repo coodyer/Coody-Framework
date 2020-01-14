@@ -48,14 +48,12 @@ public class CoodyInvocationHandler implements InvocationHandler {
 		abler.setBean(bean.getTargetObject());
 		abler.setClazz(bean.getClass());
 		abler.setMethod(method);
-		abler.setMasturbation(aspectEntity.getOwnIntercept());
 		AspectAbler childAbler = getAspecter(abler, invokeMethods);
 		if (childAbler != null) {
 			abler.setChildAbler(childAbler);
 		}
 		AspectAbler turboPoint = new AspectAbler();
 		turboPoint.setChildAbler(abler);
-		turboPoint.setMasturbation(abler.getMasturbation());
 		turboPoint.setClazz(bean.getClass());
 		InterceptContainer.METHOD_INTERCEPT_MAP.put(method, turboPoint);
 		return turboPoint;
@@ -75,7 +73,6 @@ public class CoodyInvocationHandler implements InvocationHandler {
 		abler.setBean(basePoint.getBean());
 		abler.setClazz(basePoint.getBean().getClass());
 		abler.setMethod(basePoint.getMethod());
-		abler.setMasturbation(aspectEntity.getOwnIntercept());
 		if (aspectEntity.getAspectClazz() != null) {
 			for (Class clazz : aspectEntity.getAnnotationClass()) {
 				Annotation annotation = PropertUtil.getAnnotation(basePoint.getMethod(), clazz);

@@ -15,9 +15,9 @@ import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.loader.iface.CoodyLoader;
 import org.coody.framework.core.model.AspectEntity;
 import org.coody.framework.core.threadpool.ThreadBlockPool;
+import org.coody.framework.core.util.CommonUtil;
 import org.coody.framework.core.util.reflex.MethodSignUtil;
 import org.coody.framework.core.util.reflex.PropertUtil;
-import org.coody.framework.core.util.CommonUtil;
 
 /**
  * 
@@ -83,7 +83,6 @@ public class AspectLoader implements CoodyLoader {
 					aspectEntity.setMethodMappath(line.methodMappath());
 					aspectEntity.setClassMappath(line.classMappath());
 					aspectEntity.setAspectInvokeMethod(method);
-					aspectEntity.setOwnIntercept(line.ownIntercept());
 					aspectEntity.setAspectClazz(clazz);
 					String methodKey = MethodSignUtil.getMethodUnionKey(method);
 					FrameworkConstant.writeToAspectMap(methodKey, aspectEntity);
