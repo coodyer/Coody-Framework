@@ -73,13 +73,12 @@ public class TaskTrigger implements InitBeanFace {
 	public Object taskTrigger(AspectPoint point) throws Throwable {
 		Method method = point.getAbler().getMethod();
 		CronTask cronTask = method.getAnnotation(CronTask.class);
-		Object bean = point.getAbler().getBean();
 		String cron = cronTask.value();
 		try {
 			return point.invoke();
 		} finally {
 			ZonedDateTime zonedDateTime = cronExpressionMap.get(method);
-			trigger(bean, method, cron, zonedDateTime);
+			trigger(point.getAbler().getProxy(), method, cron, zonedDateTime);
 		}
 	}
 

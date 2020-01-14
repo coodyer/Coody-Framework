@@ -46,6 +46,7 @@ public class CoodyInvocationHandler implements InvocationHandler {
 		abler.setAspectBean(aspectBean);
 		abler.setAspectMethod(aspectEntity.getAspectInvokeMethod());
 		abler.setBean(bean.getTargetObject());
+		abler.setProxy(bean);
 		abler.setClazz(bean.getClass());
 		abler.setMethod(method);
 		AspectAbler childAbler = getAspecter(abler, invokeMethods);
@@ -69,6 +70,7 @@ public class CoodyInvocationHandler implements InvocationHandler {
 
 		AspectAbler abler = new AspectAbler();
 		abler.setAspectBean(aspectBean);
+		abler.setProxy(basePoint.getProxy());
 		abler.setAspectMethod(aspectEntity.getAspectInvokeMethod());
 		abler.setBean(basePoint.getBean());
 		abler.setClazz(basePoint.getBean().getClass());

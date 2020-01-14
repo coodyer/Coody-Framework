@@ -8,12 +8,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.coody.framework.core.constant.AspectConstant;
 import org.coody.framework.core.container.ThreadContainer;
+import org.coody.framework.core.proxy.iface.Proxy;
 
 @SuppressWarnings("serial")
 public class AspectAbler extends BaseModel implements Cloneable {
 
 	// 业务bean
 	private Object bean;
+	//代理bean
+	private Proxy proxy;
 	// 业务方法
 	private Method method;
 	// 业务所在class
@@ -26,6 +29,17 @@ public class AspectAbler extends BaseModel implements Cloneable {
 	private Object aspectBean;
 	// 注解值
 	private Map<Class<? extends Annotation>, Object> annotationValueMap = new ConcurrentHashMap<Class<? extends Annotation>, Object>();
+
+	
+	
+	
+	public Proxy getProxy() {
+		return proxy;
+	}
+
+	public void setProxy(Proxy proxy) {
+		this.proxy = proxy;
+	}
 
 	public void setBean(Object bean) {
 		this.bean = bean;
