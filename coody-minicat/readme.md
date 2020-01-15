@@ -1,8 +1,7 @@
 # Coody-Minicat
 
 #### 项目介绍
-一款轻量化Http服务器。支持bio、nio两种模式。归属Coody Framework下。传送门：https://gitee.com/coodyer/coody-icop
-
+一款轻量化Http服务器。支持bio、nio两种模式。归属Coody Framework下。
 #### 更新说明
 
 2018-07-02：MiniCat正式立项。
