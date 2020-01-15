@@ -45,6 +45,7 @@
 
         coody-cson    ：JSON序列化 & 反序列化插件
 
+        coody-esource ：简易数据库连接池
 
 #### 更新记录：
 
