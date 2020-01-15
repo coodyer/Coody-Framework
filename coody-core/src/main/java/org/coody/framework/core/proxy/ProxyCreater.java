@@ -28,6 +28,8 @@ import org.coody.framework.core.util.reflex.PropertUtil;
 
 public class ProxyCreater {
 
+	InvocationHandler invocationHandler = new CoodyInvocationHandler();
+
 	public Object getProxy(Class<?> clazz) {
 		return getProxy(clazz, null);
 	}
@@ -53,7 +55,7 @@ public class ProxyCreater {
 					throw new BeanInitException(clazz, e);
 				}
 			}
-			InvocationHandler invocationHandler = new CoodyInvocationHandler();
+
 			if (CommonUtil.isNullOrEmpty(parameterMap)) {
 				return AsmProxy.newProxyInstance(clazz, invocationHandler);
 			}
