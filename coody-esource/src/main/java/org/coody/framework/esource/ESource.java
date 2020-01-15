@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.coody.framework.esource.exception.ESourceCloseException;
@@ -35,6 +36,8 @@ public class ESource extends DataSourceWrapper {
 
 	private boolean inited = false;
 
+	private AtomicBoolean needCreate = new AtomicBoolean(true);
+
 	public ESource() {
 		super();
 	}
@@ -58,11 +61,18 @@ public class ESource extends DataSourceWrapper {
 							TimeUnit.MILLISECONDS.sleep(1);
 							continue;
 						}
-						for (int i = 0; i < getInitialPoolSize(); i++) {
-							if (poolSize.longValue() > getMaxPoolSize()) {
-								break;
+						if (needCreate.get()) {
+							needCreate.getAndSet(false);
+							if (idledDeque.size() < getMinPoolSize()) {
+								for (int i = 0; i < getInitialPoolSize(); i++) {
+									if (poolSize.longValue() > getMaxPoolSize()) {
+										break;
+									}
+									createConnection();
+								}
 							}
-							createConnection();
+						} else {
+							TimeUnit.MILLISECONDS.sleep(1);
 						}
 					} catch (Exception e) {
 					}
@@ -115,6 +125,10 @@ public class ESource extends DataSourceWrapper {
 				workQueue.remove(connection);
 				connection.getSource().close();
 				poolSize.addAndGet(-1);
+				if (idledDeque.size() < getMinPoolSize()) {
+					needCreate.getAndSet(true);
+				}
+				return true;
 			}
 			recoveryDeque.push(connection);
 			return workQueue.remove(connection);
@@ -132,9 +146,12 @@ public class ESource extends DataSourceWrapper {
 		try {
 			if (!recoveryDeque.isEmpty()) {
 				connection = recoveryDeque.poll();
-			}
-			if (connection != null && !connection.isClosed()) {
-				return connection;
+				if (connection != null) {
+					while (connection != null && connection.isClosed()) {
+						connection = recoveryDeque.poll();
+					}
+					return connection;
+				}
 			}
 			while (true) {
 				connection = idledDeque.poll(this.getMaxWaitTime(), TimeUnit.MILLISECONDS);
