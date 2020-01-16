@@ -93,48 +93,48 @@
         <dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-core</artifactId>
-			<version>alpha-1.5.1</version>
+			<version>alpha-1.5.5</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-jdbc</artifactId>
-			<version>alpha-1.5.1</version>
+			<version>alpha-1.5.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-cache</artifactId>
-			<version>alpha-1.5.1</version>
+			<version>alpha-1.5.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-task</artifactId>
-			<version>alpha-1.5.1</version>
+			<version>alpha-1.5.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-web</artifactId>
-			<version>alpha-1.5.1</version>
+			<version>alpha-1.5.5</version>
 		</dependency>
       <dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-elock</artifactId>
-			<version>alpha-1.5.1</version>
+			<version>alpha-1.5.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-minicat</artifactId>
-			<version>alpha-1.5.1</version>
+			<version>alpha-1.5.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-mail</artifactId>
-			<version>alpha-1.5.1</version>
+			<version>alpha-1.5.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-cson</artifactId>
-			<version>alpha-1.5.1</version>
+			<version>alpha-1.5.5</version>
 		</dependency>
 ```
 
