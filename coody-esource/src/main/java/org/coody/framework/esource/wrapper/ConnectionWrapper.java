@@ -115,7 +115,7 @@ public class ConnectionWrapper implements Connection {
 
 	@Override
 	public void setAutoCommit(boolean autoCommit) throws SQLException {
-		source.getAutoCommit();
+		source.setAutoCommit(autoCommit);
 	}
 
 	@Override

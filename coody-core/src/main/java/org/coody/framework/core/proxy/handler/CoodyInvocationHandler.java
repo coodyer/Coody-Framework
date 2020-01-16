@@ -25,13 +25,13 @@ public class CoodyInvocationHandler implements InvocationHandler {
 			return method.invoke(bean.getTargetObject(), args);
 		}
 		// 获取拦截该方法的切面
-		AspectAbler point = getPointer(bean, method);
-		if (point == null) {
+		AspectAbler abler = getPointer(bean, method);
+		if (abler == null) {
 			// 该方法不存在AOP拦截
 			return method.invoke(bean.getTargetObject(), args);
 		}
-		AspectPoint aspectAble = new AspectPoint(point, args);
-		return aspectAble.invoke();
+		AspectPoint point = new AspectPoint(abler, args);
+		return point.invoke();
 	}
 
 	private AspectAbler getPointer(Proxy bean, Method method) {

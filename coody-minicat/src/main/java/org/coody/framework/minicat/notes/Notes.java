@@ -2,7 +2,6 @@ package org.coody.framework.minicat.notes;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.coody.framework.core.util.log.LogUtil;
 import org.coody.framework.minicat.threadpool.MiniCatThreadPool;
 
 public class Notes {
@@ -20,7 +19,7 @@ public class Notes {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					LogUtil.log.debug("input:" + input + ",output:" + output);
+					// LogUtil.log.debug("input:" + input + ",output:" + output);
 					input.set(0);
 					output.set(0);
 				}

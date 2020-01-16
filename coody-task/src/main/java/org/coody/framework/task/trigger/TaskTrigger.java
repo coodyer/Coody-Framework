@@ -9,14 +9,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-import org.coody.framework.core.annotation.Around;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.bean.InitBeanFace;
 import org.coody.framework.core.container.BeanContainer;
-import org.coody.framework.core.model.AspectPoint;
 import org.coody.framework.core.threadpool.ThreadBlockPool;
 import org.coody.framework.core.util.CommonUtil;
-import org.coody.framework.task.annotation.CronTask;
+import org.coody.framework.core.util.log.LogUtil;
 import org.coody.framework.task.container.TaskContainer;
 import org.coody.framework.task.container.TaskContainer.TaskEntity;
 import org.coody.framework.task.cron.CronExpression;
@@ -48,37 +46,40 @@ public class TaskTrigger implements InitBeanFace {
 		zonedDateTime = express.nextTimeAfter(zonedDateTime);
 		cronExpressionMap.put(method, zonedDateTime);
 		Date nextTime = Date.from(zonedDateTime.toInstant());
-		long timeRage = nextTime.getTime() - System.currentTimeMillis();
+		long timeRange = nextTime.getTime() - System.currentTimeMillis();
 		TaskThreadPool.TASK_POOL.schedule(new Runnable() {
 			@Override
 			public void run() {
-				Object[] params = {};
 				try {
-					method.invoke(bean, params);
+					triggerNext(bean, method, express);
 				} catch (Exception e) {
-					e.printStackTrace();
+					LogUtil.log.error("任务执行出错", e);
 				}
 			}
-		}, timeRage, TimeUnit.MILLISECONDS);
+		}, timeRange, TimeUnit.MILLISECONDS);
 	}
 
-	/**
-	 * 定时任务管理
-	 * 
-	 * @param pjp
-	 * @return
-	 * @throws Throwable
-	 */
-	@Around(annotationClass = CronTask.class)
-	public Object taskTrigger(AspectPoint point) throws Throwable {
-		Method method = point.getAbler().getMethod();
-		CronTask cronTask = method.getAnnotation(CronTask.class);
-		String cron = cronTask.value();
+	private static void triggerNext(Object bean, Method method, CronExpression express) {
+		Object[] params = {};
 		try {
-			return point.invoke();
+			method.invoke(bean, params);
+		} catch (Exception e) {
+			LogUtil.log.error("任务执行出错", e);
 		} finally {
 			ZonedDateTime zonedDateTime = cronExpressionMap.get(method);
-			trigger(point.getAbler().getProxy(), method, cron, zonedDateTime);
+			zonedDateTime = express.nextTimeAfter(zonedDateTime);
+			Date nextTime = Date.from(zonedDateTime.toInstant());
+			long timeRange = nextTime.getTime() - System.currentTimeMillis();
+			TaskThreadPool.TASK_POOL.schedule(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						triggerNext(bean, method, express);
+					} catch (Exception e) {
+						LogUtil.log.error("任务执行出错", e);
+					}
+				}
+			}, timeRange, TimeUnit.MILLISECONDS);
 		}
 	}
 

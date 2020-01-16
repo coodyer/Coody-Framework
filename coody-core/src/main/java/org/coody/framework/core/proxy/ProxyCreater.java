@@ -122,7 +122,7 @@ public class ProxyCreater {
 		if (CommonUtil.isNullOrEmpty(methods)) {
 			return false;
 		}
-
+		boolean hasProxy = false;
 		for (Method method : methods) {
 			for (List<AspectEntity> aspectEntitys : FrameworkConstant.ASPECT_MAP.values()) {
 				for (AspectEntity aspectEntity : aspectEntitys) {
@@ -131,16 +131,17 @@ public class ProxyCreater {
 					}
 					if (InterceptContainer.INTERCEPT_MAP.containsKey(method)) {
 						InterceptContainer.INTERCEPT_MAP.get(method).add(aspectEntity);
-						return true;
+						hasProxy = true;
+						continue;
 					}
 					Set<AspectEntity> aspectMethods = new HashSet<AspectEntity>();
 					aspectMethods.add(aspectEntity);
 					InterceptContainer.INTERCEPT_MAP.put(method, aspectMethods);
-					return true;
+					hasProxy = true;
 				}
 			}
 		}
-		return false;
+		return hasProxy;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -168,10 +169,6 @@ public class ProxyCreater {
 			Annotation[] annotations = method.getAnnotations();
 			if (CommonUtil.isNullOrEmpty(annotations)) {
 				return false;
-			}
-			List<Class<?>> annotationClazzs = new ArrayList<Class<?>>();
-			for (Annotation annotation : annotations) {
-				annotationClazzs.add(annotation.annotationType());
 			}
 			for (Class aspectAnnotationClazz : aspectEntity.getAnnotationClass()) {
 				Annotation annotation = PropertUtil.getAnnotation(method, aspectAnnotationClazz);

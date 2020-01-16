@@ -21,13 +21,15 @@ public class MethodSignUtil {
 		StringBuilder paraKey = new StringBuilder();
 		for (String field : fields) {
 			Object paraValue = MethodSignUtil.getMethodParameterValue(method, field, parameters);
-			if (CommonUtil.isNullOrEmpty(paraValue)) {
-				paraValue = "";
+			paraKey.append(Cson.toJson(paraValue));
+			if (!CommonUtil.isNullOrEmpty(paraValue) && field != fields[fields.length - 1]) {
+				paraKey.append("_");
 			}
-			paraKey.append("_").append(Cson.toJson(paraValue));
 		}
-		key = key + ":" + EncryptUtil.md5(paraKey.toString());
-		return key;
+		if (paraKey.toString().length() > 32) {
+			return key + ":" + EncryptUtil.md5(paraKey.toString());
+		}
+		return key + ":" + paraKey.toString();
 	}
 
 	// 将对象内所有字段名、字段值拼接成字符串，用于缓存Key

@@ -36,6 +36,7 @@ import org.coody.framework.jdbc.entity.Pager;
 import org.coody.framework.jdbc.entity.Where;
 import org.coody.framework.jdbc.exception.ExecSqlException;
 import org.coody.framework.jdbc.exception.FormatParamsException;
+import org.coody.framework.jdbc.exception.GetConnectionException;
 import org.coody.framework.jdbc.exception.PrimaryKeyException;
 import org.coody.framework.jdbc.factory.DBDataBillerFactory;
 import org.coody.framework.jdbc.util.JdbcUtil;
@@ -100,24 +101,24 @@ public class JdbcProcessor {
 		try {
 			// 打开连接对象
 			conn = getConn();
-			if (conn != null) {
-				// statement用来执行SQL语句
-				statement = conn.prepareStatement(sql);
-				Long threadId = Thread.currentThread().getId();
-				String outSql = sql;
-				if (formatSql) {
-					outSql = formatParameters(sql, parameters);
-				}
-				LogUtil.log.debug("[线程ID:" + threadId + "][执行语句:" + outSql + "]");
-				if (!CommonUtil.isNullOrEmpty(parameters)) {
-					for (int i = 0; i < parameters.length; i++) {
-						statement.setObject((i + 1), parameters[i]);
-					}
-				}
-				// 执行语句，返回结果
-				resultSet = statement.executeQuery();
-				return JdbcUtil.formatToContainer(resultSet);
+			if (conn == null) {
+				throw new GetConnectionException("获取连接失败");
 			}
+			statement = conn.prepareStatement(sql);
+			Long threadId = Thread.currentThread().getId();
+			String outSql = sql;
+			if (formatSql) {
+				outSql = formatParameters(sql, parameters);
+			}
+			LogUtil.log.debug("[线程ID:" + threadId + "][执行语句:" + outSql + "]");
+			if (!CommonUtil.isNullOrEmpty(parameters)) {
+				for (int i = 0; i < parameters.length; i++) {
+					statement.setObject((i + 1), parameters[i]);
+				}
+			}
+			// 执行语句，返回结果
+			resultSet = statement.executeQuery();
+			return JdbcUtil.formatToContainer(resultSet);
 		} catch (Exception e) {
 			throw new ExecSqlException("语句执行异常>>sql:" + sql + ",parameters:" + Cson.toJson(parameters), e);
 		} finally {
@@ -129,7 +130,6 @@ public class JdbcProcessor {
 				}
 			}
 		}
-		return null;
 	}
 
 	/**
@@ -145,28 +145,35 @@ public class JdbcProcessor {
 		try {
 			// 打开连接对象
 			conn = getConn();
-			if (conn != null) {
-				// statement用来执行SQL语句
-				statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-				if (!CommonUtil.isNullOrEmpty(parameters)) {
-					for (int i = 0; i < parameters.length; i++) {
-						statement.setObject((i + 1), parameters[i]);
-					}
-				}
-				Integer code = statement.executeUpdate();
-				if (sql.toLowerCase().contains("insert")) {
-					try {
-						ResultSet rs = statement.getGeneratedKeys();
-						if (rs.next()) {
-							return rs.getLong(1);
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
-						return code.longValue();
-					}
-				}
-				return code.longValue();
+			if (conn == null) {
+				throw new GetConnectionException("获取连接失败");
 			}
+			// statement用来执行SQL语句
+			statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			if (!CommonUtil.isNullOrEmpty(parameters)) {
+				for (int i = 0; i < parameters.length; i++) {
+					statement.setObject((i + 1), parameters[i]);
+				}
+			}
+			Long threadId = Thread.currentThread().getId();
+			String outSql = sql;
+			if (formatSql) {
+				outSql = formatParameters(sql, parameters);
+			}
+			LogUtil.log.debug("[线程ID:" + threadId + "][执行语句:" + outSql + "]");
+			Integer code = statement.executeUpdate();
+			if (sql.toLowerCase().contains("insert")) {
+				try {
+					ResultSet rs = statement.getGeneratedKeys();
+					if (rs.next()) {
+						return rs.getLong(1);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					return code.longValue();
+				}
+			}
+			return code.longValue();
 		} catch (Exception e) {
 			throw new ExecSqlException("语句执行异常>>sql:" + sql + ",parameters:" + Cson.toJson(parameters), e);
 		} finally {
@@ -180,7 +187,6 @@ public class JdbcProcessor {
 				}
 			}
 		}
-		return 0L;
 	}
 
 	/**

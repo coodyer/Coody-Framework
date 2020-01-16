@@ -64,7 +64,6 @@ public class TransactedAspect {
 					try {
 						conn.close();
 					} catch (Exception e) {
-						// TODO: handle exception
 					}
 				}
 			}
