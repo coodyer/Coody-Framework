@@ -111,7 +111,7 @@ public class ESource extends DataSourceWrapper {
 			Connection source = DriverManager.getConnection(this.getUrl(), this.getUser(), this.getPassword());
 			ConnectionWrapper connection = new ConnectionWrapper(source, this);
 			idledDeque.offer(connection);
-			poolSize.addAndGet(1);
+			poolSize.getAndIncrement();
 			return connection;
 		} catch (Exception e) {
 			throw new ESourceCreateConnectionException("创建连接失败", e);
@@ -124,7 +124,7 @@ public class ESource extends DataSourceWrapper {
 			if (!connection.getAutoCommit()) {
 				workQueue.remove(connection);
 				connection.getSource().close();
-				poolSize.addAndGet(-1);
+				poolSize.decrementAndGet();
 				if (idledDeque.size() < getMinPoolSize()) {
 					needCreate.getAndSet(true);
 				}
@@ -146,10 +146,11 @@ public class ESource extends DataSourceWrapper {
 		try {
 			if (!recoveryDeque.isEmpty()) {
 				connection = recoveryDeque.poll();
+				while (connection != null && connection.isClosed()) {
+					poolSize.decrementAndGet();
+					connection = recoveryDeque.poll();
+				}
 				if (connection != null) {
-					while (connection != null && connection.isClosed()) {
-						connection = recoveryDeque.poll();
-					}
 					return connection;
 				}
 			}
