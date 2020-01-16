@@ -84,9 +84,14 @@ public class ESource extends DataSourceWrapper {
 			public void run() {
 				while (true) {
 					try {
-						TimeUnit.MILLISECONDS.sleep(getMaxIdleTime() / 5);
+						TimeUnit.MILLISECONDS.sleep(20);
 						for (ConnectionWrapper connection : idledDeque) {
 							if (connection.getStatus() != 0) {
+								continue;
+							}
+							if (connection.isClosed()) {
+								idledDeque.remove(connection);
+								poolSize.getAndDecrement();
 								continue;
 							}
 							if (System.currentTimeMillis() - connection.getCreateTime() <= getMaxIdleTime()) {
@@ -97,6 +102,14 @@ public class ESource extends DataSourceWrapper {
 							}
 							idledDeque.remove(connection);
 							recoveryDeque.push(connection);
+						}
+
+						for (ConnectionWrapper connection : recoveryDeque) {
+							if (!connection.isClosed()) {
+								continue;
+							}
+							idledDeque.remove(connection);
+							poolSize.getAndDecrement();
 						}
 					} catch (Exception e) {
 					}
