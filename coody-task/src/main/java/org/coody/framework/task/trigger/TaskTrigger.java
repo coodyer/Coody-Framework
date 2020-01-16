@@ -38,20 +38,16 @@ public class TaskTrigger implements InitBeanFace {
 		return null;
 	}
 
-	public static void trigger(Object bean, Method method, String cron, ZonedDateTime zonedDateTime) {
-		CronExpression express = new CronExpression(cron);
-		if (zonedDateTime == null) {
-			zonedDateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneOffset.UTC);
-		}
-		zonedDateTime = express.nextTimeAfter(zonedDateTime);
-		cronExpressionMap.put(method, zonedDateTime);
-		Date nextTime = Date.from(zonedDateTime.toInstant());
+	public static void trigger(Object bean, Method method, String cron) {
+		Date nextTime = getNextTime(method, cron);
+
 		long timeRange = nextTime.getTime() - System.currentTimeMillis();
+
 		TaskThreadPool.TASK_POOL.schedule(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					triggerNext(bean, method, express);
+					triggerNext(bean, method, cron);
 				} catch (Exception e) {
 					LogUtil.log.error("任务执行出错", e);
 				}
@@ -59,27 +55,26 @@ public class TaskTrigger implements InitBeanFace {
 		}, timeRange, TimeUnit.MILLISECONDS);
 	}
 
-	private static void triggerNext(Object bean, Method method, CronExpression express) {
+	private static Date getNextTime(Method method, String cron) {
+		ZonedDateTime zonedDateTime = cronExpressionMap.get(method);
+		CronExpression express = new CronExpression(cron);
+		if (zonedDateTime == null) {
+			zonedDateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneOffset.UTC);
+		}
+		zonedDateTime = express.nextTimeAfter(zonedDateTime);
+		cronExpressionMap.put(method, zonedDateTime);
+		Date nextTime = Date.from(zonedDateTime.toInstant());
+		return nextTime;
+	}
+
+	private static void triggerNext(Object bean, Method method, String cron) {
 		Object[] params = {};
 		try {
 			method.invoke(bean, params);
 		} catch (Exception e) {
 			LogUtil.log.error("任务执行出错", e);
 		} finally {
-			ZonedDateTime zonedDateTime = cronExpressionMap.get(method);
-			zonedDateTime = express.nextTimeAfter(zonedDateTime);
-			Date nextTime = Date.from(zonedDateTime.toInstant());
-			long timeRange = nextTime.getTime() - System.currentTimeMillis();
-			TaskThreadPool.TASK_POOL.schedule(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						triggerNext(bean, method, express);
-					} catch (Exception e) {
-						LogUtil.log.error("任务执行出错", e);
-					}
-				}
-			}, timeRange, TimeUnit.MILLISECONDS);
+			trigger(bean, method, cron);
 		}
 	}
 
@@ -93,7 +88,7 @@ public class TaskTrigger implements InitBeanFace {
 			Runnable runnable = new Runnable() {
 				@Override
 				public void run() {
-					TaskTrigger.trigger(bean, task.getMethod(), task.getCron(), null);
+					TaskTrigger.trigger(bean, task.getMethod(), task.getCron());
 				}
 			};
 			threadBlockPool.pushTask(runnable);
