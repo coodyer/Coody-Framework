@@ -3,6 +3,7 @@ package org.coody.framework.core.model;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
+import org.coody.framework.core.exception.base.CoodyException;
 import org.coody.framework.core.util.CommonUtil;
 
 @SuppressWarnings("serial")
@@ -78,6 +79,15 @@ public class FieldEntity extends BaseModel {
 
 	public void setFieldAnnotations(Annotation[] fieldAnnotations) {
 		this.fieldAnnotations = fieldAnnotations;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> T get(Object object) {
+		try {
+			return (T) this.getSourceField().get(object);
+		} catch (Exception e) {
+			throw new CoodyException("获取字段错误>>" + fieldName);
+		}
 	}
 
 }

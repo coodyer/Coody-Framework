@@ -139,6 +139,18 @@ public class CommonUtil {
 		return false;
 	}
 
+	public static boolean allIsNullOrEmpty(Object... objs) {
+		if (objs == null || objs.length == 0) {
+			return true;
+		}
+		for (int i = 0; i < objs.length; i++) {
+			if (!isNullOrEmpty(objs[i])) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	public static String formatPath(String path) {
 		if (CommonUtil.isNullOrEmpty(path)) {
 			return null;
