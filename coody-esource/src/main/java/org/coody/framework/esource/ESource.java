@@ -88,6 +88,9 @@ public class ESource extends DataSourceWrapper {
 				while (true) {
 					try {
 						sleep(TimeUnit.MILLISECONDS, 20);
+						if (idledDeque.isEmpty()) {
+							needCreate.getAndSet(true);
+						}
 						for (ConnectionWrapper connection : idledDeque) {
 							if (connection.getStatus() != 0) {
 								continue;
@@ -179,6 +182,9 @@ public class ESource extends DataSourceWrapper {
 				if (connection != null) {
 					return connection;
 				}
+			}
+			if (idledDeque.isEmpty()) {
+				needCreate.getAndSet(true);
 			}
 			while (true) {
 				connection = idledDeque.poll(this.getMaxWaitTime(), TimeUnit.MILLISECONDS);
