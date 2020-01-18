@@ -23,19 +23,30 @@ import java.sql.SQLXML;
 import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 
 public class StatementWrapper implements CallableStatement {
 
+	private List<ResultSet> results = new ArrayList<ResultSet>();
+
 	private Statement statement;
 
-	private Connection connection;
-
-	public StatementWrapper(Statement statement, Connection connection) {
+	public StatementWrapper(Statement statement) {
 		super();
 		this.statement = statement;
-		this.connection = connection;
+	}
+
+	public void clear() throws SQLException {
+		for (ResultSet resultSet : results) {
+			if (resultSet == null) {
+				continue;
+			}
+			resultSet.close();
+		}
+		results.clear();
 	}
 
 	@Override
@@ -50,7 +61,9 @@ public class StatementWrapper implements CallableStatement {
 
 	@Override
 	public ResultSet executeQuery(String sql) throws SQLException {
-		return statement.executeQuery(sql);
+		ResultSet result = statement.executeQuery(sql);
+		results.add(result);
+		return result;
 	}
 
 	@Override
@@ -60,6 +73,7 @@ public class StatementWrapper implements CallableStatement {
 
 	@Override
 	public void close() throws SQLException {
+		clear();
 		statement.close();
 	}
 
@@ -125,7 +139,9 @@ public class StatementWrapper implements CallableStatement {
 
 	@Override
 	public ResultSet getResultSet() throws SQLException {
-		return getResultSet();
+		ResultSet result = getResultSet();
+		results.add(result);
+		return result;
 	}
 
 	@Override
@@ -185,7 +201,7 @@ public class StatementWrapper implements CallableStatement {
 
 	@Override
 	public Connection getConnection() throws SQLException {
-		return this.connection;
+		return this.getConnection();
 	}
 
 	@Override
@@ -195,7 +211,9 @@ public class StatementWrapper implements CallableStatement {
 
 	@Override
 	public ResultSet getGeneratedKeys() throws SQLException {
-		return statement.getGeneratedKeys();
+		ResultSet result = statement.getGeneratedKeys();
+		results.add(result);
+		return result;
 	}
 
 	@Override
@@ -260,7 +278,9 @@ public class StatementWrapper implements CallableStatement {
 
 	@Override
 	public ResultSet executeQuery() throws SQLException {
-		return ((PreparedStatement) statement).executeQuery();
+		ResultSet result = ((PreparedStatement) statement).executeQuery();
+		results.add(result);
+		return result;
 	}
 
 	@Override
@@ -1072,7 +1092,7 @@ public class StatementWrapper implements CallableStatement {
 
 	@Override
 	public void setNCharacterStream(String parameterName, Reader value) throws SQLException {
-		((CallableStatement)statement).setNCharacterStream(parameterName, value);
+		((CallableStatement) statement).setNCharacterStream(parameterName, value);
 	}
 
 	@Override

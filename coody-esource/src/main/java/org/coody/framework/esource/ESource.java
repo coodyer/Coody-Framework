@@ -77,7 +77,29 @@ public class ESource extends DataSourceWrapper {
 				}
 			}
 		});
+		GuardThreadPool.ESOURCE_GUARD_POOL.execute(new Runnable() {
+			@Override
+			public void run() {
+				while (true) {
+					try {
+						sleep(TimeUnit.SECONDS, 1);
+						for (Connection connection : idledDeque) {
+							if (connection.isValid((int) getMaxWaitTime())) {
+								continue;
+							}
+							idledDeque.remove(connection);
+						}
+						if (idledDeque.size() < getMinPoolSize()) {
+							needCreate.getAndSet(true);
+						}
+					} catch (Exception e) {
+						LogUtil.log.error("创建连接数出错", e);
+						sleep(TimeUnit.MILLISECONDS, 1);
+					}
 
+				}
+			}
+		});
 	}
 
 	private void sleep(TimeUnit unit, int offset) {
@@ -102,6 +124,7 @@ public class ESource extends DataSourceWrapper {
 
 	// 关闭连接
 	public void close(ConnectionWrapper connection) {
+
 		try {
 			if (connection.isClosed()) {
 				poolSize.decrementAndGet();
@@ -112,6 +135,7 @@ public class ESource extends DataSourceWrapper {
 				poolSize.decrementAndGet();
 				return;
 			}
+			connection.clearWarnings();
 			connection.setActiveTime(System.currentTimeMillis());
 			idledDeque.push(connection);
 			return;

@@ -284,6 +284,7 @@ public class JdbcUtil {
 				// 数据列存入集合
 				allRecord.add(record);
 			}
+			resultSet.close();
 			return allRecord;
 		} catch (SQLException e) {
 			throw new BuildResultException("解析参数出现异常", e);

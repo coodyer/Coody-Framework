@@ -124,6 +124,7 @@ public class JdbcProcessor {
 		} finally {
 			if (conn != null) {
 				try {
+					statement.close();
 					conn.close();
 				} catch (SQLException e) {
 					e.printStackTrace();
