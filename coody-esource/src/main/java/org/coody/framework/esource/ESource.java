@@ -4,10 +4,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.coody.framework.core.util.log.LogUtil;
 import org.coody.framework.esource.exception.ESourceCloseException;
@@ -21,23 +21,34 @@ import org.coody.framework.esource.wrapper.DataSourceWrapper;
 public class ESource extends DataSourceWrapper {
 
 	/**
-	 * 取出即工作
-	 */
-	private final LinkedBlockingQueue<ConnectionWrapper> workQueue = new LinkedBlockingQueue<ConnectionWrapper>();
-	/**
 	 * 创建则空闲
 	 */
 	private final LinkedBlockingDeque<ConnectionWrapper> idledDeque = new LinkedBlockingDeque<ConnectionWrapper>();
-	/**
-	 * close 无事务则回收
-	 */
-	private final LinkedBlockingDeque<ConnectionWrapper> recoveryDeque = new LinkedBlockingDeque<ConnectionWrapper>();
 
 	public static AtomicInteger poolSize = new AtomicInteger(0);
 
 	private boolean inited = false;
 
 	private AtomicBoolean needCreate = new AtomicBoolean(true);
+
+	/**
+	 * 累计创建连接
+	 */
+	public static AtomicLong created = new AtomicLong();
+	/**
+	 * 累计使用次数
+	 */
+	public static AtomicLong used = new AtomicLong();
+
+	/**
+	 * 累计回收连接
+	 */
+	public static AtomicLong recoveryed = new AtomicLong();
+
+	/**
+	 * 累计关闭连接
+	 */
+	public static AtomicLong closed = new AtomicLong();
 
 	public ESource() {
 		super();
@@ -53,78 +64,48 @@ public class ESource extends DataSourceWrapper {
 		} catch (Exception e) {
 			throw new ESourceCreateConnectionException("加载驱动失败", e);
 		}
+		inited = true;
 		GuardThreadPool.ESOURCE_CREATE_POOL.execute(new Runnable() {
 			@Override
 			public void run() {
+				long m = 0;
 				while (true) {
+					m++;
 					try {
 						if (poolSize.longValue() >= getMaxPoolSize()) {
 							sleep(TimeUnit.MILLISECONDS, 1);
 							continue;
 						}
-						if (needCreate.get()) {
-							needCreate.getAndSet(false);
-							if (idledDeque.size() < getMinPoolSize()) {
-								for (int i = 0; i < getInitialPoolSize(); i++) {
-									if (poolSize.longValue() > getMaxPoolSize()) {
-										break;
-									}
-									createConnection();
-								}
-							}
-						} else {
+						if (!needCreate.get()) {
 							sleep(TimeUnit.MILLISECONDS, 1);
+							continue;
+
+						}
+						needCreate.getAndSet(false);
+						if (idledDeque.size() >= getMinPoolSize()) {
+							continue;
+						}
+						for (int i = 0; i < getInitialPoolSize(); i++) {
+							if (poolSize.longValue() > getMaxPoolSize()) {
+								break;
+							}
+							createConnection();
 						}
 					} catch (Exception e) {
 						LogUtil.log.error("创建连接数出错", e);
 						sleep(TimeUnit.MILLISECONDS, 1);
+					} finally {
+						if (m > 1000) {
+							LogUtil.log.error("当前空闲:" + idledDeque.size() + ">>" + "累计创建:" + created + ";累计使用:" + used
+									+ ";累计关闭:" + closed + ";累计回收:" + recoveryed);
+							m = 0;
+						}
 					}
-				}
-			}
-		});
-		GuardThreadPool.ESOURCE_GUARD_POOL.execute(new Runnable() {
-			@Override
-			public void run() {
-				while (true) {
-					try {
-						sleep(TimeUnit.MILLISECONDS, 20);
-						if (idledDeque.size() < getMinPoolSize()) {
-							needCreate.getAndSet(true);
-						}
-						for (ConnectionWrapper connection : idledDeque) {
-							if (connection.getStatus() != 0) {
-								continue;
-							}
-							if (connection.isClosed()) {
-								idledDeque.remove(connection);
-								poolSize.getAndDecrement();
-								continue;
-							}
-							if (System.currentTimeMillis() - connection.getCreateTime() <= getMaxIdleTime()) {
-								continue;
-							}
-							if (connection.statusAdd(1) != 1) {
-								continue;
-							}
-							idledDeque.remove(connection);
-							recoveryDeque.push(connection);
-						}
 
-						for (ConnectionWrapper connection : recoveryDeque) {
-							if (!connection.isClosed()) {
-								continue;
-							}
-							idledDeque.remove(connection);
-							poolSize.getAndDecrement();
-						}
-					} catch (Exception e) {
-						LogUtil.log.error("检查连接数出错", e);
-						sleep(TimeUnit.MILLISECONDS, 1);
-					}
 				}
 			}
 		});
-		inited = true;
+
 	}
 
 	private void sleep(TimeUnit unit, int offset) {
@@ -141,6 +122,8 @@ public class ESource extends DataSourceWrapper {
 			ConnectionWrapper connection = new ConnectionWrapper(source, this);
 			idledDeque.offer(connection);
 			poolSize.getAndIncrement();
+
+			created.getAndIncrement();
 			return connection;
 		} catch (Exception e) {
 			throw new ESourceCreateConnectionException("创建连接失败", e);
@@ -148,19 +131,29 @@ public class ESource extends DataSourceWrapper {
 	}
 
 	// 关闭连接
-	public boolean close(ConnectionWrapper connection) {
+	public void close(ConnectionWrapper connection) {
 		try {
+			if (connection.isClosed()) {
+				poolSize.decrementAndGet();
+				if (idledDeque.size() < getMinPoolSize()) {
+					needCreate.getAndSet(true);
+				}
+				closed.getAndIncrement();
+				return;
+			}
 			if (!connection.getAutoCommit()) {
-				workQueue.remove(connection);
 				connection.getSource().close();
 				poolSize.decrementAndGet();
 				if (idledDeque.size() < getMinPoolSize()) {
 					needCreate.getAndSet(true);
 				}
-				return true;
+				closed.getAndIncrement();
+				return;
 			}
-			recoveryDeque.push(connection);
-			return workQueue.remove(connection);
+			connection.setActiveTime(System.currentTimeMillis());
+			recoveryed.getAndIncrement();
+			idledDeque.push(connection);
+			return;
 		} catch (Exception e) {
 			throw new ESourceCloseException("关闭连接出错", e);
 		}
@@ -173,16 +166,6 @@ public class ESource extends DataSourceWrapper {
 		}
 		ConnectionWrapper connection = null;
 		try {
-			if (!recoveryDeque.isEmpty()) {
-				connection = recoveryDeque.poll();
-				while (connection != null && connection.isClosed()) {
-					poolSize.decrementAndGet();
-					connection = recoveryDeque.poll();
-				}
-				if (connection != null) {
-					return connection;
-				}
-			}
 			if (idledDeque.isEmpty()) {
 				needCreate.getAndSet(true);
 			}
@@ -191,16 +174,12 @@ public class ESource extends DataSourceWrapper {
 				if (connection == null) {
 					throw new ESourceWaitTimeOutException("等待连接超时");
 				}
-				if (connection.statusAdd(1) == 1) {
-					return connection;
-				}
+				return connection;
 			}
 		} catch (Exception e) {
 			throw new ESourceException("获取连接出错", e);
 		} finally {
-			if (connection != null) {
-				workQueue.offer(connection);
-			}
+			used.getAndIncrement();
 		}
 	}
 

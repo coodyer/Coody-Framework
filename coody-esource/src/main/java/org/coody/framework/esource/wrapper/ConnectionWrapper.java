@@ -18,16 +18,10 @@ import java.sql.Struct;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.coody.framework.esource.ESource;
 
 public class ConnectionWrapper implements Connection {
-
-	/**
-	 * 0 空闲 1非空闲
-	 */
-	private AtomicInteger status = new AtomicInteger(0);
 
 	private Connection source;
 
@@ -35,22 +29,14 @@ public class ConnectionWrapper implements Connection {
 
 	private boolean hasUpdate;
 
-	private Long createTime = System.currentTimeMillis();
+	private Long activeTime = System.currentTimeMillis();
 
-	public Long getCreateTime() {
-		return createTime;
+	public Long getActiveTime() {
+		return activeTime;
 	}
 
-	public void setCreateTime(Long createTime) {
-		this.createTime = createTime;
-	}
-
-	public int getStatus() {
-		return status.intValue();
-	}
-
-	public int statusAdd(int change) {
-		return this.status.addAndGet(change);
+	public void setActiveTime(Long activeTime) {
+		this.activeTime = activeTime;
 	}
 
 	public ConnectionWrapper(Connection source, ESource pool) {
