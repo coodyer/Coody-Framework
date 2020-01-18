@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.coody.framework.core.util.log.LogUtil;
 import org.coody.framework.esource.exception.ESourceCloseException;
 import org.coody.framework.esource.exception.ESourceCreateConnectionException;
 import org.coody.framework.esource.exception.ESourceException;
@@ -52,13 +53,13 @@ public class ESource extends DataSourceWrapper {
 		} catch (Exception e) {
 			throw new ESourceCreateConnectionException("加载驱动失败", e);
 		}
-		GuardThreadPool.THREAD_POOL.execute(new Runnable() {
+		GuardThreadPool.ESOURCE_CREATE_POOL.execute(new Runnable() {
 			@Override
 			public void run() {
 				while (true) {
 					try {
 						if (poolSize.longValue() >= getMaxPoolSize()) {
-							TimeUnit.MILLISECONDS.sleep(1);
+							sleep(TimeUnit.MILLISECONDS, 1);
 							continue;
 						}
 						if (needCreate.get()) {
@@ -72,19 +73,21 @@ public class ESource extends DataSourceWrapper {
 								}
 							}
 						} else {
-							TimeUnit.MILLISECONDS.sleep(1);
+							sleep(TimeUnit.MILLISECONDS, 1);
 						}
 					} catch (Exception e) {
+						LogUtil.log.error("创建连接数出错", e);
+						sleep(TimeUnit.MILLISECONDS, 1);
 					}
 				}
 			}
 		});
-		GuardThreadPool.THREAD_POOL.execute(new Runnable() {
+		GuardThreadPool.ESOURCE_GUARD_POOL.execute(new Runnable() {
 			@Override
 			public void run() {
 				while (true) {
 					try {
-						TimeUnit.MILLISECONDS.sleep(20);
+						sleep(TimeUnit.MILLISECONDS, 20);
 						for (ConnectionWrapper connection : idledDeque) {
 							if (connection.getStatus() != 0) {
 								continue;
@@ -112,11 +115,20 @@ public class ESource extends DataSourceWrapper {
 							poolSize.getAndDecrement();
 						}
 					} catch (Exception e) {
+						LogUtil.log.error("检查连接数出错", e);
 					}
 				}
 			}
 		});
 		inited = true;
+	}
+
+	private void sleep(TimeUnit unit, int offset) {
+		try {
+			unit.sleep(offset);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private ConnectionWrapper createConnection() {

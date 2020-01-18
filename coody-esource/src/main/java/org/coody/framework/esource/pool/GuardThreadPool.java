@@ -11,14 +11,24 @@ public class GuardThreadPool {
 	private static final int CORESIZE_NORMAL = 5;
 	private static final int MAXCORESIZE = 10;
 	private static final int KEEPALIVETIME = 10;
-	private static ThreadFactory threadFactory = new ThreadFactory() {
+	private static ThreadFactory esourceFactory = new ThreadFactory() {
 		@Override
 		public Thread newThread(Runnable r) {
-			return new Thread(r, "t_sys_pool_" + r.hashCode());
+			return new Thread(r, "esource_create_pool_" + r.hashCode());
 		}
 	};
-	public static final ExecutorService THREAD_POOL = new ThreadPoolExecutor(CORESIZE_NORMAL, MAXCORESIZE,
-			KEEPALIVETIME, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(MAXCORESIZE), threadFactory,
+	public static final ExecutorService ESOURCE_CREATE_POOL = new ThreadPoolExecutor(CORESIZE_NORMAL, MAXCORESIZE,
+			KEEPALIVETIME, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(MAXCORESIZE), esourceFactory,
+			new ThreadPoolExecutor.DiscardOldestPolicy());
+
+	private static ThreadFactory guardFactory = new ThreadFactory() {
+		@Override
+		public Thread newThread(Runnable r) {
+			return new Thread(r, "esource_guard_pool_" + r.hashCode());
+		}
+	};
+	public static final ExecutorService ESOURCE_GUARD_POOL = new ThreadPoolExecutor(CORESIZE_NORMAL, MAXCORESIZE,
+			KEEPALIVETIME, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(MAXCORESIZE), guardFactory,
 			new ThreadPoolExecutor.DiscardOldestPolicy());
 
 }

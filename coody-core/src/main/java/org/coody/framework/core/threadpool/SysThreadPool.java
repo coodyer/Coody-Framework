@@ -19,7 +19,7 @@ public class SysThreadPool {
 	private static  ThreadFactory threadFactory = new ThreadFactory() {
 		@Override
 		public Thread newThread(Runnable r) {
-			return new Thread(r, "t_sys_pool_" + r.hashCode());
+			return new Thread(r, "sys_pool_" + r.hashCode());
 		}
 	};
 	public static final ExecutorService  THREAD_POOL =new ThreadPoolExecutor(CORESIZE_NORMAL, MAXCORESIZE, KEEPALIVETIME, TimeUnit.MILLISECONDS,

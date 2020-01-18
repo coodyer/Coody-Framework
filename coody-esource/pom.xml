@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.coody.framework</groupId>
 		<artifactId>coody</artifactId>
-		<version>alpha-1.5.5</version>
+		<version>alpha-1.5.6</version>
 	</parent>
 	<artifactId>coody-esource</artifactId>
 	<packaging>jar</packaging>
@@ -17,6 +17,11 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencies>
+		<dependency>
+			<groupId>org.coody.framework</groupId>
+			<artifactId>coody-core</artifactId>
+			<version>${coody.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>
