@@ -68,7 +68,7 @@ public class EmailSender {
 
 		try {
 			String temp = sendAndReadLine("MAIL FROM:<" + emailSendConfig.getEmail() + ">" + "\r\n");
-			LogUtil.log.info(temp);
+			LogUtil.log.debug(temp);
 			for (String email : targeEmail) {
 				sendAndReadLine("RCPT TO:<" + email + ">" + "\r\n");
 			}
@@ -105,7 +105,7 @@ public class EmailSender {
 
 	private String readLine() throws IOException {
 		String line = bufferedReader.readLine();
-		LogUtil.log.info(line);
+		LogUtil.log.debug(line);
 		if (CommonUtil.isNullOrEmpty(line)) {
 			throw new MailException("连接邮件服务器失败");
 		}
