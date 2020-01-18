@@ -88,7 +88,7 @@ public class ESource extends DataSourceWrapper {
 				while (true) {
 					try {
 						sleep(TimeUnit.MILLISECONDS, 20);
-						if (idledDeque.isEmpty()) {
+						if (idledDeque.size() < getMinPoolSize()) {
 							needCreate.getAndSet(true);
 						}
 						for (ConnectionWrapper connection : idledDeque) {
