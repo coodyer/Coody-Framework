@@ -116,6 +116,7 @@ public class ESource extends DataSourceWrapper {
 						}
 					} catch (Exception e) {
 						LogUtil.log.error("检查连接数出错", e);
+						sleep(TimeUnit.MILLISECONDS, 1);
 					}
 				}
 			}
