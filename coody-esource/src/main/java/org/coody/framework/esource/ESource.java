@@ -7,7 +7,6 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.coody.framework.core.util.log.LogUtil;
 import org.coody.framework.esource.exception.ESourceCloseException;
@@ -31,25 +30,6 @@ public class ESource extends DataSourceWrapper {
 
 	private AtomicBoolean needCreate = new AtomicBoolean(true);
 
-	/**
-	 * 累计创建连接
-	 */
-	public static AtomicLong created = new AtomicLong();
-	/**
-	 * 累计使用次数
-	 */
-	public static AtomicLong used = new AtomicLong();
-
-	/**
-	 * 累计回收连接
-	 */
-	public static AtomicLong recoveryed = new AtomicLong();
-
-	/**
-	 * 累计关闭连接
-	 */
-	public static AtomicLong closed = new AtomicLong();
-
 	public ESource() {
 		super();
 	}
@@ -68,9 +48,7 @@ public class ESource extends DataSourceWrapper {
 		GuardThreadPool.ESOURCE_CREATE_POOL.execute(new Runnable() {
 			@Override
 			public void run() {
-				long m = 0;
 				while (true) {
-					m++;
 					try {
 						if (poolSize.longValue() >= getMaxPoolSize()) {
 							sleep(TimeUnit.MILLISECONDS, 1);
@@ -94,12 +72,6 @@ public class ESource extends DataSourceWrapper {
 					} catch (Exception e) {
 						LogUtil.log.error("创建连接数出错", e);
 						sleep(TimeUnit.MILLISECONDS, 1);
-					} finally {
-						if (m > 1000) {
-							LogUtil.log.error("当前空闲:" + idledDeque.size() + ">>" + "累计创建:" + created + ";累计使用:" + used
-									+ ";累计关闭:" + closed + ";累计回收:" + recoveryed);
-							m = 0;
-						}
 					}
 
 				}
@@ -122,8 +94,6 @@ public class ESource extends DataSourceWrapper {
 			ConnectionWrapper connection = new ConnectionWrapper(source, this);
 			idledDeque.offer(connection);
 			poolSize.getAndIncrement();
-
-			created.getAndIncrement();
 			return connection;
 		} catch (Exception e) {
 			throw new ESourceCreateConnectionException("创建连接失败", e);
@@ -135,27 +105,22 @@ public class ESource extends DataSourceWrapper {
 		try {
 			if (connection.isClosed()) {
 				poolSize.decrementAndGet();
-				if (idledDeque.size() < getMinPoolSize()) {
-					needCreate.getAndSet(true);
-				}
-				closed.getAndIncrement();
 				return;
 			}
 			if (!connection.getAutoCommit()) {
 				connection.getSource().close();
 				poolSize.decrementAndGet();
-				if (idledDeque.size() < getMinPoolSize()) {
-					needCreate.getAndSet(true);
-				}
-				closed.getAndIncrement();
 				return;
 			}
 			connection.setActiveTime(System.currentTimeMillis());
-			recoveryed.getAndIncrement();
 			idledDeque.push(connection);
 			return;
 		} catch (Exception e) {
 			throw new ESourceCloseException("关闭连接出错", e);
+		} finally {
+			if (idledDeque.size() < getMinPoolSize()) {
+				needCreate.getAndSet(true);
+			}
 		}
 	}
 
@@ -178,8 +143,6 @@ public class ESource extends DataSourceWrapper {
 			}
 		} catch (Exception e) {
 			throw new ESourceException("获取连接出错", e);
-		} finally {
-			used.getAndIncrement();
 		}
 	}
 
