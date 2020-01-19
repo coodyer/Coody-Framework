@@ -45,6 +45,11 @@ public class ConnectionWrapper implements Connection {
 		statements.clear();
 	}
 
+	public void clearAndClose() throws SQLException {
+		clear();
+		this.source.close();
+	}
+
 	public Long getActiveTime() {
 		return activeTime;
 	}

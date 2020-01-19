@@ -31,4 +31,14 @@ public class GuardThreadPool {
 			KEEPALIVETIME, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(MAXCORESIZE), guardFactory,
 			new ThreadPoolExecutor.DiscardOldestPolicy());
 
+	private static ThreadFactory vaildFactory = new ThreadFactory() {
+		@Override
+		public Thread newThread(Runnable r) {
+			return new Thread(r, "esource_vaild_pool_" + r.hashCode());
+		}
+	};
+	public static final ExecutorService ESOURCE_VAILD_POOL = new ThreadPoolExecutor(CORESIZE_NORMAL, MAXCORESIZE,
+			KEEPALIVETIME, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(MAXCORESIZE), vaildFactory,
+			new ThreadPoolExecutor.DiscardOldestPolicy());
+
 }

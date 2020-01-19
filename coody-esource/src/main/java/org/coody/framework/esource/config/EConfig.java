@@ -26,7 +26,7 @@ public class EConfig {
 	private int minPoolSize = 2;
 
 	// 获取连接最大等待时长，默认为30s
-	private long maxWaitTime = 30 * 1000;
+	private int maxWaitTime = 30 * 1000;
 
 	// 最大空闲回收时长，默认为60s
 	private long maxIdleTime = 60 * 1000;
@@ -90,11 +90,11 @@ public class EConfig {
 		this.minPoolSize = minPoolSize;
 	}
 
-	public long getMaxWaitTime() {
+	public int getMaxWaitTime() {
 		return maxWaitTime;
 	}
 
-	public void setMaxWaitTime(long maxWaitTime) {
+	public void setMaxWaitTime(int maxWaitTime) {
 		this.maxWaitTime = maxWaitTime;
 	}
 
