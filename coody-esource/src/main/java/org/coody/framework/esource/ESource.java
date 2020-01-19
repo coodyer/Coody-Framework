@@ -162,7 +162,7 @@ public class ESource extends DataSourceWrapper {
 							if (connection == null) {
 								continue;
 							}
-							if (!IDLED_DEQUE.remove(connection)) {
+							if (!RECOVERY_DEQUE.remove(connection)) {
 								continue;
 							}
 							connection.clearAndClose();
