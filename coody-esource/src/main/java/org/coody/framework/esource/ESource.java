@@ -208,10 +208,6 @@ public class ESource extends DataSourceWrapper {
 		return true;
 	}
 
-	public int getCurrentPoolSize() {
-		return IDLED_DEQUE.size() + WORK_QUEUE.size() + RECOVERY_DEQUE.size();
-	}
-
 	private void sleep(TimeUnit unit, int offset) {
 		try {
 			unit.sleep(offset);
