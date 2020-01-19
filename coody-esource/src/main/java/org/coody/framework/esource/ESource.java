@@ -124,7 +124,7 @@ public class ESource extends DataSourceWrapper {
 							}
 						}
 					} catch (Exception e) {
-						LogUtil.log.error("创建连接数出错", e);
+						LogUtil.log.error("校验连接出错", e);
 						sleep(TimeUnit.MILLISECONDS, 1);
 					}
 				}
@@ -168,7 +168,7 @@ public class ESource extends DataSourceWrapper {
 							connection.clearAndClose();
 						}
 					} catch (Exception e) {
-						LogUtil.log.error("创建连接数出错", e);
+						LogUtil.log.error("释放连接出错", e);
 						sleep(TimeUnit.MILLISECONDS, 1);
 					}
 
@@ -216,7 +216,6 @@ public class ESource extends DataSourceWrapper {
 				return;
 			}
 			connection.setAutoCommit(false);
-			connection.clearWarnings();
 			connection.setActiveTime(System.currentTimeMillis());
 			RECOVERY_DEQUE.offerFirst(connection);
 			return;
