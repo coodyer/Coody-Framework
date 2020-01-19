@@ -40,6 +40,8 @@ public class NioHttpBuilder extends HttpBuilder {
 		}
 		if (channel.isConnected()) {
 			channel.write(ByteBuffer.wrap(data));
+			channel.socket().getOutputStream().close();
+			channel.close();
 		}
 	}
 

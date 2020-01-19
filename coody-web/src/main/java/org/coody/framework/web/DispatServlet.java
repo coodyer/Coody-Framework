@@ -11,6 +11,7 @@ import org.coody.framework.Cson;
 import org.coody.framework.core.CoreApp;
 import org.coody.framework.core.builder.ConfigBuilder;
 import org.coody.framework.core.config.CoodyConfig;
+import org.coody.framework.core.container.ThreadContainer;
 import org.coody.framework.core.util.CommonUtil;
 import org.coody.framework.core.util.abnormal.PrintException;
 import org.coody.framework.core.util.convert.ConvertUtil;
@@ -74,6 +75,8 @@ public class DispatServlet extends HttpServlet {
 			PrintException.printException(e);
 			response.setStatus(500);
 			response.getOutputStream().print("page error");
+		}finally {
+			ThreadContainer.clear();
 		}
 	}
 
