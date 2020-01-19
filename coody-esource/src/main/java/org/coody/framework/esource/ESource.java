@@ -138,7 +138,6 @@ public class ESource extends DataSourceWrapper {
 			public void run() {
 				while (true) {
 					try {
-						System.out.println("当前连接池大小>>" + getCurrentPoolSize());
 						sleep(TimeUnit.SECONDS, 5);
 						/**
 						 * 回收连接
