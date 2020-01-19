@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.coody.framework.core.util.log.LogUtil;
 import org.coody.framework.esource.exception.ESourceCloseException;
@@ -48,6 +49,8 @@ public class ESource extends DataSourceWrapper {
 	 */
 	private final LinkedBlockingQueue<Object> VAILD_TASK_QUEUE = new LinkedBlockingQueue<Object>(1);
 
+	private AtomicInteger poolSize = new AtomicInteger();
+
 	private boolean inited = false;
 
 	public ESource() {
@@ -78,10 +81,12 @@ public class ESource extends DataSourceWrapper {
 							continue;
 						}
 						for (int i = 0; i < getInitialPoolSize(); i++) {
-							if (getCurrentPoolSize() > getMaxPoolSize()) {
+							if (poolSize.intValue() >= getMaxPoolSize()) {
 								break;
 							}
-							makeConnection();
+							if (!activationRecovery()) {
+								makeConnection();
+							}
 						}
 					} catch (Exception e) {
 						LogUtil.log.error("创建连接数出错", e);
@@ -110,6 +115,7 @@ public class ESource extends DataSourceWrapper {
 									continue;
 								}
 								connection.clearAndClose();
+								poolSize.getAndDecrement();
 							}
 						}
 						/**
@@ -121,6 +127,7 @@ public class ESource extends DataSourceWrapper {
 									continue;
 								}
 								connection.clearAndClose();
+								poolSize.getAndDecrement();
 							}
 						}
 					} catch (Exception e) {
@@ -138,7 +145,7 @@ public class ESource extends DataSourceWrapper {
 			public void run() {
 				while (true) {
 					try {
-						sleep(TimeUnit.SECONDS, 5);
+						sleep(TimeUnit.SECONDS, 1);
 						/**
 						 * 回收连接
 						 */
@@ -149,20 +156,29 @@ public class ESource extends DataSourceWrapper {
 							if (!IDLED_DEQUE.remove(connection)) {
 								continue;
 							}
+							LogUtil.log.debug("回收连接>>" + connection);
 							RECOVERY_DEQUE.offer(connection);
+						}
+						if (WORK_QUEUE.size() >= IDLED_DEQUE.size() || IDLED_DEQUE.size() < getMinPoolSize()) {
+							continue;
 						}
 						/**
 						 * 释放资源
 						 */
-						if (!(WORK_QUEUE.size() < IDLED_DEQUE.size() && IDLED_DEQUE.size() < RECOVERY_DEQUE.size())) {
-							continue;
-						}
-						for (int i = IDLED_DEQUE.size(); i < RECOVERY_DEQUE.size(); i++) {
-							ConnectionWrapper connection = RECOVERY_DEQUE.pollLast();
+						for (ConnectionWrapper connection : RECOVERY_DEQUE) {
 							if (connection == null) {
 								continue;
 							}
+							if (System.currentTimeMillis() - connection.getActiveTime() <= getMaxIdleTime()) {
+								continue;
+							}
+							if (!RECOVERY_DEQUE.remove(connection)) {
+								continue;
+							}
+							LogUtil.log.debug("释放连接>>" + connection);
 							connection.clearAndClose();
+							poolSize.getAndDecrement();
+
 						}
 					} catch (Exception e) {
 						LogUtil.log.error("释放连接出错", e);
@@ -172,6 +188,24 @@ public class ESource extends DataSourceWrapper {
 				}
 			}
 		});
+	}
+
+	@SuppressWarnings("resource")
+	public boolean activationRecovery() throws SQLException {
+		ConnectionWrapper connection = RECOVERY_DEQUE.poll();
+		while (connection != null && !connection.isValid(getMaxWaitTime())) {
+			connection.clearAndClose();
+			poolSize.getAndDecrement();
+			connection = RECOVERY_DEQUE.poll();
+		}
+		if (connection == null) {
+			return false;
+		}
+		if (!RECOVERY_DEQUE.remove(connection)) {
+			return false;
+		}
+		IDLED_DEQUE.offer(connection);
+		return true;
 	}
 
 	public int getCurrentPoolSize() {
@@ -190,6 +224,7 @@ public class ESource extends DataSourceWrapper {
 		try {
 			Connection source = DriverManager.getConnection(this.getUrl(), this.getUser(), this.getPassword());
 			ConnectionWrapper connection = new ConnectionWrapper(source, this);
+			poolSize.getAndIncrement();
 			IDLED_DEQUE.offerFirst(connection);
 			return connection;
 		} catch (Exception e) {
@@ -206,6 +241,7 @@ public class ESource extends DataSourceWrapper {
 				throw new ESourceCloseException("关闭连接出错");
 			}
 			if (connection.isClosed()) {
+				poolSize.getAndDecrement();
 				/**
 				 * 触发存活检测
 				 */
@@ -214,7 +250,7 @@ public class ESource extends DataSourceWrapper {
 			}
 			connection.setAutoCommit(false);
 			connection.setActiveTime(System.currentTimeMillis());
-			RECOVERY_DEQUE.offerFirst(connection);
+			IDLED_DEQUE.offer(connection);
 			return;
 		} catch (Exception e) {
 			throw new ESourceCloseException("关闭连接出错", e);
@@ -234,13 +270,6 @@ public class ESource extends DataSourceWrapper {
 			init();
 		}
 		ConnectionWrapper connection = null;
-		if (!RECOVERY_DEQUE.isEmpty()) {
-			connection = RECOVERY_DEQUE.poll();
-		}
-		if (connection != null) {
-			WORK_QUEUE.offer(connection);
-			return connection;
-		}
 		if (!IDLED_DEQUE.isEmpty()) {
 			connection = RECOVERY_DEQUE.poll();
 		} else {
@@ -248,6 +277,13 @@ public class ESource extends DataSourceWrapper {
 			 * 触发连接创建
 			 */
 			CREATE_TASK_QUEUE.offer(new Object());
+		}
+		if (connection != null) {
+			WORK_QUEUE.offer(connection);
+			return connection;
+		}
+		if (!RECOVERY_DEQUE.isEmpty()) {
+			connection = RECOVERY_DEQUE.poll();
 		}
 		if (connection != null) {
 			WORK_QUEUE.offer(connection);
