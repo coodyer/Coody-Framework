@@ -11,9 +11,9 @@ import org.coody.framework.core.annotation.Around;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.model.AspectPoint;
+import org.coody.framework.core.util.CommonUtil;
 import org.coody.framework.core.util.log.LogUtil;
 import org.coody.framework.core.util.reflex.MethodSignUtil;
-import org.coody.framework.core.util.CommonUtil;
 
 @AutoBuild
 public class CacheAspect {
@@ -60,7 +60,7 @@ public class CacheAspect {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		Integer cacheTimer = ((handle.time() == 0) ? 24 * 3600 : handle.time());
+		Integer cacheTimer = ((handle.expire() == 0) ? 24 * 3600 : handle.expire());
 		CoodyCacheFace cacheable = getCacheable(handle.engine());
 		// 获取缓存
 		try {

@@ -145,6 +145,7 @@ public class ESource extends DataSourceWrapper {
 			public void run() {
 				while (true) {
 					try {
+						LogUtil.log.debug("当前连接数>>" + (WORK_QUEUE.size() + IDLED_DEQUE.size() + RECOVERY_DEQUE.size()));
 						sleep(TimeUnit.SECONDS, 1);
 						/**
 						 * 回收连接
