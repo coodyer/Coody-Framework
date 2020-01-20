@@ -46,6 +46,7 @@ public class ClassUtil {
 		}
 
 		CopyOnWriteArraySet<Class<?>> queue = new CopyOnWriteArraySet<Class<?>>();
+
 		ThreadBlockPool pool = new ThreadBlockPool(100, 7200);
 		for (String clazzName : clazzNameSet) {
 			pool.pushTask(new Runnable() {
@@ -65,6 +66,7 @@ public class ClassUtil {
 	}
 
 	public static Set<String> getClasseNames(String pack) {
+
 		Set<String> classes = new LinkedHashSet<String>();
 		boolean recursive = true;
 		String packageName = pack;

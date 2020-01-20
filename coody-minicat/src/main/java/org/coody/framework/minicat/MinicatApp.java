@@ -83,6 +83,7 @@ public class MinicatApp {
 					ServletContainer.putServlet(mapping, servlet);
 				}
 				initMiniCatHttpPart(servlet);
+				continue;
 			}
 			Filter filterFlag = clazz.getAnnotation(Filter.class);
 			if (filterFlag != null && !CommonUtil.isNullOrEmpty(filterFlag.value())) {

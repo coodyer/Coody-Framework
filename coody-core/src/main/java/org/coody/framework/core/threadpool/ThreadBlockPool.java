@@ -7,6 +7,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
+import org.coody.framework.core.exception.base.CoodyException;
 
 /**
  * 阻塞模式线程池
@@ -30,6 +31,14 @@ public class ThreadBlockPool {
 
 	public void setMaxThread(Integer maxThread) {
 		this.maxThread = maxThread;
+	}
+
+	public List<Runnable> getRunnables() {
+		return runnables;
+	}
+
+	public void setRunnables(List<Runnable> runnables) {
+		this.runnables = runnables;
 	}
 
 	public ThreadBlockPool() {
@@ -71,7 +80,7 @@ public class ThreadBlockPool {
 		try {
 			exePool.awaitTermination(timeOutSeconds * 1000, TimeUnit.MILLISECONDS);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			throw new CoodyException("任务执行出错");
 		}
 		logger.debug("ThreadBlockPool:[" + maxThread + "]执行完毕");
 	}

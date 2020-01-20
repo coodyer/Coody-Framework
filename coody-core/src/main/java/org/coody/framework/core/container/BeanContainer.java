@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.constant.InsideTypeConstant;
@@ -26,7 +27,7 @@ import org.coody.framework.core.util.reflex.PropertUtil;
 @SuppressWarnings({ "unchecked" })
 public class BeanContainer {
 
-	private static Set<Class<?>> clazzContainer = new HashSet<Class<?>>();
+	private static Set<Class<?>> clazzContainer = new ConcurrentSkipListSet<Class<?>>();
 
 	private static Map<String, Map<String, Object>> beanContainer = new HashMap<String, Map<String, Object>>();
 
@@ -42,6 +43,10 @@ public class BeanContainer {
 
 	public static Set<Class<?>> getClazzContainer() {
 		return clazzContainer;
+	}
+
+	public static void wipeClazzFromContainer(Class<?> clazz) {
+		clazzContainer.remove(clazz);
 	}
 
 	public static void setClazzContainer(Set<Class<?>> clazzContainer) {

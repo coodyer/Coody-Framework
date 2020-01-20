@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.annotation.FieldDeliver;
 import org.coody.framework.core.annotation.MethodDeliver;
 import org.coody.framework.core.container.BeanContainer;
@@ -18,6 +19,7 @@ import org.coody.framework.core.threadpool.ThreadBlockPool;
 import org.coody.framework.core.util.reflex.MethodSignUtil;
 import org.coody.framework.core.util.reflex.PropertUtil;
 import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.log.LogUtil;
 
 /**
  * 切面加载器
@@ -105,6 +107,18 @@ public class AnnotationLoader implements CoodyLoader {
 			}
 		}
 		Annotation[] annotations = clazz.getAnnotations();
+		boolean hasAutoBuild = false;
+		for (Annotation annotation : annotations) {
+			if (annotation.annotationType() == AutoBuild.class
+					|| annotation.annotationType().isAnnotationPresent(AutoBuild.class)) {
+				hasAutoBuild = true;
+				break;
+			}
+		}
+		if (!hasAutoBuild) {
+			LogUtil.log.debug("移除类>>" + clazz.getName());
+			BeanContainer.wipeClazzFromContainer(clazz);
+		}
 		if (!CommonUtil.isNullOrEmpty(annotations)) {
 			Set<Annotation> fieldAnnotations = new HashSet<Annotation>();
 			Set<Annotation> methodAnnotations = new HashSet<Annotation>();

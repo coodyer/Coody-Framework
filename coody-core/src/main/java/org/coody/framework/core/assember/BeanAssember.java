@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.coody.framework.Cson;
 import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.exception.BeanInitException;
@@ -20,6 +19,7 @@ import org.coody.framework.core.util.clazz.ClassUtil;
 import org.coody.framework.core.util.log.LogUtil;
 import org.coody.framework.core.util.reflex.ParameterNameUtil;
 import org.coody.framework.core.util.reflex.PropertUtil;
+import org.coody.framework.cson.Cson;
 
 public class BeanAssember {
 

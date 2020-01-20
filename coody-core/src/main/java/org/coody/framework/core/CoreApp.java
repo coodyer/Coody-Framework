@@ -79,7 +79,6 @@ public class CoreApp {
 	}
 
 	public static void init(CoodyConfig config) throws Exception {
-
 		// 初始化组建加载器
 		initLoader(config.assember);
 		// 初始化扫描类
@@ -93,17 +92,17 @@ public class CoreApp {
 				continue;
 			}
 			ThreadBlockPool pool = new ThreadBlockPool(loadersMap.get(seq).size(), 7200);
-			for (Class<?> loader : loadersMap.get(seq)) {
+			for (Class<?> loaderClazz : loadersMap.get(seq)) {
 				pool.pushTask(new Runnable() {
 					@Override
 					public void run() {
 						try {
-							LogUtil.log.debug(loader.getName() + " >>开始加载");
+							LogUtil.log.debug(loaderClazz.getName() + " >>开始加载");
 							long t0 = System.currentTimeMillis();
-							CoodyLoader icopLoader = (CoodyLoader) loader.newInstance();
-							icopLoader.doLoader();
+							CoodyLoader loader = (CoodyLoader) loaderClazz.newInstance();
+							loader.doLoader();
 							long t1 = System.currentTimeMillis();
-							LogUtil.log.info(loader.getName() + " >>加载耗时:" + (t1 - t0) + "ms");
+							LogUtil.log.info(loaderClazz.getName() + " >>加载耗时:" + (t1 - t0) + "ms");
 						} catch (Exception e) {
 							e.printStackTrace();
 						}

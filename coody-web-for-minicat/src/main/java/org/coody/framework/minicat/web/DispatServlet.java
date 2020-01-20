@@ -3,7 +3,6 @@ package org.coody.framework.minicat.web;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-import org.coody.framework.Cson;
 import org.coody.framework.core.CoreApp;
 import org.coody.framework.core.builder.ConfigBuilder;
 import org.coody.framework.core.config.CoodyConfig;
@@ -12,6 +11,7 @@ import org.coody.framework.core.util.CommonUtil;
 import org.coody.framework.core.util.abnormal.PrintException;
 import org.coody.framework.core.util.convert.ConvertUtil;
 import org.coody.framework.core.util.log.LogUtil;
+import org.coody.framework.cson.Cson;
 import org.coody.framework.minicat.http.MinicatServletRequestImpl;
 import org.coody.framework.minicat.http.MinicatServletResponseImpl;
 import org.coody.framework.minicat.servlet.HttpServlet;
@@ -73,13 +73,14 @@ public class DispatServlet extends HttpServlet {
 			PrintException.printException(e);
 			response.setHttpCode(500);
 			response.getOutputStream().print("page error");
-		}finally {
+		} finally {
 			ThreadContainer.clear();
 		}
 	}
 
 	@Override
 	public void init() throws Exception {
+		long start = System.currentTimeMillis();
 		ConfigBuilder.builder();
 		CoodyConfig config = ConfigBuilder.flush(new CoodyConfig(), CoodyConfig.PREFIX);
 		// 框架启动
