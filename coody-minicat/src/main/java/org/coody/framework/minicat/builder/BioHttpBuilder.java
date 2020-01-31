@@ -141,6 +141,7 @@ public class BioHttpBuilder extends HttpBuilder {
 			}
 		} catch (MiniCatException e) {
 			throw e;
+		} catch (IOException e) {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

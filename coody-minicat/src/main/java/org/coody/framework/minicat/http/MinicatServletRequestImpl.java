@@ -1,7 +1,7 @@
 package org.coody.framework.minicat.http;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +28,7 @@ public class MinicatServletRequestImpl implements MinicatServletRequest {
 
 	private Map<String, String> header;
 
-	private InputStream inputStream;
+	private ByteArrayInputStream inputStream;
 
 	private String sessionId;
 
@@ -315,11 +315,11 @@ public class MinicatServletRequestImpl implements MinicatServletRequest {
 		header.put(name, value);
 	}
 
-	public InputStream getInputStream() {
+	public ByteArrayInputStream getInputStream() {
 		return inputStream;
 	}
 
-	public void setInputStream(InputStream inputStream) {
+	public void setInputStream(ByteArrayInputStream inputStream) {
 		this.inputStream = inputStream;
 	}
 

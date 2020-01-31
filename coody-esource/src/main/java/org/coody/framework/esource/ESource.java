@@ -145,7 +145,7 @@ public class ESource extends DataSourceWrapper {
 			public void run() {
 				while (true) {
 					try {
-						LogUtil.log.debug("当前连接数>>" + (WORK_QUEUE.size() + IDLED_DEQUE.size() + RECOVERY_DEQUE.size()));
+						//LogUtil.log.debug("当前连接数>>" + (WORK_QUEUE.size() + IDLED_DEQUE.size() + RECOVERY_DEQUE.size()));
 						sleep(TimeUnit.SECONDS, 1);
 						/**
 						 * 回收连接
@@ -157,7 +157,7 @@ public class ESource extends DataSourceWrapper {
 							if (!IDLED_DEQUE.remove(connection)) {
 								continue;
 							}
-							LogUtil.log.debug("回收连接>>" + connection);
+							//LogUtil.log.debug("回收连接>>" + connection);
 							RECOVERY_DEQUE.offer(connection);
 						}
 						if (WORK_QUEUE.size() >= IDLED_DEQUE.size() || IDLED_DEQUE.size() < getMinPoolSize()) {
