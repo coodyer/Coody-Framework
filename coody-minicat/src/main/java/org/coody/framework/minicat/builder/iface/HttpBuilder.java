@@ -152,6 +152,39 @@ public abstract class HttpBuilder {
 						.substring(request.getRequestURI().lastIndexOf(".") + 1, request.getRequestURI().length())
 						.toLowerCase());
 			}
+		} catch (BadRequestException e) {
+			e.printStackTrace();
+			try {
+				buildResponse(400, "400 bad request");
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			try {
+				buildResponse(500, "error execution");
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		} catch (PageNotFoundException e) {
+			try {
+				buildResponse(404, "page not found!");
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			try {
+				buildResponse(500, "error execution");
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+
+	}
+
+	public void invoke() {
+		try {
 			this.response = new MinicatServletResponseImpl();
 			MinicatProcess.doService(this);
 			buildResponse();
@@ -189,7 +222,8 @@ public abstract class HttpBuilder {
 	public void flushAndClose() {
 		try {
 			flush();
-		} catch (Exception e) {
+		} catch (IOException e) {
+		}catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			destroy();

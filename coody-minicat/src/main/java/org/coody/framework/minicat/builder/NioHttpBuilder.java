@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 
 import org.coody.framework.core.util.CommonUtil;
@@ -18,13 +19,13 @@ import org.coody.framework.minicat.util.ByteUtils;
 
 public class NioHttpBuilder extends HttpBuilder {
 
-	private SocketChannel channel;
+	private SelectionKey key;
 
-	public NioHttpBuilder(SocketChannel channel) {
-		if (channel == null) {
+	public NioHttpBuilder(SelectionKey key) {
+		if (key == null) {
 			throw new NotConnectionException("未实例化SocketChannel");
 		}
-		this.channel = channel;
+		this.key = key;
 	}
 
 	@Override
@@ -38,11 +39,10 @@ public class NioHttpBuilder extends HttpBuilder {
 		if (CommonUtil.isNullOrEmpty(data)) {
 			return;
 		}
-		if (channel.isConnected()) {
-			channel.write(ByteBuffer.wrap(data));
-			channel.socket().getOutputStream().close();
-			channel.close();
+		if (!((SocketChannel) key.channel()).isConnected()) {
+			return;
 		}
+		((SocketChannel) key.channel()).write(ByteBuffer.wrap(data));
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class NioHttpBuilder extends HttpBuilder {
 			 * 接受header
 			 */
 			ByteBuffer byteBuffer = ByteBuffer.allocateDirect(MiniCatConfig.maxHeaderLength);
-			int count = channel.read(byteBuffer);
+			int count = ((SocketChannel) key.channel()).read(byteBuffer);
 			if (count < 1) {
 				return;
 			}
@@ -138,7 +138,7 @@ public class NioHttpBuilder extends HttpBuilder {
 					byte[] bodyData = bodyContext.getBytes("iso-8859-1");
 					byteArrayOutputStream.write(bodyData);
 					int remainLength = request.getContextLength() - bodyData.length;
-					byte[] remainData = ByteUtils.getBytes(channel, remainLength);
+					byte[] remainData = ByteUtils.getBytes(((SocketChannel) key.channel()), remainLength);
 					byteArrayOutputStream.write(remainData);
 					request.setInputStream(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
 				} finally {
@@ -149,6 +149,7 @@ public class NioHttpBuilder extends HttpBuilder {
 			}
 		} catch (MiniCatException e) {
 			throw e;
+		} catch (IOException e) {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -13,6 +13,7 @@ import org.coody.framework.minicat.builder.NioHttpBuilder;
 import org.coody.framework.minicat.builder.iface.HttpBuilder;
 import org.coody.framework.minicat.notes.Notes;
 import org.coody.framework.minicat.socket.iface.MiniCatService;
+import org.coody.framework.minicat.threadpool.MiniCatThreadPool;
 
 public class NioService implements MiniCatService {
 
@@ -77,24 +78,26 @@ public class NioService implements MiniCatService {
 	}
 
 	private void readable(SelectionKey key) throws ClosedChannelException {
-		SocketChannel channel = (SocketChannel) key.channel();
-		HttpBuilder builder = new NioHttpBuilder(channel);
+		final HttpBuilder builder = new NioHttpBuilder(key);
 		builder.builder();
-		SelectionKey sKey = channel.register(selector, SelectionKey.OP_WRITE);
-		sKey.attach(builder);
+		MiniCatThreadPool.HTTP_POOL.execute(new Runnable() {
+			public void run() {
+				builder.invoke();
+				builder.flushAndClose();
+				try {
+					if (!((SocketChannel) key.channel()).isConnected()) {
+						return;
+					}
+					((SocketChannel) key.channel()).register(selector, SelectionKey.OP_WRITE);
+				} catch (ClosedChannelException e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 
 	private void writable(SelectionKey key) throws IOException {
-		SocketChannel channel = (SocketChannel) key.channel();
-		HttpBuilder builder = (HttpBuilder) key.attachment();
-		try {
-			builder.flushAndClose();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			channel.close();
-		}
+		key.channel().close();
 	}
-
 
 }
