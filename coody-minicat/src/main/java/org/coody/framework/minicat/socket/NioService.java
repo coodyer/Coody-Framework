@@ -90,7 +90,6 @@ public class NioService implements MiniCatService {
 					}
 					((SocketChannel) key.channel()).register(selector, SelectionKey.OP_WRITE);
 				} catch (ClosedChannelException e) {
-					e.printStackTrace();
 				}
 			}
 		});
