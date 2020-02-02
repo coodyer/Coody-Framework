@@ -9,6 +9,7 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 
+import org.coody.framework.core.util.log.LogUtil;
 import org.coody.framework.minicat.builder.NioHttpBuilder;
 import org.coody.framework.minicat.builder.iface.HttpBuilder;
 import org.coody.framework.minicat.notes.Notes;
@@ -90,14 +91,15 @@ public class NioService implements MiniCatService {
 					}
 					((SocketChannel) key.channel()).register(selector, SelectionKey.OP_WRITE);
 				} catch (ClosedChannelException e) {
-					e.printStackTrace();
+				} catch (Exception e) {
+					LogUtil.log.error("开启管道写入失败", e);
 				}
 			}
 		});
 	}
 
 	private void writable(SelectionKey key) throws IOException {
-		 key.channel().close();
+		key.channel().close();
 	}
 
 }
