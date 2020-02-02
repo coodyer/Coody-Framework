@@ -97,7 +97,7 @@ public class NioService implements MiniCatService {
 	}
 
 	private void writable(SelectionKey key) throws IOException {
-		// key.channel().close();
+		 key.channel().close();
 	}
 
 }
