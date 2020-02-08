@@ -16,10 +16,10 @@ import org.coody.framework.core.annotation.MethodDeliver;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.loader.iface.CoodyLoader;
 import org.coody.framework.core.threadpool.ThreadBlockPool;
-import org.coody.framework.core.util.reflex.MethodSignUtil;
-import org.coody.framework.core.util.reflex.PropertUtil;
 import org.coody.framework.core.util.CommonUtil;
 import org.coody.framework.core.util.log.LogUtil;
+import org.coody.framework.core.util.reflex.MethodSignUtil;
+import org.coody.framework.core.util.reflex.PropertUtil;
 
 /**
  * 切面加载器
@@ -96,6 +96,9 @@ public class AnnotationLoader implements CoodyLoader {
 	// 把所有类注解，克隆到方法和字段注解上
 	public void cloneClassAnnotation(Class<?> clazz) throws Exception {
 		if (clazz == null || clazz == Object.class) {
+			return;
+		}
+		if (!BeanContainer.getClazzContainer().contains(clazz)) {
 			return;
 		}
 		if (clazz.getSuperclass() != null && clazz.getSuperclass() != Object.class) {
