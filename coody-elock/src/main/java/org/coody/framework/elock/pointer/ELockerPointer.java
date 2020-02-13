@@ -29,7 +29,6 @@ public class ELockerPointer {
 						TimeUnit.MILLISECONDS.sleep(2);
 						guard();
 					} catch (Exception e) {
-						// TODO: handle exception
 					}
 				}
 			}

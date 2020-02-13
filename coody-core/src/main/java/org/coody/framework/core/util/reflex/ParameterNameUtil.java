@@ -13,9 +13,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.LinkedBlockingQueue;
 
+import org.coody.framework.core.util.log.LogUtil;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Label;
@@ -36,7 +36,7 @@ public class ParameterNameUtil {
 
 	private static final Map<Class<?>, Map<Executable, List<String>>> classExecutableCache = new HashMap<Class<?>, Map<Executable, List<String>>>();
 
-	private static final ConcurrentLinkedQueue<Class<?>> EXECUTABLE_QUEUE = new ConcurrentLinkedQueue<Class<?>>();
+	private static final LinkedBlockingQueue<Class<?>> EXECUTABLE_QUEUE = new LinkedBlockingQueue<Class<?>>();
 
 	static {
 		// 启动队列守护线程，用于加速
@@ -44,21 +44,12 @@ public class ParameterNameUtil {
 			@Override
 			public void run() {
 				while (true) {
+					Class<?> clazz = null;
 					try {
-						TimeUnit.MILLISECONDS.sleep(1);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-
-					Class<?> clazz = EXECUTABLE_QUEUE.poll();
-					while (clazz != null) {
-						try {
-							getExecutableParameters(clazz);
-						} catch (Exception e) {
-							e.printStackTrace();
-						} finally {
-							clazz = EXECUTABLE_QUEUE.poll();
-						}
+						clazz = EXECUTABLE_QUEUE.take();
+						getExecutableParameters(clazz);
+					} catch (Exception e) {
+						LogUtil.log.error("预加载方法参数失败>>" + clazz, e);
 					}
 				}
 			}

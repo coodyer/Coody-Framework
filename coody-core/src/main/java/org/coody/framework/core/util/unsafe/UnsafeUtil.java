@@ -24,23 +24,30 @@ public class UnsafeUtil {
 
 	private static Unsafe unsafe;
 
-	static {
-		try {
-			Field field = Unsafe.class.getDeclaredField("theUnsafe");
-			field.setAccessible(true);
-			unsafe = (Unsafe) field.get(null);
-		} catch (Exception e) {
-			e.printStackTrace();
+	private static Unsafe getUnsafe() {
+		if (unsafe != null) {
+			return unsafe;
 		}
+		synchronized (UnsafeUtil.class) {
+			try {
+				Field field = Unsafe.class.getDeclaredField("theUnsafe");
+				field.setAccessible(true);
+				unsafe = (Unsafe) field.get(null);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return unsafe;
+
 	}
 
 	public static Long getFieldOffset(Field field) {
 		Long fieldOffset = 0L;
 		try {
 			if (Modifier.isStatic(field.getModifiers())) {
-				fieldOffset = unsafe.staticFieldOffset(field);
+				fieldOffset = getUnsafe().staticFieldOffset(field);
 			} else {
-				fieldOffset = unsafe.objectFieldOffset(field);
+				fieldOffset = getUnsafe().objectFieldOffset(field);
 			}
 			if (fieldOffset == null || fieldOffset == 0) {
 				throw new UnsafeException("Unsafe获取字段内存地址异常，错误的内存地址>>" + field.getName() + ":" + fieldOffset);
@@ -52,7 +59,7 @@ public class UnsafeUtil {
 	}
 
 	public static <T> T createInstance(Class<?> clazz) throws InstantiationException {
-		return (T) unsafe.allocateInstance(clazz);
+		return (T) getUnsafe().allocateInstance(clazz);
 	}
 
 	public static void setFieldValue(Object target, Field field, Object value) {
@@ -64,14 +71,14 @@ public class UnsafeUtil {
 		if (fieldOffset == null || fieldOffset == 0) {
 			throw new UnsafeException("Unsafe设置字段值异常，错误的内存地址>>" + fieldOffset);
 		}
-		unsafe.putObject(target, fieldOffset, value);
+		getUnsafe().putObject(target, fieldOffset, value);
 	}
 
 	public static <T> T getFieldValue(Object target, Long fieldOffset) {
 		if (fieldOffset == null || fieldOffset == 0) {
 			throw new UnsafeException("Unsafe获取字段值异常，错误的内存地址>>" + fieldOffset);
 		}
-		return (T) unsafe.getObject(target, fieldOffset);
+		return (T) getUnsafe().getObject(target, fieldOffset);
 	}
 
 }
