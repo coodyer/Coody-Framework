@@ -106,6 +106,7 @@ public class FileUtils {
 
 	@SuppressWarnings("resource")
 	public static byte[] readBytes(String path) {
+		FileInputStream fi =null;
 		try {
 			File file = new File(URLDecoder.decode(path));
 			if (!file.exists()) {
@@ -115,7 +116,7 @@ public class FileUtils {
 			if (fileSize > Integer.MAX_VALUE) {
 				return null;
 			}
-			FileInputStream fi = new FileInputStream(file);
+			fi = new FileInputStream(file);
 			byte[] buffer = new byte[(int) fileSize];
 			int offset = 0;
 			int numRead = 0;
@@ -126,11 +127,15 @@ public class FileUtils {
 			if (offset != buffer.length) {
 				throw new IOException("Could not completely read file " + file.getName());
 			}
-			fi.close();
 			return buffer;
 		} catch (Exception e) {
 			PrintException.printException(e);
 			return null;
+		}finally {
+			try {
+				fi.close();
+			} catch (IOException e) {
+			}
 		}
 	}
 
@@ -198,12 +203,18 @@ public class FileUtils {
 	}
 
 	public static void writeBytes(String path, byte[] content) {
+		FileOutputStream fos = null;
 		try {
-			FileOutputStream fos = new FileOutputStream(path);
-
+			fos = new FileOutputStream(path);
 			fos.write(content);
-			fos.close();
+
 		} catch (Exception e) {
+		} finally {
+			try {
+				fos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}

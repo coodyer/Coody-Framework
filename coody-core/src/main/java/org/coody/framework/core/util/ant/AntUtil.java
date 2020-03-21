@@ -456,7 +456,13 @@ public class AntUtil {
 
 	public String extractPathWithinPattern(String pattern, String path) {
 		String[] patternParts = tokenizeToStringArray(pattern, this.pathSeparator, this.trimTokens, true);
+		if (patternParts == null || patternParts.length == 0) {
+			return "";
+		}
 		String[] pathParts = tokenizeToStringArray(path, this.pathSeparator, this.trimTokens, true);
+		if (pathParts == null || pathParts.length == 0) {
+			return "";
+		}
 		StringBuilder builder = new StringBuilder();
 		boolean pathStarted = false;
 
@@ -1606,6 +1612,9 @@ public class AntUtil {
 	 */
 	public static Locale parseLocaleString(String localeString) {
 		String[] parts = tokenizeToStringArray(localeString, "_ ", false, false);
+		if (parts == null) {
+			parts = new String[0];
+		}
 		String language = (parts.length > 0 ? parts[0] : "");
 		String country = (parts.length > 1 ? parts[1] : "");
 
