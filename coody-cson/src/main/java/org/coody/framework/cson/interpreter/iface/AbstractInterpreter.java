@@ -15,6 +15,7 @@ import org.coody.framework.cson.interpreter.ArrayInterpreter;
 import org.coody.framework.cson.interpreter.CollectionInterpreter;
 import org.coody.framework.cson.interpreter.MapInterpreter;
 import org.coody.framework.cson.interpreter.ObjectInterpreter;
+import org.coody.framework.cson.interpreter.StringInterpreter;
 import org.coody.framework.cson.util.FieldUtil;
 import org.coody.framework.cson.util.TypeUtil;
 
@@ -28,6 +29,8 @@ public abstract class AbstractInterpreter {
 	protected static AbstractInterpreter mapInterpreter = new MapInterpreter();
 
 	protected static AbstractInterpreter objectInterpreter = new ObjectInterpreter();
+
+	protected static StringInterpreter stringInterpreter = new StringInterpreter();
 
 	public static <T> ObjectWrapper<T> interpreter(String json, Class<T> clazz) {
 		return interpreter(json, TypeUtil.getTypeEntityByType((Type) clazz));
@@ -77,6 +80,9 @@ public abstract class AbstractInterpreter {
 				type = TypeUtil.getTypeEntityByType(new TypeAdapter<Map<Object, Object>>() {
 				}.getType());
 				return mapInterpreter.doInterpreter(json, type, offset);
+			}
+			if (type.getCurrent() == String.class) {
+				return stringInterpreter.doInterpreter(json, type, offset);
 			}
 			return objectInterpreter.doInterpreter(json, type, offset);
 		}
