@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.coody.framework.rcc.entity.RccInstance;
 
-public interface RegistryFace {
+public interface RccRegistry {
 
 	/**
 	 * 根据方法唯一标识获得所有实例

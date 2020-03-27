@@ -4,17 +4,19 @@ import java.lang.reflect.Method;
 
 import org.coody.framework.core.annotation.Around;
 import org.coody.framework.core.annotation.AutoBuild;
+import org.coody.framework.core.bean.InitBeanFace;
 import org.coody.framework.core.model.AspectPoint;
 import org.coody.framework.core.util.reflex.MethodSignUtil;
 import org.coody.framework.rcc.annotation.RccInterface;
 import org.coody.framework.rcc.caller.RccSendCaller;
+import org.coody.framework.rcc.serialer.JDKSerialer;
 import org.coody.framework.rcc.serialer.iface.RccSerialer;
 
 @AutoBuild
-public class RccAspect {
+public class RccAspect implements InitBeanFace {
 
-	@AutoBuild
 	RccSerialer serialer;
+
 	@AutoBuild
 	RccSendCaller caller;
 
@@ -41,4 +43,22 @@ public class RccAspect {
 		}
 		return serialer.unSerialize(result);
 	}
+
+	@Override
+	public void init() throws Exception {
+		if (serialer == null) {
+			serialer = new JDKSerialer();
+		}
+	}
+
+	public void setSerialer(RccSerialer serialer) {
+		this.serialer = serialer;
+	}
+
+	public void setCaller(RccSendCaller caller) {
+		this.caller = caller;
+	}
+	
+	
+
 }

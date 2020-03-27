@@ -21,7 +21,7 @@ import org.coody.framework.core.util.reflex.MethodSignUtil;
 import org.coody.framework.cson.Cson;
 import org.coody.framework.rcc.entity.RccInstance;
 import org.coody.framework.rcc.exception.RccException;
-import org.coody.framework.rcc.registry.iface.RegistryFace;
+import org.coody.framework.rcc.registry.iface.RccRegistry;
 
 /**
  * Zookeeper注册中心
@@ -29,7 +29,7 @@ import org.coody.framework.rcc.registry.iface.RegistryFace;
  * @author Coody
  *
  */
-public class ZkRegistry2_bak implements RegistryFace, Watcher {
+public class ZkRegistry2_bak implements RccRegistry, Watcher {
 
 	private ZooKeeper zookeeper;
 

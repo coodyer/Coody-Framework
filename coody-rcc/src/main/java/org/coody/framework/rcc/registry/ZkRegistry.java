@@ -12,7 +12,7 @@ import org.coody.framework.core.util.CommonUtil;
 import org.coody.framework.core.util.random.RandomUtil;
 import org.coody.framework.rcc.entity.RccInstance;
 import org.coody.framework.rcc.exception.RccException;
-import org.coody.framework.rcc.registry.iface.RegistryFace;
+import org.coody.framework.rcc.registry.iface.RccRegistry;
 
 /**
  * Zookeeper注册中心
@@ -20,12 +20,13 @@ import org.coody.framework.rcc.registry.iface.RegistryFace;
  * @author Coody
  *
  */
-public class ZkRegistry implements RegistryFace {
+public class ZkRegistry implements RccRegistry {
 
 	private ZooKeeper zookeeper;
 
-	public void setZookeeper(ZooKeeper zookeeper) {
+	public ZkRegistry setZookeeper(ZooKeeper zookeeper) {
 		this.zookeeper = zookeeper;
+		return this;
 	}
 
 	@Override
