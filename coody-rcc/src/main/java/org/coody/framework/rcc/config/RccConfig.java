@@ -15,10 +15,19 @@ public class RccConfig extends BaseModel {
 	 * 消费者线程数
 	 */
 	public static int consumeThread = 100;
+
+	/**
+	 * 本地host
+	 */
+	private String host;
 	/**
 	 * 本服务端口
 	 */
 	private Integer port;
+	/**
+	 * 本机权重
+	 */
+	private Integer pr;
 	/**
 	 * 调用其他服务的超时时间
 	 */
@@ -35,6 +44,22 @@ public class RccConfig extends BaseModel {
 	 * 注册中心
 	 */
 	private Class<? extends RccRegistry> registry;
+
+	public Integer getPr() {
+		return pr;
+	}
+
+	public void setPr(Integer pr) {
+		this.pr = pr;
+	}
+
+	public String getHost() {
+		return host;
+	}
+
+	public void setHost(String host) {
+		this.host = host;
+	}
 
 	public Integer getPort() {
 		return port;

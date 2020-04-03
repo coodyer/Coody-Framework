@@ -26,6 +26,9 @@ public class BeanLoader implements CoodyLoader {
 			if (clazz.isAnnotation()) {
 				continue;
 			}
+			if (clazz.isInterface()) {
+				continue;
+			}
 			if (CommonUtil.isNullOrEmpty(clazz.getAnnotations())) {
 				continue;
 			}

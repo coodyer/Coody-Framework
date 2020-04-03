@@ -1,0 +1,75 @@
+package org.coody.framework.rcc.loader;
+
+import java.lang.annotation.Annotation;
+
+import org.coody.framework.core.annotation.Order;
+import org.coody.framework.core.container.BeanContainer;
+import org.coody.framework.core.loader.iface.CoodyLoader;
+import org.coody.framework.core.threadpool.ThreadBlockPool;
+import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.log.LogUtil;
+import org.coody.framework.core.util.reflex.PropertUtil;
+import org.coody.framework.rcc.annotation.RccClient;
+import org.coody.framework.rcc.handler.RccHandler;
+import org.coody.framework.rcc.util.asm.ImplClassMaker;
+
+/**
+ * 
+ * @author Coody
+ *
+ */
+@Order(-1)
+public class RccLoader implements CoodyLoader {
+
+	@Override
+	public void doLoader() throws Exception {
+		if (CommonUtil.isNullOrEmpty(BeanContainer.getClazzContainer())) {
+			return;
+		}
+		ThreadBlockPool pool = new ThreadBlockPool(100, 60);
+		for (Class<?> clazz : BeanContainer.getClazzContainer()) {
+			if (clazz.isAnnotation()) {
+				continue;
+			}
+			if (CommonUtil.isNullOrEmpty(clazz.getAnnotations())) {
+				continue;
+			}
+			if (!clazz.isInterface()) {
+				continue;
+			}
+			Annotation rccInterface = PropertUtil.getAnnotation(clazz, RccClient.class);
+			if (rccInterface == null) {
+				continue;
+			}
+			pool.pushTask(new Runnable() {
+				@Override
+				public void run() {
+					loaderClazz(clazz);
+				}
+			});
+		}
+		pool.execute();
+	}
+
+	private void loaderClazz(Class<?> clazz) {
+		Class<?> implClazz = ImplClassMaker.createInterfaceImpl(clazz, RccHandler.class);
+		BeanContainer.getClazzContainer().add(implClazz);
+		// 复制注解
+		Class<?>[] interfaces = implClazz.getInterfaces();
+		if (CommonUtil.isNullOrEmpty(interfaces)) {
+			return;
+		}
+		for (Class<?> interfaced : interfaces) {
+			Annotation[] annotations = interfaced.getAnnotations();
+			if (CommonUtil.isNullOrEmpty(annotations)) {
+				continue;
+			}
+			try {
+				PropertUtil.addAnnotations(implClazz, annotations);
+			} catch (Exception e) {
+				LogUtil.log.error("注解Copy失败", e);
+			}
+		}
+	}
+
+}

@@ -81,24 +81,21 @@ public class ZkRegistry implements RccRegistry {
 		try {
 			String hostPath = "/" + host + ":" + port;
 			if (zookeeper.exists(hostPath, false) == null) {
-				System.out.println(
-						zookeeper.create(hostPath, methodKey.getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT));
-				;
+				zookeeper.create(hostPath, methodKey.getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
 			}
 			hostPath = "/" + host + ":" + port + "/" + methodKey;
 			if (zookeeper.exists(hostPath, false) == null) {
-				System.out.println(
-						zookeeper.create(hostPath, methodKey.getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT));
+				zookeeper.create(hostPath, methodKey.getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
 			}
 			String methodPath = "/" + methodKey;
 			if (zookeeper.exists(methodPath, false) == null) {
-				System.out.println(zookeeper.create(methodPath, (host + ":" + port).getBytes(), Ids.OPEN_ACL_UNSAFE,
-						CreateMode.PERSISTENT));
+				zookeeper.create(methodPath, (host + ":" + port).getBytes(), Ids.OPEN_ACL_UNSAFE,
+						CreateMode.PERSISTENT);
 			}
 			methodPath = "/" + methodKey + "/" + host + ":" + port + ":" + pr;
 			if (zookeeper.exists(methodPath, false) == null) {
-				System.out.println(zookeeper.create(methodPath, (host + ":" + port).getBytes(), Ids.OPEN_ACL_UNSAFE,
-						CreateMode.PERSISTENT));
+				zookeeper.create(methodPath, (host + ":" + port).getBytes(), Ids.OPEN_ACL_UNSAFE,
+						CreateMode.PERSISTENT);
 			}
 			return true;
 		} catch (KeeperException | InterruptedException e) {

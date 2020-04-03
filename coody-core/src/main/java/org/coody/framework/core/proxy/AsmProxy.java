@@ -14,6 +14,7 @@ import org.coody.framework.core.proxy.handler.iface.InvocationHandler;
 import org.coody.framework.core.proxy.iface.Proxy;
 import org.coody.framework.core.proxy.visitor.TargetClassVisitor;
 import org.coody.framework.core.proxy.visitor.TargetClassVisitor.MethodBean;
+import org.coody.framework.core.util.asm.AsmClassReader;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.FieldVisitor;
@@ -61,7 +62,7 @@ public class AsmProxy {
 		}
 		try {
 			// 获取目标类的一些数据
-			ClassReader reader = new ClassReader(clazz.getName());
+			ClassReader reader = AsmClassReader.getAsmClassReader(clazz.getName());
 			TargetClassVisitor targetClassVisitor = new TargetClassVisitor();
 			reader.accept(targetClassVisitor, ClassReader.SKIP_DEBUG);
 			// 判断是否是FINAL的

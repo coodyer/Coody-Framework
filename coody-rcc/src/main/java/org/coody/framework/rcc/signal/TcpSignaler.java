@@ -26,7 +26,12 @@ public class TcpSignaler implements RccSignaler {
 				RccThreadPool.SERVER_POOL.execute(new Runnable() {
 					@Override
 					public void run() {
-
+						/**
+						 * TODO
+						 * 解析报文
+						 * 根据报文调度目标进行方法调用
+						 * 响应报文
+						 */
 					}
 				});
 			}

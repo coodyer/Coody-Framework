@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.coody.framework.core.model.FieldEntity;
 import org.coody.framework.core.util.CommonUtil;
-import org.coody.framework.core.util.magic.iface.DynamicContainer;
+import org.coody.framework.core.util.dynamic.dynamic.DynamicContainer;
 import org.coody.framework.core.util.reflex.PropertUtil;
 import org.coody.framework.jdbc.annotation.DBColumn;
 import org.coody.framework.jdbc.annotation.DBTable;

@@ -30,11 +30,11 @@ public class CoreApp {
 	@SuppressWarnings("serial")
 	static Map<Integer, List<Class<?>>> loadersMap = new TreeMap<Integer, List<Class<?>>>() {
 		{
-			put(0, Arrays.asList(new Class<?>[] { AnnotationLoader.class }));
-			put(1, Arrays.asList(new Class<?>[] { AspectLoader.class }));
-			put(2, Arrays.asList(new Class<?>[] { CustomBeanLoader.class, BeanLoader.class }));
-			put(4, Arrays.asList(new Class<?>[] { FieldLoader.class }));
-			put(Integer.MAX_VALUE, Arrays.asList(new Class<?>[] { InitRunLoader.class }));
+			put(0, new ArrayList<Class<?>>(Arrays.asList(new Class<?>[] { AnnotationLoader.class })));
+			put(1, new ArrayList<Class<?>>(Arrays.asList(new Class<?>[] { AspectLoader.class })));
+			put(2, new ArrayList<Class<?>>(Arrays.asList(new Class<?>[] { CustomBeanLoader.class, BeanLoader.class })));
+			put(4, new ArrayList<Class<?>>(Arrays.asList(new Class<?>[] { FieldLoader.class })));
+			put(Integer.MAX_VALUE, new ArrayList<Class<?>>(Arrays.asList(new Class<?>[] { InitRunLoader.class })));
 		}
 	};
 
@@ -49,7 +49,7 @@ public class CoreApp {
 				throw new CoodyException(loaderClazz.getName() + "不是加载器");
 			}
 			Integer seq = Integer.MAX_VALUE - 1;
-			Order order = loader.getClass().getAnnotation(Order.class);
+			Order order = loaderClazz.getAnnotation(Order.class);
 			if (order != null) {
 				seq = order.value();
 			}

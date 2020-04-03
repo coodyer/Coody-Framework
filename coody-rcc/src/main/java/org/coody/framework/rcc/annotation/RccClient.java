@@ -15,8 +15,8 @@ import org.coody.framework.core.annotation.AutoBuild;
 @Target({ElementType.METHOD,ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME) 
 @AutoBuild
-public @interface RccInterface {
+public @interface RccClient {
 
-	String value() default "";
+	String[] value() default {""};
 	
 }

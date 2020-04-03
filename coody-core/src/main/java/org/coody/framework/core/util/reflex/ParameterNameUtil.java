@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.coody.framework.core.util.asm.AsmClassReader;
 import org.coody.framework.core.util.log.LogUtil;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -111,11 +112,7 @@ public class ParameterNameUtil {
 	private static ClassReader createClassReader(Class<?> declaringClass) throws IOException {
 		InputStream in = null;
 		try {
-			ClassLoader classLoader = declaringClass.getClassLoader();
-			String fileName = declaringClass.getName().replace('.', '/') + ".class";
-			in = classLoader.getResourceAsStream(fileName);
-			ClassReader reader = new ClassReader(in);
-			return reader;
+			return AsmClassReader.getAsmClassReader(declaringClass.getName());
 		} finally {
 			if (in != null) {
 				try {

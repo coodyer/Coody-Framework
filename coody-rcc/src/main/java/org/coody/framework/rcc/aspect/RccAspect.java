@@ -7,7 +7,7 @@ import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.bean.InitBeanFace;
 import org.coody.framework.core.model.AspectPoint;
 import org.coody.framework.core.util.reflex.MethodSignUtil;
-import org.coody.framework.rcc.annotation.RccInterface;
+import org.coody.framework.rcc.annotation.RccClient;
 import org.coody.framework.rcc.caller.RccSendCaller;
 import org.coody.framework.rcc.serialer.JDKSerialer;
 import org.coody.framework.rcc.serialer.iface.RccSerialer;
@@ -27,7 +27,7 @@ public class RccAspect implements InitBeanFace {
 	 * @return
 	 * @throws Throwable
 	 */
-	@Around(annotationClass = RccInterface.class)
+	@Around(annotationClass = RccClient.class)
 	public Object remoteCall(AspectPoint point) throws Throwable {
 		// AOP获取方法执行信息
 		Method method = point.getAbler().getMethod();

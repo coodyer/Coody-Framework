@@ -1401,4 +1401,46 @@ public class PropertUtil {
 		}
 	}
 
+	/**
+	 * 为方法或字段添加注解
+	 * 
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 */
+	public static void addAnnotations(Class<?> clazz, Annotation... annotations) throws Exception {
+		synchronized (clazz) {
+			if (CommonUtil.hasNullOrEmpty(clazz, annotations)) {
+				throw new CoodyException("accessible or annotations is empty");
+			}
+			clazz.getAnnotations();
+			Field annotationDataField = PropertUtil.getField(clazz.getClass(), "annotationData");
+			annotationDataField.setAccessible(true);
+			Object annotationData = annotationDataField.get(clazz);
+			Field declaredAnnotationsField = PropertUtil.getField(annotationData.getClass(), "declaredAnnotations");
+
+			if (Modifier.isTransient(declaredAnnotationsField.getModifiers())) {
+				Field modifiersField = Field.class.getDeclaredField("modifiers");
+				modifiersField.setAccessible(true);
+				modifiersField.set(declaredAnnotationsField,
+						declaredAnnotationsField.getModifiers() & ~Modifier.TRANSIENT);
+			}
+			declaredAnnotationsField.setAccessible(true);
+			Object declaredAnnotationsObject = declaredAnnotationsField.get(annotationData);
+			if (declaredAnnotationsObject == null || declaredAnnotationsObject == Collections.EMPTY_MAP) {
+				declaredAnnotationsObject = new LinkedHashMap<Class<?>, Annotation>();
+			}
+			LinkedHashMap<Class<?>, Annotation> declaredAnnotations = (LinkedHashMap<Class<?>, Annotation>) declaredAnnotationsObject;
+			for (Annotation annotation : annotations) {
+				if (annotation == null) {
+					continue;
+				}
+				if (declaredAnnotations.containsKey(annotation.annotationType())) {
+					continue;
+				}
+				declaredAnnotations.put(annotation.annotationType(), annotation);
+			}
+			PropertUtil.setFieldValue(annotationData, "declaredAnnotations", declaredAnnotations);
+		}
+	}
 }

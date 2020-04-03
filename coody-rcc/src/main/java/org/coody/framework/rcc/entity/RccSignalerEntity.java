@@ -38,6 +38,6 @@ public class RccSignalerEntity extends BaseModel {
 		} catch (Exception e) {
 			throw new RccException("数据写入错误");
 		}
-
 	}
+	
 }

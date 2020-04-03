@@ -7,9 +7,9 @@ import org.coody.framework.core.bean.InitBeanFace;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.loader.iface.CoodyLoader;
 import org.coody.framework.core.threadpool.ThreadBlockPool;
-import org.coody.framework.core.util.log.LogUtil;
 import org.coody.framework.core.util.CommonUtil;
 import org.coody.framework.core.util.abnormal.PrintException;
+import org.coody.framework.core.util.log.LogUtil;
 
 /**
  * 切面加载器
@@ -23,7 +23,7 @@ public class InitRunLoader implements CoodyLoader {
 	public void doLoader() throws Exception {
 		List<Runnable> inits = new ArrayList<Runnable>();
 		for (Object bean : BeanContainer.getBeans()) {
-			if (bean instanceof InitBeanFace) {
+			if (InitBeanFace.class.isAssignableFrom(bean.getClass())) {
 				// 初始化运行
 				try {
 					LogUtil.log.debug("初始化执行 >>" + bean.getClass().getName());

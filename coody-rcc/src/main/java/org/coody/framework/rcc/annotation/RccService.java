@@ -15,7 +15,7 @@ import org.coody.framework.core.annotation.AutoBuild;
 @Target({ElementType.METHOD,ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME) 
 @AutoBuild
-public @interface RccImplement {
+public @interface RccService {
 
 	/**
 	 * ip地址
