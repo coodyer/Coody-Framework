@@ -112,7 +112,7 @@ public class ParameterNameUtil {
 	private static ClassReader createClassReader(Class<?> declaringClass) throws IOException {
 		InputStream in = null;
 		try {
-			return AsmClassReader.getAsmClassReader(declaringClass.getName());
+			return AsmClassReader.getAsmClassReader(declaringClass);
 		} finally {
 			if (in != null) {
 				try {

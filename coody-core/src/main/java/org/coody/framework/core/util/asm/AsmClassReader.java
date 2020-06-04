@@ -10,11 +10,12 @@ public class AsmClassReader {
 
 	public final static Map<String, byte[]> clazzByteMap = new ConcurrentHashMap<String, byte[]>();
 
-	public static ClassReader getAsmClassReader(String name) throws IOException {
-		if (clazzByteMap.containsKey(name)) {
-			return new ClassReader(clazzByteMap.get(name));
+	public static ClassReader getAsmClassReader(Class<?> clazz) throws IOException {
+		if (clazzByteMap.containsKey(clazz.getName())) {
+			return new ClassReader(clazzByteMap.get(clazz.getName()));
 		}
-		return new ClassReader(name);
+		return new ClassReader(
+				clazz.getClassLoader().getResourceAsStream(clazz.getName().replace('.', '/') + ".class"));
 	}
 
 }

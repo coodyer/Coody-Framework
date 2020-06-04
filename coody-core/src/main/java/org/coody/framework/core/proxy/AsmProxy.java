@@ -62,7 +62,7 @@ public class AsmProxy {
 		}
 		try {
 			// 获取目标类的一些数据
-			ClassReader reader = AsmClassReader.getAsmClassReader(clazz.getName());
+			ClassReader reader = AsmClassReader.getAsmClassReader(clazz);
 			TargetClassVisitor targetClassVisitor = new TargetClassVisitor();
 			reader.accept(targetClassVisitor, ClassReader.SKIP_DEBUG);
 			// 判断是否是FINAL的

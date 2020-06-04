@@ -43,8 +43,9 @@ import org.coody.framework.jdbc.util.JdbcUtil;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class JdbcProcessor {
-
-	public Boolean formatSql = true;
+	
+	
+	private Boolean formatSql = true;
 
 	public Boolean getFormatSql() {
 		return formatSql;
