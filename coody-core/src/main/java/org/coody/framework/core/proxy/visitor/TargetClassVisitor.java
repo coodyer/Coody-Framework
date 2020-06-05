@@ -89,7 +89,11 @@ public class TargetClassVisitor extends ClassVisitor {
 	private List<MethodBean> initMethodBeanByParent(String superName) {
 		try {
 			if (superName != null && !superName.isEmpty()) {
-				ClassReader reader = new ClassReader(superName);
+				if (superName.equals("java/lang/Object")) {
+					return null;
+				}
+				ClassReader reader = new ClassReader(
+						Thread.currentThread().getContextClassLoader().getResourceAsStream(superName + ".class"));
 				TargetClassVisitor visitor = new TargetClassVisitor();
 				reader.accept(visitor, ClassReader.SKIP_DEBUG);
 				List<MethodBean> beans = new ArrayList<>();
