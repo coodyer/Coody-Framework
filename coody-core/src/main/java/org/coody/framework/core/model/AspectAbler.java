@@ -15,7 +15,7 @@ public class AspectAbler extends BaseModel implements Cloneable {
 
 	// 业务bean
 	private Object bean;
-	//代理bean
+	// 代理bean
 	private Proxy proxy;
 	// 业务方法
 	private Method method;
@@ -30,9 +30,6 @@ public class AspectAbler extends BaseModel implements Cloneable {
 	// 注解值
 	private Map<Class<? extends Annotation>, Object> annotationValueMap = new ConcurrentHashMap<Class<? extends Annotation>, Object>();
 
-	
-	
-	
 	public Proxy getProxy() {
 		return proxy;
 	}
@@ -110,8 +107,11 @@ public class AspectAbler extends BaseModel implements Cloneable {
 			}
 			ThreadContainer.set(aspectFlag, this);
 			return childAbler.getAspectMethod().invoke(childAbler.getAspectBean(), point);
-		} catch (InvocationTargetException e) {
-			throw e.getTargetException();
+		} catch (Exception e) {
+			if (e instanceof InvocationTargetException) {
+				throw ((InvocationTargetException) e).getTargetException();
+			}
+			throw e;
 		} finally {
 			ThreadContainer.remove(aspectFlag);
 		}

@@ -1218,7 +1218,7 @@ public class PropertUtil {
 		}
 		for (Annotation annotationTemp : annotations) {
 			if (annotationTemp.annotationType().isAnnotationPresent(annotationClass)) {
-				annotation = getParentAnnotation(annotationTemp, annotationClass);
+				annotation = getAndPushValueParentAnnotation(annotationTemp, annotationClass);
 				ANNOTATION_MAP.put(field.getName() + annotationClass.getName(), annotation);
 				return (T) annotation;
 			}
@@ -1226,7 +1226,29 @@ public class PropertUtil {
 		return null;
 	}
 
-	private static <T extends Annotation> T getParentAnnotation(Annotation annotation, Class<T> annotationClass) {
+	private synchronized static <T extends Annotation> T getParentAnnotation(Annotation annotation,
+			Class<T> annotationClass) {
+		if (annotation.annotationType() == annotationClass) {
+			return (T) annotation;
+		}
+		Annotation[] annotationsForAnnotation = annotation.annotationType().getAnnotations();
+		if (CommonUtil.isNullOrEmpty(annotationsForAnnotation)) {
+			return null;
+		}
+		for (Annotation annotationForAnnotation : annotationsForAnnotation) {
+			if (annotationClass == annotationForAnnotation.annotationType()) {
+				return (T) annotationForAnnotation;
+			}
+			if (!annotationForAnnotation.annotationType().isAnnotationPresent(annotationClass)) {
+				continue;
+			}
+			return getAndPushValueParentAnnotation(annotationForAnnotation, annotationClass);
+		}
+		return null;
+	}
+
+	private synchronized static <T extends Annotation> T getAndPushValueParentAnnotation(Annotation annotation,
+			Class<T> annotationClass) {
 		if (annotation.annotationType() == annotationClass) {
 			return (T) annotation;
 		}
@@ -1243,7 +1265,7 @@ public class PropertUtil {
 				continue;
 			}
 			setAnnotationValue(annotationForAnnotation, getAnnotationValueMap(annotation));
-			return getParentAnnotation(annotationForAnnotation, annotationClass);
+			return getAndPushValueParentAnnotation(annotationForAnnotation, annotationClass);
 		}
 		return null;
 	}
@@ -1266,7 +1288,7 @@ public class PropertUtil {
 		}
 		for (Annotation annotationTemp : annotations) {
 			if (annotationTemp.annotationType().isAnnotationPresent(annotationClass)) {
-				annotation = getParentAnnotation(annotationTemp, annotationClass);
+				annotation = getAndPushValueParentAnnotation(annotationTemp, annotationClass);
 				ANNOTATION_MAP.put(method.getName() + annotationClass.getName(), annotation);
 				return (T) annotation;
 			}
@@ -1292,7 +1314,7 @@ public class PropertUtil {
 				list.add((T) annotationTemp);
 				continue;
 			}
-			Annotation parentAnnotation = getParentAnnotation(annotationTemp, annotationClass);
+			Annotation parentAnnotation = getAndPushValueParentAnnotation(annotationTemp, annotationClass);
 			if (parentAnnotation == null) {
 				continue;
 			}
@@ -1323,7 +1345,7 @@ public class PropertUtil {
 		}
 		for (Annotation annotationTemp : annotations) {
 			if (annotationTemp.annotationType().isAnnotationPresent(annotationClass)) {
-				annotation = getParentAnnotation(annotationTemp, annotationClass);
+				annotation = getAndPushValueParentAnnotation(annotationTemp, annotationClass);
 				ANNOTATION_MAP.put(clazz.getName() + annotationClass.getName(), annotation);
 				return (T) annotation;
 			}
@@ -1347,6 +1369,10 @@ public class PropertUtil {
 			}
 			Annotation parentAnnotation = getParentAnnotation(annotationTemp, annotationClass);
 			if (parentAnnotation == null) {
+				continue;
+			}
+			if (parentAnnotation.annotationType() == annotationClass) {
+				list.add((T) annotationTemp);
 				continue;
 			}
 			list.add((T) parentAnnotation);

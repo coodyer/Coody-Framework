@@ -35,8 +35,7 @@ public class BeanAssember {
 
 	@SuppressWarnings("unchecked")
 	public static <T> T initBean(Class<?> cla, String additionBeanName, Map<String, Object> parameterMap) {
-
-		Set<String> names = BeanContainer.getOverallBeanName(cla);
+ 		Set<String> names = BeanContainer.getOverallBeanName(cla);
 		if (!CommonUtil.isNullOrEmpty(additionBeanName)) {
 			names.add(additionBeanName);
 		}

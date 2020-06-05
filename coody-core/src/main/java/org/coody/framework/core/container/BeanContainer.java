@@ -16,12 +16,13 @@ import org.coody.framework.core.exception.BeanConflictException;
 import org.coody.framework.core.util.CommonUtil;
 import org.coody.framework.core.util.clazz.ClassUtil;
 import org.coody.framework.core.util.reflex.PropertUtil;
+import org.coody.framework.cson.Cson;
 
 /**
  * 
  * @author Coody
  *
- *         2018年12月17日
+ *         2018骞�12鏈�17鏃�
  * 
  * @blog 54sb.org
  */
@@ -63,7 +64,7 @@ public class BeanContainer {
 			return null;
 		}
 		if (map.size() > 1) {
-			throw new BeanConflictException(beanName + "存在多个实例,未明确指定");
+			throw new BeanConflictException(beanName + "瀛樺湪澶氫釜瀹炰緥,鏈槑纭寚瀹�");
 		}
 		for (String key : map.keySet()) {
 			return (T) map.get(key);
@@ -121,11 +122,15 @@ public class BeanContainer {
 				if (CommonUtil.isNullOrEmpty(annotation)) {
 					continue;
 				}
-				String[] values = PropertUtil.getAnnotationValue(annotation, "value");
+				Object values = PropertUtil.getAnnotationValue(annotation, "value");
 				if (CommonUtil.isNullOrEmpty(values)) {
 					continue;
 				}
-				beanNames.addAll(Arrays.asList(values));
+				if (values instanceof String[]) {
+					beanNames.addAll(Arrays.asList((String[]) values));
+					continue;
+				}
+				beanNames.add(values.toString());
 			}
 			return beanNames;
 		} finally {

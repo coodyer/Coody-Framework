@@ -240,8 +240,9 @@ public class AsmProxy {
 		methodVisitor.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[] { Type.getInternalName(Throwable.class) });
 		methodVisitor.visitVarInsn(Opcodes.ASTORE, 4);
 		methodVisitor.visitVarInsn(Opcodes.ALOAD, 4);
-		methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, Type.getInternalName(Throwable.class), "printStackTrace",
-				"()V", false);
+		
+		methodVisitor.visitInsn(Opcodes.ATHROW);
+		//methodVisitor.visitMethodInsn(Opcodes.ATHROW, Type.getInternalName(Throwable.class), "printStackTrace","()V", false);
 		methodVisitor.visitInsn(Opcodes.ACONST_NULL);
 		methodVisitor.visitInsn(Opcodes.ARETURN);
 		methodVisitor.visitMaxs(4, 5);
