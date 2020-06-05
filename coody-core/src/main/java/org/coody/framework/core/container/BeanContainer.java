@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.coody.framework.core.annotation.AutoBuild;
@@ -29,9 +30,9 @@ public class BeanContainer {
 
 	private static Set<Class<?>> clazzContainer = new ConcurrentSkipListSet<Class<?>>();
 
-	private static Map<String, Map<String, Object>> beanContainer = new HashMap<String, Map<String, Object>>();
+	private static Map<String, Map<String, Object>> beanContainer = new ConcurrentHashMap<String, Map<String, Object>>();
 
-	private static Map<Class<?>, Set<String>> beanNameContainer = new HashMap<Class<?>, Set<String>>();
+	private static Map<Class<?>, Set<String>> beanNameContainer = new ConcurrentHashMap<Class<?>, Set<String>>();
 
 	public static <T> T getBean(Class<?> cla) {
 		String beanName = getGeneralBeanName(cla);
@@ -74,8 +75,7 @@ public class BeanContainer {
 		Class<?> clazz = ClassUtil.getSourceClass(bean.getClass());
 		String realBeanName = clazz.getName();
 		if (beanContainer.containsKey(beanName)) {
-			Map<String, Object> map = beanContainer.get(beanName);
-			map.put(realBeanName, bean);
+			beanContainer.get(beanName).put(realBeanName, bean);
 			return;
 		}
 		Map<String, Object> map = new HashMap<String, Object>();
