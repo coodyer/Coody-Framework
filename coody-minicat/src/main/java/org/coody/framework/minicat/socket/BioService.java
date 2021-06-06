@@ -36,7 +36,7 @@ public class BioService implements MiniCatService {
 			public void run() {
 				try {
 					HttpBuilder builder = new BioHttpBuilder(socket);
-					builder.builder();
+					builder.builder(socket.getRemoteSocketAddress().toString());
 					builder.invoke();
 					builder.flushAndClose();
 				} catch (Exception e) {

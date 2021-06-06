@@ -101,11 +101,11 @@ public class BioHttpBuilder extends HttpBuilder {
 						request.setGzip(true);
 					}
 				}
-				if (name.equalsIgnoreCase("Cookie")) {
-					if (value != null && value.contains(MiniCatConfig.sessionIdField)) {
-						request.setSessionCread(true);
-					}
-				}
+//				if (name.equalsIgnoreCase("Cookie")) {
+//					if (value != null && value.contains(MiniCatConfig.sessionIdField)) {
+//						request.setSessionCread(true);
+//					}
+//				}
 				if (name.equalsIgnoreCase("Host")) {
 					request.setBasePath(request.getScheme() + "://" + value);
 					if (requestURI.startsWith(request.getBasePath())) {

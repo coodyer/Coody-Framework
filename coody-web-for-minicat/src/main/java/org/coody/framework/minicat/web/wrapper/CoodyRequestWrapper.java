@@ -14,23 +14,23 @@ import org.coody.framework.minicat.web.container.HttpContainer;
 public class CoodyRequestWrapper implements MinicatServletRequest {
 
 	@Override
-	public MultipartFile getFile(String paramName) {
-		return HttpContainer.getRequest().getFile(paramName);
+	public MultipartFile getFile(String parameter) {
+		return HttpContainer.getRequest().getFile(parameter);
 	}
 
 	@Override
-	public String getParament(String paramName) {
-		return HttpContainer.getRequest().getParament(paramName);
+	public String getParament(String parameter) {
+		return HttpContainer.getRequest().getParament(parameter);
 	}
 
 	@Override
-	public Map<String, List<Object>> getParams() {
-		return HttpContainer.getRequest().getParams();
+	public Map<String, List<Object>> getParamenters() {
+		return HttpContainer.getRequest().getParamenters();
 	}
 
 	@Override
-	public void setParams(Map<String, List<Object>> params) {
-		HttpContainer.getRequest().setParams(params);
+	public void setParamenters(Map<String, List<Object>> paramenters) {
+		HttpContainer.getRequest().setParamenters(paramenters);
 	}
 
 	@Override
@@ -111,6 +111,16 @@ public class CoodyRequestWrapper implements MinicatServletRequest {
 	@Override
 	public String getCookie(String name) {
 		return HttpContainer.getRequest().getCookie(name);
+	}
+
+	@Override
+	public String getClientIp() {
+		return HttpContainer.getRequest().getClientIp();
+	}
+
+	@Override
+	public Integer getClientPort() {
+		return HttpContainer.getRequest().getClientPort();
 	}
 
 }

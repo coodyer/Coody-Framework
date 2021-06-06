@@ -47,6 +47,10 @@ public class MinicatServletRequestImpl implements MinicatServletRequest {
 	private Integer contextLength = 0;
 
 	private String suffix;
+	
+	private String clientIp;
+	
+	private Integer clientPort;
 
 	public MultipartFile getFile(String paramName) {
 		if (params == null) {
@@ -61,6 +65,14 @@ public class MinicatServletRequestImpl implements MinicatServletRequest {
 			return null;
 		}
 		return (MultipartFile) value;
+	}
+
+	public String getClientIp() {
+		return clientIp;
+	}
+
+	public void setClientIp(String clientIp) {
+		this.clientIp = clientIp;
 	}
 
 	public String getParament(String paramName) {
@@ -83,14 +95,14 @@ public class MinicatServletRequestImpl implements MinicatServletRequest {
 		return value.toString();
 	}
 
-	public Map<String, List<Object>> getParams() {
+	public Map<String, List<Object>> getParamenters() {
 		if (CommonUtil.isNullOrEmpty(params)) {
 			initParams();
 		}
 		return params;
 	}
 
-	public void setParams(Map<String, List<Object>> params) {
+	public void setParamenters(Map<String, List<Object>> params) {
 		this.params = params;
 	}
 
@@ -164,13 +176,15 @@ public class MinicatServletRequestImpl implements MinicatServletRequest {
 		if (!CommonUtil.isNullOrEmpty(session)) {
 			return session;
 		}
-		isSessionCread = true;
+		
 		sessionId = SessionContainer.createSessionId();
 		session = SessionContainer.initSession(sessionId);
+		setSessionCread(true);
 		return session;
 	}
 
 	public String getSessionId() {
+		
 		if (!CommonUtil.isNullOrEmpty(sessionId)) {
 			return sessionId;
 		}
@@ -342,4 +356,13 @@ public class MinicatServletRequestImpl implements MinicatServletRequest {
 		}
 		return null;
 	}
+
+	public Integer getClientPort() {
+		return clientPort;
+	}
+
+	public void setClientPort(Integer clientPort) {
+		this.clientPort = clientPort;
+	}
+
 }

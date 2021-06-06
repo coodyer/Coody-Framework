@@ -78,9 +78,10 @@ public class NioService implements MiniCatService {
 
 	}
 
-	private void readable(SelectionKey key) throws ClosedChannelException {
+	private void readable(SelectionKey key) throws IOException {
 		final HttpBuilder builder = new NioHttpBuilder(key);
-		builder.builder();
+		SocketChannel channel=(SocketChannel)key.channel();
+		builder.builder(channel.getRemoteAddress().toString());
 		MiniCatThreadPool.HTTP_POOL.execute(new Runnable() {
 			public void run() {
 				builder.invoke();

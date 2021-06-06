@@ -112,7 +112,7 @@ public abstract class HttpBuilder {
 		if (MiniCatConfig.openGzip) {
 			response.setHeader("Content-Encoding", "gzip");
 		}
-		if (request != null && !request.isSessionCread()) {
+		if (request != null && request.isSessionCread()) {
 			String cookie = MessageFormat.format("{0}={1}; path=/ ; HttpOnly", MiniCatConfig.sessionIdField,
 					request.getSessionId());
 			response.setHeader("Set-Cookie", cookie);
@@ -138,7 +138,7 @@ public abstract class HttpBuilder {
 		}
 	}
 
-	public void builder() {
+	public void builder(String ip) {
 		try {
 			buildRequest();
 			if (!MiniCatConfig.method.contains(this.request.getMethod())) {
@@ -147,6 +147,17 @@ public abstract class HttpBuilder {
 			}
 			buildRequestHeader();
 			request.setSuffix("");
+			
+			
+			try {
+				String[] address=ip.split(":");
+				request.setClientIp(address[0].replace("/", ""));
+				request.setClientPort(Integer.valueOf(address[1]));
+			} catch (Exception e) {
+				buildResponse(400, "400 bad request");
+				return;
+			}
+			
 			if (request.getRequestURI() != null && request.getRequestURI().contains(".")) {
 				request.setSuffix(request.getRequestURI()
 						.substring(request.getRequestURI().lastIndexOf(".") + 1, request.getRequestURI().length())

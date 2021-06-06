@@ -8,13 +8,13 @@ import org.coody.framework.minicat.http.MultipartFile;
 
 public interface MinicatServletRequest {
 
-	MultipartFile getFile(String paramName);
+	MultipartFile getFile(String parameter);
 
-	String getParament(String paramName);
+	String getParament(String parameter);
 
-	Map<String, List<Object>> getParams();
+	Map<String, List<Object>> getParamenters();
 
-	void setParams(Map<String, List<Object>> params);
+	void setParamenters(Map<String, List<Object>> paramenters);
 
 	String getPostContext();
 
@@ -48,4 +48,7 @@ public interface MinicatServletRequest {
 	
 	String getCookie(String name);
 
+	String getClientIp();
+
+	Integer getClientPort();
 }
