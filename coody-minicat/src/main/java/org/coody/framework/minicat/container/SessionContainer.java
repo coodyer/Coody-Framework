@@ -1,10 +1,11 @@
 package org.coody.framework.minicat.container;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import org.coody.framework.core.util.CommonUtil;
@@ -12,7 +13,6 @@ import org.coody.framework.core.util.encrypt.EncryptUtil;
 import org.coody.framework.minicat.config.MiniCatConfig;
 import org.coody.framework.minicat.constant.ServerInfo;
 import org.coody.framework.minicat.http.MinicatSessionImpl;
-import org.coody.framework.minicat.threadpool.MiniCatThreadPool;
 
 /**
  * session容器
@@ -24,58 +24,28 @@ public class SessionContainer {
 
 	private static final Map<String, MinicatSessionImpl> SYSTEM_SESSION_CONTAINER = new ConcurrentHashMap<String, MinicatSessionImpl>();
 
-	
-	
-	
-	static{
-		MiniCatThreadPool.MINICAT_POOL.execute(new Runnable() {
-			public void run() {
-				sessionGuard();
-			}
-		});
-	}
-	
-	private static void sessionGuard(){
-		while(true){
-			try {
-				if(CommonUtil.isNullOrEmpty(SYSTEM_SESSION_CONTAINER)){
-					return;
+	public static final ScheduledThreadPoolExecutor TASK_POOL = new ScheduledThreadPoolExecutor(30,
+			new ThreadFactory() {
+
+				@Override
+				public Thread newThread(Runnable r) {
+					return new Thread(r);
 				}
-				List<String> willCleanSessionIds=new ArrayList<String>();
-				for(String key:SYSTEM_SESSION_CONTAINER.keySet()){
-					MinicatSessionImpl session=SYSTEM_SESSION_CONTAINER.get(key);
-					if(System.currentTimeMillis()-session.getActiveTime().getTime()>MiniCatConfig.sessionTimeout){
-						willCleanSessionIds.add(key);
-					}
-				}
-				for(String key:willCleanSessionIds){
-					SYSTEM_SESSION_CONTAINER.remove(key);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}finally{
-				try {
-					TimeUnit.SECONDS.sleep(1l);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-	
+			});
 	public static boolean containsSession(String sessionId) {
 		return SYSTEM_SESSION_CONTAINER.containsKey(sessionId);
 	}
 
 	public static MinicatSessionImpl getSession(String sessionId) {
-		if(CommonUtil.isNullOrEmpty(sessionId)){
+		if (CommonUtil.isNullOrEmpty(sessionId)) {
 			return null;
 		}
-		MinicatSessionImpl session=SYSTEM_SESSION_CONTAINER.get(sessionId);
-		if(session==null){
+		MinicatSessionImpl session = SYSTEM_SESSION_CONTAINER.get(sessionId);
+		if (session == null) {
 			return session;
 		}
 		session.setActiveTime(new Date());
+		TASK_POOL.schedule(new TimeoutTimerTask(sessionId), MiniCatConfig.sessionTimeout, TimeUnit.MILLISECONDS);
 		return session;
 	}
 
@@ -89,9 +59,9 @@ public class SessionContainer {
 		}
 		MinicatSessionImpl session = new MinicatSessionImpl();
 		SYSTEM_SESSION_CONTAINER.put(sessionId, session);
+		TASK_POOL.schedule(new TimeoutTimerTask(sessionId), MiniCatConfig.sessionTimeout, TimeUnit.MILLISECONDS);
 		return session;
 	}
-
 
 	private static int sessionIndex = 0;
 
@@ -102,6 +72,24 @@ public class SessionContainer {
 			currentSessionIndex = sessionIndex;
 		}
 		String key = ServerInfo.startTime + currentSessionIndex.toString();
-		return EncryptUtil.md5(key);
+		return "SESS"+EncryptUtil.md5(key).toUpperCase();
+	}
+	
+	static class TimeoutTimerTask extends TimerTask {
+		
+		private String key;
+
+		public TimeoutTimerTask(String key) {
+			this.key = key;
+		}
+
+		@Override
+		public void run() {
+			MinicatSessionImpl session = SYSTEM_SESSION_CONTAINER.get(key);
+			if(System.currentTimeMillis()- session.getActiveTime().getTime()<MiniCatConfig.sessionTimeout) {
+				return;
+			}
+			SYSTEM_SESSION_CONTAINER.remove(key);
+		}
 	}
 }
