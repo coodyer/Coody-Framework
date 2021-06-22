@@ -47,13 +47,6 @@ public class CacheAspect {
 			if (CommonUtil.isNullOrEmpty(key)) {
 				key = this.getClass().getSimpleName() + ":" + MethodSignUtil.getKeyByMethod(clazz, method);
 			}
-			if (CommonUtil.isNullOrEmpty(handle.fields())) {
-				String paraKey = MethodSignUtil.getKeyByParameters(paras);
-				if (!CommonUtil.isNullOrEmpty(paraKey)) {
-					key += ":";
-					key += paraKey;
-				}
-			}
 			if (!CommonUtil.isNullOrEmpty(handle.fields())) {
 				key = MethodSignUtil.getKeyByFields(clazz, method, paras, key, handle.fields());
 			}
@@ -110,13 +103,6 @@ public class CacheAspect {
 			try {
 				if (CommonUtil.isNullOrEmpty(key)) {
 					key = this.getClass().getSimpleName() + ":" + MethodSignUtil.getKeyByMethod(clazz, method);
-				}
-				if (CommonUtil.isNullOrEmpty(handle.fields())) {
-					String paraKey = MethodSignUtil.getKeyByParameters(paras);
-					if (!CommonUtil.isNullOrEmpty(paraKey)) {
-						key += ":";
-						key += paraKey;
-					}
 				}
 				if (!CommonUtil.isNullOrEmpty(handle.fields())) {
 					key = MethodSignUtil.getKeyByFields(clazz, method, paras, key, handle.fields());

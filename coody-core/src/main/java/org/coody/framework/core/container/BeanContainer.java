@@ -16,7 +16,6 @@ import org.coody.framework.core.exception.BeanConflictException;
 import org.coody.framework.core.util.CommonUtil;
 import org.coody.framework.core.util.clazz.ClassUtil;
 import org.coody.framework.core.util.reflex.PropertUtil;
-import org.coody.framework.cson.Cson;
 
 /**
  * 
