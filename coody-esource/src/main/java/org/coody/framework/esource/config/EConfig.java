@@ -29,7 +29,7 @@ public class EConfig {
 	private int maxWaitTime = 30 * 1000;
 
 	// 最大空闲回收时长，默认为60s
-	private long maxIdleTime = 60 * 1000;
+	private int maxIdleTime = 60 * 1000;
 
 	public EConfig() {
 	}
@@ -98,11 +98,11 @@ public class EConfig {
 		this.maxWaitTime = maxWaitTime;
 	}
 
-	public long getMaxIdleTime() {
+	public int getMaxIdleTime() {
 		return maxIdleTime;
 	}
 
-	public void setMaxIdleTime(long maxIdleTime) {
+	public void setMaxIdleTime(int maxIdleTime) {
 		this.maxIdleTime = maxIdleTime;
 	}
 

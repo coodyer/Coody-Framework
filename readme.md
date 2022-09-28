@@ -286,17 +286,21 @@
 
 ### 5. 各插件具体文档：
 
-coody-web    ：[Coody Web](http://gitee.com/coodyer/Coody-Framework/tree/original/coody-web)
+[Coody Web （MVC说明文档）](http://gitee.com/coodyer/Coody-Framework/tree/original/coody-web)
 
-coody-cache  ：[Coody Cache](http://gitee.com/coodyer/Coody-Framework/tree/original/coody-cache)
+[Coody Cache （缓存插件说明文档）](http://gitee.com/coodyer/Coody-Framework/tree/original/coody-cache)
 
-coody-jdbc   ：[Coody Jdbc](http://gitee.com/coodyer/Coody-Framework/tree/original/coody-jdbc)
+[Coody Jdbc （ORM说明文档）](http://gitee.com/coodyer/Coody-Framework/tree/original/coody-jdbc)
 
-coody-task   ：[Coody Task](http://gitee.com/coodyer/Coody-Framework/tree/original/coody-task)
+[Coody Task （CRON定时任务说明文档）](http://gitee.com/coodyer/Coody-Framework/tree/original/coody-task)
 
-coody-elock  ：[Coody Elock](http://gitee.com/coodyer/Coody-Framework/tree/original/coody-elock) 
+[Coody Elock （分布式锁说明文档）](http://gitee.com/coodyer/Coody-Framework/tree/original/coody-elock) 
 
-coody-minicat:[Coody Minicat](https://gitee.com/coodyer/Coody-Framework/tree/original/coody-minicat)
+[Coody Minicat （HTTP服务器说明文档）](https://gitee.com/coodyer/Coody-Framework/tree/original/coody-minicat)
+
+[Coody Mail （TCP邮件插件说明文档）](https://gitee.com/coodyer/Coody-Framework/tree/original/coody-mail)
+
+[Coody ESource （数据库连接池说明文档）](https://gitee.com/coodyer/Coody-Framework/tree/original/coody-esource)
  
 
 
