@@ -284,9 +284,7 @@
 
 缓存使用请参考具体文档
 
-### 5. 具体文档：
-
-coody-core   ：[Coody-Core](http://gitee.com/coodyer/Coody-Framework/tree/original/coody-core)
+### 5. 各插件具体文档：
 
 coody-web    ：[Coody Web](http://gitee.com/coodyer/Coody-Framework/tree/original/coody-web)
 
@@ -296,9 +294,9 @@ coody-jdbc   ：[Coody Jdbc](http://gitee.com/coodyer/Coody-Framework/tree/origi
 
 coody-task   ：[Coody Task](http://gitee.com/coodyer/Coody-Framework/tree/original/coody-task)
 
-coody-rcc    ：[Coody Rcc](http://gitee.com/coodyer/Coody-Framework/tree/original/coody-rcc) 
-
 coody-elock  ：[Coody Elock](http://gitee.com/coodyer/Coody-Framework/tree/original/coody-elock) 
+
+coody-minicat:[Coody Minicat](https://gitee.com/coodyer/Coody-Framework/tree/original/coody-minicat)
  
 
 
