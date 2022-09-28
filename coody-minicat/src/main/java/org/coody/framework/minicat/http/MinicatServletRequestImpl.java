@@ -47,9 +47,9 @@ public class MinicatServletRequestImpl implements MinicatServletRequest {
 	private Integer contextLength = 0;
 
 	private String suffix;
-	
+
 	private String clientIp;
-	
+
 	private Integer clientPort;
 
 	public MultipartFile getFile(String paramName) {
@@ -176,7 +176,6 @@ public class MinicatServletRequestImpl implements MinicatServletRequest {
 		if (!CommonUtil.isNullOrEmpty(session)) {
 			return session;
 		}
-		
 		sessionId = SessionContainer.createSessionId();
 		session = SessionContainer.initSession(sessionId);
 		setSessionCread(true);
@@ -184,7 +183,7 @@ public class MinicatServletRequestImpl implements MinicatServletRequest {
 	}
 
 	public String getSessionId() {
-		
+
 		if (!CommonUtil.isNullOrEmpty(sessionId)) {
 			return sessionId;
 		}

@@ -5,7 +5,7 @@
 
 一名野生的民间技术爱好者，早期活跃于各网络安全论坛，而后由白帽转战编程。因谋生于14年3月就职于CMGE。
 
-浑浑噩噩已经24岁了，看着朋友圈各种晒宝宝照片的老同学，只得感叹光阴似箭。而单身的笔者，随着岁月的流逝，寂寞空虚冷愈加强烈。故此，笔者选择通过技术研究来饱和业余生活。
+光阴似箭日月如梭，看着朋友圈各种晒宝宝照片的老同学，只得感叹光阴似箭。而单身的笔者，随着岁月的流逝，寂寞空虚冷愈加强烈。故此，笔者选择通过技术研究来饱和业余生活。
 
 #### 前言：
 
@@ -93,48 +93,48 @@
         <dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-core</artifactId>
-			<version>alpha-1.8.3</version>
+			<version>alpha-1.8.4</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-jdbc</artifactId>
-			<version>alpha-1.8.3</version>
+			<version>alpha-1.8.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-cache</artifactId>
-			<version>alpha-1.8.3</version>
+			<version>alpha-1.8.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-task</artifactId>
-			<version>alpha-1.8.3</version>
+			<version>alpha-1.8.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-web</artifactId>
-			<version>alpha-1.8.3</version>
+			<version>alpha-1.8.4</version>
 		</dependency>
       <dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-elock</artifactId>
-			<version>alpha-1.8.3</version>
+			<version>alpha-1.8.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-minicat</artifactId>
-			<version>alpha-1.8.3</version>
+			<version>alpha-1.8.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-mail</artifactId>
-			<version>alpha-1.8.3</version>
+			<version>alpha-1.8.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.coody.framework</groupId>
 			<artifactId>coody-cson</artifactId>
-			<version>alpha-1.8.3</version>
+			<version>alpha-1.8.4</version>
 		</dependency>
 ```
 

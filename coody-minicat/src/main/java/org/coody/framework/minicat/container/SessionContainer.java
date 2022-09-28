@@ -32,6 +32,7 @@ public class SessionContainer {
 					return new Thread(r);
 				}
 			});
+
 	public static boolean containsSession(String sessionId) {
 		return SYSTEM_SESSION_CONTAINER.containsKey(sessionId);
 	}
@@ -72,11 +73,11 @@ public class SessionContainer {
 			currentSessionIndex = sessionIndex;
 		}
 		String key = ServerInfo.startTime + currentSessionIndex.toString();
-		return "SESS"+EncryptUtil.md5(key).toUpperCase();
+		return "SESS" + EncryptUtil.md5(key).toUpperCase();
 	}
-	
+
 	static class TimeoutTimerTask extends TimerTask {
-		
+
 		private String key;
 
 		public TimeoutTimerTask(String key) {
@@ -86,7 +87,7 @@ public class SessionContainer {
 		@Override
 		public void run() {
 			MinicatSessionImpl session = SYSTEM_SESSION_CONTAINER.get(key);
-			if(System.currentTimeMillis()- session.getActiveTime().getTime()<MiniCatConfig.sessionTimeout) {
+			if (System.currentTimeMillis() - session.getActiveTime().getTime() < MiniCatConfig.sessionTimeout) {
 				return;
 			}
 			SYSTEM_SESSION_CONTAINER.remove(key);

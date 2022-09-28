@@ -150,6 +150,7 @@ public class ESource extends DataSourceWrapper {
 						LogUtil.log.debug("WORK_QUEUE->" + WORK_QUEUE.size() + ",IDLED_DEQUE->" + IDLED_DEQUE.size()
 								+ ",RECOVERY_DEQUE->" + RECOVERY_DEQUE.size() + ",PoolSize->" + poolSize);
 						sleep(TimeUnit.SECONDS, 5);
+						VAILD_TASK_QUEUE.offer(new Object());
 					} catch (Exception e) {
 						sleep(TimeUnit.MILLISECONDS, 1);
 					}

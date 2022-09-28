@@ -147,17 +147,16 @@ public abstract class HttpBuilder {
 			}
 			buildRequestHeader();
 			request.setSuffix("");
-			
-			
+
 			try {
-				String[] address=ip.split(":");
+				String[] address = ip.split(":");
 				request.setClientIp(address[0].replace("/", ""));
 				request.setClientPort(Integer.valueOf(address[1]));
 			} catch (Exception e) {
 				buildResponse(400, "400 bad request");
 				return;
 			}
-			
+
 			if (request.getRequestURI() != null && request.getRequestURI().contains(".")) {
 				request.setSuffix(request.getRequestURI()
 						.substring(request.getRequestURI().lastIndexOf(".") + 1, request.getRequestURI().length())
@@ -234,7 +233,7 @@ public abstract class HttpBuilder {
 		try {
 			flush();
 		} catch (IOException e) {
-		}catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			destroy();
