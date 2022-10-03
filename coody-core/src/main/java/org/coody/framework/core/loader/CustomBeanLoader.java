@@ -1,11 +1,11 @@
 package org.coody.framework.core.loader;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.Map.Entry;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.coody.framework.core.assember.BeanAssember;
 import org.coody.framework.core.builder.ConfigBuilder;
@@ -13,8 +13,8 @@ import org.coody.framework.core.config.CoodyConfig;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.exception.BeanNotFoundException;
 import org.coody.framework.core.loader.iface.CoodyLoader;
-import org.coody.framework.core.threadpool.ThreadBlockPool;
 import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.log.LogUtil;
 import org.coody.framework.core.util.match.MatchUtil;
 
 public class CustomBeanLoader implements CoodyLoader {
@@ -85,18 +85,9 @@ public class CustomBeanLoader implements CoodyLoader {
 			}
 		}
 		// 初始化所有Bean
-		Collection<List<String>> originalBeans = doRelationOrdered(PARAMENT_MAP, FIELD_MAP, CONFIG_MAP);
-		for (List<String> keys : originalBeans) {
-			ThreadBlockPool pool = new ThreadBlockPool(keys.size(), 60);
-			for (String key : keys) {
-				pool.pushTask(new Runnable() {
-					@Override
-					public void run() {
-						initBean(key);
-					}
-				});
-			}
-			pool.execute();
+		List<String> beans = doRelation(PARAMENT_MAP, FIELD_MAP, CONFIG_MAP);
+		for (String key : beans) {
+			initBean(key);
 		}
 	}
 
@@ -105,6 +96,7 @@ public class CustomBeanLoader implements CoodyLoader {
 			Map<String, String> beanConfig = PARAMENT_MAP.get(key);
 			String clazzName = CONFIG_MAP.get(key).get(CoodyConfig.CLASS_NAME);
 			Class<?> clazz = Class.forName(clazzName);
+			LogUtil.log.debug("创建Bean >>" + clazz.getName());
 			Map<String, Object> parameters = null;
 			if (PARAMENT_MAP.containsKey(key)) {
 				parameters = builderParamenterMap(clazz, beanConfig);
@@ -123,7 +115,7 @@ public class CustomBeanLoader implements CoodyLoader {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	/**
@@ -134,84 +126,83 @@ public class CustomBeanLoader implements CoodyLoader {
 	 * @return
 	 * @throws ClassNotFoundException
 	 */
-	public Collection<List<String>> doRelationOrdered(HashMap<String, HashMap<String, String>> paramentMap,
+	public List<String> doRelation(HashMap<String, HashMap<String, String>> paramentMap,
 			HashMap<String, HashMap<String, String>> fieldMap, HashMap<String, HashMap<String, String>> configMap)
 			throws ClassNotFoundException {
 		// 加载基础Bean
-		Map<String, Integer> beanMap = new HashMap<String, Integer>();
+		List<Entry<String, HashMap<String, String>>> beanArray = new ArrayList<Map.Entry<String, HashMap<String, String>>>(
+				configMap.entrySet());
 
-		List<String> group = new ArrayList<String>();
-		configCheck: for (String key : configMap.keySet()) {
-			Map<String, String> propertyMap = new HashMap<String, String>();
-			if (fieldMap.containsKey(key)) {
-				propertyMap.putAll(fieldMap.get(key));
-			}
-			if (paramentMap.containsKey(key)) {
-				propertyMap.putAll(paramentMap.get(key));
-			}
-			if (CommonUtil.isNullOrEmpty(propertyMap)) {
-				group.add(key);
-			}
-			for (String poperty : propertyMap.keySet()) {
-				String fieldBeanName = MatchUtil.exporeMatchedFirstByRegular(propertyMap.get(poperty),
-						CoodyConfig.INPUT_BEAN_MAPPER);
-				if (!CommonUtil.isNullOrEmpty(fieldBeanName)) {
-					if (!configMap.containsKey(fieldBeanName)) {
-						if (!configMap.get(key).containsKey(CoodyConfig.CLASS_NAME)) {
-							continue configCheck;
-						}
-						Class<?> clazz = Class.forName(configMap.get(key).get(CoodyConfig.CLASS_NAME));
-						throw new BeanNotFoundException(fieldBeanName, clazz);
+		for (Entry<String, HashMap<String, String>> entry : configMap.entrySet()) {
+			if (paramentMap.containsKey(entry.getKey())) {
+				for (String field : paramentMap.get(entry.getKey()).keySet()) {
+					String name = MatchUtil.exporeMatchedFirstByRegular(paramentMap.get(entry.getKey()).get(field),
+							CoodyConfig.INPUT_BEAN_MAPPER);
+					if (!CommonUtil.isNullOrEmpty(name)) {
+						beanArray.remove(entry);
 					}
-					continue configCheck;
 				}
 			}
-			group.add(key);
+			if (fieldMap.containsKey(entry.getKey())) {
+				for (String field : fieldMap.get(entry.getKey()).keySet()) {
+					String name = MatchUtil.exporeMatchedFirstByRegular(fieldMap.get(entry.getKey()).get(field),
+							CoodyConfig.INPUT_BEAN_MAPPER);
+					if (!CommonUtil.isNullOrEmpty(name)) {
+						beanArray.remove(entry);
+					}
+				}
+			}
 		}
-		int index = beanMap.size();
-		for (String line : group) {
-			beanMap.put(line, index);
+		LinkedBlockingQueue<Entry<String, HashMap<String, String>>> queue = new LinkedBlockingQueue<Map.Entry<String, HashMap<String, String>>>();
+		for (Entry<String, HashMap<String, String>> entry : configMap.entrySet()) {
+			queue.offer(entry);
 		}
-		beanInstallWhile: while (beanMap.size() < configMap.size()) {
-			group = new ArrayList<String>();
-			try {
-				for (String key : configMap.keySet()) {
-					if (beanMap.containsKey(key)) {
+		while (!queue.isEmpty()) {
+			Entry<String, HashMap<String, String>> line = queue.poll();
+			if (beanArray.contains(line)) {
+				continue;
+			}
+			if (paramentMap.containsKey(line.getKey())) {
+				for (String field : paramentMap.get(line.getKey()).keySet()) {
+					String name = MatchUtil.exporeMatchedFirstByRegular(paramentMap.get(line.getKey()).get(field),
+							CoodyConfig.INPUT_BEAN_MAPPER);
+					if (CommonUtil.isNullOrEmpty(name)) {
 						continue;
 					}
-					Map<String, String> propertyMap = new HashMap<String, String>();
-					if (fieldMap.containsKey(key)) {
-						propertyMap.putAll(fieldMap.get(key));
-					}
-					if (paramentMap.containsKey(key)) {
-						propertyMap.putAll(paramentMap.get(key));
-					}
-					for (String poperty : propertyMap.keySet()) {
-						String valueBeanName = MatchUtil.exporeMatchedFirstByRegular(propertyMap.get(poperty),
-								CoodyConfig.INPUT_BEAN_MAPPER);
-						if (!CommonUtil.isNullOrEmpty(valueBeanName)) {
-							if (!beanMap.containsKey(valueBeanName)) {
-								continue beanInstallWhile;
-							}
+					for (Entry<String, HashMap<String, String>> entry : beanArray) {
+						if (entry.getKey().equals(name)) {
+							beanArray.add(line);
+							break;
 						}
 					}
-					group.add(key);
-				}
-			} finally {
-				index = beanMap.size();
-				for (String line : group) {
-					beanMap.put(line, index);
 				}
 			}
-		}
-		Map<Integer, List<String>> relationBeanMap = new TreeMap<Integer, List<String>>();
-		for (String key : beanMap.keySet()) {
-			if (!relationBeanMap.containsKey(beanMap.get(key))) {
-				relationBeanMap.put(beanMap.get(key), new ArrayList<String>());
+			if (fieldMap.containsKey(line.getKey())) {
+				for (String field : fieldMap.get(line.getKey()).keySet()) {
+					String name = MatchUtil.exporeMatchedFirstByRegular(fieldMap.get(line.getKey()).get(field),
+							CoodyConfig.INPUT_BEAN_MAPPER);
+					if (CommonUtil.isNullOrEmpty(name)) {
+						continue;
+					}
+					for (Entry<String, HashMap<String, String>> entry : beanArray) {
+						if (entry.getKey().equals(name)) {
+							beanArray.add(line);
+							break;
+						}
+					}
+				}
 			}
-			relationBeanMap.get(beanMap.get(key)).add(key);
+			
+			if (beanArray.contains(line)) {
+				continue;
+			}
+			queue.offer(line);
 		}
-		return relationBeanMap.values();
+		List<String> ordereds = new ArrayList<String>();
+		for (Entry<String, HashMap<String, String>> line : beanArray) {
+			ordereds.add(line.getKey());
+		}
+		return ordereds;
 	}
 
 	private Map<String, Object> builderParamenterMap(Class<?> clazz, Map<String, String> parameneterMap) {

@@ -962,6 +962,9 @@ public class PropertUtil {
 				}
 				return value;
 			}
+			if (Class.class.isAssignableFrom(clazz)) {
+				return Class.forName(value.toString());
+			}
 			if (clazz.isAssignableFrom(value.getClass())) {
 				return value;
 			}

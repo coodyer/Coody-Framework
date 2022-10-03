@@ -187,15 +187,21 @@ public class AsmProxy {
 						|| argumentType.equals(Type.CHAR_TYPE) || argumentType.equals(Type.SHORT_TYPE)
 						|| argumentType.equals(Type.INT_TYPE)) {
 					methodVisitor.visitVarInsn(Opcodes.ILOAD, i + 1);
-				} else if (argumentType.equals(Type.LONG_TYPE)) {
-					methodVisitor.visitVarInsn(Opcodes.LLOAD, i + 1);
-				} else if (argumentType.equals(Type.FLOAT_TYPE)) {
-					methodVisitor.visitVarInsn(Opcodes.FLOAD, i + 1);
-				} else if (argumentType.equals(Type.DOUBLE_TYPE)) {
-					methodVisitor.visitVarInsn(Opcodes.DLOAD, i + 1);
-				} else {
-					methodVisitor.visitVarInsn(Opcodes.ALOAD, i + 1);
+					continue;
 				}
+				if (argumentType.equals(Type.LONG_TYPE)) {
+					methodVisitor.visitVarInsn(Opcodes.LLOAD, i + 1);
+					continue;
+				}
+				if (argumentType.equals(Type.FLOAT_TYPE)) {
+					methodVisitor.visitVarInsn(Opcodes.FLOAD, i + 1);
+					continue;
+				}
+				if (argumentType.equals(Type.DOUBLE_TYPE)) {
+					methodVisitor.visitVarInsn(Opcodes.DLOAD, i + 1);
+					continue;
+				}
+				methodVisitor.visitVarInsn(Opcodes.ALOAD, i + 1);
 			}
 			// 调用super() 构造器
 			methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, targetClassInnerName, "<init>", constructor.methodDesc,
@@ -240,9 +246,10 @@ public class AsmProxy {
 		methodVisitor.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[] { Type.getInternalName(Throwable.class) });
 		methodVisitor.visitVarInsn(Opcodes.ASTORE, 4);
 		methodVisitor.visitVarInsn(Opcodes.ALOAD, 4);
-		
+
 		methodVisitor.visitInsn(Opcodes.ATHROW);
-		//methodVisitor.visitMethodInsn(Opcodes.ATHROW, Type.getInternalName(Throwable.class), "printStackTrace","()V", false);
+		// methodVisitor.visitMethodInsn(Opcodes.ATHROW,
+		// Type.getInternalName(Throwable.class), "printStackTrace","()V", false);
 		methodVisitor.visitInsn(Opcodes.ACONST_NULL);
 		methodVisitor.visitInsn(Opcodes.ARETURN);
 		methodVisitor.visitMaxs(4, 5);
@@ -264,17 +271,13 @@ public class AsmProxy {
 			}
 			// 满足指定的修饰符
 			int access = -1;
-			if (isPublic) {
-				// public 方法
-				if ((methodBean.access & Opcodes.ACC_PUBLIC) == Opcodes.ACC_PUBLIC) {
-					access = Opcodes.ACC_PUBLIC;
-				}
-			} else {
+			access = Opcodes.ACC_PUBLIC;
+			if (!isPublic) {
 				// protected 方法
 				if ((methodBean.access & Opcodes.ACC_PROTECTED) == Opcodes.ACC_PROTECTED) {
 					access = Opcodes.ACC_PROTECTED;
-				} else if ((methodBean.access & Opcodes.ACC_PUBLIC) == 0
-						&& (methodBean.access & Opcodes.ACC_PROTECTED) == 0
+				}
+				if ((methodBean.access & Opcodes.ACC_PUBLIC) == 0 && (methodBean.access & Opcodes.ACC_PROTECTED) == 0
 						&& (methodBean.access & Opcodes.ACC_PRIVATE) == 0) {
 					access = 0;
 				}

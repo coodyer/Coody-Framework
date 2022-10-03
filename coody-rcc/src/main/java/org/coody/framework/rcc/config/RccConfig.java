@@ -1,11 +1,18 @@
 package org.coody.framework.rcc.config;
 
-import org.coody.framework.core.model.BaseModel;
-import org.coody.framework.rcc.registry.iface.RccRegistry;
-import org.coody.framework.rcc.serialer.iface.RccSerialer;
+import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
-@SuppressWarnings("serial")
-public class RccConfig extends BaseModel {
+import org.coody.framework.core.model.BaseConfig;
+import org.coody.framework.rcc.serialer.JDKSerialer;
+import org.coody.framework.rcc.serialer.iface.RccSerialer;
+import org.coody.framework.rcc.signal.TcpSignaler;
+import org.coody.framework.rcc.signal.iface.RccSignaler;
+
+public class RccConfig extends BaseConfig {
+
+	public static String PREFIX = "coody.rcc";
 
 	/**
 	 * 服务者线程数
@@ -19,86 +26,49 @@ public class RccConfig extends BaseModel {
 	/**
 	 * 本地host
 	 */
-	private String host;
+	public static String host;
 	/**
 	 * 本服务端口
 	 */
-	private Integer port;
+	public static Integer port;
 	/**
 	 * 本机权重
 	 */
-	private Integer pr;
+	public static Integer pr;
 	/**
 	 * 调用其他服务的超时时间
 	 */
-	private Integer expire;
+	public static Integer expire = 6000;
+
+	/**
+	 * 同步注册中心数据时间
+	 */
+	public static Integer keepTime = 10000;
+
+	/**
+	 * 注册中心KEY
+	 */
+	public static String registerKey = String.format("coody:framework:rcc:%s",
+			new File(System.getProperty("user.dir")).getName());
 	/**
 	 * 调用其他服务的重试次数
 	 */
-	private Integer retry;
+	public static Integer retry;
 	/**
 	 * 调用其他服务使用的序列化工具
 	 */
-	private Class<? extends RccSerialer> serialer;
+	public static Class<? extends RccSerialer> serialer = JDKSerialer.class;
+
 	/**
-	 * 注册中心
+	 * 通信工具
 	 */
-	private Class<? extends RccRegistry> registry;
+	public static Class<? extends RccSignaler> signaler = TcpSignaler.class;
 
-	public Integer getPr() {
-		return pr;
+	static {
+		try {
+			host = InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
 	}
-
-	public void setPr(Integer pr) {
-		this.pr = pr;
-	}
-
-	public String getHost() {
-		return host;
-	}
-
-	public void setHost(String host) {
-		this.host = host;
-	}
-
-	public Integer getPort() {
-		return port;
-	}
-
-	public void setPort(Integer port) {
-		this.port = port;
-	}
-
-	public Integer getExpire() {
-		return expire;
-	}
-
-	public void setExpire(Integer expire) {
-		this.expire = expire;
-	}
-
-	public Integer getRetry() {
-		return retry;
-	}
-
-	public void setRetry(Integer retry) {
-		this.retry = retry;
-	}
-
-	public Class<? extends RccSerialer> getSerialer() {
-		return serialer;
-	}
-
-	public void setSerialer(Class<? extends RccSerialer> serialer) {
-		this.serialer = serialer;
-	}
-
-	public Class<? extends RccRegistry> getRegistry() {
-		return registry;
-	}
-
-	public void setRegistry(Class<? extends RccRegistry> registry) {
-		this.registry = registry;
-	}
-
 }

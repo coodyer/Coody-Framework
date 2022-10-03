@@ -3,45 +3,69 @@ package org.coody.framework.rcc.handler;
 import java.lang.reflect.Method;
 import java.util.Set;
 
+import org.coody.framework.core.annotation.AutoBuild;
 import org.coody.framework.core.bean.InitBeanFace;
 import org.coody.framework.core.container.BeanContainer;
+import org.coody.framework.core.threadpool.SysThreadPool;
+import org.coody.framework.core.threadpool.ThreadBlockPool;
+import org.coody.framework.core.util.CommonUtil;
 import org.coody.framework.core.util.reflex.MethodSignUtil;
 import org.coody.framework.core.util.reflex.PropertUtil;
-import org.coody.framework.rcc.annotation.RccClient;
+import org.coody.framework.rcc.annotation.RccService;
 import org.coody.framework.rcc.config.RccConfig;
 import org.coody.framework.rcc.exception.RccException;
+import org.coody.framework.rcc.instance.RccKeepInstance;
 import org.coody.framework.rcc.registry.iface.RccRegistry;
 
+@AutoBuild
 public class RccIniter implements InitBeanFace {
-
-	private static RccRegistry registry;
-
-	private static RccConfig config;
 
 	@Override
 	public void init() throws Exception {
-		if (registry == null) {
-			registry = BeanContainer.getBean(RccRegistry.class);
-		}
+		RccRegistry registry = BeanContainer.getBean(RccRegistry.class);
 		if (registry == null) {
 			throw new RccException("未找到注册中心");
 		}
-		if (config == null) {
-			registry = BeanContainer.getBean(RccConfig.class);
-		}
-		if (config == null) {
-			throw new RccException("未找到RccConfig配置");
-		}
-		Set<Method> methods = PropertUtil.getMethods(this.getClass());
-		for (Method method : methods) {
-			RccClient rccClient = PropertUtil.getAnnotation(method, RccClient.class);
-			if (rccClient == null) {
-				continue;
-			}
-			registry.register(MethodSignUtil.getMethodUnionKey(method), config.getHost(), config.getPort(),
-					config.getPr());
-		}
+		SysThreadPool.THREAD_POOL.execute(new Runnable() {
 
+			@Override
+			public void run() {
+				RccKeepInstance.signaler.doService(RccConfig.port);
+			}
+		});
+		SysThreadPool.THREAD_POOL.execute(new Runnable() {
+			@Override
+			public void run() {
+				ThreadBlockPool pool = new ThreadBlockPool(100, 60);
+				for (Class<?> clazz : BeanContainer.getClazzContainer()) {
+					if (clazz.isAnnotation()) {
+						continue;
+					}
+					if (CommonUtil.isNullOrEmpty(clazz.getAnnotations())) {
+						continue;
+					}
+					if (clazz.isInterface()) {
+						continue;
+					}
+					RccService rcc = PropertUtil.getAnnotation(clazz, RccService.class);
+					if (rcc == null) {
+						continue;
+					}
+					Set<Method> methods = PropertUtil.getMethods(clazz);
+					for (Method method : methods) {
+						pool.pushTask(new Runnable() {
+							@Override
+							public void run() {
+								String key = String.format("%s-%s", rcc.value(),
+										MethodSignUtil.getGeneralKeyByMethod(method));
+								registry.register(key, RccConfig.host, RccConfig.port, RccConfig.pr);
+							}
+						});
+					}
+				}
+				pool.execute();
+			}
+		});
 	}
 
 }

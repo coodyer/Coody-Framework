@@ -18,16 +18,6 @@ import org.coody.framework.core.annotation.AutoBuild;
 public @interface RccService {
 
 	/**
-	 * ip地址
-	 * @return
-	 */
-	String host() default "";
-	/**
-	 * 端口
-	 * @return
-	 */
-	String port() default "";
-	/**
 	 * 服务名
 	 * @return
 	 */

@@ -1,35 +1,29 @@
 package org.coody.framework.rcc.caller;
 
-import org.apache.zookeeper.ZooKeeper;
 import org.coody.framework.core.annotation.AutoBuild;
-import org.coody.framework.core.bean.InitBeanFace;
-import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.rcc.entity.RccInstance;
-import org.coody.framework.rcc.exception.RccException;
-import org.coody.framework.rcc.registry.ZkRegistry;
+import org.coody.framework.rcc.entity.RccSignalerEntity;
+import org.coody.framework.rcc.instance.RccKeepInstance;
 import org.coody.framework.rcc.registry.iface.RccRegistry;
 
 @AutoBuild
-public class RccSendCaller implements InitBeanFace {
+public class RccSendCaller {
 
+	@AutoBuild
 	RccRegistry registry;
 
 	/**
 	 * 调用远程方法
 	 */
-	public byte[] send(String methodKey, byte[] params) {
+	public byte[] send(String methodKey, byte[] data) {
+
 		RccInstance rcc = registry.getRccInstance(methodKey);
-		return null;
+
+		RccSignalerEntity rccSignalerEntity = new RccSignalerEntity();
+		rccSignalerEntity.setRcc(rcc);
+		rccSignalerEntity.setData(data);
+
+		return RccKeepInstance.signaler.doConsume(rccSignalerEntity);
 	}
 
-	@Override
-	public void init() throws Exception {
-		if (registry == null) {
-			ZooKeeper zooKeeper = BeanContainer.getBean(ZooKeeper.class);
-			if (zooKeeper == null) {
-				throw new RccException("no zooKeeper config");
-			}
-			registry = new ZkRegistry().setZookeeper(zooKeeper);
-		}
-	}
 }

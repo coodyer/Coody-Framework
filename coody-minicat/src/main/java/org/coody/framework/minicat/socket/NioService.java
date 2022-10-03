@@ -20,13 +20,12 @@ public class NioService implements MiniCatService {
 
 	private Selector selector;
 
-	public void openPort(Integer port, Integer timeOut) throws IOException {
+	public void openPort(Integer port ) throws IOException {
 		selector = Selector.open(); // 打开选择器
 		ServerSocketChannel server = ServerSocketChannel.open();
 		server.socket().bind(new InetSocketAddress(port));
 		server.configureBlocking(false);
 		server.register(selector, SelectionKey.OP_ACCEPT);
-		server.socket().setSoTimeout(timeOut);
 	}
 
 	public void doService() throws IOException {

@@ -3,6 +3,7 @@ package org.coody.framework.rcc.loader;
 import java.lang.annotation.Annotation;
 
 import org.coody.framework.core.annotation.Order;
+import org.coody.framework.core.builder.ConfigBuilder;
 import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.loader.iface.CoodyLoader;
 import org.coody.framework.core.threadpool.ThreadBlockPool;
@@ -10,6 +11,7 @@ import org.coody.framework.core.util.CommonUtil;
 import org.coody.framework.core.util.log.LogUtil;
 import org.coody.framework.core.util.reflex.PropertUtil;
 import org.coody.framework.rcc.annotation.RccClient;
+import org.coody.framework.rcc.config.RccConfig;
 import org.coody.framework.rcc.handler.RccHandler;
 import org.coody.framework.rcc.util.asm.ImplClassMaker;
 
@@ -23,9 +25,15 @@ public class RccLoader implements CoodyLoader {
 
 	@Override
 	public void doLoader() throws Exception {
+
+		ConfigBuilder.builder();
+		ConfigBuilder.flush(new RccConfig(), RccConfig.PREFIX);
+
 		if (CommonUtil.isNullOrEmpty(BeanContainer.getClazzContainer())) {
 			return;
 		}
+
+		// 解析客户端
 		ThreadBlockPool pool = new ThreadBlockPool(100, 60);
 		for (Class<?> clazz : BeanContainer.getClazzContainer()) {
 			if (clazz.isAnnotation()) {
@@ -49,6 +57,7 @@ public class RccLoader implements CoodyLoader {
 			});
 		}
 		pool.execute();
+
 	}
 
 	private void loaderClazz(Class<?> clazz) {

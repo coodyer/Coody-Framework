@@ -7,7 +7,7 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import org.coody.framework.rcc.config.RccConfig;
+import org.coody.framework.core.util.log.LogUtil;
 import org.coody.framework.rcc.entity.RccSignalerEntity;
 import org.coody.framework.rcc.exception.RccException;
 import org.coody.framework.rcc.pool.RccThreadPool;
@@ -15,22 +15,19 @@ import org.coody.framework.rcc.signal.iface.RccSignaler;
 
 public class TcpSignaler implements RccSignaler {
 
-	@SuppressWarnings("resource")
+	@SuppressWarnings({ "resource", "unused" })
 	@Override
-	public void doService(RccConfig config) {
+	public void doService(int port) {
 		try {
-			ServerSocket server = new ServerSocket(config.getPort());
-			server.setSoTimeout(config.getExpire());
+			ServerSocket server = new ServerSocket(port);
+			LogUtil.log.info("启动RCC服务 >>" + port);
 			while (true) {
 				Socket socket = server.accept();
 				RccThreadPool.SERVER_POOL.execute(new Runnable() {
 					@Override
 					public void run() {
 						/**
-						 * TODO
-						 * 解析报文
-						 * 根据报文调度目标进行方法调用
-						 * 响应报文
+						 * TODO 解析报文 根据报文调度目标进行方法调用 响应报文
 						 */
 					}
 				});
@@ -41,11 +38,11 @@ public class TcpSignaler implements RccSignaler {
 	}
 
 	@Override
-	public byte[] doConsume(RccConfig config, RccSignalerEntity signaler) {
+	public byte[] doConsume(RccSignalerEntity signaler) {
 		Socket socket = null;
 		try {
 			socket = new Socket(signaler.getRcc().getHost(), signaler.getRcc().getPort());
-			socket.setSoTimeout(config.getExpire());
+			socket.setSoTimeout(signaler.getExpireTime());
 			OutputStream outputStream = socket.getOutputStream();
 			outputStream.write(signaler.builder());
 			outputStream.flush();

@@ -50,7 +50,6 @@ public class BeanAssember {
 			if (CommonUtil.isNullOrEmpty(beanName)) {
 				continue;
 			}
-			LogUtil.log.debug("初始化Bean >>" + beanName + ":" + cla.getName());
 			BeanContainer.setBean(beanName, bean);
 		}
 		if (CommonUtil.isNullOrEmpty(parameterMap)) {

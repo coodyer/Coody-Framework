@@ -1,9 +1,11 @@
 package org.coody.framework.rcc.entity;
 
+import java.util.Objects;
+
 import org.coody.framework.core.model.BaseModel;
 
 @SuppressWarnings("serial")
-public class RccInstance extends BaseModel{
+public class RccInstance extends BaseModel {
 
 	/**
 	 * ip地址
@@ -19,8 +21,6 @@ public class RccInstance extends BaseModel{
 	private Integer pr;
 	
 	
-	
-
 	public Integer getPr() {
 		return pr;
 	}
@@ -44,7 +44,24 @@ public class RccInstance extends BaseModel{
 	public void setPort(Integer port) {
 		this.port = port;
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(host, port, pr);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		RccInstance other = (RccInstance) obj;
+		return Objects.equals(host, other.host) && Objects.equals(port, other.port) && Objects.equals(pr, other.pr);
+	}
 	
 	
-	
+
 }

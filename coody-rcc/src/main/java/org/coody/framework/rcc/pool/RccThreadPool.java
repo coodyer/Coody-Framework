@@ -15,4 +15,7 @@ public class RccThreadPool {
 	public static final ExecutorService CONSUME_POOL = new ThreadPoolExecutor(5, RccConfig.consumeThread, 10,
 			TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
+	public static final ExecutorService GUARD_POOL = new ThreadPoolExecutor(5, 10, 10, TimeUnit.SECONDS,
+			new LinkedBlockingQueue<Runnable>());
+
 }

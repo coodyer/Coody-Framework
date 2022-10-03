@@ -6,6 +6,7 @@ import org.coody.framework.core.container.BeanContainer;
 import org.coody.framework.core.loader.iface.CoodyLoader;
 import org.coody.framework.core.threadpool.ThreadBlockPool;
 import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.log.LogUtil;
 import org.coody.framework.core.util.reflex.PropertUtil;
 
 /**
@@ -39,6 +40,7 @@ public class BeanLoader implements CoodyLoader {
 					if (CommonUtil.isNullOrEmpty(autoBuild)) {
 						return;
 					}
+					LogUtil.log.debug("创建Bean >>" + clazz.getName());
 					BeanAssember.initBean(clazz);
 				}
 			});

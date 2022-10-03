@@ -14,9 +14,8 @@ public class BioService implements MiniCatService {
 
 	private ServerSocket server;
 
-	public void openPort(Integer port, Integer timeOut) throws IOException {
+	public void openPort(Integer port) throws IOException {
 		server = new ServerSocket(port);
-		server.setSoTimeout(timeOut);
 	}
 
 	public void doService() throws IOException {

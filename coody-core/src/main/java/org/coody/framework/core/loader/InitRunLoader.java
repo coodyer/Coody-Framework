@@ -12,7 +12,6 @@ import org.coody.framework.core.util.abnormal.PrintException;
 import org.coody.framework.core.util.log.LogUtil;
 
 /**
- * 切面加载器
  * 
  * @author Coody
  *
@@ -23,24 +22,25 @@ public class InitRunLoader implements CoodyLoader {
 	public void doLoader() throws Exception {
 		List<Runnable> inits = new ArrayList<Runnable>();
 		for (Object bean : BeanContainer.getBeans()) {
-			if (InitBeanFace.class.isAssignableFrom(bean.getClass())) {
-				// 初始化运行
-				try {
-					LogUtil.log.debug("初始化执行 >>" + bean.getClass().getName());
-					InitBeanFace face = (InitBeanFace) bean;
-					inits.add(new Runnable() {
-						@Override
-						public void run() {
-							try {
-								face.init();
-							} catch (Exception e) {
-								PrintException.printException(e);
-							}
+			if (!InitBeanFace.class.isAssignableFrom(bean.getClass())) {
+				continue;
+			}
+			// 初始化运行
+			try {
+				LogUtil.log.debug("初始化执行 >>" + bean.getClass().getName());
+				InitBeanFace face = (InitBeanFace) bean;
+				inits.add(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							face.init();
+						} catch (Exception e) {
+							PrintException.printException(e);
 						}
-					});
-				} catch (Exception e) {
-					PrintException.printException(e);
-				}
+					}
+				});
+			} catch (Exception e) {
+				PrintException.printException(e);
 			}
 		}
 		if (!CommonUtil.isNullOrEmpty(inits)) {

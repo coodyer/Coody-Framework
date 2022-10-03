@@ -1,6 +1,6 @@
 package org.coody.framework.rcc.registry.iface;
 
-import java.util.List;
+import java.util.Set;
 
 import org.coody.framework.rcc.entity.RccInstance;
 
@@ -12,15 +12,8 @@ public interface RccRegistry {
 	 * @param methodKey 方法唯一标识
 	 * @return
 	 */
-	public List<RccInstance> getRccInstances(String methodKey);
+	public Set<RccInstance> getRccInstances(String methodKey);
 
-	/**
-	 * 获取某台主机所注册的所有服务
-	 * @param host 主机
-	 * @param port 端口
-	 * @return
-	 */
-	public List<String> getMethods(String host, Integer port);
 
 	/**
 	 * 根据方法分配实例

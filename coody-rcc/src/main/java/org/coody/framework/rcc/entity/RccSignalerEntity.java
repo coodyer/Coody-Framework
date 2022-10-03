@@ -11,6 +11,8 @@ public class RccSignalerEntity extends BaseModel {
 	private RccInstance rcc;
 
 	private byte[] data;
+	
+	private int expireTime;
 
 	public RccInstance getRcc() {
 		return rcc;
@@ -22,6 +24,14 @@ public class RccSignalerEntity extends BaseModel {
 
 	public byte[] getData() {
 		return data;
+	}
+
+	public int getExpireTime() {
+		return expireTime;
+	}
+
+	public void setExpireTime(int expireTime) {
+		this.expireTime = expireTime;
 	}
 
 	public void setData(byte[] data) {

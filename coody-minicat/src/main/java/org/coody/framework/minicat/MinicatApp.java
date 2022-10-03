@@ -49,7 +49,7 @@ public class MinicatApp {
 			}
 		});
 		try {
-			miniCatService.openPort(MiniCatConfig.port, MiniCatConfig.sessionTimeout);
+			miniCatService.openPort(MiniCatConfig.port);
 			queue.offer(1);
 		} catch (Exception e) {
 			LogUtil.log.error("启动失败", e);

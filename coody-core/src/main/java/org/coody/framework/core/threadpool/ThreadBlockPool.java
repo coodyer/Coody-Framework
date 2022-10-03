@@ -62,6 +62,7 @@ public class ThreadBlockPool {
 	public void execute() {
 		if (!isActivity) {
 			logger.error("ThreadBlockPool >>线程池已销毁");
+			return;
 		}
 		isActivity = false;
 		if (runnables == null || runnables.isEmpty()) {
@@ -88,6 +89,7 @@ public class ThreadBlockPool {
 	public boolean pushTask(List<Runnable> runnables) {
 		if (!isActivity) {
 			logger.error("ThreadBlockPool >>线程池已销毁");
+			return false;
 		}
 		this.runnables.addAll(runnables);
 		return isActivity;
@@ -96,6 +98,7 @@ public class ThreadBlockPool {
 	public boolean pushTask(Runnable runnable) {
 		if (!isActivity) {
 			logger.error("ThreadBlockPool >>线程池已销毁");
+			return false;
 		}
 		runnables.add(runnable);
 		return isActivity;
