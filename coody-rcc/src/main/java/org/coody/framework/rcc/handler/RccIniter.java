@@ -1,6 +1,7 @@
 package org.coody.framework.rcc.handler;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Set;
 
 import org.coody.framework.core.annotation.AutoBuild;
@@ -55,6 +56,9 @@ public class RccIniter implements InitBeanFace {
 					}
 					Set<Method> methods = PropertUtil.getMethods(clazz);
 					for (Method method : methods) {
+						if (!Modifier.isPublic(method.getModifiers())) {
+							continue;
+						}
 						pool.pushTask(new Runnable() {
 							@Override
 							public void run() {
