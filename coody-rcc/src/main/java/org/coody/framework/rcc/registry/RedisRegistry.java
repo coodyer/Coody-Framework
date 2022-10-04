@@ -30,11 +30,9 @@ import redis.clients.jedis.JedisPool;
  */
 public class RedisRegistry implements RccRegistry, InitBeanFace {
 
-
 	RccRegistryEntity data;
 
 	JedisPool jedisPool;
-
 
 	public RedisRegistry(JedisPool jedisPool) throws InstantiationException, IllegalAccessException {
 		super();
@@ -42,16 +40,16 @@ public class RedisRegistry implements RccRegistry, InitBeanFace {
 	}
 
 	@Override
-	public Set<RccInstance> getRccInstances(String methodKey) {
+	public Set<RccInstance> getRccInstances(String path) {
 
-		return data.getData().get(methodKey);
+		return data.getData().get(path);
 	}
 
 	@Override
-	public RccInstance getRccInstance(String methodKey) {
-		Set<RccInstance> set = getRccInstances(methodKey);
+	public RccInstance getRccInstance(String path) {
+		Set<RccInstance> set = getRccInstances(String.format("%s:%s", RccConfig.registerKey, path));
 		if (CommonUtil.isNullOrEmpty(set)) {
-			throw new RccException("未找到方法服务对象->" + methodKey);
+			throw new RccException("未找到方法服务对象->" + path);
 		}
 		List<RccInstance> list = new ArrayList<RccInstance>(set);
 		Integer[] prs = new Integer[list.size()];
@@ -63,15 +61,16 @@ public class RedisRegistry implements RccRegistry, InitBeanFace {
 	}
 
 	@Override
-	public boolean register(String methodKey, String host, Integer port, Integer pr) {
+	public boolean register(String path, String host, Integer port, Integer pr) {
 
-		LogUtil.log.info("注册RCC服务->" + methodKey + "," + host + "," + port + "," + pr);
+		LogUtil.log.info("注册RCC服务->" + path + "," + host + "," + port + "," + pr);
 		RccInstance instance = new RccInstance();
 		instance.setHost(host);
 		instance.setPort(port);
 		instance.setPr(pr);
+		instance.setPath(path);
 
-		String key = String.format("%s:%s", RccConfig.registerKey, methodKey);
+		String key = String.format("%s:%s", RccConfig.registerKey, path);
 		Jedis jedis = jedisPool.getResource();
 		// 写方法map
 		jedis.hset(key.getBytes(), String.format("%s:%s", host, port.toString()).getBytes(),
@@ -102,11 +101,12 @@ public class RedisRegistry implements RccRegistry, InitBeanFace {
 								continue;
 							}
 							Set<RccInstance> list = new HashSet<RccInstance>();
-							for (byte[] methodKey : methodMap.keySet()) {
-								list.add(RccKeepInstance.serialer.unSerialize(methodMap.get(methodKey)));
+							for (byte[] path : methodMap.keySet()) {
+								list.add(RccKeepInstance.serialer.unSerialize(methodMap.get(path)));
 							}
 							current.getData().put(key, list);
 						}
+						data = current;
 					} catch (Exception e) {
 						LogUtil.log.error("同步注册中心数据失败", e);
 					} finally {

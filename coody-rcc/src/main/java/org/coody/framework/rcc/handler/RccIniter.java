@@ -13,6 +13,8 @@ import org.coody.framework.core.util.reflex.MethodSignUtil;
 import org.coody.framework.core.util.reflex.PropertUtil;
 import org.coody.framework.rcc.annotation.RccService;
 import org.coody.framework.rcc.config.RccConfig;
+import org.coody.framework.rcc.container.RccContainer;
+import org.coody.framework.rcc.container.RccContainer.RccInvoker;
 import org.coody.framework.rcc.exception.RccException;
 import org.coody.framework.rcc.instance.RccKeepInstance;
 import org.coody.framework.rcc.registry.iface.RccRegistry;
@@ -47,8 +49,8 @@ public class RccIniter implements InitBeanFace {
 					if (clazz.isInterface()) {
 						continue;
 					}
-					RccService rcc = PropertUtil.getAnnotation(clazz, RccService.class);
-					if (rcc == null) {
+					RccService clazzFlag = PropertUtil.getAnnotation(clazz, RccService.class);
+					if (clazzFlag == null) {
 						continue;
 					}
 					Set<Method> methods = PropertUtil.getMethods(clazz);
@@ -56,9 +58,19 @@ public class RccIniter implements InitBeanFace {
 						pool.pushTask(new Runnable() {
 							@Override
 							public void run() {
-								String key = String.format("%s-%s", rcc.value(),
+								Object bean = BeanContainer.getBean(clazz);
+
+								String path = String.format("%s/%s", clazzFlag.path(),
 										MethodSignUtil.getGeneralKeyByMethod(method));
-								registry.register(key, RccConfig.host, RccConfig.port, RccConfig.pr);
+
+								// 注册到容器
+								RccInvoker invoker = new RccInvoker();
+								invoker.setBean(bean);
+								invoker.setMethod(method);
+								RccContainer.SERVER_MAPPING.put(path, invoker);
+
+								// 注册到redis
+								registry.register(path, RccConfig.host, RccConfig.port, RccConfig.pr);
 							}
 						});
 					}

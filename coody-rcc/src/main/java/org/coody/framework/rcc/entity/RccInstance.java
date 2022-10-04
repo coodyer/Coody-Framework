@@ -20,13 +20,25 @@ public class RccInstance extends BaseModel {
 	 */
 	private Integer pr;
 	
-	
+	/**
+	 * path
+	 */
+	private String path;
+
 	public Integer getPr() {
 		return pr;
 	}
 
 	public void setPr(Integer pr) {
 		this.pr = pr;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 	public String getHost() {
@@ -61,7 +73,5 @@ public class RccInstance extends BaseModel {
 		RccInstance other = (RccInstance) obj;
 		return Objects.equals(host, other.host) && Objects.equals(port, other.port) && Objects.equals(pr, other.pr);
 	}
-	
-	
 
 }

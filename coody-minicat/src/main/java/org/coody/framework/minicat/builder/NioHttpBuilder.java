@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 
+import org.coody.framework.core.util.ByteUtils;
 import org.coody.framework.core.util.CommonUtil;
 import org.coody.framework.minicat.builder.iface.HttpBuilder;
 import org.coody.framework.minicat.config.MiniCatConfig;
@@ -15,7 +16,6 @@ import org.coody.framework.minicat.exception.MiniCatException;
 import org.coody.framework.minicat.exception.NotConnectionException;
 import org.coody.framework.minicat.exception.RequestNotInitException;
 import org.coody.framework.minicat.http.MinicatServletRequestImpl;
-import org.coody.framework.minicat.util.ByteUtils;
 
 public class NioHttpBuilder extends HttpBuilder {
 

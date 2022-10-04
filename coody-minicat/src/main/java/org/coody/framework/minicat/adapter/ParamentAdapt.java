@@ -8,10 +8,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.coody.framework.core.util.ByteUtils;
 import org.coody.framework.core.util.CommonUtil;
 import org.coody.framework.minicat.config.MiniCatConfig;
 import org.coody.framework.minicat.http.MultipartFile;
-import org.coody.framework.minicat.util.ByteUtils;
 
 public class ParamentAdapt {
 
@@ -88,7 +88,7 @@ public class ParamentAdapt {
 		ByteArrayInputStream inputStream = null;
 		try {
 			inputStream = new ByteArrayInputStream(paramContext.trim().getBytes("ISO-8859-1"));
-			String line = ByteUtils.readLineString(inputStream).trim();
+			String line = ByteUtils.readLineString(inputStream,MiniCatConfig.encode).trim();
 			String contextType = "text/plain";
 			Map<String, String> buildMap = buildParaMap(line);
 			if (CommonUtil.isNullOrEmpty(buildMap)) {
@@ -98,12 +98,12 @@ public class ParamentAdapt {
 			if (CommonUtil.isNullOrEmpty(paramName)) {
 				return null;
 			}
-			line = ByteUtils.readLineString(inputStream).trim();
+			line = ByteUtils.readLineString(inputStream,MiniCatConfig.encode).trim();
 			if (line.contains("Content-Type")) {
 				contextType = line.substring(line.indexOf(":") + 1).trim();
 			}
 			while (!CommonUtil.isNullOrEmpty(line)) {
-				line = ByteUtils.readLineString(inputStream).trim();
+				line = ByteUtils.readLineString(inputStream,MiniCatConfig.encode).trim();
 			}
 			byte[] value = ByteUtils.getBytes(inputStream);
 			MultipartFile multipartFile = new MultipartFile();

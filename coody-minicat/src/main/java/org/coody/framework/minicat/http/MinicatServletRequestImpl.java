@@ -7,14 +7,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.coody.framework.core.util.ByteUtils;
 import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.GZIPUtils;
 import org.coody.framework.minicat.adapter.ParamentAdapt;
 import org.coody.framework.minicat.config.MiniCatConfig;
 import org.coody.framework.minicat.container.SessionContainer;
 import org.coody.framework.minicat.http.iface.MinicatHttpSession;
 import org.coody.framework.minicat.http.iface.MinicatServletRequest;
-import org.coody.framework.minicat.util.ByteUtils;
-import org.coody.framework.minicat.util.GZIPUtils;
 
 public class MinicatServletRequestImpl implements MinicatServletRequest {
 

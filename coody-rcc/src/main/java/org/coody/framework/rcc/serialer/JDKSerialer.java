@@ -15,6 +15,9 @@ public class JDKSerialer implements RccSerialer {
 
 	@Override
 	public byte[] serialize(Object object) {
+		if (object == null) {
+			return null;
+		}
 		ObjectOutputStream objectOutputStream = null;
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		try {
@@ -45,6 +48,9 @@ public class JDKSerialer implements RccSerialer {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T unSerialize(byte[] data) {
+		if (data == null) {
+			return null;
+		}
 		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data);
 		try {
 			ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);

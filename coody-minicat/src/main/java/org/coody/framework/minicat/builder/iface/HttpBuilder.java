@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.MessageFormat;
 
 import org.coody.framework.core.util.CommonUtil;
+import org.coody.framework.core.util.GZIPUtils;
 import org.coody.framework.minicat.config.MiniCatConfig;
 import org.coody.framework.minicat.exception.BadRequestException;
 import org.coody.framework.minicat.exception.PageNotFoundException;
@@ -11,7 +12,6 @@ import org.coody.framework.minicat.exception.ResponseNotInitException;
 import org.coody.framework.minicat.http.MinicatServletRequestImpl;
 import org.coody.framework.minicat.http.MinicatServletResponseImpl;
 import org.coody.framework.minicat.processor.MinicatProcess;
-import org.coody.framework.minicat.util.GZIPUtils;
 
 public abstract class HttpBuilder {
 

@@ -1,21 +1,24 @@
 package org.coody.framework.rcc.signal;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import org.coody.framework.core.util.ByteUtils;
+import org.coody.framework.core.util.GZIPUtils;
 import org.coody.framework.core.util.log.LogUtil;
+import org.coody.framework.rcc.container.RccContainer;
+import org.coody.framework.rcc.container.RccContainer.RccInvoker;
 import org.coody.framework.rcc.entity.RccSignalerEntity;
 import org.coody.framework.rcc.exception.RccException;
+import org.coody.framework.rcc.instance.RccKeepInstance;
 import org.coody.framework.rcc.pool.RccThreadPool;
 import org.coody.framework.rcc.signal.iface.RccSignaler;
 
 public class TcpSignaler implements RccSignaler {
 
-	@SuppressWarnings({ "resource", "unused" })
+	@SuppressWarnings({ "resource" })
 	@Override
 	public void doService(int port) {
 		try {
@@ -26,9 +29,7 @@ public class TcpSignaler implements RccSignaler {
 				RccThreadPool.SERVER_POOL.execute(new Runnable() {
 					@Override
 					public void run() {
-						/**
-						 * TODO 解析报文 根据报文调度目标进行方法调用 响应报文
-						 */
+						doAccept(socket);
 					}
 				});
 			}
@@ -37,24 +38,60 @@ public class TcpSignaler implements RccSignaler {
 		}
 	}
 
+	public void doAccept(Socket socket) {
+		/**
+		 * TODO 解析报文 根据报文调度目标进行方法调用 响应报文
+		 */
+		try {
+			String line = ByteUtils.readLineString(socket.getInputStream(), "UTF-8");
+
+			Integer length = Integer.valueOf(line.trim());
+
+			byte[] data = ByteUtils.getBytes(socket.getInputStream(), length);
+
+			RccSignalerEntity signaler = RccKeepInstance.serialer.unSerialize(GZIPUtils.uncompress(data));
+			// 寻找调用目标
+			RccInvoker rcc = RccContainer.SERVER_MAPPING.get(signaler.getRcc().getPath());
+
+			try {
+				Object result = rcc.invoke(RccKeepInstance.serialer.unSerialize(signaler.getData()));
+				signaler.setData(RccKeepInstance.serialer.serialize(result));
+			} catch (Exception e) {
+				signaler.setException(e);
+			}
+			data = GZIPUtils.compress(RccKeepInstance.serialer.serialize(signaler));
+			socket.getOutputStream().write((data.length + "\r\n").getBytes());
+			socket.getOutputStream().write(data);
+			socket.getOutputStream().flush();
+			socket.shutdownOutput();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	@Override
-	public byte[] doConsume(RccSignalerEntity signaler) {
+	public RccSignalerEntity doConsume(RccSignalerEntity signaler) {
 		Socket socket = null;
 		try {
 			socket = new Socket(signaler.getRcc().getHost(), signaler.getRcc().getPort());
 			socket.setSoTimeout(signaler.getExpireTime());
 			OutputStream outputStream = socket.getOutputStream();
-			outputStream.write(signaler.builder());
+
+			byte[] data = GZIPUtils.compress(RccKeepInstance.serialer.serialize(signaler));
+			// 写入传输长度
+			outputStream.write((data.length + "\r\n").getBytes());
+			// 写入业务内容
+			outputStream.write(data);
 			outputStream.flush();
 			socket.shutdownOutput();
-			InputStream inputStream = socket.getInputStream();
-			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			byte[] bytes = new byte[1024];
-			int len;
-			while ((len = inputStream.read(bytes)) != -1) {
-				byteArrayOutputStream.write(bytes, 0, len);
-			}
-			return byteArrayOutputStream.toByteArray();
+
+			String line = ByteUtils.readLineString(socket.getInputStream(), "UTF-8");
+			Integer length = Integer.valueOf(line.trim());
+			data = ByteUtils.getBytes(socket.getInputStream(), length);
+
+			signaler = RccKeepInstance.serialer.unSerialize(GZIPUtils.uncompress(data));
+			return signaler;
+
 		} catch (Exception e) {
 			throw new RccException("发送数据出错", e);
 		} finally {
@@ -69,4 +106,8 @@ public class TcpSignaler implements RccSignaler {
 
 	}
 
+	public static void main(String[] args) {
+		byte a = '\n';
+		System.out.println(a);
+	}
 }

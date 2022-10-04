@@ -14,16 +14,22 @@ public class RccSendCaller {
 
 	/**
 	 * 调用远程方法
+	 * 
+	 * @throws Exception
 	 */
-	public byte[] send(String methodKey, byte[] data) {
+	public byte[] send(String path, byte[] data) throws Exception {
 
-		RccInstance rcc = registry.getRccInstance(methodKey);
+		RccInstance rcc = registry.getRccInstance(path);
 
 		RccSignalerEntity rccSignalerEntity = new RccSignalerEntity();
 		rccSignalerEntity.setRcc(rcc);
 		rccSignalerEntity.setData(data);
 
-		return RccKeepInstance.signaler.doConsume(rccSignalerEntity);
+		rccSignalerEntity = RccKeepInstance.signaler.doConsume(rccSignalerEntity);
+		if (rccSignalerEntity.getException() != null) {
+			throw rccSignalerEntity.getException();
+		}
+		return rccSignalerEntity.getData();
 	}
 
 }

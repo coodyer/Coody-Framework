@@ -1,13 +1,12 @@
 package org.coody.framework.rcc.instance;
 
 import org.coody.framework.core.annotation.AutoBuild;
-import org.coody.framework.core.bean.InitBeanFace;
 import org.coody.framework.rcc.config.RccConfig;
 import org.coody.framework.rcc.serialer.iface.RccSerialer;
 import org.coody.framework.rcc.signal.iface.RccSignaler;
 
 @AutoBuild
-public class RccKeepInstance implements InitBeanFace {
+public class RccKeepInstance {
 
 	/**
 	 * 调用其他服务使用的序列化工具
@@ -19,12 +18,26 @@ public class RccKeepInstance implements InitBeanFace {
 	 */
 	public static RccSignaler signaler;
 
-	@Override
-	public void init() throws Exception {
-		serialer = RccConfig.serialer.newInstance();
-		
-		signaler = RccConfig.signaler.newInstance();
-		
+	public RccKeepInstance() {
+		try {
+			serialer = RccConfig.serialer.newInstance();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try {
+			signaler = RccConfig.signaler.newInstance();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

@@ -9,18 +9,20 @@ import org.coody.framework.core.annotation.AutoBuild;
 
 /**
  * 服务者
+ * 
  * @author Coody
  *
  */
-@Target({ElementType.METHOD,ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME) 
+@Target({ ElementType.TYPE })
+@Retention(RetentionPolicy.RUNTIME)
 @AutoBuild
 public @interface RccService {
 
 	/**
 	 * 服务名
+	 * 
 	 * @return
 	 */
-	String value() default "";
-	
+	String path();
+
 }

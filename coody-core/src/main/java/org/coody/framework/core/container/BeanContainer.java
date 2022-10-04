@@ -34,12 +34,12 @@ public class BeanContainer {
 
 	private static Map<Class<?>, Set<String>> beanNameContainer = new ConcurrentHashMap<Class<?>, Set<String>>();
 
-	public static <T> T getBean(Class<?> cla) {
-		String beanName = getGeneralBeanName(cla);
-		if (CommonUtil.isNullOrEmpty(beanName)) {
+	public static <T> T getBean(Class<?> clazz) {
+		String name = getGeneralBeanName(clazz);
+		if (CommonUtil.isNullOrEmpty(name)) {
 			return null;
 		}
-		return getBean(beanName);
+		return getBean(name);
 	}
 
 	public static Set<Class<?>> getClazzContainer() {
@@ -54,16 +54,16 @@ public class BeanContainer {
 		BeanContainer.clazzContainer = clazzContainer;
 	}
 
-	public static <T> T getBean(String beanName) {
-		if (CommonUtil.isNullOrEmpty(beanName)) {
+	public static <T> T getBean(String name) {
+		if (CommonUtil.isNullOrEmpty(name)) {
 			return null;
 		}
-		Map<String, Object> map = beanContainer.get(beanName);
+		Map<String, Object> map = beanContainer.get(name);
 		if (CommonUtil.isNullOrEmpty(map)) {
 			return null;
 		}
 		if (map.size() > 1) {
-			throw new BeanConflictException(beanName + "瀛樺湪澶氫釜瀹炰緥,鏈槑纭寚瀹�");
+			throw new BeanConflictException(name + "存在多个bean");
 		}
 		for (String key : map.keySet()) {
 			return (T) map.get(key);
@@ -71,20 +71,20 @@ public class BeanContainer {
 		return null;
 	}
 
-	public static synchronized void setBean(String beanName, Object bean) {
+	public static synchronized void setBean(String name, Object bean) {
 		Class<?> clazz = ClassUtil.getSourceClass(bean.getClass());
 		String realBeanName = clazz.getName();
-		if (beanContainer.containsKey(beanName)) {
-			beanContainer.get(beanName).put(realBeanName, bean);
+		if (beanContainer.containsKey(name)) {
+			beanContainer.get(name).put(realBeanName, bean);
 			return;
 		}
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put(realBeanName, bean);
-		beanContainer.put(beanName, map);
+		beanContainer.put(name, map);
 	}
 
-	public static boolean contains(String beanName) {
-		return beanContainer.containsKey(beanName);
+	public static boolean contains(String name) {
+		return beanContainer.containsKey(name);
 	}
 
 	public static HashSet<?> getBeans() {
@@ -150,13 +150,13 @@ public class BeanContainer {
 			return new HashSet<String>();
 		}
 		clazz = ClassUtil.getSourceClass(clazz);
-		Set<String> beanNames = new HashSet<String>(getDeclaredBeanNames(clazz));
+		Set<String> names = new HashSet<String>(getDeclaredBeanNames(clazz));
 		Class<?>[] interfaces = clazz.getInterfaces();
 		if (!CommonUtil.isNullOrEmpty(interfaces)) {
 			for (Class<?> interfacer : interfaces) {
 				Set<String> interfaceBeanNames = getOverallBeanName(interfacer);
 				if (!CommonUtil.isNullOrEmpty(interfaceBeanNames)) {
-					beanNames.addAll(interfaceBeanNames);
+					names.addAll(interfaceBeanNames);
 				}
 			}
 		}
@@ -164,10 +164,10 @@ public class BeanContainer {
 		if (!CommonUtil.isNullOrEmpty(superer)) {
 			Set<String> superBeanNames = getOverallBeanName(superer);
 			if (!CommonUtil.isNullOrEmpty(superBeanNames)) {
-				beanNames.addAll(superBeanNames);
+				names.addAll(superBeanNames);
 			}
 		}
 
-		return beanNames;
+		return names;
 	}
 }

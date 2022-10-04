@@ -1,6 +1,8 @@
 package org.coody.framework.rcc.loader;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.Set;
 
 import org.coody.framework.core.annotation.Order;
 import org.coody.framework.core.builder.ConfigBuilder;
@@ -49,6 +51,9 @@ public class RccLoader implements CoodyLoader {
 			if (rccInterface == null) {
 				continue;
 			}
+			if (isImpled(clazz)) {
+				continue;
+			}
 			pool.pushTask(new Runnable() {
 				@Override
 				public void run() {
@@ -57,11 +62,23 @@ public class RccLoader implements CoodyLoader {
 			});
 		}
 		pool.execute();
+	}
 
+	private boolean isImpled(Class<?> clazz) {
+		for (Class<?> line : BeanContainer.getClazzContainer()) {
+			if (line.isInterface()) {
+				continue;
+			}
+			if (clazz.isAssignableFrom(line)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void loaderClazz(Class<?> clazz) {
 		Class<?> implClazz = ImplClassMaker.createInterfaceImpl(clazz, RccHandler.class);
+		LogUtil.log.info("创建实现类->" + implClazz);
 		BeanContainer.getClazzContainer().add(implClazz);
 		// 复制注解
 		Class<?>[] interfaces = implClazz.getInterfaces();
@@ -77,7 +94,17 @@ public class RccLoader implements CoodyLoader {
 				PropertUtil.addAnnotations(implClazz, annotations);
 			} catch (Exception e) {
 				LogUtil.log.error("注解Copy失败", e);
+				continue;
 			}
+			Set<Method> methods=PropertUtil.getMethods(implClazz);
+			for (Method line : methods) {
+				try {
+					PropertUtil.addAnnotations(line, annotations);
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+			}
+
 		}
 	}
 

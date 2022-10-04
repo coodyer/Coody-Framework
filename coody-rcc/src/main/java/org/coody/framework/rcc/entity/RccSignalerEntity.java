@@ -1,9 +1,6 @@
 package org.coody.framework.rcc.entity;
 
-import java.io.ByteArrayOutputStream;
-
 import org.coody.framework.core.model.BaseModel;
-import org.coody.framework.rcc.exception.RccException;
 
 @SuppressWarnings("serial")
 public class RccSignalerEntity extends BaseModel {
@@ -11,11 +8,21 @@ public class RccSignalerEntity extends BaseModel {
 	private RccInstance rcc;
 
 	private byte[] data;
-	
+
+	private Exception exception;
+
 	private int expireTime;
 
 	public RccInstance getRcc() {
 		return rcc;
+	}
+
+	public Exception getException() {
+		return exception;
+	}
+
+	public void setException(Exception exception) {
+		this.exception = exception;
 	}
 
 	public void setRcc(RccInstance rcc) {
@@ -38,16 +45,4 @@ public class RccSignalerEntity extends BaseModel {
 		this.data = data;
 	}
 
-	public byte[] builder() {
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		String remark = "{" + data.length + "}";
-		try {
-			byteArrayOutputStream.write(remark.getBytes());
-			byteArrayOutputStream.write(data);
-			return byteArrayOutputStream.toByteArray();
-		} catch (Exception e) {
-			throw new RccException("数据写入错误");
-		}
-	}
-	
 }

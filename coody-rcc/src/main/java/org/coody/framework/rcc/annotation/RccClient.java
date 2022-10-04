@@ -9,14 +9,15 @@ import org.coody.framework.core.annotation.AutoBuild;
 
 /**
  * 消费者
+ * 
  * @author Coody
  *
  */
-@Target({ElementType.METHOD,ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME) 
+@Target({ ElementType.TYPE })
+@Retention(RetentionPolicy.RUNTIME)
 @AutoBuild
 public @interface RccClient {
 
-	String[] value() default {""};
-	
+	String path();
+
 }

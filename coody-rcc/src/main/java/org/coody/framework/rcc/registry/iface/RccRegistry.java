@@ -30,5 +30,5 @@ public interface RccRegistry {
 	 * @param pr 分配权重
 	 * @return
 	 */
-	public boolean register(String methodKey, String host, Integer port, Integer pr);
+	public boolean register(String path, String host, Integer port, Integer pr);
 }

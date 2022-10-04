@@ -7,10 +7,10 @@ public interface RccSignaler {
 	/**
 	 * 进行服务
 	 */
-	void doService(int port );
+	void doService(int port);
 
 	/**
 	 * 进行消费
 	 */
-	byte[] doConsume(RccSignalerEntity signaler);
+	RccSignalerEntity doConsume(RccSignalerEntity signaler);
 }

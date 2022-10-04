@@ -1,6 +1,5 @@
 package org.coody.framework.rcc.config;
 
-import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -48,8 +47,7 @@ public class RccConfig extends BaseConfig {
 	/**
 	 * 注册中心KEY
 	 */
-	public static String registerKey = String.format("coody:framework:rcc:%s",
-			new File(System.getProperty("user.dir")).getName());
+	public static String registerKey = "coody:framework:rcc";
 	/**
 	 * 调用其他服务的重试次数
 	 */
