@@ -30,13 +30,6 @@ public class RccIniter implements InitBeanFace {
 			throw new RccException("未找到注册中心");
 		}
 		SysThreadPool.THREAD_POOL.execute(new Runnable() {
-
-			@Override
-			public void run() {
-				RccKeepInstance.signaler.doService(RccConfig.port);
-			}
-		});
-		SysThreadPool.THREAD_POOL.execute(new Runnable() {
 			@Override
 			public void run() {
 				ThreadBlockPool pool = new ThreadBlockPool(100, 60);
@@ -64,7 +57,7 @@ public class RccIniter implements InitBeanFace {
 							public void run() {
 								Object bean = BeanContainer.getBean(clazz);
 
-								String path = String.format("%s/%s", clazzFlag.path(),
+								String path = String.format("%s/%s/%s", RccConfig.name, clazzFlag.path(),
 										MethodSignUtil.getGeneralKeyByMethod(method));
 
 								// 注册到容器
@@ -80,6 +73,13 @@ public class RccIniter implements InitBeanFace {
 					}
 				}
 				pool.execute();
+				if (!CommonUtil.isNullOrEmpty(RccContainer.SERVER_MAPPING)) {
+					if (CommonUtil.isNullOrEmpty(RccConfig.name)) {
+						throw new RccException("未配置服务名 >>${coody.rcc.name}");
+					}
+					RccKeepInstance.signaler.doService(RccConfig.port);
+
+				}
 			}
 		});
 	}

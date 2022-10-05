@@ -36,6 +36,7 @@ public class CoodyConfig extends BaseConfig {
 	 * Bean表达式
 	 */
 	public static final String INPUT_BEAN_MAPPER = "\\$\\{([A-Za-z0-9_]+)\\}";
+	
 	/**
 	 * 扫描的包配置
 	 */

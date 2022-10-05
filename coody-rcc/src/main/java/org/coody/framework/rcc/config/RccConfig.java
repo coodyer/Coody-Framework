@@ -22,6 +22,12 @@ public class RccConfig extends BaseConfig {
 	 */
 	public static int consumeThread = 100;
 
+	
+	/**
+	 * 项目名
+	 */
+	public static String name;
+	
 	/**
 	 * 本地host
 	 */

@@ -172,6 +172,7 @@
 		<module>coody-cson</module>
 		<module>coody-esource</module>
 		<module>coody-checker</module>
+		<module>coody-logged</module>
 	</modules>
 
 	<dependencyManagement>

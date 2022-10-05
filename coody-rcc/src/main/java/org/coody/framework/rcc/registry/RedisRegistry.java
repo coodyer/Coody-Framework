@@ -118,6 +118,9 @@ public class RedisRegistry implements RccRegistry, InitBeanFace {
 						try {
 							TimeUnit.MILLISECONDS.sleep(RccConfig.keepTime);
 						} catch (InterruptedException e) {
+							
+							
+							
 						}
 					}
 				}

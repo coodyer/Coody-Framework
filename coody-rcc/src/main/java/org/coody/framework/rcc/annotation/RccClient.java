@@ -18,6 +18,8 @@ import org.coody.framework.core.annotation.AutoBuild;
 @AutoBuild
 public @interface RccClient {
 
+	String name();
+
 	String path();
 
 }

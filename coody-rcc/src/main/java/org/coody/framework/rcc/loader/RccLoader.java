@@ -14,6 +14,7 @@ import org.coody.framework.core.util.log.LogUtil;
 import org.coody.framework.core.util.reflex.PropertUtil;
 import org.coody.framework.rcc.annotation.RccClient;
 import org.coody.framework.rcc.config.RccConfig;
+import org.coody.framework.rcc.exception.RccException;
 import org.coody.framework.rcc.handler.RccHandler;
 import org.coody.framework.rcc.util.asm.ImplClassMaker;
 
@@ -30,7 +31,6 @@ public class RccLoader implements CoodyLoader {
 
 		ConfigBuilder.builder();
 		ConfigBuilder.flush(new RccConfig(), RccConfig.PREFIX);
-
 		if (CommonUtil.isNullOrEmpty(BeanContainer.getClazzContainer())) {
 			return;
 		}
@@ -96,7 +96,7 @@ public class RccLoader implements CoodyLoader {
 				LogUtil.log.error("注解Copy失败", e);
 				continue;
 			}
-			Set<Method> methods=PropertUtil.getMethods(implClazz);
+			Set<Method> methods = PropertUtil.getMethods(implClazz);
 			for (Method line : methods) {
 				try {
 					PropertUtil.addAnnotations(line, annotations);

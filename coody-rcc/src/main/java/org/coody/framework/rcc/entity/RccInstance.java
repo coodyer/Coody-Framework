@@ -19,7 +19,7 @@ public class RccInstance extends BaseModel {
 	 * 权重
 	 */
 	private Integer pr;
-	
+
 	/**
 	 * path
 	 */

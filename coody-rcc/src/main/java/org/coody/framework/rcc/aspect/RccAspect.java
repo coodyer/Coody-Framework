@@ -36,12 +36,11 @@ public class RccAspect implements InitBeanFace {
 		byte[] data = RccKeepInstance.serialer.serialize(parameter);
 		// 远程调用
 		Class<?> clazz = PropertUtil.getClass(method);
-		RccClient clazzFlag = clazz.getAnnotation(RccClient.class);
-		if (clazzFlag == null) {
+		RccClient rcc = clazz.getAnnotation(RccClient.class);
+		if (rcc == null) {
 			throw new RccException("未找到RccClient标记 >>" + clazz.getName());
 		}
-		String path = String.format("%s/%s", clazzFlag.path(),
-				MethodSignUtil.getGeneralKeyByMethod(method));
+		String path = String.format("%s/%s/%s", rcc.name(), rcc.path(), MethodSignUtil.getGeneralKeyByMethod(method));
 
 		byte[] result = caller.send(path, data);
 		if (result == null) {

@@ -69,6 +69,9 @@ public class CoreApp {
 		Set<Class<?>> clazzs = new HashSet<Class<?>>();
 		for (String packet : packets) {
 			Set<Class<?>> clazzsTemp = ClassUtil.getClasses(packet);
+			if (CommonUtil.isNullOrEmpty(clazzsTemp)) {
+				continue;
+			}
 			clazzs.addAll(clazzsTemp);
 		}
 		if (CommonUtil.isNullOrEmpty(clazzs)) {
