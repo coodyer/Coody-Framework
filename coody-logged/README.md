@@ -20,7 +20,7 @@
 
 ##### 2. 基础配置
 
-###### Coody Framework下配置
+##### Coody Framework下配置
 ```
 	#日志级别，默认DEBUG
 	coody.logged.level=INFO 
@@ -32,15 +32,15 @@
 	coody.logged.sysout=true
 	#自定义输出函数，默认加载内置函数无需配置，逗号分割，传入class需要继承 org.coody.framework.logged.function.iface.LoggedFunction
 	coody.logged.functions=org.coody.framework.logged.function.AppendFunction,org.coody.framework.logged.function.LevelFunction 
-	#DEBUG输出文件
+	#DEBUG输出文件，默认debug.log
 	coody.logged.outOfDebug=debug.log
-	#INFO输出文件
+	#INFO输出文件，默认info.log
 	coody.logged.outOfInfo=info.log
-	#ERROR输出文件
+	#ERROR输出文件，默认error.log
 	coody.logged.outOfError=error.log
 ```
 
-###### 其他场景下配置(springboot、spring均可)
+##### 其他场景下配置(springboot、spring、传统项目均可)
 ```
 	LoggedConfig.encode = "UTF-8";
 	LoggedConfig.functions = "org.coody.framework.logged.function.AppendFunction,org.coody.framework.logged.function.LevelFunction";
@@ -54,9 +54,9 @@
 
 
 
-###### 自定义函数
+##### 自定义函数
 
-###### 新建class，继承LoggedFunction，实现invoke和getName方法
+##### 新建class，继承LoggedFunction，实现invoke和getName方法
 ```
 	public class CustomFunction extends LoggedFunction {
 	
@@ -73,26 +73,56 @@
 
 ```
 
-###### 加载函数
+##### 加载函数
 
 
 ```
 	LoggedConfig.functions = "org.coody.custom.CustomFunction";
 ```
 
-###### Coody Framework下加载函数
+##### Coody Framework下加载函数
 ```
 	coody.logged.functions=org.coody.custom.CustomFunction
 ```
 	
-###### 使用函数，无参不需要传，有参直接使用()包围参数内容
+##### 使用函数，无参不需要传，有参直接使用()包围参数内容
 
 
 ```
 	[${CUSTOM(参数内容)} ${TIME(yyyy-MM-dd HH:mm:ss:SSS)} ${THREAD} ](${SIMPLESTACK}) ：${MSG}
 ```
 
-###### 打印日志
+##### 内置函数
+
+###### TIME 时间戳
+	参数：时间格式
+	使用：${TIME(yyyy-MM-dd HH:mm:ss)}
+	
+###### THREAD 线程号
+	参数：无
+	使用：${THREAD}
+	
+###### LEVEL 日志级别
+	参数：无
+	使用：${LEVEL}
+
+###### LEVEL 日志级别
+	参数：无
+	使用：${LEVEL}
+
+###### MSG 日志内容
+	参数：无
+	使用：${MSG}
+	
+###### STACK 当前堆栈
+	参数：堆栈位置(下标，支持正负)
+	使用：${STACK(1)}
+	
+###### SIMPLESTACK 类名以及行号
+	参数：堆栈位置(下标，支持正负)
+	使用：${SIMPLESTACK(1)}
+
+##### 打印日志
 
 ```
 	public class LogUtil {
