@@ -17,11 +17,9 @@ public abstract class LoggedFunction {
 
 	private static final Map<String, LoggedFunction> FUNCTION_MAP = new ConcurrentHashMap<String, LoggedFunction>();
 
-	/**
-	 * Bean表达式
-	 */
-
 	public abstract String invoke(String parameter, LoggedEntity logged);
+
+	public abstract String getName();
 
 	static {
 		LoggedFunction.register("APPEND", new AppendFunction());
@@ -35,7 +33,8 @@ public abstract class LoggedFunction {
 
 	public static void register(String name, LoggedFunction function) {
 		name = name.toUpperCase();
-		if (FUNCTION_MAP.containsKey(name)) {
+		LoggedFunction existsed = FUNCTION_MAP.get(name);
+		if (existsed != null && existsed.getClass() != function.getClass()) {
 			throw new LoggedException("存在相同的函数名->" + name);
 		}
 		FUNCTION_MAP.put(name, function);

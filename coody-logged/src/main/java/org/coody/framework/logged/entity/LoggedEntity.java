@@ -1,9 +1,9 @@
 package org.coody.framework.logged.entity;
 
-import org.coody.framework.core.model.BaseModel;
+import java.io.Serializable;
 
 @SuppressWarnings("serial")
-public class LoggedEntity extends BaseModel {
+public class LoggedEntity  implements Serializable{
 
 	private String level;
 

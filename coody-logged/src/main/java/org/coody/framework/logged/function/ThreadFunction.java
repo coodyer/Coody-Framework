@@ -10,4 +10,9 @@ public class ThreadFunction extends LoggedFunction {
 		return Thread.currentThread().getName();
 	}
 
+	@Override
+	public String getName() {
+		return "THREAD";
+	}
+
 }

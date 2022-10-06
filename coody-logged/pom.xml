@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.coody.framework</groupId>
 		<artifactId>coody</artifactId>
-		<version>alpha-1.8.4</version>
+		<version>alpha-1.8.5</version>
 	</parent>
 	<artifactId>coody-logged</artifactId>
 	<packaging>jar</packaging>
@@ -14,11 +14,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencies>
-		<dependency>
-			<groupId>org.coody.framework</groupId>
-			<artifactId>coody-core</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 	</dependencies>
 
 	<build>

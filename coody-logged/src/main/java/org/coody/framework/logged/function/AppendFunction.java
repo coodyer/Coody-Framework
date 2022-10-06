@@ -9,4 +9,9 @@ public class AppendFunction extends LoggedFunction {
 	public String invoke(String parameter, LoggedEntity logged) {
 		return parameter;
 	}
+
+	@Override
+	public String getName() {
+		return "APPEND";
+	}
 }

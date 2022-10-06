@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.coody.framework</groupId>
 		<artifactId>coody</artifactId>
-		<version>alpha-1.8.4</version>
+		<version>alpha-1.8.5</version>
 	</parent>
 	<artifactId>coody-elock</artifactId>
 	<packaging>jar</packaging>
@@ -27,10 +27,6 @@
 			<artifactId>jedis</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.aspectj/aspectjrt -->
 		<dependency>
 			<groupId>org.aspectj</groupId>

@@ -15,10 +15,25 @@ public class LoggedConfig {
 	public static String level = LevelConstant.DEBUG;
 
 	/**
+	 * 默认日志表达式
+	 */
+	public static String pattern = "[${LEVEL} ${TIME(yyyy-MM-dd HH:mm:ss:SSS)} ${THREAD} ](${SIMPLESTACK}) ：${MSG}";
+
+	/**
 	 * 是否输出在控制台，默认false
 	 */
-	public static boolean sysout = false;
+	public static Boolean sysout = true;
 
+	/**
+	 * 默认堆栈深度
+	 */
+	public static Integer stack = 4;
+
+	/**
+	 * 自定义函数,逗号分割
+	 */
+	public static String functions = "";
+	
 	/**
 	 * debug输出日志文件
 	 */
@@ -33,5 +48,7 @@ public class LoggedConfig {
 	 * error输出日志文件
 	 */
 	public static String outOfError = "error.log";
+
+	public static String prefix = "coody.logged";
 
 }

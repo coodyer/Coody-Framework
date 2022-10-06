@@ -1,10 +1,11 @@
 package org.coody.framework.logged.function.invoke;
 
-import org.coody.framework.core.model.BaseModel;
+import java.io.Serializable;
+
 import org.coody.framework.logged.function.iface.LoggedFunction;
 
 @SuppressWarnings("serial")
-public class FunctionInvoker extends BaseModel {
+public class FunctionInvoker implements Serializable {
 
 	private LoggedFunction function;
 

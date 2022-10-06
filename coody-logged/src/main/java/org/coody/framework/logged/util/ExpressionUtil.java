@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.coody.framework.core.util.CommonUtil;
-
 public class ExpressionUtil {
 
 	public static List<String> getParameters(String context, String patten) {
@@ -19,12 +17,12 @@ public class ExpressionUtil {
 		Integer index = 0;
 		while (matcher.find(index)) {
 			try {
-				String tmp = matcher.group(0);
+				String line = matcher.group(0);
 				index = matcher.end();
-				if (CommonUtil.isNullOrEmpty(tmp)) {
+				if (line == null || line.length() == 0) {
 					continue;
 				}
-				list.add(tmp);
+				list.add(line);
 			} catch (Exception e) {
 			}
 		}

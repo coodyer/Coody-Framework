@@ -11,4 +11,9 @@ public class LevelFunction extends LoggedFunction {
 		return logged.getLevel();
 	}
 
+	@Override
+	public String getName() {
+		return "LEVEL";
+	}
+
 }

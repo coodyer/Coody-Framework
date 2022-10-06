@@ -8,10 +8,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.coody.framework.core.threadpool.SysThreadPool;
 import org.coody.framework.logged.config.LoggedConfig;
 import org.coody.framework.logged.constant.LevelConstant;
 import org.coody.framework.logged.entity.LoggedWriteEntity;
+import org.coody.framework.logged.pool.LoggedThreadPool;
 
 public class LogWriter {
 
@@ -20,7 +20,7 @@ public class LogWriter {
 	static LinkedBlockingQueue<LoggedWriteEntity> queue = new LinkedBlockingQueue<LoggedWriteEntity>();
 
 	static {
-		SysThreadPool.THREAD_POOL.execute(new Runnable() {
+		LoggedThreadPool.THREAD_POOL.execute(new Runnable() {
 
 			@Override
 			public void run() {

@@ -11,4 +11,9 @@ public class MsgFunction extends LoggedFunction {
 		return logged.getMsg();
 	}
 
+	@Override
+	public String getName() {
+		return "MSG";
+	}
+
 }

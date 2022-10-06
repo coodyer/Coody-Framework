@@ -140,7 +140,7 @@ public class MatchUtil {
 	}
 
 	public static List<String> getParameters(String context) {
-		String patten = "\\$\\{.+?\\}";
+		String patten = "\\$\\{([A-Za-z0-9_]+)\\}";
 		return exporeMatchedsByRegular(context, patten);
 	}
 
@@ -171,4 +171,5 @@ public class MatchUtil {
 			return null;
 		}
 	}
+
 }
