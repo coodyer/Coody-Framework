@@ -19,12 +19,6 @@
 			<artifactId>coody-core</artifactId>
 			<version>${coody.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.zookeeper</groupId>
-			<artifactId>zookeeper</artifactId>
-			<version>3.4.5</version>
-			<scope>provided</scope>
-		</dependency>
 
 		<dependency>
 			<groupId>redis.clients</groupId>
