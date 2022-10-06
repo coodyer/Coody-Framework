@@ -15,7 +15,7 @@
 
 ###### 1. 基本描述
 
-	coody-rcc是Coody Framework旗下基于RPC协议的分布式框架。
+	coody-rcc是Coody Framework旗下分布式框架。
 	
 	注册中心默认采用Redis，未来可能提供更多的注册中心，如需更换自行实现 org.coody.framework.rcc.registry.iface.RccRegistry
 	
