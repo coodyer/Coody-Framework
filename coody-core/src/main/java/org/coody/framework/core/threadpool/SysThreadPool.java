@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class SysThreadPool {
 	
-	private static final int CORESIZE_NORMAL=20;
+	private static final int CORESIZE_NORMAL=32;
 	private static final int MAXCORESIZE = 100;
 	private static final int KEEPALIVETIME = 10;  //10s
 	private static  ThreadFactory threadFactory = new ThreadFactory() {
